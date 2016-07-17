@@ -10,26 +10,17 @@ var DIR_SRC = {
     indexPage: 'static/pages/index/'
 };
 var DIR_DEST = 'public/js/';
-var SUB_PAGES = [
-    'badinfo/aggregate',
-    'badinfo/record',
-    'badinfo/RTXDirective',
-    'publicvoice/dailyreport',
-    'publicvoice/dispose',
-    'publicvoice/examine&approve',
-    'publicvoice/feedback',
-    'publicvoice/guide',
-    'publicvoice/notify',
-    'publicvoice/record',
-    'smartoffice/allmessages',
-    'smartoffice/examine&approve',
-    'smartoffice/sendmessage',
-    'socialvoice/dispose',
-    'socialvoice/record',
-    'sysmanage/members',
-    'sysmanage/password'
-];
-var INDEXJS_DEPENDENCIES = [];
+
+var SUB_PAGES = {
+    badinfo: ['aggregate', 'record', 'RTXDirective'],
+    publicvoice: ['dailyreport', 'dispose', 'examine&approve', 'feedback', 'guide', 'notify', 'record'],
+    smartoffice: ['allmessages', 'examine&approve', 'sendmessage'],
+    socialvoice: ['dispose', 'record'],
+    sysmanage: ['members', 'password']
+};
+
+var TASKS_SUBPAGES = [];
+var TASKS_MODULES = [];
 
 module.exports = function (gulp, plugins, isdebug) {
     gulp.task('cleanJs', function () {
@@ -40,9 +31,9 @@ module.exports = function (gulp, plugins, isdebug) {
     gulp.task('buildLoginJs', ['cleanJs'], function () {
         var mainjs = gulp
             .src([
+                DIR_SRC.coreJs + 'jquery-2.2.4.js',
                 DIR_SRC.coreJs + 'bootstrap-3.3.5.js',
-                DIR_SRC.coreJs + 'jquery-3.0.0.js',
-                DIR_SRC.pages + '*.js',
+                DIR_SRC.pages + 'page.js',
                 DIR_SRC.loginPage + 'main.js'
             ])
             .pipe(plugins.concat('login.js'));
@@ -54,50 +45,61 @@ module.exports = function (gulp, plugins, isdebug) {
         return mainjs.pipe(gulp.dest(DIR_DEST));
     });
 
-    SUB_PAGES.forEach(function (name, task) {
-        task = '_subpage_' + name;
-        INDEXJS_DEPENDENCIES.push(task);
+    Object.keys(SUB_PAGES).forEach(function (module) {
+        SUB_PAGES[module].forEach(function (page, name, path) {
+            path = DIR_SRC.indexPage + [module, page].join('/');
+            name = '_subpage_' + [module, page].join('.') + '.js'
+            TASKS_SUBPAGES.push(name);
 
-        gulp.task(task, ['cleanJs'], function () {
-            return gulp
-                .src(DIR_SRC.indexPage + name + '/main.js')
-                .pipe(plugins.inject(
-                    // inject the compiled templates.
-                    gulp.src(DIR_SRC.indexPage + name + '/jqtmpl.html')
-                        .pipe(plugins.jqtmpl({
-                            map: function (tmpl) {
-                                return 'var jqtmpl =' + tmpl.template + ';';
+            gulp.task(name, ['cleanJs'], function () {
+                return gulp
+                    .src(path + '/main.js')
+                    .pipe(plugins.inject(
+                        // inject the compiled templates.
+                        gulp.src(path + '/jqtmpl.html')
+                            .pipe(plugins.jqtmpl({
+                                map: function (tmpl) {
+                                    return 'var jqtmpl =' + tmpl.template + ';';
+                                }
+                            })),
+                        // inject options.
+                        {
+                            starttag: '/*inject:jqtmpl:{{ext}}*/',
+                            endtag: '/*endinject*/',
+                            removeTags: true,
+                            transform: function (path, file) {
+                                return file.contents.toString('utf8');
                             }
-                        })),
-                    // inject options.
-                    {
-                        starttag: '/*inject:jqtmpl:{{ext}}*/',
-                        endtag: '/*endinject*/',
-                        removeTags: true,
-                        transform: function (path, file) {
-                            return file.contents.toString('utf8');
                         }
-                    }
-                ))
-                .pipe(plugins.concat('_subpage_' + name + '.js'))
-                .pipe(gulp.dest(DIR_DEST));
+                    ))
+                    .pipe(plugins.concat(name))
+                    .pipe(gulp.dest(DIR_DEST));
+            });
         });
     });
 
-    gulp.task('buildIndexJs', INDEXJS_DEPENDENCIES, function () {
-        var mainjs = gulp
-            .src([
-                DIR_SRC.coreJs + '*.js',
-                DIR_SRC.pages + 'page.js',
-                DIR_DEST + '_subpage_*.js',
-                DIR_SRC.pages + '**/routes.js'
-            ])
-            .pipe(plugins.concat('main.js'));
+    Object.keys(SUB_PAGES).forEach(function (module, name) {
+        TASKS_MODULES.push(name = module + '.js');
 
-        if (!isdebug) {
-            mainjs.pipe(plugins.uglify());
-        }
+        gulp.task(name, TASKS_SUBPAGES, function () {
+            var mainjs = gulp
+                .src([
+                    DIR_SRC.coreJs + 'jquery-2.2.4.js',
+                    DIR_SRC.coreJs + 'bootstrap-3.3.5.js',
+                    DIR_SRC.indexPage + module + '/start.js',
+                    DIR_SRC.pages + 'page.js',
+                    DIR_DEST + '_subpage_' + module + '*.js',
+                    DIR_SRC.indexPage + module + '/end.js'
+                ])
+                .pipe(plugins.concat(name));
 
-        return mainjs.pipe(gulp.dest(DIR_DEST));
+            if (!isdebug) {
+                mainjs.pipe(plugins.uglify());
+            }
+
+            return mainjs.pipe(gulp.dest(DIR_DEST));
+        });
     });
+
+    gulp.task('buildModulsJs', TASKS_MODULES);
 };

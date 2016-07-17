@@ -4,4 +4,9 @@
  * Author: lhs
  */
 module.exports = {
+    pageSysManage: pageSysManage
 };
+
+function pageSysManage (req, res) {
+    res.render('index/sysmanage');
+}

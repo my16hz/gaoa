@@ -4,4 +4,9 @@
  * Author: lhs
  */
 module.exports = {
+    pageBadInfo: pageBadInfo
 };
+
+function pageBadInfo (req, res) {
+    res.render('index/badinfo');
+}

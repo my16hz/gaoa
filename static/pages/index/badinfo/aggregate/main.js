@@ -3,4 +3,4 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
-var LHSBadInfoPage = $.extend({}, LHSBasicPage);
+var LHSAggregatePage = $.extend({}, LHSBasicPage);

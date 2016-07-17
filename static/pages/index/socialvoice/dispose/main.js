@@ -3,4 +3,8 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
-var LHSPubVoicePage = $.extend({}, LHSBasicPage);
+var LHSDisposePage = $.extend({
+    run: function () {
+        alert('hey, this is dispose page.');
+    }
+}, LHSBasicPage);

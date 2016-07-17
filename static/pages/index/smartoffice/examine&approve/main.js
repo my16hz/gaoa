@@ -3,4 +3,4 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
-var LHSPubVoicePage = $.extend({}, LHSBasicPage);
+var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage);

@@ -3,4 +3,8 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
-var LHSPublishPage = $.extend({}, LHSBasicPage);
+var LHSRecordPage = $.extend({
+    run: function () {
+        alert('hey, this is record page.');
+    }
+}, LHSBasicPage);

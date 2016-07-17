@@ -7,5 +7,6 @@ var express = require('express');
 var controller = require('./controller');
 
 module.exports = function () {
-    return express.Router();
+    return express.Router()
+        .get('/smartoffice', controller.pageSmartOffice);
 };

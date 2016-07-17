@@ -3,9 +3,8 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
-var LHSPubVoicePage = $.extend({
-    render: function() {
-        /*inject:jqtmpl:html*/
-        /*endinject*/
+var LHSRecordPage = $.extend({
+    run: function () {
+        alert('hey, this is record page.');
     }
 }, LHSBasicPage);

@@ -11,8 +11,7 @@ module.exports = function (app) {
     app.use(authController.authChecker);
 
     app.use(require('./auth/router')());
-
-    app.use(require('./index/router')());
+    
     app.use(require('./index/publicvoice/router')());
     app.use(require('./index/socialvoice/router')());
     app.use(require('./index/badinfo/router')());

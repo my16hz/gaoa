@@ -27,7 +27,7 @@ module.exports = function (gulp) {
             DIR_SRC.pages + '**/*.html'
         ], [
             'buildLoginJs',
-            'buildIndexJs'
+            'buildModulsJs'
         ]);
     });
 };

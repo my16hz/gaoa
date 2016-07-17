@@ -4,4 +4,9 @@
  * Author: lhs
  */
 module.exports = {
+    pageSmartOffice: pageSmartOffice
 };
+
+function pageSmartOffice (req, res) {
+    res.render('index/smartoffice');
+}

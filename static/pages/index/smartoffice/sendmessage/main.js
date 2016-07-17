@@ -3,4 +3,4 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
-var LHSPublishPage = $.extend({}, LHSBasicPage);
+var LHSSendMessagePage = $.extend({}, LHSBasicPage);

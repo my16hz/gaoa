@@ -4,4 +4,9 @@
  * Author: lhs
  */
 module.exports = {
+    pagePubVoice: pagePubVoice
 };
+
+function pagePubVoice (req, res) {
+    res.render('index/publicvoice');
+}
