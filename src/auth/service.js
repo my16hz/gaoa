@@ -4,5 +4,14 @@
  * Author: lhs
  */
 module.exports = {
-    
+    auth:auth
 };
+
+/**
+ * 用户登陆校验
+ * @param username {String}
+ * @param password {String}
+ * @returns object {uid, gid, role:[]}
+ */
+function auth(username, password , cb) {
+}
