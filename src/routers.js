@@ -4,18 +4,20 @@
  * Author: lhs
  */
 var errorController = require('./error/controller');
-var authController = require('./authorize/controller');
+var authController = require('./auth/controller');
 
 module.exports = function (app) {
     // must be the first one.
     app.use(authController.authChecker);
 
-    app.use(require('./authorize/router')());
-    app.use(require('./publicvoice/router')());
-    app.use(require('./socialvoice/router')());
-    app.use(require('./badinfo/router')());
-    app.use(require('./smartoffice/router')());
-    app.use(require('./sysmanage/router')());
+    app.use(require('./auth/router')());
+
+    app.use(require('./index/router')());
+    app.use(require('./index/pages/publicvoice/router')());
+    app.use(require('./index/pages/socialvoice/router')());
+    app.use(require('./index/pages/badinfo/router')());
+    app.use(require('./index/pages/smartoffice/router')());
+    app.use(require('./index/pages/sysmanage/router')());
     app.use(require('./error/router')());
 
     app.use(errorController.errorHandler);

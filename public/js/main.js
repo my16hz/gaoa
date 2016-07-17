@@ -367,6 +367,41 @@ var LHSBasicPage = {
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
+/**
+ * Build Date: 07-09-2016
+ * Copyright (c): LHS Develop Group
+ * Author: lhs
+ */
+/**
+ * Build Date: 07-09-2016
+ * Copyright (c): LHS Develop Group
+ * Author: lhs
+ */
+/**
+ * Build Date: 07-09-2016
+ * Copyright (c): LHS Develop Group
+ * Author: lhs
+ */
+/**
+ * Build Date: 07-09-2016
+ * Copyright (c): LHS Develop Group
+ * Author: lhs
+ */
+/**
+ * Build Date: 07-09-2016
+ * Copyright (c): LHS Develop Group
+ * Author: lhs
+ */
+/**
+ * Build Date: 07-09-2016
+ * Copyright (c): LHS Develop Group
+ * Author: lhs
+ */
+/**
+ * Build Date: 07-09-2016
+ * Copyright (c): LHS Develop Group
+ * Author: lhs
+ */
 $.routes.add('/news/{id:int}/', LHSBadInfoPage.run);
 /**
  * Build Date: 07-09-2016
@@ -379,42 +414,7 @@ $.routes.add('/news/{id:int}/', LHSBadInfoPage.run);
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
-/**
- * Build Date: 07-09-2016
- * Copyright (c): LHS Develop Group
- * Author: lhs
- */
-/**
- * Build Date: 07-09-2016
- * Copyright (c): LHS Develop Group
- * Author: lhs
- */
 $.routes.add('/news/{id:int}/', LHSBadInfoPage.run);
-/**
- * Build Date: 07-09-2016
- * Copyright (c): LHS Develop Group
- * Author: lhs
- */
-/**
- * Build Date: 07-09-2016
- * Copyright (c): LHS Develop Group
- * Author: lhs
- */
-/**
- * Build Date: 07-09-2016
- * Copyright (c): LHS Develop Group
- * Author: lhs
- */
-/**
- * Build Date: 07-09-2016
- * Copyright (c): LHS Develop Group
- * Author: lhs
- */
-/**
- * Build Date: 07-09-2016
- * Copyright (c): LHS Develop Group
- * Author: lhs
- */
 /**
  * Build Date: 07-09-2016
  * Copyright (c): LHS Develop Group
