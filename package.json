@@ -1,0 +1,31 @@
+{
+  "name": "lhs_oa_proj",
+  "version": "1.0.0",
+  "description": "GA舆情管理系统",
+  "main": "app.js",
+  "keywords": [
+    "LHS",
+    "OA"
+  ],
+  "author": "LHS",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "compression": "^1.6.2",
+    "config": "^1.21.0",
+    "cookie-parser": "^1.4.3",
+    "ejs": "^2.4.2",
+    "express": "^4.14.0",
+    "express-session": "^1.13.0",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-concat": "^2.6.0",
+    "gulp-inject": "^4.1.0",
+    "gulp-jqtmpl": "0.0.6",
+    "gulp-load-plugins": "^1.2.4",
+    "gulp-minify-css": "^1.2.4",
+    "gulp-uglify": "^1.5.4",
+    "multer": "^1.1.0",
+    "q": "^1.4.1"
+  }
+}

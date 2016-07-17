@@ -1,0 +1,10 @@
+.pubvoice-record-page .func-btns .btn-sm {
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-bottom: 20px;
+}
+
+.pubvoice-record-page table th,
+.pubvoice-record-page table th a {
+    color: #6e6e6e;
+}
