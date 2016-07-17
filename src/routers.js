@@ -13,11 +13,11 @@ module.exports = function (app) {
     app.use(require('./auth/router')());
 
     app.use(require('./index/router')());
-    app.use(require('./index/pages/publicvoice/router')());
-    app.use(require('./index/pages/socialvoice/router')());
-    app.use(require('./index/pages/badinfo/router')());
-    app.use(require('./index/pages/smartoffice/router')());
-    app.use(require('./index/pages/sysmanage/router')());
+    app.use(require('./index/publicvoice/router')());
+    app.use(require('./index/socialvoice/router')());
+    app.use(require('./index/badinfo/router')());
+    app.use(require('./index/smartoffice/router')());
+    app.use(require('./index/sysmanage/router')());
     app.use(require('./error/router')());
 
     app.use(errorController.errorHandler);
