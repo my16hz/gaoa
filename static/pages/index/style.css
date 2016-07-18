@@ -1,0 +1,64 @@
+.index-page {
+    min-width: 1002px;
+}
+
+.index-page .header {
+    height: 62px;
+    border-bottom: 1px solid #e7e7e7;
+    background: #f8f8f8;
+    overflow: hidden;
+}
+
+.index-page .header .logo {
+    width: 200px;
+    height: 35px;
+    line-heigh: 35px;
+    float: left;
+    margin: 20px auto auto 30px;
+}
+
+.index-page .header .logo h3 {
+    font-size: 22px;
+    color: #666;
+    font-family: "Microsoft JhengHei";
+    font-weight: bolder;
+    margin: 0px;
+}
+
+.index-page .header .nav {
+    margin-left: 270px;
+}
+
+.index-page .header .nav li a {
+    margin-top: 22px;
+    padding: 10px 20px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.index-page .content .aside-menu {
+    width: 180px;
+    position: absolute;
+    left: 0;
+    top: 63px;
+    bottom: 0;
+    background: #f8f8f8;
+    border-right: 1px solid #e7e7e7;
+}
+
+.index-page .content .aside-menu .nav {
+    margin-top: 10px;
+}
+
+.index-page .content .aside-menu .nav li a {
+    padding-left: 35px;
+}
+
+.index-page .content .aside-menu li.selected {
+    background: #eeeeee;
+}
+
+.index-page .content .main-panel {
+    margin-left: 200px;
+    padding-top: 20px;
+}

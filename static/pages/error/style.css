@@ -1,0 +1,56 @@
+.error-page .panel-outside {
+    width: 600px;
+    height: 200px;
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    margin-left: -300px;
+    margin-top: -100px;
+}
+
+.error-page .panel-inside {
+    margin-left: 128px;
+}
+
+.error-page .panel-inside > * {
+    margin-left: 22px;
+}
+
+.error-page .panel-inside h1 {
+    font-size: 56px;
+    color: #f0ad4e;
+    font-weight: bold;
+}
+
+.error-page .panel-inside p {
+    font-size: 24px;
+    color: #1b6d85;
+}
+
+.error-page .panel-inside a {
+    color: #3c763d;
+    font-weight: bold;
+}
+
+.err404-page .panel-inside {
+    width: 600px;
+    height: 200px;
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    margin-left: -300px;
+    margin-top: -100px;
+}
+
+.err404-page .panel-inside h1 {
+    font-size: 68px;
+    color: #f0ad4e;
+    font-weight: bold;
+    text-align: center;
+}
+
+.err404-page .panel-inside span {
+    padding-left: 25px;
+    font-size: 28px;
+    color: #1b6d85;
+}
