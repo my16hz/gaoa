@@ -5,13 +5,24 @@
  */
 var config = require('config');
 var express = require('express');
+var sql = require("mssql");
 var app = new express();
 
+var cp  = new sql.Connection(config.db);
 // system setting.
 require('./src/middlewares')(app);
 require('./src/routers')(app);
 
-// start server
-app.listen(config.port, function () {
-    console.info('server is listeniing on port : %d', config.port);
+//connect the pool and start the web server when done
+sql.connect().then(function() {
+    // start server
+    app.listen(config.port, function () {
+        console.info('server is listeniing on port : %d', config.port);
+    });
+}).catch(function(err) {
+    console.error('Error creating connection pool', err);
 });
+
+
+
+
