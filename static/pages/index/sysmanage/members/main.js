@@ -3,7 +3,7 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
-var LHSMembersPage = $.extend({
+var LHSMembersPage = $.extend({}, LHSBasicPage, {
     run: function () {
         /*inject:jqtmpl:html*/
         /*endinject*/
@@ -18,4 +18,4 @@ var LHSMembersPage = $.extend({
     events: {
         'click #xxx': '_onclick'
     }
-}, LHSBasicPage);
+});
