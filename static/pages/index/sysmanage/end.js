@@ -10,5 +10,7 @@
                     return LHSPasswordPage.run();
             }
         });
+
+        LHSMembersPage.run();
     });
 })();

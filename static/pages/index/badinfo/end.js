@@ -12,5 +12,7 @@
                     return LHSRTXDirectivePage.run();
             }
         });
+
+        LHSRecordPage.run();
     });
 })();

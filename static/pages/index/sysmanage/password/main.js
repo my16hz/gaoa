@@ -5,6 +5,17 @@
  */
 var LHSPasswordPage = $.extend({
     run: function () {
-        alert('hey, this is password page.');
+        /*inject:jqtmpl:html*/
+        /*endinject*/
+
+        // this.ajax({}, $.proxy(function () {
+        //     $(this.el).append(jqtmpl($, {data: {}}).join(''));
+        //     this.initDependencies();
+        // }, this));
+
+        $(this.el).append(jqtmpl($, {data: {}}).join(''));
+    },
+    events: {
+        'click #xxx': '_onclick'
     }
 }, LHSBasicPage);

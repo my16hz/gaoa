@@ -10,5 +10,7 @@
                     return LHSDisposePage.run();
             }
         });
+
+        LHSRecordPage.run();
     });
 })();

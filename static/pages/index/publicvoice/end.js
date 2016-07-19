@@ -22,5 +22,7 @@
                     return LHSAnalyzePage.run();
             }
         });
+
+        LHSRecordPage.run();
     });
 })();

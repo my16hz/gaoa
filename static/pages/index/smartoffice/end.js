@@ -12,5 +12,7 @@
                     return LHSSendMessagePage.run();
             }
         });
+
+        LHSAllMessagesPage.run();
     });
 })();
