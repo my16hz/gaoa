@@ -11,5 +11,15 @@ module.exports = {
     session: {
         userkey: 'LHS_USER_INFO',
         timeout: 3600000 // 1hour,
+    },
+    // config for your database
+    db: {
+        user: 'gaoa1',
+        password: '1qazXSW@',
+        server: '182.150.22.119',
+        port: 20492,
+        //server: '172.16.12.204',
+        //port:9200,
+        database: 'demo'
     }
 };
