@@ -3,8 +3,16 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
-var LHSDisposePage = $.extend({
+var LHSDisposePage = $.extend({}, LHSBasicPage, {
     run: function () {
-        alert('hey, this is dispose page.');
+        /*inject:jqtmpl:html*/
+        /*endinject*/
+
+        // this.ajax({}, $.proxy(function () {
+        //     $(this.el).append(jqtmpl($, {data: {}}).join(''));
+        //     this.initDependencies();
+        // }, this));
+
+        $(this.el).append(jqtmpl($, {data: {}}).join(''));
     }
-}, LHSBasicPage);
+});
