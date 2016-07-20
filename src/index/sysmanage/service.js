@@ -3,6 +3,8 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
+var dbpool = require('../../utilities/dbpool');
+
 module.exports = {
     addUser: addUser,
     removeUser: removeUser,
@@ -42,8 +44,14 @@ module.exports = {
  * @param callback
  */
 function addUser (uid, userInfo, callback) {
-
+    dbpool
+        .createRequest()
+        .query('select 1 as number', function (err, rs) {
+            console.info(rs);
+        });
 }
+
+addUser();
 
 /**
  * 创建组
