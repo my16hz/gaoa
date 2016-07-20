@@ -14,11 +14,9 @@ require('./src/middlewares')(app);
 require('./src/routers')(app);
 
 //connect the pool and start the web server when done
-sql.connect().then(function () {
-    // start server
-    app.listen(config.port, function () {
-        console.info('server is listeniing on port : %d', config.port);
-    });
-}).catch(function (err) {
-    console.error('Error creating connection pool', err);
+
+// start server
+app.listen(config.port, function () {
+    console.info('server is listeniing on port : %d', config.port);
 });
+
