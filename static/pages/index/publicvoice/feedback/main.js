@@ -3,4 +3,16 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
-var LHSFeedbackPage = $.extend({}, LHSBasicPage);
+var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
+    run: function () {
+        /*inject:jqtmpl:html*/
+        /*endinject*/
+
+        // this.ajax({}, $.proxy(function () {
+        //     $(this.el).append(jqtmpl($, {data: {}}).join(''));
+        //     this.initDependencies();
+        // }, this));
+
+        $(this.el).append(jqtmpl($, {data: {}}).join(''));
+    }
+});
