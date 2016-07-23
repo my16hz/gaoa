@@ -26,12 +26,8 @@ module.exports = {
  * @param userInfo {Object} 用户信息
  * {
  *      username {String} 用户名
- *      loginname {String} 登录名
  *      password {String} 密码(SHA1加密)
  *      description {String}	描述
- *      createtime {Date}	创建时间
- *      createuser {String}	创建者
- *      group {Number} 组ID
  *      roles {Array} 角色列表
  *      ( 0 - 所有权限
  *      1 - 舆情录入 2 - 舆情日报 3 - 舆情处置 4 - 舆情通报 5 - 舆情反馈 6 - 舆情引导 7 - 舆情分析 8 - 舆情审批
@@ -44,14 +40,17 @@ module.exports = {
  * @param callback
  */
 function addUser (uid, userInfo, callback) {
+    sql_stmt = "INSERT INTO tb_user([name],[password],[description],[role]) VALUES('"
+            + userInfo["name"] + "','" + userInfo["password"] + "','" + userInfo["description"] + "','"+ userInfo["roles"]+"')"
     dbpool
         .createRequest()
-        .query('select 1 as number', function (err, rs) {
+        .query(sql_stmt, function (err, rs) {
             console.info(rs);
+            callback(err,rs);
         });
 }
 
-addUser();
+
 
 /**
  * 创建组
@@ -167,3 +166,4 @@ function addUser2Group (uid, gid, users, callback) {
 function removeUserFromGroup (uid, gid, users, callback) {
 
 }
+

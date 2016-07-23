@@ -4,6 +4,7 @@
  * Author: lhs
  */
 var config = require('config');
+var service = require('./service');
 
 module.exports = {
     pageLogin: pageLogin,
@@ -13,6 +14,9 @@ module.exports = {
 };
 
 function pageLogin (req, res) {
+    service.auth("admin", "123456", function(err, result) {
+        console.log(result);
+    });
     res.render('login');
 }
 
