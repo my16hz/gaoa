@@ -3,10 +3,11 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
+var sql = require('mssql');
 var dbpool = require("../utilities/dbpool");
 
 module.exports = {
-    auth:auth
+    auth: auth
 };
 
 /**
@@ -15,22 +16,25 @@ module.exports = {
  * @param password {String}
  * @returns object {uid, gid, role:[]}
  */
-function auth(username, password , cb) {
+function auth (username, password, done) {
     var sql_stmt = "select * from tb_user where name = @username and password = @password;";
-    var objParams = {"username" : username, "password" : password };
-    var ps = dbpool.preparedStatement();
-    ps.input("username", dbpool.getTypes('varchar'));
-	ps.input("password", dbpool.getTypes('varchar'));
-	ps.prepare(sql_stmt, function(err) {
-	  if ( err ) {
-	    return new Error('fail to prepare sql stmt.');
-	  }
-	  ps.execute(objParams, function(err, recordset)     {                                               
-		cb(err, recordset)
-	    ps.unprepare(function(err) {
-            if (err)
-                console.log(err);	    	
-	    });                                     
-	  });
-	});
+    var objParams = {"username": username, "password": password};
+
+    var ps = dbpool
+        .preparedStatement()
+        .input("username", sql.VarChar)
+        .input("password", sql.VarChar)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return done(err, null);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                done(err, err ? null : rs[0]);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
 }

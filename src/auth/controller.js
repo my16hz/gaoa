@@ -4,6 +4,8 @@
  * Author: lhs
  */
 var config = require('config');
+
+var errhandler = require('../utilities/errhandler');
 var service = require('./service');
 
 module.exports = {
@@ -14,14 +16,26 @@ module.exports = {
 };
 
 function pageLogin (req, res) {
-    service.auth("admin", "123456", function(err, result) {
-        console.log(result);
-    });
     res.render('login');
 }
 
-function doLogin (req, res, next) {
-    next(new Error('Sample Error Message'));
+function doLogin (req, res) {
+    var username = req.body.username;
+    var password = req.body.password;
+
+    if (!username || !password) {
+        return errhandler.invalidParams(res);
+    }
+
+    service.auth(username, password, function (err, user) {
+        if (err) {
+            return errhandler.internalException(res);
+        }
+
+        req.session[config.session.userkey] = user;
+
+        res.redirect('/pubvoice');
+    });
 }
 
 function authChecker (req, res, next) {

@@ -11,8 +11,7 @@ var connection;
 module.exports = {
     initPool: initPool,
     createRequest: createRequest,
-    preparedStatement: preparedStatement,
-    getTypes: getTypes
+    preparedStatement: preparedStatement
 };
 
 function initPool (done) {
@@ -25,14 +24,4 @@ function createRequest () {
 
 function preparedStatement () {
 	return new sql.PreparedStatement(connection);
-}
-
-function getTypes(type) {
-	if (type.toLowerCase() === 'varchar') {
-		return sql.VarChar;
-	} else if (type.toLowerCase() === 'datetime') {
-		return sql.DateTime2;
-	} else {
-		console.log("unsupport type " + type);
-	}
 }

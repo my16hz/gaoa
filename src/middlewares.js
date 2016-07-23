@@ -8,7 +8,6 @@ var compression = require('compression');
 var config = require('config');
 var cookieParser = require('cookie-parser');
 var express = require('express');
-var multer = require('multer');
 var package = require(config.root + '/package.json');
 var session = require('express-session');
 
