@@ -15,12 +15,12 @@ function pageSysManage (req, res) {
 
 function _testSerivce() {
     var userInfo = {};
-    userInfo['name'] = 'lilo1';
+    userInfo['name'] = 'lilong';
     userInfo['password'] = '123456';
-    userInfo['description'] = 'lilong';
-    userInfo['roles'] = '0,1,2,3,4,5,6';
+    userInfo['description'] = '李龙';
+    userInfo['roles'] = '0';
 
     service.addUser('1', userInfo, function(err, rs) {
-        console.log(rs);
+        console.log(err);
     })
 }

@@ -45,7 +45,6 @@ function addUser (uid, userInfo, callback) {
     dbpool
         .createRequest()
         .query(sql_stmt, function (err, rs) {
-            console.info(rs);
             callback(err,rs);
         });
 }
@@ -60,14 +59,17 @@ function addUser (uid, userInfo, callback) {
  *      name	组名
  *      priority	优先级 1 - 市级 2 - 县级
  *      description	描述
- *      createtime	创建时间
- *      createuser	创建者
  * }
  *
  * @param callback
  */
 function addGroup (uid, groupInfo, callback) {
-
+    sql_stmt = "INSERT INTO tb_group([name],[description],[priority]) VALUES('" + groupInfo['name'] + "','"+ groupInfo['description']+"',"+ groupInfo["priority"]+")";
+    dbpool
+        .createRequest()
+        .query(sql_stmt, function (err, rs) {
+            callback(err,rs);
+        });
 }
 
 /**
@@ -77,7 +79,12 @@ function addGroup (uid, groupInfo, callback) {
  * @param callback
  */
 function removeUser (uid, removeduid, callback) {
-
+    sql_stmt = "DELETE FROM tb_user WHERE id = " + removeduid;
+    dbpool
+        .createRequest()
+        .query(sql_stmt, function (err, rs) {
+            callback(err,rs);
+        });
 }
 
 /**
