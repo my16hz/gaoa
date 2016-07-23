@@ -17,7 +17,8 @@ module.exports = {
     findGroups: findGroups,
 
     addUserToGroup: addUser2Group,
-    removeUserFromGroup: removeUserFromGroup
+    removeUserFromGroup: removeUserFromGroup,
+    findUserGroup : findUserGroup
 };
 
 /**
@@ -28,7 +29,7 @@ module.exports = {
  *      username {String} 用户名
  *      password {String} 密码(SHA1加密)
  *      description {String}	描述
- *      roles {Array} 角色列表
+ *      roles {String} 角色列表, 以逗号分隔
  *      ( 0 - 所有权限
  *      1 - 舆情录入 2 - 舆情日报 3 - 舆情处置 4 - 舆情通报 5 - 舆情反馈 6 - 舆情引导 7 - 舆情分析 8 - 舆情审批
  *      101 - 社情录入 102 - 社情编报
@@ -40,13 +41,25 @@ module.exports = {
  * @param callback
  */
 function addUser (uid, userInfo, callback) {
-    sql_stmt = "INSERT INTO tb_user([name],[password],[description],[role]) VALUES('"
-            + userInfo["name"] + "','" + userInfo["password"] + "','" + userInfo["description"] + "','"+ userInfo["roles"]+"')"
-    dbpool
-        .createRequest()
-        .query(sql_stmt, function (err, rs) {
-            callback(err,rs);
-        });
+    var sql_stmt = "INSERT INTO tb_user([name],[password],[description],[role]) VALUES(@name, @password, @description, @roles);";
+    var objParams = {"name" : userInfo["name"], "password" : userInfo["password"], "description" : userInfo["description"], "roles" : userInfo["roles"] };
+    var ps = dbpool.preparedStatement();
+    ps.input("name", dbpool.getTypes('string'));
+    ps.input("password", dbpool.getTypes('string'));
+    ps.input("description", dbpool.getTypes('string'));
+    ps.input("roles", dbpool.getTypes('string'));
+    ps.prepare(sql_stmt, function(err) {
+      if ( err ) {
+        return new Error('fail to prepare sql stmt.');
+      }
+      ps.execute(objParams, function(err, recordset)     {                                               
+        callback(err, recordset)
+        ps.unprepare(function(err) {
+            if (err)
+                console.log(err);           
+        });                                     
+      });
+    });        
 }
 
 
@@ -64,12 +77,24 @@ function addUser (uid, userInfo, callback) {
  * @param callback
  */
 function addGroup (uid, groupInfo, callback) {
-    sql_stmt = "INSERT INTO tb_group([name],[description],[priority]) VALUES('" + groupInfo['name'] + "','"+ groupInfo['description']+"',"+ groupInfo["priority"]+")";
-    dbpool
-        .createRequest()
-        .query(sql_stmt, function (err, rs) {
-            callback(err,rs);
-        });
+    var sql_stmt = "INSERT INTO tb_group([name],[description],[priority]) VALUES(@name, @description, @priority);";
+    var objParams = {"name" : groupInfo["name"], "description" : groupInfo["description"], "priority" : groupInfo["priority"] };
+    var ps = dbpool.preparedStatement();
+    ps.input("name", dbpool.getTypes('string'));
+    ps.input("description", dbpool.getTypes('string'));
+    ps.input("priority", dbpool.getTypes('int'));
+    ps.prepare(sql_stmt, function(err) {
+      if ( err ) {
+        return new Error('fail to prepare sql stmt.');
+      }
+      ps.execute(objParams, function(err, recordset)     {                                               
+        callback(err, recordset)
+        ps.unprepare(function(err) {
+            if (err)
+                console.log(err);           
+        });                                     
+      });
+    });          
 }
 
 /**
@@ -85,6 +110,22 @@ function removeUser (uid, removeduid, callback) {
         .query(sql_stmt, function (err, rs) {
             callback(err,rs);
         });
+    var sql_stmt = "DELETE FROM tb_user WHERE id = @removeduid;";
+    var objParams = {"removeduid" : removeduid };
+    var ps = dbpool.preparedStatement();
+    ps.input("removeduid", dbpool.getTypes('int'));
+    ps.prepare(sql_stmt, function(err) {
+      if ( err ) {
+        return new Error('fail to prepare sql stmt.');
+      }
+      ps.execute(objParams, function(err, recordset)     {                                               
+        callback(err, recordset)
+        ps.unprepare(function(err) {
+            if (err)
+                console.log(err);           
+        });                                     
+      });
+    });          
 }
 
 /**
@@ -94,15 +135,37 @@ function removeUser (uid, removeduid, callback) {
  * @param callback
  */
 function removeGroup (uid, removedgid, callback) {
-
+    sql_stmt = "DELETE FROM tb_group WHERE id = " + removedgid;
+    dbpool
+        .createRequest()
+        .query(sql_stmt, function (err, rs) {
+            callback(err,rs);
+        });
+    var sql_stmt = "DELETE FROM tb_user WHERE id = @removedgid;";
+    var objParams = {"removedgid" : removedgid };
+    var ps = dbpool.preparedStatement();
+    ps.input("removedgid", dbpool.getTypes('int'));
+    ps.prepare(sql_stmt, function(err) {
+      if ( err ) {
+        return new Error('fail to prepare sql stmt.');
+      }
+      ps.execute(objParams, function(err, recordset)     {                                               
+        callback(err, recordset)
+        ps.unprepare(function(err) {
+            if (err)
+                console.log(err);           
+        });                                     
+      });
+    });  
 }
 
 /**
- * 修改用户信息（不含密码和用户组）
+ * 修改用户信息 (不能修改用户名和ID)
  * @param uid {Number}
- * @param userInfo {Object} 用户信息
+  * @param userInfo {Object} 用户信息
  * {
- *      username {String} 用户名
+ *      id {Number} 用户ID (必填)
+ *      password {String} 用户密码
  *      description {String}	描述
  *      roles {Array} 角色列表
  *      ( 0 - 所有权限
@@ -116,15 +179,46 @@ function removeGroup (uid, removedgid, callback) {
  * @param callback
  */
 function updateUser (uid, userInfo, callback) {
+    var ps = dbpool.preparedStatement();
+    var sql_stmt = "UPDATE tb_user SET ";
+    if (userInfo.hasOwnProperty('password')) {
+        sql_stmt += " [password] = @password, ";
+        ps.input("password", dbpool.getTypes('string'));
+    }
+    if (userInfo.hasOwnProperty('description')) {
+        sql_stmt += " [description] = @description, ";
+        ps.input("description", dbpool.getTypes('string'));
+    }
+    if (userInfo.hasOwnProperty('roles')) {
+        sql_stmt += " [role] = @roles ";
+        ps.input("roles", dbpool.getTypes('string'));
+    }
+    sql_stmt += " WHERE id = @id;"
+    ps.input("id", dbpool.getTypes('int'));
 
+    console.log(sql_stmt);
+    var objParams = {"id" : userInfo['id'], "password" : userInfo['password'], "description" : userInfo['description'], "roles" : userInfo['roles']};
+
+    ps.prepare(sql_stmt, function(err) {
+      if ( err ) {
+        return new Error('fail to prepare sql stmt.');
+      }
+      ps.execute(objParams, function(err, recordset)     {                                               
+        callback(err, recordset)
+        ps.unprepare(function(err) {
+            if (err)
+                console.log(err);           
+        });                                     
+      });
+    });  
 }
 
 /**
- * 创建组
+ * 更新组 (可更新组描述和优先级，成员在addUser2Group中修改)
  * @param uid {Number} 用户ID
  * @param groupInfo {Object} 组信息
  * {
- *      name	组名
+ *      id {Number} 组ID(必须)
  *      priority	优先级 1 - 市级 2 - 县级
  *      description	描述
  * }
@@ -132,6 +226,34 @@ function updateUser (uid, userInfo, callback) {
  * @param callback
  */
 function updateGroup (uid, groupInfo, callback) {
+    var ps = dbpool.preparedStatement();
+    var sql_stmt = "UPDATE tb_group SET ";
+    if (groupInfo.hasOwnProperty('description')) {
+        sql_stmt += " [description] = @description, ";
+        ps.input("description", dbpool.getTypes('string'));
+    }
+    if (groupInfo.hasOwnProperty('priority')) {
+        sql_stmt += " [priority] = @priority ";
+        ps.input("priority", dbpool.getTypes('int'));
+    }
+    sql_stmt += " WHERE id = @id;"
+    ps.input("id", dbpool.getTypes('int'));
+
+    console.log(sql_stmt);
+    var objParams = {"id" : groupInfo['id'],  "description" : groupInfo['description'], "priority" : groupInfo['priority']};
+
+    ps.prepare(sql_stmt, function(err) {
+      if ( err ) {
+        return new Error('fail to prepare sql stmt.');
+      }
+      ps.execute(objParams, function(err, recordset)     {                                               
+        callback(err, recordset)
+        ps.unprepare(function(err) {
+            if (err)
+                console.log(err);           
+        });                                     
+      });
+    });      
 }
 
 /**
@@ -140,7 +262,20 @@ function updateGroup (uid, groupInfo, callback) {
  * @param callback
  */
 function findUsers (uid, callback) {
-
+    var ps = dbpool.preparedStatement();
+    var sql_stmt = "select * from tb_user";
+    ps.prepare(sql_stmt, function(err) {
+      if ( err ) {
+        return new Error('fail to prepare sql stmt.');
+      }
+      ps.execute( {}, function(err, recordset)     {                                               
+        callback(err, recordset)
+        ps.unprepare(function(err) {
+            if (err)
+                console.log(err);           
+        });                                     
+      });
+    });  
 }
 
 /**
@@ -149,7 +284,20 @@ function findUsers (uid, callback) {
  * @param callback
  */
 function findGroups (uid, callback) {
-
+    var ps = dbpool.preparedStatement();
+    var sql_stmt = "select * from tb_group";
+    ps.prepare(sql_stmt, function(err) {
+      if ( err ) {
+        return new Error('fail to prepare sql stmt.');
+      }
+      ps.execute( {}, function(err, recordset)     {                                               
+        callback(err, recordset)
+        ps.unprepare(function(err) {
+            if (err)
+                console.log(err);           
+        });                                     
+      });
+    });  
 }
 
 /**
@@ -174,3 +322,12 @@ function removeUserFromGroup (uid, gid, users, callback) {
 
 }
 
+/**
+ * 查询用户的groupID
+ * @param uid
+ * @param userid 需要查询的用户ID
+ * @param callback
+ */
+function findUserGroup(uid, userid, callback) {
+
+}
