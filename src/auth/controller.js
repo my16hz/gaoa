@@ -29,12 +29,17 @@ function doLogin (req, res) {
 
     service.auth(username, password, function (err, user) {
         if (err) {
-            return errhandler.internalException(res);
+            errhandler.internalException(res);
+        } else if (user) {
+            req.session[config.session.userkey] = user;
+
+            res.send({
+                success: true,
+                data: user
+            });
+        } else {
+            errhandler.customError(res, '用户名或密码错误。');
         }
-
-        req.session[config.session.userkey] = user;
-
-        res.redirect('/pubvoice');
     });
 }
 

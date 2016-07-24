@@ -4,14 +4,19 @@
  * Author: lhs
  */
 module.exports = {
-    invalidParams: invalidParams,
-    internalException: internalException
+    customError: customError,
+    internalException: internalException,
+    invalidParams: invalidParams
 };
 
-function invalidParams (res) {
-    res.status(400).send('请求参数格式错误。');
+function customError (res, msg) {
+    res.status(500).send(msg)
 }
 
 function internalException (res) {
-    res.status(500).send('服务器异常。')
+    res.status(500).send('服务器获取数据错误。')
+}
+
+function invalidParams (res) {
+    res.status(400).send('请求参数格式错误。');
 }

@@ -8,25 +8,67 @@ var LHSBasicPage = {
     run: $.noop,
     events: {},
     initDependencies: function () {
+        var self = this;
+
         this.$el = $(this.el);
-        // runs queries scoped within the view's element
+
         this.$ = function (selector) {
             return this.$el.find(selector);
         };
-        // binding all events in events list on root element of page.
-        $.each(this.events, $.proxy(function (name, handler) {
+
+        $.each(this.events, function (name, handler) {
             name = name.split(/\s+/);
 
-            $(this.el).on(name[0], name[1], function (evt) {
-                this[handler].call(this, $(this), evt);
+            $(self.el).on(name[0], name[1], function (evt) {
+                self[handler].call(self, $(this), evt);
             });
-        }, this));
+        });
 
         return this;
     },
-    ajax: function (config, callback) {
-        $.ajax(config)
+    /**
+     * Send request to given server path.
+     * @param options { type, url, data, done }
+     * @returns {LHSBasicPage}
+     */
+    sendRequest: function (options) {
+        var self = this;
 
+        if (this._validator && !(options.data = this._validator())) {
+            return this;
+        }
+
+        $.ajax({
+            type: options.type,
+            url: options.url,
+            data: options.data,
+            dataType: 'json',
+            cache: false,
+            beforeSend: function () {
+                self._removeLoading();
+            }
+        }).then(function (rs) {
+            if (rs.success) {
+                options.done(rs.data);
+            } else {
+                self._showXHRError(rs.message);
+            }
+        }).fail(function (xhr) {
+            self._showXHRError('请求失败:' + xhr.responseText);
+        }).always(function () {
+            self._removeLoading();
+        });
+
+        return this;
+    },
+    _validator: null,
+    _showLoading: function () {
+        return this;
+    },
+    _removeLoading: function () {
+        return this;
+    },
+    _showXHRError: function () {
         return this;
     }
 };
