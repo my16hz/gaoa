@@ -9,7 +9,8 @@ var LHSLoginPage = $.extend({}, LHSBasicPage, {
         this.initDependencies();
     },
     events: {
-        'click #btnSubmit': 'clickBtnSubmit'
+        'click #btnSubmit': 'clickBtnSubmit',
+        'keydown #password': 'onKeyDown'
     },
     clickBtnSubmit: function () {
         this.sendRequest({
@@ -17,6 +18,9 @@ var LHSLoginPage = $.extend({}, LHSBasicPage, {
                 location.href = '/pubvoice';
             }
         });
+    },
+    onKeyDown: function (jqbtn, evt) {
+        evt.keyCode == 13 && this.clickBtnSubmit();
     },
     _validator: function () {
         var inputUName = this.$('#username');
@@ -28,8 +32,8 @@ var LHSLoginPage = $.extend({}, LHSBasicPage, {
         if (!username.length) {
             inputUName
                 .parent('.form-group').addClass('has-error')
-                .unbind()
-                .bind('click', function () {
+                .unbind('focus')
+                .bind('focus', function () {
                     $(this).removeClass('has-error');
                 });
 
@@ -37,7 +41,7 @@ var LHSLoginPage = $.extend({}, LHSBasicPage, {
         } else if (!password.length) {
             inputPassword
                 .parent('.form-group').addClass('has-error')
-                .unbind()
+                .unbind('focus')
                 .bind('focus', function () {
                     $(this).removeClass('has-error');
                 });
