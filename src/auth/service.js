@@ -17,7 +17,7 @@ module.exports = {
  * @returns object {uid, gid, role:[]}
  */
 function auth (username, password, done) {
-    var sql_stmt = "select * from tb_user where name = @username and password = @password;";
+    var sql_stmt = "select * from tb_user where id = @username and password = @password;";
     var objParams = {"username": username, "password": password};
 
     var ps = dbpool
