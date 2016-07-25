@@ -10,7 +10,7 @@ module.exports = {
     /*---------- 舆情导入页面 ----------*/
     /* 查询舆情列表 */
     findPubVoiceList: findPubVoiceList,
-    /* 查询舆情详情 */
+    /* 查询舆情详情 (暂时废弃) */
     findPubVoiceDetail: findPubVoiceDetail,
     /* 添加舆情 */
     addPubVoices: addPubVoices,
@@ -58,12 +58,17 @@ function findPubVoiceList (uid, field, order, callback) {
                 var params = {};
                 var sql_stmt = "select * from tb_publicvoice ";
                 if (priority != 1) {
-                    sql_stmt += ' where createuser = @uid '
-                    params = {'uid': uid};
+                    sql_stmt += ' where createuser = @uid ';
+                    params['uid'] = uid;
+                }
+                if (field != null && field != "") {
+                    sql_stmt += " order by " + field + " " + order;
                 }
                 console.log(sql_stmt);
                 var ps = dbpool.preparedStatement()
                     .input("uid", sql.VarChar)
+                    .input("field", sql.VarChar)
+                    .input("order", sql.VarChar)
                     .prepare(sql_stmt, function (err) {
                         if (err) {
                             return callback(err);
@@ -84,10 +89,10 @@ function findPubVoiceList (uid, field, order, callback) {
 /**
  * 查询舆情详情
  * @param uid {String}
- * @param pid {Number}
+ * @param pvid {Number}
  * @param callback {Function} 回调函数(err, object)
  */
-function findPubVoiceDetail (uid, pid, callback) {
+function findPubVoiceDetail (uid, pvid, callback) {
 
 }
 
@@ -157,10 +162,31 @@ function addPubVoices (uid, obj, callback) {
 /**
  * 删除舆情
  * @param uid {Number}
- * @param pids {Array} 舆情ID数组
+ * @param pvids {Array} 舆情ID数组
  * @param callback {Function}  回调函数(err)
  */
-function removePubVoices (uid, pids, callback) {
+function removePubVoices (uid, pvids, callback) {
+    var objParams = {};
+    var removedids = "";
+    for (var id in pvids) {
+        removedids += id + ","
+    }
+    removedids = removedids.substring(0, removedids.length - 1);
+    var sql_stmt = "DELETE FROM tb_publicvoice WHERE id in ("+ removedids +");";
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return new Error('fail to prepare sql stmt.');
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
 }
 
 /**

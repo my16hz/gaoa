@@ -11,11 +11,12 @@ module.exports = {
 function pagePubVoice (req, res) {
     _testAddPV();
     _testFindPVList();
+    _testRemovePV();
     res.render('index/publicvoice');
 }
 
 function _testFindPVList() {
-    service.findPubVoiceList('admin', "", "", function (err, rs) {
+    service.findPubVoiceList('lilong', "id", "DESC", function (err, rs) {
         if (err) console.log(err);
         else console.log(rs);
     })
@@ -38,9 +39,16 @@ function _testAddPV() {
     obj["approved_state"] = 0;
     obj["dispose_stat"] = 0;
     obj["feedback_state"] = 0;
-    obj["createuser"] = "admin";
+    obj["createuser"] = "lilong";
 
     service.addPubVoices("admin", obj, function (err, rs) {
+        if (err) console.log(err);
+        else console.log(rs);
+    })
+}
+
+function _testRemovePV() {
+    service.removePubVoices("admin", [0, 1, 2, 3, 4], function (err, rs) {
         if (err) console.log(err);
         else console.log(rs);
     })

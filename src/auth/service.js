@@ -14,7 +14,7 @@ module.exports = {
  * 用户登陆校验
  * @param username {String}
  * @param password {String}
- * @returns object {uid, gid, role:[]}
+ * @returns object {uid, gid, role:[], priority,}
  */
 function auth (username, password, done) {
     var sql_stmt = "select * from tb_user where id = @username and password = @password;";
