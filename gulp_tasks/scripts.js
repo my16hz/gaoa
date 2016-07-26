@@ -87,6 +87,8 @@ module.exports = function (gulp, plugins, isdebug) {
                 .src([
                     DIR_SRC.coreJs + 'jquery-2.2.4.js',
                     DIR_SRC.coreJs + 'bootstrap-3.3.5.js',
+                    DIR_SRC.coreJs + 'bootstrap-table-1.11.0.js',
+                    DIR_SRC.coreJs + 'bootstrap-table-zh-CN-1.11.0.js',
                     DIR_SRC.indexPage + module + '/start.js',
                     DIR_SRC.pages + 'page.js',
                     DIR_DEST + '_subpage_' + module + '*.js',
