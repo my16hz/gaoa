@@ -14,7 +14,9 @@ var LHSLoginPage = $.extend({}, LHSBasicPage, {
     },
     clickBtnSubmit: function () {
         this.sendRequest({
-            url: '/auth', type: 'post', done: function () {
+            url: '/auth', type: 'post',
+            validator: $.proxy(this._validator, this),
+            done: function () {
                 location.href = '/pubvoice';
             }
         });
@@ -28,6 +30,7 @@ var LHSLoginPage = $.extend({}, LHSBasicPage, {
 
         var username = $.trim(inputUName.val());
         var password = $.trim(inputPassword.val());
+        var sha1 = new Hashes.SHA1();
 
         if (!username.length) {
             inputUName
@@ -50,7 +53,7 @@ var LHSLoginPage = $.extend({}, LHSBasicPage, {
         } else {
             return {
                 username: username,
-                password: password
+                password: sha1.hex(password)
             };
         }
     },

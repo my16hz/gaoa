@@ -23,16 +23,18 @@ var LHSBasicPage = {
                 self[handler].call(self, $(this), evt);
             });
         });
+
+        return this;
     },
     /**
      * Send request to given server path.
-     * @param options { type, url, data, done }
+     * @param options { type, url, data/validator, done }
      * @returns {LHSBasicPage}
      */
     sendRequest: function (options) {
         var self = this;
 
-        if (this._validator && !(options.data = this._validator())) {
+        if (options.validator && !(options.data = options.validator())) {
             return;
         }
 
@@ -57,7 +59,6 @@ var LHSBasicPage = {
             self._removeLoading();
         });
     },
-    _validator: null,
     _showLoading: function () {
     },
     _removeLoading: function () {

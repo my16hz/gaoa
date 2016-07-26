@@ -8,12 +8,56 @@ var sql = require('mssql');
 var dbpool = require('../../utilities/dbpool');
 
 module.exports = {
+    /**
+     * 创建用户
+     * @param user {Object} - 用户信息 {
+     *      id: {String}, // 用户ID
+     *      name: {String}, // 用户名
+     *      password: {String}, // 密码(SHA1加密)
+     *      description: {String},	// 描述
+     *      roles: {String}, //角色列表, 以逗号分隔 (
+     *          0 - 所有权限
+     *          1 - 舆情录入
+     *          2 - 舆情日报
+     *          3 - 舆情处置
+     *          4 - 舆情通报
+     *          5 - 舆情反馈
+     *          6 - 舆情引导
+     *          7 - 舆情分析
+     *          8 - 舆情审批
+     *          101 - 社情录入
+     *          102 - 社情编报
+     *          201 - 不良信息录入
+     *          202 - 不良信息统计
+     *          203 - RTX指令录入
+     *          301 - 发布信息
+     *          302 - 审批信息
+     *          401 - 用户管理
+     *      )
+     *      priority {Number} - 优先级(1:市级，2:县级)
+     * }
+     * @param done
+     */
     addUser: addUser,
     removeUser: removeUser,
     updateUser: updateUser,
+    /**
+     * 查找用户, 返回所有用户信息
+     * @param done
+     */
     findUsers: findUsers,
     findUserByID: findUserByID,
 
+    /**
+     * 创建组
+     * @param group {Object} - 组信息 {
+     *      id: {String}, // 组ID
+     *      name: {String}, // 组名
+     *      priority: {Number}, // 优先级(1:市级，2:县级)
+     *      description: {String} // 描述
+     * }
+     * @param done
+     */
     addGroup: addGroup,
     removeGroup: removeGroup,
     updateGroup: updateGroup,
@@ -25,27 +69,7 @@ module.exports = {
     findGroupUsers: findGroupUsers
 };
 
-/**
- * 创建用户
- * @param uid {String}
- * @param user {Object} 用户信息
- * {
- *      id {String} 用户ID
- *      name {String} 用户名
- *      password {String} 密码(SHA1加密)
- *      description {String}	描述
- *      roles {String} 角色列表, 以逗号分隔
- *      ( 0 - 所有权限
- *      1 - 舆情录入 2 - 舆情日报 3 - 舆情处置 4 - 舆情通报 5 - 舆情反馈 6 - 舆情引导 7 - 舆情分析 8 - 舆情审批
- *      101 - 社情录入 102 - 社情编报
- *      201 - 不良信息录入 202 - 不良信息统计 203 - RTX指令录入
- *      301 - 发布信息 302 - 审批信息
- *      401 - 用户管理
- *      )
- *      priority {Number} 优先级(1 - 市级，2 - 县级)
- * }
- * @param done
- */
+
 function addUser (user, done) {
     var sql_stmt = "INSERT INTO tb_user (" +
         "[id],[name],[password],[description],[role],[priority]" +
@@ -84,7 +108,6 @@ function addUser (user, done) {
         });
 }
 
-
 /**
  * 创建组
  * @param uid {String} 用户ID
@@ -121,7 +144,7 @@ function addGroup (group, done) {
                 return callback(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
-                done(err, recordset)
+                done(err, recordset);
                 ps.unprepare(function (err) {
                     if (err)
                         console.log(err);
@@ -134,22 +157,22 @@ function addGroup (group, done) {
  * 删除用户
  * @param uid
  * @param removeduid
- * @param callback
+ * @param done
  */
-function removeUser (uid, removeduid, callback) {
+function removeUser (uid, removeduid, done) {
     var sql_stmt = "DELETE FROM tb_user WHERE id = @removeduid;";
     var objParams = {"removeduid": removeduid};
-    var ps = dbpool.preparedStatement()
+    var ps = dbpool
+        .preparedStatement()
         .input("removeduid", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return callback(err, null);
+                return done(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
-                callback(err, recordset)
+                callback(err, recordset);
                 ps.unprepare(function (err) {
-                    if (err)
-                        console.log(err);
+                    err && console.error(err);
                 });
             });
         });
@@ -171,17 +194,16 @@ function removeGroup (uid, removedgid, callback) {
                 return callback(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
-                callback(err, recordset)
+                callback(err, recordset);
                 ps.unprepare(function (err) {
-                    if (err)
-                        console.log(err);
+                    err && console.error(err);
                 });
             });
         });
 }
 
 /**
- * 修改用户信息 (不能修改ID)
+ * 更新用户信息 (不能修改ID)
  * @param uid {Number}
  * @param userInfo {Object} 用户信息
  * {
@@ -198,9 +220,9 @@ function removeGroup (uid, removedgid, callback) {
  *      401 - 用户管理
  *      )
  * }
- * @param callback
+ * @param done
  */
-function updateUser (uid, userInfo, callback) {
+function updateUser (uid, userInfo, done) {
     var ps = dbpool.preparedStatement();
     var sql_stmt = "UPDATE tb_user SET ";
     if (userInfo.hasOwnProperty('name')) {
@@ -219,7 +241,7 @@ function updateUser (uid, userInfo, callback) {
         sql_stmt += " [role] = @roles ";
         ps.input("roles", sql.VarChar);
     }
-    sql_stmt += " WHERE id = @id;"
+    sql_stmt += " WHERE id = @id;";
     ps.input("id", sql.VarChar);
 
     var objParams = {
@@ -234,18 +256,74 @@ function updateUser (uid, userInfo, callback) {
         if (err) {
             return callback(err, null);
         }
-        ps.execute(objParams, function (err, recordset) {
-            callback(err, recordset)
+        ps.execute(objParams, function (err, rs) {
+            done(err, rs);
             ps.unprepare(function (err) {
-                if (err)
-                    console.log(err);
+                err && console.error(err);
             });
         });
     });
 }
 
+function addGroup (group, done) {
+    var sql_stmt = "INSERT INTO tb_group (" +
+        "[id],[name],[description],[priority]" +
+        ") VALUES (" +
+        "@id, @name, @description, @priority" +
+        ");";
+    var objParams = {
+        "id": group["id"],
+        "name": group["name"],
+        "description": group["description"],
+        "priority": group["priority"]
+    };
+
+    var ps = dbpool.preparedStatement()
+        .input("id", sql.VarChar)
+        .input("name", sql.NVarChar)
+        .input("description", sql.NVarChar)
+        .input("priority", sql.Int)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return done(err, null);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                done(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
 /**
- * 更新组 (可更新组描述和优先级，成员在addUser2Group中修改)
+ * 删除用户组
+ * @param uid
+ * @param removedgid
+ * @param done
+ */
+function removeGroup (uid, removedgid, done) {
+    var sql_stmt = "DELETE FROM tb_group WHERE id = @removedgid;";
+    var objParams = {"removedgid": removedgid};
+    var ps = dbpool.preparedStatement()
+        .input("removedgid", sql.VarChar)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return new Error('fail to prepare sql stmt.');
+            }
+            ps.execute(objParams, function (err, rs) {
+                done(err, rs);
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+/**
+ * 更新组信息 (可更新组描述和优先级，成员在addUser2Group中修改)
  * @param uid {Number} 用户ID
  * @param groupInfo {Object} 组信息
  * {
@@ -255,9 +333,9 @@ function updateUser (uid, userInfo, callback) {
  *      description	描述
  * }
  *
- * @param callback
+ * @param done
  */
-function updateGroup (uid, groupInfo, callback) {
+function updateGroup (uid, groupInfo, done) {
     var ps = dbpool.preparedStatement();
     var sql_stmt = "UPDATE tb_group SET ";
     if (groupInfo.hasOwnProperty('name')) {
@@ -278,7 +356,7 @@ function updateGroup (uid, groupInfo, callback) {
     var objParams = {
         "id": groupInfo['id'],
         "name": groupInfo['name'],
-        "description": groupInfo['description'], 
+        "description": groupInfo['description'],
         "priority": groupInfo['priority']
     };
 
@@ -286,40 +364,36 @@ function updateGroup (uid, groupInfo, callback) {
         if (err) {
             return callback(err, null);
         }
-        ps.execute(objParams, function (err, recordset) {
-            callback(err, recordset)
+        ps.execute(objParams, function (err, rs) {
+            done(err, rs);
             ps.unprepare(function (err) {
-                if (err)
-                    console.log(err);
+                err && console.error(err);
             });
         });
     });
 }
 
-/**
- * 查找用户, 返回所有用户信息
- * @param uid
- * @param callback
- */
-function findUsers (uid, callback) {
 
-    var sql_stmt = "select * from tb_user";
-    var ps = dbpool.preparedStatement()
+function findUsers (done) {
+    var sql_stmt = "SELECT * FROM tb_user";
+    var ps = dbpool
+        .preparedStatement()
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return callback(err, null);
+                return done(err, []);
             }
-            ps.execute({}, function (err, recordset) {
-                callback(err, recordset)
+
+            ps.execute(null, function (err, rs) {
+                done(err, err ? [] : rs);
+
                 ps.unprepare(function (err) {
-                    if (err)
-                        console.log(err);
+                    err && console.error(err);
                 });
             });
         });
 }
 
-function findUserByID(uid, callback) {
+function findUserByID (uid, done) {
     var sql_stmt = "select * from tb_user where id = @id";
     var objParams = {"id": uid};
     var ps = dbpool.preparedStatement()
@@ -328,11 +402,10 @@ function findUserByID(uid, callback) {
             if (err) {
                 return callback(err, null);
             }
-            ps.execute(objParams, function (err, recordset) {
-                callback(err, recordset)
+            ps.execute(objParams, function (err, rs) {
+                done(err, rs);
                 ps.unprepare(function (err) {
-                    if (err)
-                        console.log(err);
+                    err && console.error(err);
                 });
             });
         });
@@ -341,20 +414,19 @@ function findUserByID(uid, callback) {
 /**
  * 查找组, 返回所有组信息
  * @param uid
- * @param callback
+ * @param done
  */
-function findGroups (uid, callback) {
+function findGroups (uid, done) {
     var sql_stmt = "select * from tb_group";
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
             }
-            ps.execute({}, function (err, recordset) {
-                callback(err, recordset)
+            ps.execute({}, function (err, rs) {
+                done(err, rs);
                 ps.unprepare(function (err) {
-                    if (err)
-                        console.log(err);
+                    err && console.error(err);
                 });
             });
         });
@@ -364,9 +436,9 @@ function findGroups (uid, callback) {
  * 向指定组内添加用户
  * @param uid 用户ID
  * @param gid 组ID
- * @param callback
+ * @param done
  */
-function addUserToGroup (uid, gid, callback) {
+function addUserToGroup (uid, gid, done) {
     var sql_stmt = "INSERT INTO tb_user_group (" +
         "[uid],[gid]) VALUES (@uid, @gid);";
     var objParams = {
@@ -381,11 +453,10 @@ function addUserToGroup (uid, gid, callback) {
             if (err) {
                 return callback(err, null);
             }
-            ps.execute(objParams, function (err, recordset) {
-                callback(err, recordset);
+            ps.execute(objParams, function (err, rs) {
+                done(err, rs);
                 ps.unprepare(function (err) {
-                    if (err)
-                        console.log(err);
+                    err && console.error(err);
                 });
             });
         });
@@ -395,11 +466,11 @@ function addUserToGroup (uid, gid, callback) {
  * 删除组内用户
  * @param uid
  * @param gid 组ID
- * @param callback
+ * @param done
  */
-function removeUserFromGroup (uid, gid, callback) {
+function removeUserFromGroup (uid, gid, done) {
     var sql_stmt = "DELETE FROM tb_user_group WHERE uid = @uid AND gid = @gid;";
-    var objParams = {"uid" : uid, "gid": gid};
+    var objParams = {"uid": uid, "gid": gid};
     var ps = dbpool.preparedStatement()
         .input("uid", sql.VarChar)
         .input("gid", sql.VarChar)
@@ -407,11 +478,10 @@ function removeUserFromGroup (uid, gid, callback) {
             if (err) {
                 return callback(err, null);
             }
-            ps.execute(objParams, function (err, recordset) {
-                callback(err, recordset)
+            ps.execute(objParams, function (err, rs) {
+                done(err, rs);
                 ps.unprepare(function (err) {
-                    if (err)
-                        console.log(err);
+                    err && console.error(err);
                 });
             });
         });
@@ -421,41 +491,40 @@ function removeUserFromGroup (uid, gid, callback) {
  * 查询用户的groupID
  * @param uid
  * @param userid 需要查询的用户ID
- * @param callback
+ * @param done
  */
-function findUserGroup (uid, callback) {
+function findUserGroup (uid, done) {
     var sql_stmt = "select * from tb_user_group where uid = @uid";
-    var objParams = {"uid" : uid};
+    var objParams = {"uid": uid};
     var ps = dbpool.preparedStatement()
         .input("uid", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
             }
-            ps.execute(objParams, function (err, recordset) {
-                callback(err, recordset)
+            ps.execute(objParams, function (err, rs) {
+                done(err, rs);
                 ps.unprepare(function (err) {
-                    if (err)
-                        console.log(err);
+                    err && console.error(err);
                 });
             });
         });
 }
 
-function findGroupUsers(gid, callback) {
+function findGroupUsers (gid, done) {
     var sql_stmt = "select * from tb_user_group where gid = @gid";
-    var objParams = {"gid" : gid};
+    var objParams = {"gid": gid};
     var ps = dbpool.preparedStatement()
         .input("gid", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
             }
-            ps.execute(objParams, function (err, recordset) {
-                callback(err, recordset)
+            ps.execute(objParams, function (err, rs) {
+                done(err, rs);
+
                 ps.unprepare(function (err) {
-                    if (err)
-                        console.log(err);
+                    err && console.error(err);
                 });
             });
         });
