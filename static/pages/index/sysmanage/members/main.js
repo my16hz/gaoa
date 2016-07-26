@@ -8,12 +8,16 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
         /*inject:jqtmpl:html*/
         /*endinject*/
 
-        // this.ajax({}, $.proxy(function () {
-        //     $(this.el).append(jqtmpl($, {data: {}}).join(''));
-        //     this.initDependencies();
-        // }, this));
-
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
+
+        this
+            .initDependencies()
+            .sendRequest({
+                url: '/sysmanage/users', type: 'get',
+                done: function (rs) {
+
+                }
+            });
     },
     events: {
         'click #xxx': '_onclick'

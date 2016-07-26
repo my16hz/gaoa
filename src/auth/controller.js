@@ -29,7 +29,7 @@ function doLogin (req, res) {
 
     service.auth(username, password, function (err, user) {
         if (err) {
-            errhandler.internalException(res);
+            errhandler.internalException(res, err);
         } else if (user) {
             req.session[config.session.userkey] = user;
 
