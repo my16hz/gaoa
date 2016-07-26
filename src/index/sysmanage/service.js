@@ -25,6 +25,7 @@ module.exports = {
      *          6 - 舆情引导
      *          7 - 舆情分析
      *          8 - 舆情审批
+     *          9 - 舆情预警
      *          101 - 社情录入
      *          102 - 社情编报
      *          201 - 不良信息录入
@@ -72,9 +73,9 @@ module.exports = {
 
 function addUser (user, done) {
     var sql_stmt = "INSERT INTO tb_user (" +
-        "[id],[name],[password],[description],[role],[priority]" +
+        "[id],[name],[password],[description],[role],[priority],[createtime]" +
         ") VALUES (" +
-        "@id, @name, @password, @description, @roles, @priority" +
+        "@id, @name, @password, @description, @roles, @priority, @createtime" +
         ");";
     var objParams = {
         "id": user["id"],
@@ -82,7 +83,8 @@ function addUser (user, done) {
         "password": user["password"],
         "description": user["description"],
         "roles": user["roles"],
-        "priority": user["priority"]
+        "priority": user["priority"],
+        "createtime": new Date()
     };
 
     var ps = dbpool
@@ -93,6 +95,7 @@ function addUser (user, done) {
         .input("description", sql.NVarChar)
         .input("roles", sql.VarChar)
         .input("priority", sql.Int)
+        .input("createtime", sql.DateTime2)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return done(err, null);
@@ -123,15 +126,16 @@ function addUser (user, done) {
  */
 function addGroup (group, done) {
     var sql_stmt = "INSERT INTO tb_group (" +
-        "[id],[name],[description],[priority]" +
+        "[id],[name],[description],[priority],[createtime]" +
         ") VALUES (" +
-        "@id, @name, @description, @priority" +
+        "@id, @name, @description, @priority, @createtime" +
         ");";
     var objParams = {
         "id": group["id"],
         "name": group["name"],
         "description": group["description"],
-        "priority": group["priority"]
+        "priority": group["priority"],
+        "createtime": new Date()
     };
 
     var ps = dbpool.preparedStatement()
@@ -139,6 +143,7 @@ function addGroup (group, done) {
         .input("name", sql.NVarChar)
         .input("description", sql.NVarChar)
         .input("priority", sql.Int)
+        .input("createtime", sql.DateTime2)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);

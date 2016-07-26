@@ -421,7 +421,7 @@ function createDaily(uid, daily, callback) {
                     "VALUES (@id, @issue_id, @content, @createuer, @createtime, @pvids)";
     var objParams = {
         "id": daily["id"],
-        "total_id": daily["issue_id"],
+        "issue_id": daily["issue_id"],
         "content": daily["content"],
         "createuer": uid,
         "createtime": new Date(),
