@@ -118,7 +118,7 @@ function addGroup (group, done) {
         .input("priority", sql.Int)
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return new Error('fail to prepare sql stmt.');
+                return callback(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
                 done(err, recordset)
@@ -143,7 +143,7 @@ function removeUser (uid, removeduid, callback) {
         .input("removeduid", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return new Error('fail to prepare sql stmt.');
+                return callback(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
                 callback(err, recordset)
@@ -168,7 +168,7 @@ function removeGroup (uid, removedgid, callback) {
         .input("removedgid", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return new Error('fail to prepare sql stmt.');
+                return callback(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
                 callback(err, recordset)
@@ -232,7 +232,7 @@ function updateUser (uid, userInfo, callback) {
 
     ps.prepare(sql_stmt, function (err) {
         if (err) {
-            return new Error('fail to prepare sql stmt.');
+            return callback(err, null);
         }
         ps.execute(objParams, function (err, recordset) {
             callback(err, recordset)
@@ -284,7 +284,7 @@ function updateGroup (uid, groupInfo, callback) {
 
     ps.prepare(sql_stmt, function (err) {
         if (err) {
-            return new Error('fail to prepare sql stmt.');
+            return callback(err, null);
         }
         ps.execute(objParams, function (err, recordset) {
             callback(err, recordset)
@@ -307,7 +307,7 @@ function findUsers (uid, callback) {
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return new Error('fail to prepare sql stmt.');
+                return callback(err, null);
             }
             ps.execute({}, function (err, recordset) {
                 callback(err, recordset)
@@ -326,7 +326,7 @@ function findUserByID(uid, callback) {
         .input("id", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return new Error('fail to prepare sql stmt.');
+                return callback(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
                 callback(err, recordset)
@@ -348,7 +348,7 @@ function findGroups (uid, callback) {
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return new Error('fail to prepare sql stmt.');
+                return callback(err, null);
             }
             ps.execute({}, function (err, recordset) {
                 callback(err, recordset)
@@ -379,7 +379,7 @@ function addUserToGroup (uid, gid, callback) {
         .input("gid", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return new Error('fail to prepare sql stmt.');
+                return callback(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
                 callback(err, recordset);
@@ -405,7 +405,7 @@ function removeUserFromGroup (uid, gid, callback) {
         .input("gid", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return new Error('fail to prepare sql stmt.');
+                return callback(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
                 callback(err, recordset)
@@ -430,7 +430,7 @@ function findUserGroup (uid, callback) {
         .input("uid", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return new Error('fail to prepare sql stmt.');
+                return callback(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
                 callback(err, recordset)
@@ -449,7 +449,7 @@ function findGroupUsers(gid, callback) {
         .input("gid", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return new Error('fail to prepare sql stmt.');
+                return callback(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
                 callback(err, recordset)
