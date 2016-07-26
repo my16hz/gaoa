@@ -4,52 +4,24 @@
  * Author: lhs
  */
 var service = require('./service');
+var test = require('../../../test/index/publicvoice')
+
 module.exports = {
     pagePubVoice: pagePubVoice
 };
 
 function pagePubVoice (req, res) {
-    _testAddPV();
-    _testFindPVList();
-    _testRemovePV();
+    _testInferface();
     res.render('index/publicvoice');
 }
 
-function _testFindPVList() {
-    service.findPubVoiceList('lilong', "id", "DESC", function (err, rs) {
-        if (err) console.log(err);
-        else console.log(rs);
-    })
-}
-
-function _testAddPV() {
-    var obj = {};
-    obj["title"] = "lilong";
-    obj["createtime"] = new Date().toLocaleString();
-    obj["item"] = "lilong";
-    obj["type"] = "lilong";
-    obj["relate_department"] = "lilong";
-    obj["duty_department"] = "lilong";
-    obj["fellow_count"] = 1;
-    obj["review_count"] = 1;
-    obj["content"] = "lilong";
-    obj["from_website"] = "lilong";
-    obj["url"] = "lilong";
-    obj["state"] = 0;
-    obj["approved_state"] = 0;
-    obj["dispose_stat"] = 0;
-    obj["feedback_state"] = 0;
-    obj["createuser"] = "lilong";
-
-    service.addPubVoices("admin", obj, function (err, rs) {
-        if (err) console.log(err);
-        else console.log(rs);
-    })
-}
-
-function _testRemovePV() {
-    service.removePubVoices("admin", [0, 1, 2, 3, 4], function (err, rs) {
-        if (err) console.log(err);
-        else console.log(rs);
-    })
+function _testInferface () {
+/*    test.testAddPV();
+    test.testFindPVList();
+    test.testCommitPV();
+    test.testRemovePV();
+    test.testFindWaitApprovalPV();
+    test.testApprovalPV();
+    test.testFindPubVoiceDetail();*/
+    test.testCreateDaily();
 }

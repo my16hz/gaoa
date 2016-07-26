@@ -5,6 +5,7 @@
  */
 var errhandler = require('../../utilities/errhandler');
 var service = require('./service');
+var test = require('../../../test/index/sysmanage');
 
 module.exports = {
     pageSysManage: pageSysManage,
@@ -15,6 +16,14 @@ module.exports = {
 };
 
 function pageSysManage (req, res) {
+    _testInterface();
+    res.render('index/sysmanage');
+}
+
+function _testInterface () {
+    test._testAddUser();
+    test._testUserGroup()
+
     res.render('index/sysmanage');
 }
 
@@ -29,5 +38,6 @@ function getAllUsers (req, res) {
 }
 
 function getAllGroups (req, res) {
+
 
 }
