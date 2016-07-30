@@ -9,6 +9,6 @@ var controller = require('./controller');
 module.exports = function () {
     return express.Router()
         .get('/sysmanage', controller.pageSysManage)
-        .get('/sysmanage/users', controller.getAllUsers)
+        .get('/sysmanage/members', controller.getAllUsers)
         .get('sysmanage/groups', controller.getAllGroups);
 };

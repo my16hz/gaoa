@@ -2,19 +2,19 @@
 <div class="sysmanage-members-page">
     <div class="row func-btns">
         <div class="col-xs-6">
-            <div class="btn-group" data-toggle="buttons">
-                <label class="btn btn-sm btn-default active">
-                    <input type="radio" name="options" autocomplete="off" checked>用户
-                </label>
-                <label class="btn btn-sm btn-default">
-                    <input type="radio" name="options" autocomplete="off">组
-                </label>
+            <div class="btn-group">
+                <button id="btnMembers" type="button" class="btn btn-sm btn-primary">用户</button>
+                <button id="btnGroups" type="button" class="btn btn-sm btn-default">组</button>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="pull-right">
-                <button class="btn btn-sm btn-default">新增</button>
-                <button class="btn btn-sm btn-default">删除</button>
+            <div class="pull-right member-func-buttons">
+                <button id="btnAddMemeber" class="btn btn-sm btn-default">新增</button>
+                <button id="btnDelMemeber" class="btn btn-sm btn-default">删除</button>
+            </div>
+            <div class="pull-right group-func-buttons hide">
+                <button id="btnAddMemeber" class="btn btn-sm btn-default">新增</button>
+                <button id="btnDelMemeber" class="btn btn-sm btn-default">删除</button>
             </div>
         </div>
     </div>

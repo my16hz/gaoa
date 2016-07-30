@@ -58,11 +58,19 @@ var LHSBasicPage = {
         }).always(function () {
             self._removeLoading();
         });
+
+        return this;
     },
     _showLoading: function () {
+
+        return this;
     },
     _removeLoading: function () {
+
+        return this;
     },
     _showXHRError: function () {
+
+        return this;
     }
 };

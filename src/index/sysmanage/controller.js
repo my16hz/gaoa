@@ -16,14 +16,6 @@ module.exports = {
 };
 
 function pageSysManage (req, res) {
-    _testInterface();
-    res.render('index/sysmanage');
-}
-
-function _testInterface () {
-    test._testAddUser();
-    test._testUserGroup()
-
     res.render('index/sysmanage');
 }
 
