@@ -21,12 +21,13 @@ module.exports = {
 
 function _testAddUser() {
     var userInfo = {};
-    userInfo['id'] = 'lilong';
+    userInfo['id'] = 'lilong1';
     userInfo['name'] = 'lilong';
     userInfo['password'] = '123456';
     userInfo['description'] = '李龙';
     userInfo['roles'] = '0';
     userInfo['priority'] = 2;
+    userInfo['groupid'] = "admin"
 
     service.addUser(userInfo, function(err, rs) {
         if (err) console.log(err);

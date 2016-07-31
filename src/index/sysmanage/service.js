@@ -36,6 +36,7 @@ module.exports = {
      *          401 - 用户管理
      *      )
      *      priority {Number} - 优先级(1:市级，2:县级)
+     *      groupid {String} - 用户所在组
      * }
      * @param done
      */
@@ -67,15 +68,16 @@ module.exports = {
     addUserToGroup: addUserToGroup,
     removeUserFromGroup: removeUserFromGroup,
     findUserGroup: findUserGroup,
-    findGroupUsers: findGroupUsers
+    findGroupUsers: findGroupUsers,
+    findGroupWithUser: findGroupWithUser
 };
 
 
 function addUser (user, done) {
     var sql_stmt = "INSERT INTO tb_user (" +
-        "[id],[name],[password],[description],[role],[priority],[createtime]" +
+        "[id],[name],[password],[description],[role],[priority],[createtime],[groupid]" +
         ") VALUES (" +
-        "@id, @name, @password, @description, @roles, @priority, @createtime" +
+        "@id, @name, @password, @description, @roles, @priority, @createtime, @groupid" +
         ");";
     var objParams = {
         "id": user["id"],
@@ -84,7 +86,8 @@ function addUser (user, done) {
         "description": user["description"],
         "roles": user["roles"],
         "priority": user["priority"],
-        "createtime": new Date()
+        "createtime": new Date(),
+        "groupid":user["groupid"]
     };
 
     var ps = dbpool
@@ -95,6 +98,7 @@ function addUser (user, done) {
         .input("description", sql.NVarChar)
         .input("roles", sql.VarChar)
         .input("priority", sql.Int)
+        .input("groupid", sql.VarChar)
         .input("createtime", sql.DateTime2)
         .prepare(sql_stmt, function (err) {
             if (err) {
@@ -146,7 +150,7 @@ function addGroup (group, done) {
         .input("createtime", sql.DateTime2)
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return callback(err, null);
+                return done(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
                 done(err, recordset);
@@ -175,7 +179,7 @@ function removeUser (uid, removeduid, done) {
                 return done(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
-                callback(err, recordset);
+                done(err, recordset);
                 ps.unprepare(function (err) {
                     err && console.error(err);
                 });
@@ -246,6 +250,10 @@ function updateUser (uid, userInfo, done) {
         sql_stmt += " [role] = @roles ";
         ps.input("roles", sql.VarChar);
     }
+    if (userInfo.hasOwnProperty('groupid')) {
+        sql_stmt += " [groupid] = @groupid ";
+        ps.input("groupid", sql.VarChar);
+    }
     sql_stmt += " WHERE id = @id;";
     ps.input("id", sql.VarChar);
 
@@ -254,12 +262,13 @@ function updateUser (uid, userInfo, done) {
         "name": userInfo['name'],
         "password": userInfo['password'],
         "description": userInfo['description'],
-        "roles": userInfo['roles']
+        "roles": userInfo['roles'],
+        "groupid": userInfo['groupid']
     };
 
     ps.prepare(sql_stmt, function (err) {
         if (err) {
-            return callback(err, null);
+            return done(err, null);
         }
         ps.execute(objParams, function (err, rs) {
             done(err, rs);
@@ -316,7 +325,7 @@ function removeGroup (uid, removedgid, done) {
         .input("removedgid", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return new Error('fail to prepare sql stmt.');
+                return done(err, null);
             }
             ps.execute(objParams, function (err, rs) {
                 done(err, rs);
@@ -367,7 +376,7 @@ function updateGroup (uid, groupInfo, done) {
 
     ps.prepare(sql_stmt, function (err) {
         if (err) {
-            return callback(err, null);
+            return done(err, null);
         }
         ps.execute(objParams, function (err, rs) {
             done(err, rs);
@@ -405,7 +414,7 @@ function findUserByID (uid, done) {
         .input("id", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return callback(err, null);
+                return done(err, null);
             }
             ps.execute(objParams, function (err, rs) {
                 done(err, rs);
@@ -426,7 +435,7 @@ function findGroups (uid, done) {
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return callback(err, null);
+                return done(err, []);
             }
             ps.execute({}, function (err, rs) {
                 done(err, rs);
@@ -444,27 +453,27 @@ function findGroups (uid, done) {
  * @param done
  */
 function addUserToGroup (uid, gid, done) {
-    var sql_stmt = "INSERT INTO tb_user_group (" +
-        "[uid],[gid]) VALUES (@uid, @gid);";
+    var ps = dbpool.preparedStatement();
+    var sql_stmt = "UPDATE tb_user SET [groupid] = @gid WHERE id = @uid;";
+    ps.input("gid", sql.VarChar);
+    ps.input("uid", sql.VarChar);
+
     var objParams = {
-        "uid": uid,
-        "gid": gid
+        "uid":uid,
+        "gid":gid
     };
 
-    var ps = dbpool.preparedStatement()
-        .input("uid", sql.VarChar)
-        .input("gid", sql.VarChar)
-        .prepare(sql_stmt, function (err) {
-            if (err) {
-                return callback(err, null);
-            }
-            ps.execute(objParams, function (err, rs) {
-                done(err, rs);
-                ps.unprepare(function (err) {
-                    err && console.error(err);
-                });
+    ps.prepare(sql_stmt, function (err) {
+        if (err) {
+            return done(err, null);
+        }
+        ps.execute(objParams, function (err, rs) {
+            done(err, rs);
+            ps.unprepare(function (err) {
+                err && console.error(err);
             });
         });
+    });
 }
 
 /**
@@ -474,14 +483,23 @@ function addUserToGroup (uid, gid, done) {
  * @param done
  */
 function removeUserFromGroup (uid, gid, done) {
-    var sql_stmt = "DELETE FROM tb_user_group WHERE uid = @uid AND gid = @gid;";
-    var objParams = {"uid": uid, "gid": gid};
+    addUserToGroup(uid, null, done);
+}
+
+/**
+ * 查询用户的groupID
+ * @param uid
+ * @param userid 需要查询的用户ID
+ * @param done
+ */
+function findUserGroup (uid, done) {
+    var sql_stmt = "select groupid from tb_user where uid = @uid";
+    var objParams = {"uid": uid};
     var ps = dbpool.preparedStatement()
         .input("uid", sql.VarChar)
-        .input("gid", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return callback(err, null);
+                return done(err, null);
             }
             ps.execute(objParams, function (err, rs) {
                 done(err, rs);
@@ -493,22 +511,22 @@ function removeUserFromGroup (uid, gid, done) {
 }
 
 /**
- * 查询用户的groupID
- * @param uid
- * @param userid 需要查询的用户ID
+ * 查找group下的用户
+ * @param gid
  * @param done
  */
-function findUserGroup (uid, done) {
-    var sql_stmt = "select * from tb_user_group where uid = @uid";
-    var objParams = {"uid": uid};
+function findGroupUsers (gid, done) {
+    var sql_stmt = "select id from tb_user where groupid = @gid";
+    var objParams = {"gid": gid};
     var ps = dbpool.preparedStatement()
-        .input("uid", sql.VarChar)
+        .input("gid", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return callback(err, null);
+                return done(err, null);
             }
             ps.execute(objParams, function (err, rs) {
                 done(err, rs);
+
                 ps.unprepare(function (err) {
                     err && console.error(err);
                 });
@@ -516,14 +534,17 @@ function findUserGroup (uid, done) {
         });
 }
 
-function findGroupUsers (gid, done) {
-    var sql_stmt = "select * from tb_user_group where gid = @gid";
-    var objParams = {"gid": gid};
+/**
+ *  查找所有user的group
+ * @param done
+ */
+function findGroupWithUser (done) {
+    var sql_stmt = "select id, groupid from tb_user group by id, groupid";
+    var objParams = {};
     var ps = dbpool.preparedStatement()
-        .input("gid", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return callback(err, null);
+                return done(err, []);
             }
             ps.execute(objParams, function (err, rs) {
                 done(err, rs);
