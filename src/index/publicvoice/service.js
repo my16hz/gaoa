@@ -357,7 +357,7 @@ function approvalPubVoice (uid, obj, callback) {
  * @param callback {Function}  回调函数(err, 日报数组[])
  */
 function findDailyList(uid, field, order, callback) {
-    var sql_stmt = "SELECT id,issue_id,issue_total_id,createuser,createtime,pvids FROM tb_daily ";
+    var sql_stmt = "SELECT id,issue_id,createuser,createtime,pvids FROM tb_daily ";
     if (field != null && field != "") {
         sql_stmt += " order by " + field + " " + order;
     }
@@ -381,13 +381,11 @@ function findDailyList(uid, field, order, callback) {
 
 /**
  * 查询日报详情
- * @param uid
- * @param daily_ids {Array} 日报ID数组
+ * @param daily_ids {Number} 日报ID数组
  * @param callback {Function}  回调函数(err, object)
  */
-function findDailyDetail(uid, callback) {
-    var sql_stmt = "SELECT * FROM tb_daily where  ";
-    console.log(sql_stmt);
+function findDailyDetail(daily_ids, callback) {
+    var sql_stmt = "SELECT * FROM tb_daily where id = " + daily_ids;
     var objParams = {};
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
@@ -453,11 +451,24 @@ function createDaily(uid, daily, callback) {
 
 /**
  * 获取日报当前期号
- * @param uid
- * @param callback {Function}  回调函数(err, {issue_id:{Number}舆情期数, total_issue_id:总期数})
+ * @param callback {Function}  回调函数(err, {issue_id:{Number}舆情期数, id:总期数})
  */
-function getCurrentDailyID(uid, callback) {
-    
+function getCurrentDailyID(callback) {
+    var sql_stmt = "SELECT MAX(id) as 'id', MAX(issue_id) as 'issue_id' FROM tb_daily";
+    var objParams = {};
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
 }
 
 /**

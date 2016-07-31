@@ -17,23 +17,23 @@ module.exports = {
      *      description: {String},	// 描述
      *      roles: {String}, //角色列表, 以逗号分隔 (
      *          0 - 所有权限
-     *          1 - 舆情录入
-     *          2 - 舆情日报
-     *          3 - 舆情处置
-     *          4 - 舆情通报
-     *          5 - 舆情反馈
-     *          6 - 舆情引导
-     *          7 - 舆情分析
-     *          8 - 舆情审批
-     *          9 - 舆情预警
-     *          101 - 社情录入
-     *          102 - 社情编报
-     *          201 - 不良信息录入
-     *          202 - 不良信息统计
-     *          203 - RTX指令录入
-     *          301 - 发布信息
-     *          302 - 审批信息
-     *          401 - 用户管理
+     *          11 - 舆情录入
+     *          12 - 舆情日报
+     *          13 - 舆情处置
+     *          14 - 舆情通报
+     *          15 - 舆情反馈
+     *          16 - 舆情引导
+     *          17 - 舆情分析
+     *          18 - 舆情审批
+     *          19 - 舆情预警
+     *          21 - 社情录入
+     *          22 - 社情编报
+     *          31 - 不良信息录入
+     *          32 - 不良信息统计
+     *          33 - RTX指令录入
+     *          41 - 发布信息
+     *          42 - 审批信息
+     *          51 - 用户管理
      *      )
      *      priority {Number} - 优先级(1:市级，2:县级)
      *      groupid {String} - 用户所在组
@@ -41,7 +41,7 @@ module.exports = {
      * @param done
      */
     addUser: addUser,
-    removeUser: removeUser,
+    removeUsers: removeUsers,
     updateUser: updateUser,
     /**
      * 查找用户, 返回所有用户信息
@@ -164,13 +164,17 @@ function addGroup (group, done) {
 
 /**
  * 删除用户
- * @param uid
- * @param removeduid
+ * @param uids {Array} 待删除的用户列表
  * @param done
  */
-function removeUser (uid, removeduid, done) {
-    var sql_stmt = "DELETE FROM tb_user WHERE id = @removeduid;";
-    var objParams = {"removeduid": removeduid};
+function removeUsers (uids, done) {
+    var ids = "";
+    for (var id in uids) {
+        ids += uids[id] + ","
+    }
+    ids = ids.substring(0, ids.length - 1);
+    var sql_stmt = "DELETE FROM tb_user WHERE id in ( @removeduid );";
+    var objParams = {"removeduid": ids};
     var ps = dbpool
         .preparedStatement()
         .input("removeduid", sql.VarChar)
@@ -222,11 +226,12 @@ function removeGroup (uid, removedgid, callback) {
  *      description {String}	描述
  *      roles {Array} 角色列表
  *      ( 0 - 所有权限
- *      1 - 舆情录入 2 - 舆情日报 3 - 舆情处置 4 - 舆情通报 5 - 舆情反馈 6 - 舆情引导 7 - 舆情分析 8 - 舆情审批
- *      101 - 社情录入 102 - 社情编报
- *      201 - 不良信息录入 202 - 不良信息统计 203 - RTX指令录入
- *      301 - 发布信息 302 - 审批信息
- *      401 - 用户管理
+ *          0 - 所有权限
+ *          11 - 舆情录入 12 - 舆情日报 13 - 舆情处置 14 - 舆情通报 15 - 舆情反馈 16 - 舆情引导 17 - 舆情分析 18 - 舆情审批 19 - 舆情预警
+ *          21 - 社情录入 22 - 社情编报
+ *          31 - 不良信息录入 32 - 不良信息统计 33 - RTX指令录入
+ *          41 - 发布信息 42 - 审批信息
+ *          51 - 用户管理
  *      )
  * }
  * @param done
@@ -389,7 +394,7 @@ function updateGroup (uid, groupInfo, done) {
 
 
 function findUsers (done) {
-    var sql_stmt = "SELECT * FROM tb_user";
+    var sql_stmt = "SELECT * FROM tb_user ORDER BY createtime DESC";
     var ps = dbpool
         .preparedStatement()
         .prepare(sql_stmt, function (err) {
