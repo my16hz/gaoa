@@ -87,7 +87,7 @@ function addUser (user, done) {
         "roles": user["roles"],
         "priority": user["priority"],
         "createtime": new Date(),
-        "groupid":user["groupid"]
+        "groupid": user["groupid"]
     };
 
     var ps = dbpool
@@ -168,22 +168,18 @@ function addGroup (group, done) {
  * @param done
  */
 function removeUsers (uids, done) {
-    var ids = "";
-    for (var id in uids) {
-        ids += uids[id] + ","
-    }
-    ids = ids.substring(0, ids.length - 1);
-    var sql_stmt = "DELETE FROM tb_user WHERE id in ( @removeduid );";
-    var objParams = {"removeduid": ids};
+    var sql_stmt = "DELETE FROM tb_user WHERE id in (%ids%);";
+
     var ps = dbpool
         .preparedStatement()
-        .input("removeduid", sql.VarChar)
-        .prepare(sql_stmt, function (err) {
+        .prepare(sql_stmt.replace('%ids%', '\'' + uids.join('\',\'') + '\''), function (err) {
             if (err) {
-                return done(err, null);
+                return done(err, false);
             }
-            ps.execute(objParams, function (err, recordset) {
+
+            ps.execute({}, function (err, recordset) {
                 done(err, recordset);
+
                 ps.unprepare(function (err) {
                     err && console.error(err);
                 });
@@ -464,8 +460,8 @@ function addUserToGroup (uid, gid, done) {
     ps.input("uid", sql.VarChar);
 
     var objParams = {
-        "uid":uid,
-        "gid":gid
+        "uid": uid,
+        "gid": gid
     };
 
     ps.prepare(sql_stmt, function (err) {

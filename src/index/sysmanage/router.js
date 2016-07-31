@@ -11,6 +11,6 @@ module.exports = function () {
         .get('/sysmanage', controller.pageSysManage)
         .get('/sysmanage/members', controller.getAllUsers)
         .post('/sysmanage/members/add', controller.addUser)
-        .post('/sysmanage/members/del', controller.removeUsers)
+        .delete('/sysmanage/members/del', controller.removeUsers)
         .get('/sysmanage/groups', controller.getAllGroups);
 };
