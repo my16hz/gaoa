@@ -45,7 +45,7 @@ var LHSBasicPage = {
             dataType: 'json',
             cache: false,
             beforeSend: function () {
-                self._removeLoading();
+                self._showLoading();
             }
         }).then(function (rs) {
             if (rs.success) {

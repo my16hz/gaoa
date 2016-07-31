@@ -1,3 +1,15 @@
 .sysmanage-members-page .func-btns {
     margin-bottom: 20px;
 }
+
+.sysmanage-members-page .no-padding-left {
+    padding-left: 0px;
+}
+
+.sysmanage-members-page .user-roles li {
+    margin-right: 5px;
+}
+
+.sysmanage-members-page textarea {
+    resize: none;
+}

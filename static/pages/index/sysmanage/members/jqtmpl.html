@@ -3,23 +3,100 @@
     <div class="row func-btns">
         <div class="col-xs-6">
             <div class="btn-group">
-                <button id="btnMembers" type="button" class="btn btn-sm btn-primary">用户</button>
+                <button id="btnMembers" type="button" class="btn btn-sm btn-default btn-primary">用户</button>
                 <button id="btnGroups" type="button" class="btn btn-sm btn-default">组</button>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="pull-right member-func-buttons">
-                <button id="btnAddMemeber" class="btn btn-sm btn-default">新增</button>
-                <button id="btnDelMemeber" class="btn btn-sm btn-default">删除</button>
-            </div>
-            <div class="pull-right group-func-buttons hide">
-                <button id="btnAddMemeber" class="btn btn-sm btn-default">新增</button>
-                <button id="btnDelMemeber" class="btn btn-sm btn-default">删除</button>
+            <div class="pull-right">
+                <button id="btnAdd" class="btn btn-sm btn-default">新增</button>
+                <button id="btnDel" class="btn btn-sm btn-default">删除</button>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div id="table_panel" class="col-md-12"></div>
+    <div id="memberGridWrapper" class="row">
+        <div class="col-md-12">
+            <table id="memberTable" class="table table-striped table-hover table-condensed"></table>
+        </div>
+        <div class="col-xs-10 no-padding-left hide">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="text-primary text-left">添加用户</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-2 control-label">用户ID：</label>
+                            <div class="col-sm-4">
+                                <input id="mId" type="text" class="form-control">
+                            </div>
+                            <label class="col-sm-2 control-label">用户名：</label>
+                            <div class="col-sm-4">
+                                <input id="mName" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-2 control-label">密码：</label>
+                            <div class="col-sm-4">
+                                <input id="mPassword" type="text" class="form-control">
+                            </div>
+                            <label class="col-sm-2 control-label">重复密码：</label>
+                            <div class="col-sm-4">
+                                <input id="mGepassword" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-2 control-label">所属组：</label>
+                            <div class="col-sm-4">
+                                <select id="mGroup" class="form-control">
+                                    <option value="">未分组</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-2 control-label">用户权限：</label>
+                            <div class="col-sm-4">
+                                <ul id="mRoles" class="nav nav-pills user-roles">
+                                    <li><input type="checkbox" value="11"> 舆情录入</li>
+                                    <li><input type="checkbox" value="12"> 舆情日报</li>
+                                    <li><input type="checkbox" value="13"> 舆情处置</li>
+                                    <li><input type="checkbox" value="14"> 舆情通报</li>
+                                    <li><input type="checkbox" value="15"> 舆情反馈</li>
+                                    <li><input type="checkbox" value="16"> 舆情引导</li>
+                                    <li><input type="checkbox" value="17"> 舆情分析</li>
+                                    <li><input type="checkbox" value="18"> 舆情审批</li>
+                                    <li><input type="checkbox" value="19"> 舆情预警</li>
+                                    <li><input type="checkbox" value="21"> 社情录入</li>
+                                    <li><input type="checkbox" value="22"> 社情编报</li>
+                                    <li><input type="checkbox" value="31"> 不良信息录入</li>
+                                    <li><input type="checkbox" value="32"> 不良信息统计</li>
+                                    <li><input type="checkbox" value="33"> RTX指令录入</li>
+                                    <li><input type="checkbox" value="41"> 发布信息</li>
+                                    <li><input type="checkbox" value="42"> 审批信息</li>
+                                    <li><input type="checkbox" value="51"> 用户管理</li>
+                                </ul>
+                            </div>
+                            <label class="col-sm-2 control-label">备注：</label>
+                            <div class="col-sm-4">
+                                <textarea id="mRemarks" class="form-control" rows="5"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <button id="btnCloseMModal" type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button id="btnSaveMember" type="button" class="btn btn-primary">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="groupGridWrapper" class="row hide">
+        <div class="col-md-12 ">
+            <table id="groupTable" class="table table-striped table-hover table-condensed"></table>
+        </div>
+        <div class="col-xs-10 no-padding-left hide"></div>
     </div>
 </div>
 </script>
