@@ -7,7 +7,7 @@ var service = require('../../src/index/sysmanage/service')
 module.exports = {
     _testAddUser: _testAddUser,
     _testAddGroup:_testAddGroup,
-    _testRemoveUser:_testRemoveUser,
+    _testRemoveUsers:_testRemoveUsers,
     _testUpdateUser:_testUpdateUser,
     _testRemoveGroup:_testRemoveGroup,
     _testUpdateUser:_testUpdateUser,
@@ -46,8 +46,8 @@ function _testAddGroup() {
     })
 }
 
-function _testRemoveUser() {
-    service.removeUser('1', 10, function(err, rs) {
+function _testRemoveUsers() {
+    service.removeUsers(['lilong1'], function(err, rs) {
         if (err) console.log(err);
     })
 }
@@ -93,7 +93,7 @@ function _testUpdateGroup() {
 }
 
 function _testFindUser() {
-    service.findUsers('admin', function(err, rs) {
+    service.findUsers(function(err, rs) {
         if (err) console.log(err);
         else console.log(rs);
     })
