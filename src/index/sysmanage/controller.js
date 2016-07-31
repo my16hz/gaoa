@@ -4,27 +4,27 @@
  * Author: lhs
  */
 var errhandler = require('../../utilities/errhandler');
-var service = require('./service');
-var test = require('../../../test/index/sysmanage');
+var memberService = require('./member.service');
+var groupService = require('./group.service');
 
 module.exports = {
     pageSysManage: pageSysManage,
 
-    getAllUsers: getAllUsers,
-
+    getUsers: getUsers,
     addUser: addUser,
-
     removeUsers: removeUsers,
 
-    getAllGroups: getAllGroups
+    getGroups: getGroups,
+    addGroup: addGroup,
+    removeGroups: removeGroups
 };
 
 function pageSysManage (req, res) {
     res.render('index/sysmanage');
 }
 
-function getAllUsers (req, res) {
-    service.findUsers(function (err, rs) {
+function getUsers (req, res) {
+    memberService.findUsers(function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -35,7 +35,7 @@ function getAllUsers (req, res) {
 }
 
 function addUser (req, res) {
-    service.addUser({
+    memberService.addUser({
         id: req.body.id,
         name: req.body.name,
         password: req.body.password,
@@ -53,7 +53,7 @@ function addUser (req, res) {
 }
 
 function removeUsers (req, res) {
-    service.removeUsers(req.body.ids.split(','), function (err) {
+    memberService.removeUsers(req.body.ids.split(','), function (err) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -62,8 +62,8 @@ function removeUsers (req, res) {
     });
 }
 
-function getAllGroups (req, res) {
-    service.findGroups(function (err, rs) {
+function getGroups (req, res) {
+    groupService.findGroups(function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -71,4 +71,12 @@ function getAllGroups (req, res) {
                 data: rs
             });
     });
+}
+
+function addGroup (req, res) {
+
+}
+
+function removeGroups (req, res) {
+
 }

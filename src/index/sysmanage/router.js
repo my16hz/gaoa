@@ -9,8 +9,10 @@ var controller = require('./controller');
 module.exports = function () {
     return express.Router()
         .get('/sysmanage', controller.pageSysManage)
-        .get('/sysmanage/members', controller.getAllUsers)
+        .get('/sysmanage/members', controller.getUsers)
         .post('/sysmanage/members/add', controller.addUser)
         .delete('/sysmanage/members/del', controller.removeUsers)
-        .get('/sysmanage/groups', controller.getAllGroups);
+        .get('/sysmanage/groups', controller.getGroups)
+        .post('/sysmanage/groups/add', controller.addGroup)
+        .delete('/sysmanage/groups/del', controller.removeGroups)
 };

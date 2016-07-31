@@ -4,7 +4,7 @@
  * Author: lhs
  */
 var sql = require('mssql');
-var sysmanage = require('../sysmanage/service');
+var sysmanage = require('../sysmanage/member.service');
 var dbpool = require('../../utilities/dbpool');
 
 module.exports = {
