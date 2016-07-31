@@ -10,5 +10,7 @@ module.exports = function () {
     return express.Router()
         .get('/sysmanage', controller.pageSysManage)
         .get('/sysmanage/members', controller.getAllUsers)
-        .get('sysmanage/groups', controller.getAllGroups);
+        .post('/sysmanage/members/add', controller.addUser)
+        .post('/sysmanage/members/del', controller.removeUsers)
+        .get('/sysmanage/groups', controller.getAllGroups);
 };
