@@ -394,7 +394,7 @@ function updateGroup (uid, groupInfo, done) {
 
 
 function findUsers (done) {
-    var sql_stmt = "SELECT * FROM tb_user";
+    var sql_stmt = "SELECT * FROM tb_user ORDER BY createtime DESC";
     var ps = dbpool
         .preparedStatement()
         .prepare(sql_stmt, function (err) {
