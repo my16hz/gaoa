@@ -17,9 +17,9 @@ var LHSBasicPage = {
         };
 
         $.each(this.events, function (name, handler) {
-            name = name.split(/\s+/);
+            var evtkey = name.split(/\s+/)[0];
 
-            $(self.el).on(name[0], name[1], function (evt) {
+            $(self.el).on(evtkey, $.trim(name.replace(evtkey, '')), function (evt) {
                 self[handler].call(self, $(this), evt);
             });
         });
