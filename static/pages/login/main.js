@@ -13,7 +13,7 @@ var LHSLoginPage = $.extend({}, LHSBasicPage, {
         'keydown #password': 'onKeyDown'
     },
     clickBtnSubmit: function () {
-        this.sendRequest({
+        this._sendRequest({
             url: '/auth', type: 'post',
             validator: $.proxy(this._validator, this),
             done: function () {

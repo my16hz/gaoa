@@ -72,12 +72,12 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
     saveMember: function () {
         var self = this;
 
-        this.sendRequest({
+        this._sendRequest({
             type: 'post',
             url: '/sysmanage/members/add',
-            validator: $.proxy(this._validator, this),
+            validator: $.proxy(this._memberValidator, this),
             done: function () {
-                self.closeMemberModal()._refreshTable();
+                self._refreshTable().closeMemberModal();
             }
         });
     },
@@ -125,10 +125,10 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                     },
                     events: {
                         'click a:first': function (evt, val) {
-                            console.log(evt.target);
+                            console.log(val);
                         },
                         'click a:last': function (evt, val) {
-
+                            console.log(val);
                         }
                     }
                 }]
@@ -190,14 +190,14 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
     _showMemberModal: function () {
         var self = this;
 
-        this.sendRequest({
+        this._sendRequest({
             type: 'get', url: '/sysmanage/groups',
             done: function (rs) {
-                var jqSelect = $('form select[name="groupid"]', '#memberModal');
+                var jqSelect = $('select[name="groupid"]', '#memberModal form');
 
                 jqSelect.find('option:gt(0)').remove();
 
-                $.each(rs.data, function (n, gp) {
+                $.each(rs, function (n, gp) {
                     jqSelect.append($('<option></option>')
                         .attr('value', gp.id)
                         .text(gp.name));
@@ -230,7 +230,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
         var selected = this.memberTable.bootstrapTable('getSelections');
         var self = this;
 
-        selected.length && this.sendRequest({
+        selected.length && this._sendRequest({
             type: 'delete', url: '/sysmanage/members/del',
             data: {
                 ids: (function () {
@@ -254,7 +254,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
         var selected = this.groupTable.bootstrapTable('getSelections');
         var self = this;
 
-        selected.length && this.sendRequest({
+        selected.length && this._sendRequest({
             type: 'delete', url: '/sysmanage/groups/del',
             data: {
                 ids: (function () {
@@ -298,5 +298,43 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                 self._showXHRError('请求失败:' + xhr.responseText);
             }
         }
-    }
+    },
+
+    _memberValidator: function () {
+        var jqform = $('#memberModal form');
+        var values = this._getFormControlValues(jqform);
+        var hasErr = false;
+
+        $.each({
+            id: function (id) {
+                return !!id.length;
+            },
+            name: function (name) {
+                return !!name.length;
+            },
+            password: function (pwd) {
+                return !!pwd.length;
+            },
+            repassword: function (repwd, values) {
+                return !!repwd.length && values.password == repwd;
+            }
+        }, function (name, check) {
+            if (!check(values[name], values)) {
+                $('[name="' + name + '"]', jqform)
+                    .parent().addClass('has-error').end()
+                    .unbind('focus')
+                    .bind('focus', function () {
+                        $(this).parent().removeClass('has-error');
+                    });
+
+                hasErr = true;
+            }
+        });
+
+        !values.groupid && (delete values.groupid);
+        !values.role && (values.role = 0);
+
+        return hasErr ? false : values;
+    },
+    _groupValidator: function () {}
 });
