@@ -95,11 +95,14 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                     field: 'checkbox',
                     checkbox: true
                 }, {
+                    title: '用户ID',
+                    field: 'id'
+                }, {
                     title: '用户名',
                     field: 'name'
                 }, {
-                    title: '组',
-                    field: 'groupid'
+                    title: '组名',
+                    field: 'groupname'
                 }, {
                     title: '级别',
                     field: 'priority',
@@ -121,7 +124,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                     formatter: function () {
                         return '<a href="javascript:" title="编辑"><i class="glyphicon glyphicon-edit"></i></a>' +
                             '&nbsp;&nbsp;' +
-                            '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>';
+                            '<a href="javascript:" title="删除"><i id="btnDel" class="glyphicon glyphicon-trash"></i></a>';
                     },
                     events: {
                         'click a:first': function (evt, val) {
@@ -147,6 +150,9 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
             (this.groupTable = $('#groupTable')).bootstrapTable($.extend({
                 columns: [{
                     checkbox: true
+                }, {
+                    title: '组ID',
+                    field: 'id'
                 }, {
                     title: '组名',
                     field: 'name'

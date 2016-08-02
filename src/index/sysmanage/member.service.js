@@ -54,7 +54,8 @@ module.exports = {
      *          51 - 用户管理
      *      )
      *      priority {Number} - 优先级(1:市级，2:县级)
-     *      groupid {String} - 用户所在组
+     *      groupid {String} - 用户所在组ID
+     *      groupname {String} - 用户所在组名
      * }
      * @param done
      */
@@ -62,9 +63,8 @@ module.exports = {
 };
 
 function findUsers (done) {
-    var sql_stmt = 'SELECT ' +
-        '[id],[name],[description],[role],[priority],[createtime],[groupid] ' +
-        'FROM tb_user ORDER BY createtime DESC';
+    var sql_stmt = 'SELECT tb_user.id, tb_user.name, tb_user.description, tb_user.role, tb_user.priority, tb_user.createtime, tb_user.groupid, tb_group.name as groupname '
+     + 'FROM tb_user,tb_group WHERE tb_user.groupid = tb_group.id ORDER BY tb_user.createtime DESC';
     var ps = dbpool
         .preparedStatement()
         .prepare(sql_stmt, function (err) {
