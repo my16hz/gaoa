@@ -11,7 +11,7 @@ module.exports = {
 };
 
 function pagePubVoice (req, res) {
-    _testInferface();
+    //_testInferface();
     res.render('index/publicvoice');
 }
 

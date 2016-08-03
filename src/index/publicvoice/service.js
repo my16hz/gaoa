@@ -138,7 +138,7 @@ function addPubVoices (uid, obj, callback) {
         "@approved_state,@dispose_stat,@feedback_state,@createuser)";
     var objParams = {
         "title": obj["title"],
-        "createtime": obj["createtime"],
+        "createtime": new Date(),
         "item": obj["item"],
         "type": obj["type"],
         "relate_department": obj["relate_department"],
@@ -152,7 +152,7 @@ function addPubVoices (uid, obj, callback) {
         "approved_state": obj["approved_state"],
         "dispose_stat": obj["dispose_stat"],
         "feedback_state": obj["feedback_state"],
-        "createuser": obj["createuser"]
+        "createuser": uid
     }
 
     var ps = dbpool.preparedStatement()
