@@ -211,7 +211,8 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
 
                 $([
                     'checkbox',
-                    'groupid',
+                    'id',
+                    'groupname',
                     'priority',
                     'description',
                     'createtime',
