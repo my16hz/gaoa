@@ -49,7 +49,7 @@
                             <label class="col-xs-2 control-label">所属组：</label>
                             <div class="col-xs-3">
                                 <select name="groupid" class="form-control">
-
+                                    <option value="">未分组</option>
                                 </select>
                             </div>
                             <label class="col-xs-2 col-xs-offset-1 control-label">级别：</label>
@@ -122,16 +122,14 @@
                             </div>
                         </div>
                         <div class="form-group form-group-sm">
-                            <label class="col-xs-2 col-xs-offset-1 control-label">级别：</label>
+                            <label class="col-xs-2 control-label">级别：</label>
                             <div class="col-xs-3">
                                 <select name="priority" class="form-control">
                                     <option value="1">市级</option>
                                     <option value="2">县级</option>
                                 </select>
                             </div>
-                        </div>
-                        <div class="form-group form-group-sm">
-                            <label class="col-xs-2 control-label">备注：</label>
+                            <label class="col-xs-2 col-xs-offset-1 control-label">备注：</label>
                             <div class="col-xs-4">
                                 <textarea class="form-control" name="description" rows="5"></textarea>
                             </div>
@@ -147,7 +145,17 @@
                 </div>
             </div>
             <div id="groupMembersModal" class="modal-content">
-                <table class="table table-striped table-hover table-condensed"></table>
+                <div class="modal-header">
+                    <h4 class="text-primary text-left">组信息</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped table-hover table-condensed"></table>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-default">取消</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -91,6 +91,7 @@ module.exports = function (gulp, plugins, isdebug) {
                     DIR_SRC.coreJs + 'moment-2.14.1.js',
                     DIR_SRC.coreJs + 'bootstrap-table-1.11.0.js',
                     DIR_SRC.coreJs + 'bootstrap-table-zh-CN-1.11.0.js',
+                    DIR_SRC.coreJs + 'bootbox-4.4.0.js',
                     DIR_SRC.indexPage + module + '/start.js',
                     DIR_SRC.pages + 'page.js',
                     DIR_DEST + '_subpage_' + module + '*.js',

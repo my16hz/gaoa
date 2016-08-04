@@ -11,11 +11,11 @@ module.exports = {
     pageSysManage: pageSysManage,
 
     getUsers: getUsers,
-    addUser: addUser,
+    saveUser: saveUser,
     removeUsers: removeUsers,
 
     getGroups: getGroups,
-    addGroup: addGroup,
+    saveGroup: saveGroup,
     removeGroups: removeGroups,
     getGroupMembers: getGroupMembers,
     addUserToGroup: addUserToGroup

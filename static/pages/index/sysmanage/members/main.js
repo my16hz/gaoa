@@ -12,8 +12,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
         $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['zh-CN']);
 
-        this
-            .initDependencies()
+        this.initDependencies()
             ._drawMemberTable()
             .isShown = 'member';
     },
@@ -25,14 +24,14 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
         'click #memberModal .btn-default': 'closeMemberModal',
         'click #memberModal .btn-primary': 'saveMember',
         'click #groupModal .btn-default': 'closeGroupModal',
-        'click #groupModel .btn-primary': 'saveGroup'
+        'click #groupModal .btn-primary': 'saveGroup',
+        'click #groupMembersModal .btn-default': 'closeGroupMembersModal'
     },
 
     changePageContent: function (jqBtn) {
         if (jqBtn.hasClass('btn-primary')) return;
 
-        jqBtn
-            .addClass('btn-primary').removeClass('btn-default')
+        jqBtn.addClass('btn-primary').removeClass('btn-default')
             .siblings()
             .removeClass('btn-primary').addClass('btn-default');
 
@@ -58,8 +57,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                 self.memberTable.bootstrapTable('showColumn', field);
             });
 
-        this
-            ._clearFormControlValues($('#memberModal form'))
+        this._clearFormControlValues($('#memberModal form'))
             .$('#memberGridWrapper > div:first')
             .attr('class', 'col-md-12')
             .next()
@@ -78,19 +76,9 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
         });
     },
     closeGroupModal: function () {
-        var self = this;
-
-        $(['checkbox', 'priority', 'description', 'action'])
-            .each(function (index, field) {
-                self.memberTable.bootstrapTable('showColumn', field);
-            });
-
-        this
-            ._clearFormControlValues($('#groupModal form'))
-            .$('#memberGridWrapper > div:first')
-            .attr('class', 'col-md-12')
-            .next()
-            .addClass('hide');
+        this._clearFormControlValues($('#groupModal form'))
+            ._hideGroupModalWrapper()
+            ._expandGroupTable();
     },
     saveGroup: function () {
         var self = this;
@@ -103,6 +91,9 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                 self._refreshTable().closeMemberModal();
             }
         });
+    },
+    closeGroupMembersModal: function () {
+        this._hideGroupModalWrapper()._expandGroupTable();
     },
 
     _drawMemberTable: function () {
@@ -171,9 +162,12 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
         return this;
     },
     _drawGroupTable: function () {
+        var self = this;
+
         if (!this.groupTable) {
             (this.groupTable = $('#groupTable')).bootstrapTable($.extend({
                 columns: [{
+                    field: 'checkbox',
                     checkbox: true
                 }, {
                     title: '组ID',
@@ -192,6 +186,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                     field: 'description'
                 }, {
                     title: '操作',
+                    field: 'action',
                     formatter: function () {
                         return '<a href="javascript:" title="成员"><i class="glyphicon glyphicon-user"></i></a>' +
                             '&nbsp;&nbsp;' +
@@ -258,6 +253,8 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                 if (member) {
                     $('input[name="id"]', jqform).prop('disabled', true);
                     $('input[name="isNew"]', jqform).val(false);
+
+                    !$.isArray(member.role) && (member.role = member.role.split(','));
                     self._setFormControlValues(jqform, member);
                 } else {
                     $('input[name="id"]', jqform).prop('disabled', false);
@@ -275,14 +272,10 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
     },
     _showGroupModal: function (group) {
         var modal = $('#groupModal').show();
-        var jqform = modal._find('form');
+        var jqform = modal.find('form');
+        var self = this;
 
         modal.next().hide(); // hide group member modal
-
-        $(['checkbox', 'priority', 'description', 'action'])
-            .each(function (index, field) {
-                self.memberTable.bootstrapTable('hideColumn', field);
-            });
 
         if (group) {
             $('input[name="id"]', jqform).prop('disabled', true);
@@ -293,21 +286,19 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
             $('input[name="isNew"]', jqform).val(true);
         }
 
-        $('#groupGridWrapper > div:first')
-            .attr('class', 'col-xs-2')
-            .next()
-            .removeClass('hide');
+        this._shrinkGroupTable()
+            ._showGroupModalWrapper();
 
         return this;
     },
     _showGroupMembersModal: function (gpid) {
-        var modal = $('#groupMemberModal').show();
+        var modal = $('#groupMembersModal').show();
         var self = this;
 
         modal.prev().hide(); // hide group modal
 
         if (!this.groupMembersTable) {
-            (this.groupMembersTable = modal.children('table')).bootstrapTable($.extend({
+            (this.groupMembersTable = modal.find('table')).bootstrapTable($.extend({
                 columns: [{
                     title: '用户ID',
                     field: 'id'
@@ -321,9 +312,13 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                     title: '操作',
                     field: 'action',
                     formatter: function () {
-                        return gpid == arguments[1].groupid ?
-                            '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-minus"></i></a>' :
-                            '<a href="javascript:" title="添加"><i class="glyphicon glyphicon-plus"></i></a>';
+                        var groupid = arguments[1].groupid;
+
+                        if (!groupid) {
+                            return '<a href="javascript:" title="添加"><i class="glyphicon glyphicon-plus"></i></a>';
+                        } else if (gpid == groupid) {
+                            return '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-minus"></i></a>';
+                        }
                     },
                     events: {
                         'click a': function () {
@@ -352,6 +347,49 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
         } else {
             this.groupMembersTable.bootstrapTable('refresh')
         }
+
+        this._shrinkGroupTable()
+            ._showGroupModalWrapper();
+
+        return this;
+    },
+
+    _showGroupModalWrapper: function () {
+        $('#groupGridWrapper > div:first')
+            .attr('class', 'col-xs-2')
+            .next()
+            .removeClass('hide');
+
+        return this;
+    },
+    _hideGroupModalWrapper: function () {
+        $('#groupGridWrapper > div:first')
+            .attr('class', 'col-md-12')
+            .next()
+            .addClass('hide');
+
+        return this;
+    },
+
+    _shrinkGroupTable: function () {
+        var self = this;
+
+        $(['checkbox', 'id', 'priority', 'description', 'action'])
+            .each(function (index, field) {
+                self.groupTable.bootstrapTable('hideColumn', field);
+            });
+
+        return this;
+    },
+    _expandGroupTable: function () {
+        var self = this;
+
+        $(['checkbox', 'id', 'priority', 'description', 'action'])
+            .each(function (index, field) {
+                self.groupTable.bootstrapTable('showColumn', field);
+            });
+
+        return this;
     },
 
     _delSelectedMembers: function () {
