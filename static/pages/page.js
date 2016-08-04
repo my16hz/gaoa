@@ -24,6 +24,8 @@ var LHSBasicPage = {
             });
         });
 
+        bootbox.setDefaults({size: 'small', locale: 'zh_CN'});
+
         return this;
     },
 
@@ -72,7 +74,18 @@ var LHSBasicPage = {
         return this;
     },
 
-    _showXHRError: function () {
+    _showXHRError: function (err) {
+        var panel = $('#lhsErrorPanel');
+
+        if (!panel.length) {
+            panel = $('<div id="lhsErrorPanel" class="alert alert-danger">' +
+                '<button type="button" class="close">' +
+                '<span>&times;</span>' +
+                '</button></div>');
+            panel.alert();
+        }
+
+        panel.append($('<span></span>').text(err));
 
         return this;
     },
@@ -96,9 +109,9 @@ var LHSBasicPage = {
 
         return values;
     },
-    _clearFormControlValues: function (jqform, names) {
-        $.each(names, function (index, name) {
-            $('[name="' + name + '"]', jqform).each(function (index, elem) {
+    _clearFormControlValues: function (jqform) {
+        $.each(jqform.serializeArray(), function (val) {
+            $('[name="' + val.name + '"]', jqform).each(function (index, elem) {
                 if (elem.is('input[type="text"]') || elem.is('input[type="password"]') || elem.is('textarea')) {
                     elem.val('');
                 } else if (elem.is('input[type="checkbox"]')) {
@@ -116,6 +129,8 @@ var LHSBasicPage = {
                 }
             });
         });
+
+        return this;
     },
     _setFormControlValues: function (jqform, values) {
         $.each(values, function (name, val) {
@@ -133,5 +148,7 @@ var LHSBasicPage = {
                 }
             });
         });
+
+        return this;
     }
 };

@@ -205,7 +205,10 @@ function removeUserFromGroup (uid, done) {
 }
 
 function findGroupUsers (gpid, done) {
-    var sql_stmt = 'SELECT * FROM tb_user WHERE [groupid] = @gpid';
+    var sql_stmt = 'SELECT ' +
+        'id, name, description, groupid ' +
+        'FROM tb_user ' +
+        'WHERE groupid = @gpid';
     var objParams = {gpid: gpid};
 
     var ps = dbpool

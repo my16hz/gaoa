@@ -53,18 +53,14 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
     closeMemberModal: function () {
         var self = this;
 
-        $([
-            'checkbox',
-            'groupid',
-            'priority',
-            'description',
-            'createtime',
-            'action'
-        ]).each(function (index, field) {
-            self.memberTable.bootstrapTable('showColumn', field);
-        });
+        $(['checkbox', 'id', 'groupname', 'priority', 'description', 'createtime', 'action'])
+            .each(function (index, field) {
+                self.memberTable.bootstrapTable('showColumn', field);
+            });
 
-        $('#memberGridWrapper > div:first')
+        this
+            ._clearFormControlValues($('#memberModal form'))
+            .$('#memberGridWrapper > div:first')
             .attr('class', 'col-md-12')
             .next()
             .addClass('hide');
@@ -82,13 +78,36 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
         });
     },
     closeGroupModal: function () {
+        var self = this;
 
+        $(['checkbox', 'priority', 'description', 'action'])
+            .each(function (index, field) {
+                self.memberTable.bootstrapTable('showColumn', field);
+            });
+
+        this
+            ._clearFormControlValues($('#groupModal form'))
+            .$('#memberGridWrapper > div:first')
+            .attr('class', 'col-md-12')
+            .next()
+            .addClass('hide');
     },
     saveGroup: function () {
+        var self = this;
 
+        this._sendRequest({
+            type: 'post',
+            url: '/sysmanage/groups/add',
+            validator: $.proxy(this._groupValidator, this),
+            done: function () {
+                self._refreshTable().closeMemberModal();
+            }
+        });
     },
 
     _drawMemberTable: function () {
+        var self = this;
+
         if (!this.memberTable) {
             (this.memberTable = $('#memberTable')).bootstrapTable($.extend({
                 columns: [{
@@ -116,7 +135,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                     title: '创建时间',
                     field: 'createtime',
                     formatter: function (val) {
-                        return val;
+                        return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
                     }
                 }, {
                     title: '操作',
@@ -124,18 +143,24 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                     formatter: function () {
                         return '<a href="javascript:" title="编辑"><i class="glyphicon glyphicon-edit"></i></a>' +
                             '&nbsp;&nbsp;' +
-                            '<a href="javascript:" title="删除"><i id="btnDel" class="glyphicon glyphicon-trash"></i></a>';
+                            '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>';
                     },
                     events: {
-                        'click a:first': function (evt, val) {
-                            console.log(val);
+                        'click a:first': function () {
+                            self._showMemberModal(arguments[2]);
                         },
-                        'click a:last': function (evt, val) {
-                            console.log(val);
+                        'click a:last': function () {
+                            bootbox.confirm('确认删除？', function (rs) {
+                                rs && self._ajaxDelete(arguments[2].id, function () {
+                                    self._refreshTable();
+                                });
+                            });
                         }
                     }
                 }]
             }, this._buildTableOptions('member')));
+        } else {
+            this._refreshTable();
         }
 
         $('#memberGridWrapper')
@@ -175,15 +200,24 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                             '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>';
                     },
                     events: {
-                        'click a:first': function (evt, val) {
-
+                        'click a:eq(0)': function () {
+                            self._showGroupMembersModal(arguments[2].id);
                         },
-                        'click a:last': function (evt, val) {
-
+                        'click a:eq(1)': function () {
+                            self._showGroupModal(arguments[2]);
+                        },
+                        'click a:eq(2)': function () {
+                            bootbox.confirm('确认删除？', function (rs) {
+                                rs && self._ajaxDelete(arguments[2].id, function () {
+                                    self._refreshTable();
+                                });
+                            });
                         }
                     }
                 }]
             }, this._buildTableOptions('group')));
+        } else {
+            this._refreshTable();
         }
 
         $('#groupGridWrapper')
@@ -193,13 +227,20 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
 
         return this;
     },
-    _showMemberModal: function () {
+    _refreshTable: function () {
+        this[this.isShown + 'Table'].bootstrapTable('refresh');
+
+        return this;
+    },
+
+    _showMemberModal: function (member) {
         var self = this;
 
         this._sendRequest({
             type: 'get', url: '/sysmanage/groups',
             done: function (rs) {
-                var jqSelect = $('select[name="groupid"]', '#memberModal form');
+                var jqform = '#memberModal form';
+                var jqSelect = $('select[name="groupid"]', jqform);
 
                 jqSelect.find('option:gt(0)').remove();
 
@@ -209,17 +250,17 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                         .text(gp.name));
                 });
 
-                $([
-                    'checkbox',
-                    'id',
-                    'groupname',
-                    'priority',
-                    'description',
-                    'createtime',
-                    'action'
-                ]).each(function (index, field) {
-                    self.memberTable.bootstrapTable('hideColumn', field);
-                });
+                $(['checkbox', 'id', 'groupname', 'priority', 'description', 'createtime', 'action'])
+                    .each(function (index, field) {
+                        self.memberTable.bootstrapTable('hideColumn', field);
+                    });
+
+                if (member) {
+                    $('input[name="id"]', jqform).prop('disabled', true);
+                    self._setFormControlValues(jqform, member);
+                } else {
+                    $('input[name="id"]', jqform).prop('disabled', false);
+                }
 
                 $('#memberGridWrapper > div:first')
                     .attr('class', 'col-xs-2')
@@ -230,81 +271,132 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
 
         return this;
     },
-    _showGroupModal: function () {
+    _showGroupModal: function (group) {
+        var modal = $('#groupModal').show();
+        var jqform = modal._find('form');
+
+        modal.next().hide(); // hide group member modal
+
+        $(['checkbox', 'priority', 'description', 'action'])
+            .each(function (index, field) {
+                self.memberTable.bootstrapTable('hideColumn', field);
+            });
+
+        if (group) {
+            $('input[name="id"]', jqform).prop('disabled', true);
+            self._setFormControlValues(jqform, group);
+        } else {
+            $('input[name="id"]', jqform).prop('disabled', false);
+        }
+
+        $('#groupGridWrapper > div:first')
+            .attr('class', 'col-xs-2')
+            .next()
+            .removeClass('hide');
+
         return this;
     },
+    _showGroupMembersModal: function (gpid) {
+        var modal = $('#groupMemberModal').show();
+        var self = this;
+
+        modal.prev().hide(); // hide group modal
+
+        if (!this.groupMembersTable) {
+            (this.groupMembersTable = modal.children('table')).bootstrapTable($.extend({
+                columns: [{
+                    title: '用户ID',
+                    field: 'id'
+                }, {
+                    title: '用户名',
+                    field: 'name'
+                }, {
+                    title: '描述',
+                    field: 'description'
+                }, {
+                    title: '操作',
+                    field: 'action',
+                    formatter: function () {
+                        return gpid == arguments[1].groupid ?
+                            '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-minus"></i></a>' :
+                            '<a href="javascript:" title="添加"><i class="glyphicon glyphicon-plus"></i></a>';
+                    },
+                    events: {
+                        'click a': function () {
+                            var jqico = $('i', arguments[0].target);
+                            var isAdd = jqico.hasClass('glyphicon-plus');
+                            var uid = arguments[2].id;
+
+                            self._sendRequest({
+                                type: isAdd ? 'post' : 'delete',
+                                url: '/sysmanage/groups/' + gpid + '/' + (isAdd ? 'add' : 'del') + 'user',
+                                data: {user: uid},
+                                done: function () {
+                                    isAdd ?
+                                        jqico.removeClass('glyphicon-plus').addClass('glyphicon-minus') :
+                                        jqico.removeClass('glyphicon-minus').addClass('glyphicon-plus');
+
+                                    self._refreshTable();
+                                }
+                            });
+                        }
+                    }
+                }]
+            }, this._buildTableOptions('member')), {
+                url: '/sysmanage/groups/' + gpid + '/members'
+            });
+        } else {
+            this.groupMembersTable.bootstrapTable('refresh')
+        }
+    },
+
     _delSelectedMembers: function () {
         var selected = this.memberTable.bootstrapTable('getSelections');
         var self = this;
+        var mids = [];
 
-        selected.length && this._sendRequest({
-            type: 'delete', url: '/sysmanage/members/del',
-            data: {
-                ids: (function () {
-                    var mids = [];
-
-                    $(selected).each(function (n, member) {
-                        mids.push(member.id);
-                    });
-
-                    return mids.join(',');
-                })()
-            },
-            done: function () {
-                self._refreshTable();
-            }
+        $(selected).each(function (n, member) {
+            mids.push(member.id);
         });
+
+        mids.length ?
+            bootbox.confirm('确定删除？', function (rs) {
+                rs && self._ajaxDelete(mids.join(), function () {
+                    self._refreshTable();
+                });
+            }) :
+            bootbox.alert('请先选择要删除的用户');
 
         return this;
     },
     _delSelectedGroups: function () {
         var selected = this.groupTable.bootstrapTable('getSelections');
         var self = this;
+        var gpids = [];
 
-        selected.length && this._sendRequest({
-            type: 'delete', url: '/sysmanage/groups/del',
-            data: {
-                ids: (function () {
-                    var gpids = [];
+        $(selected).each(function (n, member) {
+            gpids.push(member.id);
+        });
 
-                    $(selected).each(function (n, gp) {
-                        gpids.push(gp.id);
-                    });
+        gpids.length ?
+            bootbox.confirm('确定删除？', function (rs) {
+                rs && self._ajaxDelete(gpids.join(), function () {
+                    self._refreshTable();
+                });
+            }) :
+            bootbox.alert('请先选择要删除的组');
 
-                    return gpids.join(',');
-                })()
-            },
-            done: function () {
-                self._refreshTable();
-            }
+        return this;
+    },
+
+    _ajaxDelete: function (ids, done) {
+        this._sendRequest({
+            type: 'delete', url: '/sysmanage/' + this.isShown + 's/del',
+            data: {ids: ids},
+            done: done
         });
 
         return this;
-    },
-    _refreshTable: function () {
-        this[this.isShown + 'Table'].bootstrapTable('refresh');
-
-        return this;
-    },
-    _buildTableOptions: function (type) {
-        var self = this;
-
-        return {
-            method: 'get',
-            url: '/sysmanage/' + type + 's',
-            cache: false,
-            ajaxOptions: {
-                beforeSend: function () {
-                    self._showLoading();
-                },
-                complete: function () {
-                    self._removeLoading();
-                }
-            },
-            onLoadError: function (xhr) {
-                self._showXHRError('请求失败:' + xhr.responseText);
-            }
-        }
     },
 
     _memberValidator: function () {
@@ -343,5 +435,52 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
 
         return hasErr ? false : values;
     },
-    _groupValidator: function () {}
+    _groupValidator: function () {
+        var jqform = $('#groupModal form');
+        var values = this._getFormControlValues(jqform);
+        var hasErr = false;
+
+        $.each({
+            id: function (id) {
+                return !!id.length;
+            },
+            name: function (name) {
+                return !!name.length;
+            },
+        }, function (name, check) {
+            if (!check(values[name], values)) {
+                $('[name="' + name + '"]', jqform)
+                    .parent().addClass('has-error').end()
+                    .unbind('focus')
+                    .bind('focus', function () {
+                        $(this).parent().removeClass('has-error');
+                    });
+
+                hasErr = true;
+            }
+        });
+
+        return hasErr ? false : values;
+    },
+
+    _buildTableOptions: function (type) {
+        var self = this;
+
+        return {
+            method: 'get',
+            url: '/sysmanage/' + type + 's',
+            cache: false,
+            ajaxOptions: {
+                beforeSend: function () {
+                    self._showLoading();
+                },
+                complete: function () {
+                    self._removeLoading();
+                }
+            },
+            onLoadError: function (xhr) {
+                self._showXHRError('请求失败:' + xhr.responseText);
+            }
+        }
+    }
 });
