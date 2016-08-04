@@ -16,7 +16,9 @@ module.exports = {
 
     getGroups: getGroups,
     addGroup: addGroup,
-    removeGroups: removeGroups
+    removeGroups: removeGroups,
+    getGroupMembers: getGroupMembers,
+    addUserToGroup: addUserToGroup
 };
 
 function pageSysManage (req, res) {
@@ -34,8 +36,9 @@ function getUsers (req, res) {
     });
 }
 
-function addUser (req, res) {
-    memberService.addUser({
+function saveUser (req, res) {
+    var isNew = req.body.isNew;
+    var user = {
         id: req.body.id,
         name: req.body.name,
         password: req.body.password,
@@ -43,7 +46,9 @@ function addUser (req, res) {
         role: req.body.role,
         priority: req.body.priority,
         groupid: req.body.groupid
-    }, function (err) {
+    };
+
+    memberService[isNew ? 'addUser' : 'updateUser'](user, function (err) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -53,7 +58,9 @@ function addUser (req, res) {
 }
 
 function removeUsers (req, res) {
-    memberService.removeUsers(req.body.ids.split(','), function (err) {
+    var ids = req.body.ids;
+
+    memberService.removeUsers(ids.split(','), function (err) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -73,10 +80,84 @@ function getGroups (req, res) {
     });
 }
 
-function addGroup (req, res) {
+function saveGroup (req, res) {
+    var isNew = req.body.isNew;
+    var group = {
+        id: req.body.id,
+        name: req.body.name,
+        description: req.body.description,
+        priority: req.body.priority
+    };
 
+    groupService[isNew ? 'addGroup' : 'updateGroup'](group, function (err) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
 }
 
 function removeGroups (req, res) {
+    var ids = req.body.ids;
 
+    groupService.removeGroups(ids.split(','), function (err) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
+}
+
+function getGroupMembers (req, res) {
+    var gpid = req.params.gpid;
+
+    groupService.findGroupUsers(gpid, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function addUserToGroup (req, res) {
+    var gpid = req.params.gpid;
+    var uid = req.body.user;
+
+    groupService.addUserToGroup(uid, gpid, function (err) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
+}
+
+function getGroupMembers (req, res) {
+    var gpid = req.params.gpid;
+
+    groupService.findGroupUsers(gpid, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function addUserToGroup (req, res) {
+    var gpid = req.params.gpid;
+    var uid = req.body.user;
+
+    groupService.addUserToGroup(uid, gpid, function (err) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    })
 }

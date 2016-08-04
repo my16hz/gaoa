@@ -29,7 +29,7 @@ module.exports = {
      * @param gpids {Array}
      * @param done
      */
-    removeGroup: removeGroup,
+    removeGroups: removeGroups,
     /**
      * 更新组信息 (可更新组描述和优先级，成员在addUser2Group中修改)
      * @param group {Object} - 组信息
@@ -120,7 +120,7 @@ function addGroup (group, done) {
         });
 }
 
-function removeGroup (gpids, done) {
+function removeGroups (gpids, done) {
     var sql_stmt = 'DELETE FROM tb_group WHERE id in (%ids%);';
 
     var ps = dbpool

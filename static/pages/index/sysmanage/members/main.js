@@ -70,7 +70,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
 
         this._sendRequest({
             type: 'post',
-            url: '/sysmanage/members/add',
+            url: '/sysmanage/members/save',
             validator: $.proxy(this._memberValidator, this),
             done: function () {
                 self._refreshTable().closeMemberModal();
@@ -97,7 +97,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
 
         this._sendRequest({
             type: 'post',
-            url: '/sysmanage/groups/add',
+            url: '/sysmanage/groups/save',
             validator: $.proxy(this._groupValidator, this),
             done: function () {
                 self._refreshTable().closeMemberModal();
@@ -257,9 +257,11 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
 
                 if (member) {
                     $('input[name="id"]', jqform).prop('disabled', true);
+                    $('input[name="isNew"]', jqform).val(false);
                     self._setFormControlValues(jqform, member);
                 } else {
                     $('input[name="id"]', jqform).prop('disabled', false);
+                    $('input[name="isNew"]', jqform).val(true);
                 }
 
                 $('#memberGridWrapper > div:first')
@@ -284,9 +286,11 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
 
         if (group) {
             $('input[name="id"]', jqform).prop('disabled', true);
+            $('input[name="isNew"]', jqform).val(false);
             self._setFormControlValues(jqform, group);
         } else {
             $('input[name="id"]', jqform).prop('disabled', false);
+            $('input[name="isNew"]', jqform).val(true);
         }
 
         $('#groupGridWrapper > div:first')
@@ -329,7 +333,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
 
                             self._sendRequest({
                                 type: isAdd ? 'post' : 'delete',
-                                url: '/sysmanage/groups/' + gpid + '/' + (isAdd ? 'add' : 'del') + 'user',
+                                url: '/sysmanage/groups/' + gpid + '/' + (isAdd ? 'add' : 'del') + 'member',
                                 data: {user: uid},
                                 done: function () {
                                     isAdd ?
@@ -391,7 +395,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
 
     _ajaxDelete: function (ids, done) {
         this._sendRequest({
-            type: 'delete', url: '/sysmanage/' + this.isShown + 's/del',
+            type: 'delete', url: '/sysmanage/' + this.isShown + 's/delete',
             data: {ids: ids},
             done: done
         });
