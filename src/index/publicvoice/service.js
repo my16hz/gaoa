@@ -46,47 +46,38 @@ module.exports = {
 /**
  * 查询舆情列表
  * @param uid {String} 用户ID
+ * @param priority {Number} 用户priority  1 - 市级 2 - 县级
  * @param field {String} 排序域
  * @param order {String} 排序顺序ASC,DESC
  * @param callback {Function} 回调函数(err, [])
  */
-function findPubVoiceList (uid, field, order, callback) {
-    sysmanage.findUserByID(uid, function (err, rs) {
-        if (err) return callback(err, rs);
-        else {
-            if (rs.length == 0) return callback(err, rs)
-            else {
-                console.log(rs)
-                var priority = rs[0]['priority'];
-                var params = {};
-                var sql_stmt = "select * from tb_publicvoice ";
-                if (priority != 1) {
-                    sql_stmt += ' where createuser = @uid ';
-                    params['uid'] = uid;
-                }
-                if (field != null && field != "") {
-                    sql_stmt += " order by " + field + " " + order;
-                }
-                console.log(sql_stmt);
-                var ps = dbpool.preparedStatement()
-                    .input("uid", sql.VarChar)
-                    .input("field", sql.VarChar)
-                    .input("order", sql.VarChar)
-                    .prepare(sql_stmt, function (err) {
-                        if (err) {
-                            return callback(err, null);
-                        }
-                        ps.execute(params, function (err, recordset) {
-                            callback(err, recordset)
-                            ps.unprepare(function (err) {
-                                if (err)
-                                    console.log(err);
-                            });
-                        });
-                    });
+function findPubVoiceList (uid, priority, field, order, callback) {
+    var params = {};
+    var sql_stmt = "select * from tb_publicvoice ";
+    if (priority != 1) {
+        sql_stmt += ' where createuser = @uid ';
+        params['uid'] = uid;
+    }
+    if (field != null && field != "") {
+        sql_stmt += " order by " + field + " " + order;
+    }
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("uid", sql.VarChar)
+        .input("field", sql.VarChar)
+        .input("order", sql.VarChar)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
             }
-        }
-    })
+            ps.execute(params, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
 }
 
 /**
@@ -95,20 +86,11 @@ function findPubVoiceList (uid, field, order, callback) {
  * @param pvids {Array} 舆情ID数组
  * @param callback {Function} 回调函数(err, object)
  */
-function findPubVoiceDetail (uid, pvids, field, order, callback) {
-    var findids = "";
-    for (var id in pvids) {
-        findids += pvids[id] + ","
-    }
-    findids = findids.substring(0, findids.length - 1);
-    var sql_stmt = "select * from tb_publicvoice where id in (" +  findids  + ") ";
-    if (field != null && field != "") {
-        sql_stmt += " order by " + field + " " + order;
-    }
+function findPubVoiceDetail (uid, pvids, callback) {
+    var sql_stmt = "select * from tb_publicvoice where id in (%pvids%) ";
+    sql_stmt.replace('%pvids%', '\'' + pvids.join('\',\'') + '\'')
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
-        .input("field", sql.VarChar)
-        .input("order", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
@@ -194,12 +176,8 @@ function addPubVoices (uid, obj, callback) {
  */
 function removePubVoices (uid, pvids, callback) {
     var objParams = {};
-    var removedids = "";
-    for (var id in pvids) {
-        removedids += pvids[id] + ","
-    }
-    removedids = removedids.substring(0, removedids.length - 1);
-    var sql_stmt = "DELETE FROM tb_publicvoice WHERE id in ("+ removedids +");";
+    var sql_stmt = "DELETE FROM tb_publicvoice WHERE id in (%pvids%);";
+    sql_stmt.replace('%pvids%', '\'' + pvids.join('\',\'') + '\'')
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
@@ -226,17 +204,13 @@ function removePubVoices (uid, pvids, callback) {
  */
 function _updatePVState (pvids, state, callback) {
     var objParams = {};
-    var updateids = "";
-    for (var id in pvids) {
-        updateids += pvids[id] + ","
-    }
-    updateids = updateids.substring(0, updateids.length - 1);
-    var sets = ""
+    var sets = []
     for (var k in state) {
-        sets += k + ' = ' + state[k] + ",";
+        sets.push(k + ' = ' + state[k]);
     }
-    sets = sets.substring(0, sets.length - 1);
-    var sql_stmt = "UPDATE tb_publicvoice SET " + sets + " WHERE id in ("+ updateids +");";
+    var sql_stmt = "UPDATE tb_publicvoice SET %sets% WHERE id in (%pvids%);";
+    sql_stmt.replace('%sets%', sets.join(','));
+    sql_stmt.replace('%pvids%', '\'' + pvids.join('\',\'') + '\'');
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
@@ -320,9 +294,9 @@ function approvalPubVoice (uid, obj, callback) {
     var ps = dbpool
         .preparedStatement()
         .input("pvid", sql.Int)
-        .input("createuser", uid)
+        .input("createuser", sql.VarChar)
         .input("type", sql.Int)
-        .input("createtime", new Date())
+        .input("createtime", sql.DateTime2)
         .input("content", sql.NVarChar)
         .input("result", sql.Int)
         .prepare(sql_stmt, function (err) {
@@ -351,12 +325,11 @@ function approvalPubVoice (uid, obj, callback) {
 
 /**
  * 查询日报列表
- * @param uid {Number} - 用户ID
  * @param field {String} - 排序域
  * @param order {String} - ASC,DESC
  * @param callback {Function}  回调函数(err, 日报数组[])
  */
-function findDailyList(uid, field, order, callback) {
+function findDailyList(field, order, callback) {
     var sql_stmt = "SELECT id,issue_id,createuser,createtime,pvids FROM tb_daily ";
     if (field != null && field != "") {
         sql_stmt += " order by " + field + " " + order;
@@ -370,7 +343,7 @@ function findDailyList(uid, field, order, callback) {
                 return callback(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
-                callback(err, recordset)
+                callback(err, recordset);
                 ps.unprepare(function (err) {
                     if (err)
                         console.log(err);
