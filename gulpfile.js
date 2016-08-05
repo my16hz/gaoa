@@ -11,7 +11,7 @@ var IS_DEBUG = false;
 var tasks = [
     'buildCss',
     'buildLoginJs', 'buildModulsJs',
-    'copyPics', 'copyFonts',
+    'copyPics', 'copyFonts', 'copyConfig',
     'windUp'
 ];
 

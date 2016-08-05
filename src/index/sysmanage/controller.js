@@ -3,6 +3,8 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
+var config = require('config');
+
 var errhandler = require('../../utilities/errhandler');
 var memberService = require('./member.service');
 var groupService = require('./group.service');
@@ -13,6 +15,7 @@ module.exports = {
     getUsers: getUsers,
     saveUser: saveUser,
     removeUsers: removeUsers,
+    updateUserPassword: updateUserPassword,
 
     getGroups: getGroups,
     saveGroup: saveGroup,
@@ -55,6 +58,25 @@ function saveUser (req, res) {
                 success: true
             });
     });
+}
+
+function updateUserPassword (req, res) {
+    var userkey = config.session.userkey;
+
+    var oldpwd = req.body.oldpwd;
+    var newpwd = req.body.newpwd;
+    var uid = req.session[userkey].id;
+
+    memberService.updateUserPassword(uid, oldpwd, newpwd, function (err) {
+        if (err) {
+            errhandler.internalException(res, err);
+        } else {
+            req.session[userkey] = null;
+            res.send({
+                success: true
+            });
+        }
+    })
 }
 
 function removeUsers (req, res) {

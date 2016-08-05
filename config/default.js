@@ -4,6 +4,7 @@
  * Author: lhs
  */
 var path = require('path');
+var filePath = __dirname + '/../upload/';
 
 module.exports = {
     root: path.normalize(__dirname + '/..'),
@@ -21,5 +22,19 @@ module.exports = {
         //server: '172.16.12.204',
         //port:9200,
         database: 'gaoa'
+    },
+    // http://thejackalofjavascript.com/uploading-files-made-fun
+    upload: {
+        tmpDir: path.normalize(filePath + 'temp'),
+        uploadDir: path.normalize(filePath + 'files'),
+        storage: {
+            type: 'local'
+        }
+    },
+    // https://github.com/netpi/ueditor
+    ueditor: {
+        uploadDir: path.normalize(filePath + 'ueditor'),
+        configPath: '/cfg/ue.json',
+        imgUrl: '/ue/imgs/'
     }
 };

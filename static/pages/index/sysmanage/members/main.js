@@ -5,12 +5,10 @@
  */
 var LHSMembersPage = $.extend({}, LHSBasicPage, {
     run: function () {
-        var self = this;
         /*inject:jqtmpl:html*/
         /*endinject*/
 
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
-        $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['zh-CN']);
 
         this.initDependencies()
             ._drawMemberTable()

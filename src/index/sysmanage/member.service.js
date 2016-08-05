@@ -59,7 +59,15 @@ module.exports = {
      * }
      * @param done
      */
-    updateUser: updateUser
+    updateUser: updateUser,
+    /**
+     * 用户密码修改
+     * @param uid {String} - 用户 ID
+     * @param oldpwd {String} - 原密码
+     * @param newpwd {String} - 新密码
+     * @param done
+     */
+    updateUserPassword: updateUserPassword
 };
 
 function findUsers (done) {
@@ -186,4 +194,8 @@ function updateUser (user, done) {
                 });
             });
         });
+}
+
+function updateUserPassword (uid, oldpwd, newpwd, done) {
+    // 修改用户密码（待完成）
 }

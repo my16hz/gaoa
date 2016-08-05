@@ -24,6 +24,8 @@ var LHSBasicPage = {
             });
         });
 
+        $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['zh-CN']);
+        
         bootbox.setDefaults({size: 'small', locale: 'zh_CN'});
 
         return this;
