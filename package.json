@@ -17,9 +17,9 @@
     "ejs": "^2.4.2",
     "express": "^4.14.0",
     "express-session": "^1.13.0",
-    "blueimp-file-upload-expressjs": "^0.4.5",
+    "jquery-file-upload-middleware": "^0.1.7",
     "mssql": "^2.3.1",
-    "ueditor": "1.1.4"
+    "ueditor": "^1.1.4"
   },
   "devDependencies": {
     "gulp": "^3.9.1",

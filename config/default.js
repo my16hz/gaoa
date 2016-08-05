@@ -23,7 +23,7 @@ module.exports = {
         //port:9200,
         database: 'gaoa'
     },
-    // http://thejackalofjavascript.com/uploading-files-made-fun
+    // https://github.com/aguidrevitch/jquery-file-upload-middleware
     upload: {
         tmpDir: path.normalize(filePath + 'temp'),
         uploadDir: path.normalize(filePath + 'files'),
