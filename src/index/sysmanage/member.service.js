@@ -196,6 +196,39 @@ function updateUser (user, done) {
         });
 }
 
+
+/**
+ * 修改用户密码
+ * @param uid 用户ID
+ * @param oldpwd 用户旧密码
+ * @param newpwd 用户新密码
+ * @param done
+ */
 function updateUserPassword (uid, oldpwd, newpwd, done) {
-    // 修改用户密码（待完成）
+    var sql_stmt = 'UPDATE tb_user SET [password] = @newpwd ' +
+        'WHERE [id] = @id AND [password] = @oldpwd;';
+    var objParams = {
+        id: uid,
+        newpwd: newpwd,
+        oldpwd: oldpwd
+    };
+
+    var ps = dbpool
+        .preparedStatement()
+        .input('id', sql.VarChar)
+        .input('newpwd', sql.VarChar)
+        .input('oldpwd', sql.VarChar)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return done(err, false);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                done(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
 }
