@@ -74,8 +74,8 @@ function findUsers (done) {
     var sql_stmt = 'SELECT ' +
         'tb_user.id, tb_user.name, tb_user.description, tb_user.role, tb_user.priority, tb_user.createtime, tb_user.groupid, ' +
         'tb_group.name as groupname ' +
-        'FROM tb_user,tb_group ' +
-        'WHERE tb_user.groupid = tb_group.id ' +
+        'FROM tb_user LEFT JOIN tb_group ' +
+        'ON tb_user.groupid = tb_group.id ' +
         'ORDER BY tb_user.createtime DESC';
     var ps = dbpool
         .preparedStatement()
@@ -196,6 +196,39 @@ function updateUser (user, done) {
         });
 }
 
+
+/**
+ * 修改用户密码
+ * @param uid 用户ID
+ * @param oldpwd 用户旧密码
+ * @param newpwd 用户新密码
+ * @param done
+ */
 function updateUserPassword (uid, oldpwd, newpwd, done) {
-    // 修改用户密码（待完成）
+    var sql_stmt = 'UPDATE tb_user SET [password] = @newpwd ' +
+        'WHERE [id] = @id AND [password] = @oldpwd;';
+    var objParams = {
+        id: uid,
+        newpwd: newpwd,
+        oldpwd: oldpwd
+    };
+
+    var ps = dbpool
+        .preparedStatement()
+        .input('id', sql.VarChar)
+        .input('newpwd', sql.VarChar)
+        .input('oldpwd', sql.VarChar)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return done(err, false);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                done(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
 }
