@@ -7,6 +7,7 @@ var DIR_SRC = {
     coreCss: 'static/core/css/',
     coreImgs: 'static/core/imgs/',
     coreJs: 'static/core/js/',
+    coreCfg: 'static/core/cfg/',
     pages: 'static/pages/'
 };
 
@@ -20,6 +21,10 @@ module.exports = function (gulp) {
         gulp.watch([
             DIR_SRC.coreImgs + '*'
         ], ['copyPics']);
+
+        gulp.watch([
+            DIR_SRC.coreCfg + '*'
+        ], ['copyConfig']);
 
         gulp.watch([
             DIR_SRC.coreCss + '*.js',

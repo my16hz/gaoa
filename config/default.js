@@ -13,23 +13,18 @@ module.exports = {
         userkey: 'LHS_USER_INFO',
         timeout: 3600000 // 1hour,
     },
-    // config for your database
     db: {
-        user: 'gaoa',
-        password: '1qazXSW@',
         server: '182.150.22.119',
         port: 20492,
         //server: '172.16.12.204',
         //port:9200,
-        database: 'gaoa'
+        database: 'gaoa',
+        user: 'gaoa',
+        password: '1qazXSW@'
     },
-    // https://github.com/aguidrevitch/jquery-file-upload-middleware
     upload: {
-        tmpDir: path.normalize(filePath + 'temp'),
-        uploadDir: path.normalize(filePath + 'files'),
-        storage: {
-            type: 'local'
-        }
+        dest: path.normalize(filePath + 'files'),
+        fileFilter: /\.xl(sx|sm|tx|tm|sb|am)$/i
     },
     // https://github.com/netpi/ueditor
     ueditor: {

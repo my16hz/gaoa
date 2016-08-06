@@ -57,6 +57,36 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         // error: show error
     },
 
+    _drawTable: function () {
+        if (!this.dataTable) {
+            (this.dataTable = $('#dataTable')).bootstrapTable({
+                method: 'get',
+                url: '/pubvoice/records',
+                cache: false,
+                ajaxOptions: {
+                    beforeSend: function () {
+                        self._showLoading();
+                    },
+                    complete: function () {
+                        self._removeLoading();
+                    }
+                },
+                onLoadError: function (xhr) {
+                    self._showXHRError('请求失败:' + xhr.responseText);
+                },
+                columns: []
+            });
+        } else {
+
+        }
+
+        return this;
+    },
+    _refreshTable: function () {
+        this.dataTable.bootstrapTable('refresh');
+
+        return this;
+    },
     _shrinkTable: function () {
         return this;
     },

@@ -86,6 +86,7 @@ module.exports = function (gulp, plugins, isdebug) {
             var mainjs = gulp
                 .src([
                     DIR_SRC.coreJs + 'jquery-2.2.4.js',
+                    DIR_SRC.coreJs + 'jquery.ajaxfileupload.js',
                     DIR_SRC.coreJs + 'bootstrap-3.3.5.js',
                     DIR_SRC.coreJs + 'jshashes-1.0.5.js',
                     DIR_SRC.coreJs + 'moment-2.14.1.js',

@@ -25,7 +25,7 @@ var LHSBasicPage = {
         });
 
         $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['zh-CN']);
-        
+
         bootbox.setDefaults({size: 'small', locale: 'zh_CN'});
 
         return this;
@@ -112,8 +112,10 @@ var LHSBasicPage = {
         return values;
     },
     _clearFormControlValues: function (jqform) {
-        $.each(jqform.serializeArray(), function (val) {
-            $('[name="' + val.name + '"]', jqform).each(function (index, elem) {
+        $.each(jqform.serializeArray(), function () {
+            $('[name="' + this.name + '"]', jqform).each(function (elem) {
+                elem = $(this);
+
                 if (elem.is('input[type="text"]') || elem.is('input[type="password"]') || elem.is('textarea')) {
                     elem.val('');
                 } else if (elem.is('input[type="checkbox"]')) {

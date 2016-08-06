@@ -86,7 +86,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
             url: '/sysmanage/groups/save',
             validator: $.proxy(this._groupValidator, this),
             done: function () {
-                self._refreshTable().closeMemberModal();
+                self._refreshTable().closeGroupModal();
             }
         });
     },
@@ -139,8 +139,10 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                             self._showMemberModal(arguments[2]);
                         },
                         'click a:last': function () {
+                            var uid = arguments[2].id;
+
                             bootbox.confirm('确认删除？', function (rs) {
-                                rs && self._ajaxDelete(arguments[2].id, function () {
+                                rs && self._ajaxDelete(uid, function () {
                                     self._refreshTable();
                                 });
                             });
@@ -200,8 +202,10 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                             self._showGroupModal(arguments[2]);
                         },
                         'click a:eq(2)': function () {
+                            var gpid = arguments[2].id;
+
                             bootbox.confirm('确认删除？', function (rs) {
-                                rs && self._ajaxDelete(arguments[2].id, function () {
+                                rs && self._ajaxDelete(gpid, function () {
                                     self._refreshTable();
                                 });
                             });
@@ -249,13 +253,13 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                     });
 
                 if (member) {
-                    $('input[name="id"]', jqform).prop('disabled', true);
+                    $('input[name="id"]', jqform).prop('readonly', true);
                     $('input[name="isNew"]', jqform).val(false);
 
                     !$.isArray(member.role) && (member.role = member.role.split(','));
                     self._setFormControlValues(jqform, member);
                 } else {
-                    $('input[name="id"]', jqform).prop('disabled', false);
+                    $('input[name="id"]', jqform).prop('readonly', false);
                     $('input[name="isNew"]', jqform).val(true);
                 }
 
@@ -276,11 +280,11 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
         modal.next().hide(); // hide group member modal
 
         if (group) {
-            $('input[name="id"]', jqform).prop('disabled', true);
+            $('input[name="id"]', jqform).prop('readonly', true);
             $('input[name="isNew"]', jqform).val(false);
             self._setFormControlValues(jqform, group);
         } else {
-            $('input[name="id"]', jqform).prop('disabled', false);
+            $('input[name="id"]', jqform).prop('readonly', false);
             $('input[name="isNew"]', jqform).val(true);
         }
 

@@ -17,8 +17,8 @@
     "ejs": "^2.4.2",
     "express": "^4.14.0",
     "express-session": "^1.13.0",
-    "jquery-file-upload-middleware": "^0.1.7",
     "mssql": "^2.3.1",
+    "multer": "^1.2.0",
     "ueditor": "^1.1.4"
   },
   "devDependencies": {
