@@ -223,8 +223,12 @@ function updateUserPassword (uid, oldpwd, newpwd, done) {
                 return done(err, false);
             }
 
-            ps.execute(objParams, function (err, rs) {
-                done(err, rs);
+            ps.execute(objParams, function (err, rs, affected) {
+                if (affected == 0) {
+                    done(err, false);
+                } else {
+                    done(err, true);
+                }
 
                 ps.unprepare(function (err) {
                     err && console.error(err);
