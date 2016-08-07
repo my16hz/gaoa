@@ -8,11 +8,30 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
         /*inject:jqtmpl:html*/
         /*endinject*/
 
-        // this.ajax({}, $.proxy(function () {
-        //     $(this.el).append(jqtmpl($, {data: {}}).join(''));
-        //     this.initDependencies();
-        // }, this));
-
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
+        this.initDependencies()
+            ._drawDataTable();
+    },
+    events: {
+        '#approveModal .btn-defautl': 'closeApproveModal',
+        '#approveModal .btn-primary': 'saveApprobation'
+    },
+
+    closeApproveModal: function () {
+        // hide modal
+        // expand table
+    },
+    saveApprobation: function () {
+        // send post request
+        // success: close modal
+        // error: show error
+    },
+
+    _drawDataTable: function () {
+        return this;
+    },
+    _showApproveModal: function () {
+        // show modal
+        return this;
     }
 });

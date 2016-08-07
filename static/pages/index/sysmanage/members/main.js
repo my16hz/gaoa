@@ -17,7 +17,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
 
     events: {
         'click #content-switch > .btn': 'changePageContent',
-        'click #btnAdd': 'addSingeItem',
+        'click #btnAdd': 'showDataModal',
         'click #btnDel': 'delSelectedItems',
         'click #memberModal .btn-default': 'closeMemberModal',
         'click #memberModal .btn-primary': 'saveMember',
@@ -37,7 +37,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
             this._drawMemberTable() :
             this._drawGroupTable();
     },
-    addSingeItem: function () {
+    showDataModal: function () {
         'member' == this.isShown ?
             this._showMemberModal() :
             this._showGroupModal();

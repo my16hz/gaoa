@@ -1,7 +1,7 @@
 <script type="text/x-jquery-tmpl">
 <div class="pubvoice-dispose-page">
     <div class="row func-btns">
-        <div class="col-xs-6 col-xs-offset-6">
+        <div class="col-md-6 col-xs-offset-6">
             <div class="input-group">
                 <input type="text" placeholder="请输入日报期号" class="form-control">
                 <span class="input-group-addon">
@@ -12,62 +12,9 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <table class="table table-striped table-hover table-condensed">
-                <tr>
-                    <th>
-                        <input type="checkbox"/>
-                    </th>
-                    <th>
-                        <a href="javascript:void 0;">
-                            ID<i class="glyphicon glyphicon-triangle-bottom"></i>
-                        </a>
-                    </th>
-                    <th>
-                        <a href="javascript:void 0;">用户名</a>
-                    </th>
-                    <th>
-                        <a href="javascript:void 0;">类型</a>
-                    </th>
-                    <th>
-                        <a href="javascript:void 0;">组</a>
-                    </th>
-                    <th>
-                        <a href="javascript:void 0;">创建时间</a>
-                    </th>
-                    <th>
-                        <a href="javascript:void 0;">级别</a>
-                    </th>
-                    <th>操作</th>
-                </tr>
-                <tr>
-                    <td>
-                        <input type="checkbox"/>
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <a href="javascript:void 0;">修改</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input type="checkbox"/>
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <a href="javascript:void 0;">修改</a>
-                    </td>
-                </tr>
-            </table>
+            <table id="dataTable" class="table table-striped table-hover table-condensed"></table>
+        </div>
+        <div class="col-xs-10 no-padding-left hide">
         </div>
     </div>
 </div>

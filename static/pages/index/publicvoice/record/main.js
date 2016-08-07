@@ -13,18 +13,17 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             ._drawDataTable();
     },
     events: {
-        'click #btnAdd': 'showRecordModal',
+        'click #btnAdd': 'showDataModal',
         'click #btnImport': 'showImportModal',
+        'click #btnDel': 'delSelected',
         'click #btnCommit': 'applyApprobation',
-
         'click #recordModal .btn-default': 'closeRecordModal',
         'click #recordModal .btn-primary': 'savePubVoice',
-
         'click #importModal .btn-default': 'closeImportModal',
         'click #importModal .btn-primary': 'uploadDataFile'
     },
 
-    showRecordModal: function (pubvoice) {
+    showDataModal: function (pubvoice) {
         this._shrinkTable();
         // show modal
         // 1. show data, set all disabled, hide submit.
@@ -57,7 +56,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         // error: show error
     },
 
-    _drawTable: function () {
+    _drawDataTable: function () {
         if (!this.dataTable) {
             (this.dataTable = $('#dataTable')).bootstrapTable({
                 method: 'get',
