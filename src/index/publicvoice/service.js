@@ -6,6 +6,7 @@
 var sql = require('mssql');
 var sysmanage = require('../sysmanage/member.service');
 var dbpool = require('../../utilities/dbpool');
+var xlsx = require('xlsx');
 
 module.exports = {
     /*---------- 舆情导入页面 ----------*/
@@ -15,6 +16,8 @@ module.exports = {
     findPubVoiceDetail: findPubVoiceDetail,
     /* 添加舆情 */
     addPubVoices: addPubVoices,
+    /* 导入舆情 */
+    importPubVoices: importPubVoices,
     /* 删除舆情 */
     removePubVoices: removePubVoices,
     /* 提交审批 */
@@ -108,7 +111,7 @@ function findPubVoiceDetail (uid, pvids, callback) {
 /**
  * 添加舆情
  * @param uid {String} 用户ID
- * @param obj [Array]  舆情详情数组
+ * @param obj [Object]  舆情详情数组
  * @param callback {Function}  回调函数(err)
  */
 function addPubVoices (uid, obj, callback) {
@@ -166,6 +169,79 @@ function addPubVoices (uid, obj, callback) {
                 });
             });
         });
+}
+
+/**
+ * 导入舆情
+ * @param uid 用户ID
+ * @param path 舆情文件路径
+ * @param callback
+ */
+function importPubVoices (uid, path, callback) {
+    var workbook = xlsx.readFile('./publicvoice.xlsx'); //当前excel名字
+    var sheet_name_list = workbook.SheetNames;
+    sheet_name_list.forEach(function(sheet) { /* iterate through sheets */
+        var worksheet = workbook.Sheets[sheet];
+        for (row in worksheet) {
+            /* all keys that do not begin with "!" correspond to cell addresses */
+            if(row[0] === '!') continue;
+            console.log(sheet + "!" + row + "=" + worksheet[row].v);
+        }
+        
+    });
+}
+
+
+/**
+ * 批量添加舆情
+ * @param uid {String} 用户ID
+ * @param obj [Arrays]  舆情详情数组
+ * @param callback {Function}  回调函数(err)
+ */
+function _addBulkPubVoices (uid, objs, callback) {
+    var table = dbpool.table('tb_publicvoice');
+    table.columns.add("title", sql.NVarChar, {nullable: true});
+    table.columns.add("createtime", sql.DateTime2, {nullable: true});
+    table.columns.add("item", sql.NVarChar, {nullable: true});
+    table.columns.add("type", sql.NVarChar, {nullable: true});
+    table.columns.add("relate_department", sql.NVarChar, {nullable: true});
+    table.columns.add("duty_department", sql.NVarChar, {nullable: true});
+    table.columns.add("fellow_count", sql.Int, {nullable: true});
+    table.columns.add("review_count", sql.Int, {nullable: true});
+    table.columns.add("content", sql.NVarChar, {nullable: true});
+    table.columns.add("from_website", sql.NVarChar, {nullable: true});
+    table.columns.add("url", sql.NVarChar, {nullable: true});
+    table.columns.add("state", sql.Int, {nullable: true});
+    table.columns.add("approved_state", sql.Int, {nullable: true});
+    table.columns.add("dispose_stat", sql.Int, {nullable: true});
+    table.columns.add("feedback_state", sql.Int, {nullable: true});
+    table.columns.add("createuser", sql.VarChar, {nullable: true});
+
+    objs.forEach(function (value) {
+        table.rows.add(value["title"],
+            new Date(),
+            value["item"],
+            value["type"],
+            value["relate_department"],
+            value["duty_department"],
+            value["fellow_count"],
+            value["review_count"],
+            value["content"],
+            value["from_website"],
+            value["url"],
+            value["state"],
+            value["approved_state"],
+            value["dispose_stat"],
+            value["feedback_state"],
+            uid);
+    });
+    var request = dbpool.createRequest();
+    request.bulk(table, function(err, rowCount) {
+        if (err) {
+            return callback(err, null);
+        }
+        callback(err, rowCount);
+    });
 }
 
 /**

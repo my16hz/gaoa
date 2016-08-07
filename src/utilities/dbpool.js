@@ -11,7 +11,8 @@ var connection;
 module.exports = {
     initPool: initPool,
     createRequest: createRequest,
-    preparedStatement: preparedStatement
+    preparedStatement: preparedStatement,
+    table: table
 };
 
 function initPool (done) {
@@ -24,4 +25,8 @@ function createRequest () {
 
 function preparedStatement () {
 	return new sql.PreparedStatement(connection);
+}
+
+function table(tbname) {
+    return new sql.Table(tbname);
 }
