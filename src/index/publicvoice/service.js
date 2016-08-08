@@ -36,6 +36,7 @@ module.exports = {
     /**
      * 导入舆情
      * @param uid 用户ID
+     * @param gid 用户组ID
      * @param path 舆情文件路径
      * @param callback
      */
@@ -188,6 +189,13 @@ function addPubVoices(uid, obj, callback) {
         });
 }
 
+/**
+ * 批量导入舆情
+ * @param uid
+ * @param gid
+ * @param path
+ * @param callback
+ */
 function importPubVoices(uid, gid, path, callback) {
     var workbook = xlsx.readFile(path); //当前excel名字
 
