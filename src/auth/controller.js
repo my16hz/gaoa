@@ -47,9 +47,9 @@ function authChecker (req, res, next) {
     var user = req.session[config.session.userkey];
     var reqPath = req.path;
 
-    // if (!/^\/((login|auth)\/?)?$/.test(reqPath) && !user) {
-    //     return res.redirect('/login')
-    // }
+    if (!/^\/((login|auth|error(\/400)?)\/?)?$/.test(reqPath) && !user) {
+        return res.redirect('/login')
+    }
 
     next();
 }

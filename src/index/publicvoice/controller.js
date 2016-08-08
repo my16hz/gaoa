@@ -20,6 +20,7 @@ function pagePubVoice (req, res) {
 }
 
 function getPubVoices (req, res) {
+    service.findPubVoiceList();
 }
 
 function savePubVoice (req, res) {

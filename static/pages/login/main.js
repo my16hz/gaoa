@@ -25,37 +25,38 @@ var LHSLoginPage = $.extend({}, LHSBasicPage, {
         evt.keyCode == 13 && this.clickBtnSubmit();
     },
     _validator: function () {
-        var inputUName = this.$('#username');
-        var inputPassword = this.$('#password');
-
-        var username = $.trim(inputUName.val());
-        var password = $.trim(inputPassword.val());
+        var values = {};
         var sha1 = new Hashes.SHA1();
+        var hasErr = false;
 
-        if (!username.length) {
-            inputUName
-                .parent('.form-group').addClass('has-error')
-                .unbind('focus')
-                .bind('focus', function () {
-                    $(this).removeClass('has-error');
-                });
+        $.each({
+            username: function (name) {
+                return !!name.length;
+            },
+            password: function (pwd) {
+                return !!pwd.length;
+            }
+        }, function (id, checker) {
+            var jqInput = $('#' + id);
+            var value = $.trim(jqInput.val());
 
-            return false;
-        } else if (!password.length) {
-            inputPassword
-                .parent('.form-group').addClass('has-error')
-                .unbind('focus')
-                .bind('focus', function () {
-                    $(this).removeClass('has-error');
-                });
+            if (!checker(value)) {
+                jqInput
+                    .parent('.form-group').addClass('has-error')
+                    .unbind('focus')
+                    .bind('focus', function () {
+                        $(this).removeClass('has-error');
+                    });
+                hasErr = true;
+            } else {
+                values[id] = value;
+            }
+        });
 
-            return false;
-        } else {
-            return {
-                username: username,
-                password: sha1.hex(password)
-            };
-        }
+        !hasErr && (values.password = sha1.hex(values.password));
+
+        return hasErr ? false : values;
+
     },
     _showLoading: function () {
         this.$('#btnSubmit').button('loading');

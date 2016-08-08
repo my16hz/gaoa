@@ -9,6 +9,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         /*endinject*/
 
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
+
         this.initDependencies()
             ._drawDataTable();
     },
@@ -32,7 +33,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         if (pubvoice) {
             self._setFormControlValues(jqform, pubvoice);
         } else {
-            
+
         }
 
         this._shrinkTable()
@@ -69,6 +70,8 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     },
 
     _drawDataTable: function () {
+        var self = this;
+
         if (!this.dataTable) {
             (this.dataTable = $('#dataTable')).bootstrapTable({
                 method: 'get',
@@ -93,25 +96,25 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                     field: 'title'
                 }, {
                     title: '载体',
-                    field: 'name'
+                    field: 'from_website'
                 }, {
                     title: '所属栏目',
-                    field: 'groupname'
+                    field: 'item'
                 }, {
                     title: '舆情类别',
-                    field: 'priority',
+                    field: 'type',
                     formatter: function (val) {
                         return val == 1 ? '市级' : '县级';
                     }
                 }, {
                     title: '处理时间',
-                    field: 'description',
+                    field: 'createtime',
                     formatter: function (val) {
                         return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
                     }
                 }, {
                     title: '状态',
-                    field: 'createtime'
+                    field: 'status'
                 }, {
                     title: '操作',
                     field: 'action',

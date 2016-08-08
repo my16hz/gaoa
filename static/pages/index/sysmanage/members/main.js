@@ -458,6 +458,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
     _memberValidator: function () {
         var jqform = $('#memberModal form');
         var values = this._getFormControlValues(jqform);
+        var sha1 = new Hashes.SHA1();
         var hasErr = false;
 
         $.each({
@@ -486,6 +487,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
             }
         });
 
+        !hasErr && (values.password = sha1.hex(values.password));
         !values.groupid && (delete values.groupid);
         !values.role && (values.role = 0);
 
