@@ -6,9 +6,30 @@
 var service = require('./service');
 
 module.exports = {
-    pagePubVoice: pagePubVoice
+    pagePubVoice: pagePubVoice,
+
+    getPubVoices: getPubVoices,
+    savePubVoice: savePubVoice,
+    removePubVoice: removePubVoice,
+    importPubVoice: importPubVoice,
+    applyApprobation: applyApprobation
 };
 
 function pagePubVoice (req, res) {
     res.render('index/publicvoice');
+}
+
+function getPubVoices (req, res) {
+}
+
+function savePubVoice (req, res) {
+}
+
+function removePubVoice (req, res) {
+}
+
+function importPubVoice (req, res) {
+}
+
+function applyApprobation (req, res) {
 }

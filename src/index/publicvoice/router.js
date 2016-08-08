@@ -10,11 +10,11 @@ module.exports = function () {
     return express.Router()
         .get('/pubvoice', controller.pagePubVoice)
         // record page
-        // .get('/pubvoice/list', controller.getPubVoices)
-        // .post('/pubvoice/save', controller.savePubVoice)
-        // .delete('/pubvoice/delete', controller.removePubVoice)
-        // .post('/pubvoice/import', controller.importPubVoice)
-        // .post('/pubvoice/apply', controller.applyApprobation)
+        .get('/pubvoice/list', controller.getPubVoices)
+        .post('/pubvoice/save', controller.savePubVoice)
+        .delete('/pubvoice/delete', controller.removePubVoice)
+        .post('/pubvoice/import', controller.importPubVoice)
+        .post('/pubvoice/apply', controller.applyApprobation)
         // // examine & approve page
         // .get('/application/list', controller.getApplications)
         // .post('/application/pass', controller.passApplication)

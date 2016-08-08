@@ -10,9 +10,10 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
 
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
 
+        this.isShown = 'member';
+
         this.initDependencies()
-            ._drawMemberTable()
-            .isShown = 'member';
+            ._drawMemberTable();
     },
 
     events: {
@@ -75,7 +76,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
     },
     closeGroupModal: function () {
         this._clearFormControlValues($('#groupModal form'))
-            ._hideGroupModalWrapper()
+            ._hideGroupGridWrapper()
             ._expandGroupTable();
     },
     saveGroup: function () {
@@ -91,7 +92,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
         });
     },
     closeGroupMembersModal: function () {
-        this._hideGroupModalWrapper()._expandGroupTable();
+        this._hideGroupGridWrapper()._expandGroupTable();
     },
 
     _drawMemberTable: function () {
@@ -130,9 +131,12 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                     title: '操作',
                     field: 'action',
                     formatter: function () {
-                        return '<a href="javascript:" title="编辑"><i class="glyphicon glyphicon-edit"></i></a>' +
-                            '&nbsp;&nbsp;' +
-                            '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>';
+                        return '<a href="javascript:" title="编辑">' +
+                            '<i class="glyphicon glyphicon-edit"></i>' +
+                            '</a>&nbsp;&nbsp;' +
+                            '<a href="javascript:" title="删除">' +
+                            '<i class="glyphicon glyphicon-trash"></i>' +
+                            '</a>';
                     },
                     events: {
                         'click a:first': function () {
@@ -188,11 +192,15 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                     title: '操作',
                     field: 'action',
                     formatter: function () {
-                        return '<a href="javascript:" title="成员"><i class="glyphicon glyphicon-user"></i></a>' +
-                            '&nbsp;&nbsp;' +
-                            '<a href="javascript:" title="编辑"><i class="glyphicon glyphicon-edit"></i></a>' +
-                            '&nbsp;&nbsp;' +
-                            '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>';
+                        return '<a href="javascript:" title="成员">' +
+                            '<i class="glyphicon glyphicon-user"></i>' +
+                            '</a>&nbsp;&nbsp;' +
+                            '<a href="javascript:" title="编辑">' +
+                            '<i class="glyphicon glyphicon-edit"></i>' +
+                            '</a>&nbsp;&nbsp;' +
+                            '<a href="javascript:" title="删除">' +
+                            '<i class="glyphicon glyphicon-trash"></i>' +
+                            '</a>';
                     },
                     events: {
                         'click a:eq(0)': function () {
@@ -289,7 +297,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
         }
 
         this._shrinkGroupTable()
-            ._showGroupModalWrapper();
+            ._showGroupGridWrapper();
 
         return this;
     },
@@ -317,9 +325,13 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                         var groupid = arguments[1].groupid;
 
                         if (!groupid) {
-                            return '<a href="javascript:" title="添加"><i class="glyphicon glyphicon-plus"></i></a>';
+                            return '<a href="javascript:" title="添加">' +
+                                '<i class="glyphicon glyphicon-plus"></i>' +
+                                '</a>';
                         } else if (gpid == groupid) {
-                            return '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-minus"></i></a>';
+                            return '<a href="javascript:" title="删除">' +
+                                '<i class="glyphicon glyphicon-minus"></i>' +
+                                '</a>';
                         }
                     },
                     events: {
@@ -351,12 +363,12 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
         }
 
         this._shrinkGroupTable()
-            ._showGroupModalWrapper();
+            ._showGroupGridWrapper();
 
         return this;
     },
 
-    _showGroupModalWrapper: function () {
+    _showGroupGridWrapper: function () {
         $('#groupGridWrapper > div:first')
             .attr('class', 'col-xs-2')
             .next()
@@ -364,7 +376,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
 
         return this;
     },
-    _hideGroupModalWrapper: function () {
+    _hideGroupGridWrapper: function () {
         $('#groupGridWrapper > div:first')
             .attr('class', 'col-md-12')
             .next()

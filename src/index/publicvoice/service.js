@@ -10,19 +10,51 @@ var xlsx = require('xlsx');
 
 module.exports = {
     /*---------- 舆情导入页面 ----------*/
-    /* 查询舆情列表 */
+    /**
+     * 查询舆情列表
+     * @param uid {String} 用户ID
+     * @param priority {Number} 用户priority  1 - 市级 2 - 县级
+     * @param field {String} 排序域
+     * @param order {String} 排序顺序ASC,DESC
+     * @param callback {Function} 回调函数(err, [])
+     */
     findPubVoiceList: findPubVoiceList,
-    /* 查询舆情详情  */
+    /**
+     * 查询舆情详情
+     * @param uid {String}
+     * @param pvids {Array} 舆情ID数组
+     * @param callback {Function} 回调函数(err, object)
+     */
     findPubVoiceDetail: findPubVoiceDetail,
-    /* 添加舆情 */
+    /**
+     * 添加舆情
+     * @param uid {String} 用户ID
+     * @param obj [Object]  舆情详情数组
+     * @param callback {Function}  回调函数(err)
+     */
     addPubVoices: addPubVoices,
-    /* 导入舆情 */
+    /**
+     * 导入舆情
+     * @param uid 用户ID
+     * @param path 舆情文件路径
+     * @param callback
+     */
     importPubVoices: importPubVoices,
-    /* 删除舆情 */
+    /**
+     * 删除舆情
+     * @param uid {Number}
+     * @param pvids {Array} 舆情ID数组
+     * @param callback {Function}  回调函数(err)
+     */
     removePubVoices: removePubVoices,
-    /* 提交审批 */
+    /**
+     * 提交审批
+     * @param uid {Number}
+     * @param pvids  {Array} 舆情ID数组
+     * @param callback {Function}  回调函数(err)
+     */
     commitApproval: commitApproval,
-    
+
     /*---------- 舆情审批页面 ----------*/
     /* 查询待审批的舆情 */
     findWaitApprovalPV: findWaitApprovalPV,
@@ -46,49 +78,42 @@ module.exports = {
     /*---------- 舆情日报页面 ----------*/
 
 };
-/**
- * 查询舆情列表
- * @param uid {String} 用户ID
- * @param priority {Number} 用户priority  1 - 市级 2 - 县级
- * @param field {String} 排序域
- * @param order {String} 排序顺序ASC,DESC
- * @param callback {Function} 回调函数(err, [])
- */
+
 function findPubVoiceList (uid, priority, field, order, callback) {
     var params = {};
     var sql_stmt = "select * from tb_publicvoice ";
+    var ps = null;
+
     if (priority != 1) {
         sql_stmt += ' where createuser = @uid ';
         params['uid'] = uid;
     }
+
     if (field != null && field != "") {
         sql_stmt += " order by " + field + " " + order;
     }
+
     console.log(sql_stmt);
-    var ps = dbpool.preparedStatement()
+
+    ps = dbpool.preparedStatement()
         .input("uid", sql.VarChar)
         .input("field", sql.VarChar)
         .input("order", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
-                return callback(err, null);
+                return callback(err, []);
             }
-            ps.execute(params, function (err, recordset) {
-                callback(err, recordset)
+
+            ps.execute(params, function (err, rs) {
+                callback(err, rs);
+
                 ps.unprepare(function (err) {
-                    if (err)
-                        console.log(err);
+                    err && console.error(err);
                 });
             });
         });
 }
 
-/**
- * 查询舆情详情
- * @param uid {String}
- * @param pvids {Array} 舆情ID数组
- * @param callback {Function} 回调函数(err, object)
- */
 function findPubVoiceDetail (uid, pvids, callback) {
     var sql_stmt = "select * from tb_publicvoice where id in (%pvids%) ";
     sql_stmt.replace('%pvids%', '\'' + pvids.join('\',\'') + '\'')
@@ -101,19 +126,12 @@ function findPubVoiceDetail (uid, pvids, callback) {
             ps.execute({}, function (err, recordset) {
                 callback(err, recordset)
                 ps.unprepare(function (err) {
-                    if (err)
-                        console.log(err);
+                    err && console.error(err);
                 });
             });
         });
 }
 
-/**
- * 添加舆情
- * @param uid {String} 用户ID
- * @param obj [Object]  舆情详情数组
- * @param callback {Function}  回调函数(err)
- */
 function addPubVoices (uid, obj, callback) {
     var sql_stmt = "INSERT INTO tb_publicvoice ([title],[createtime],[item],[type],[relate_department]," +
         "[duty_department],[fellow_count],[review_count],[content],[from_website],[url],[state]," +
@@ -138,7 +156,7 @@ function addPubVoices (uid, obj, callback) {
         "dispose_stat": obj["dispose_stat"],
         "feedback_state": obj["feedback_state"],
         "createuser": uid
-    }
+    };
 
     var ps = dbpool.preparedStatement()
         .input("title", sql.NVarChar)
@@ -164,30 +182,22 @@ function addPubVoices (uid, obj, callback) {
             ps.execute(objParams, function (err, recordset) {
                 callback(err, recordset)
                 ps.unprepare(function (err) {
-                    if (err)
-                        console.log(err);
+                    err && console.error(err);
                 });
             });
         });
 }
 
-/**
- * 导入舆情
- * @param uid 用户ID
- * @param path 舆情文件路径
- * @param callback
- */
 function importPubVoices (uid, path, callback) {
     var workbook = xlsx.readFile('./publicvoice.xlsx'); //当前excel名字
     var sheet_name_list = workbook.SheetNames;
-    sheet_name_list.forEach(function(sheet) { /* iterate through sheets */
+    sheet_name_list.forEach(function (sheet) { /* iterate through sheets */
         var worksheet = workbook.Sheets[sheet];
         for (row in worksheet) {
             /* all keys that do not begin with "!" correspond to cell addresses */
-            if(row[0] === '!') continue;
+            if (row[0] === '!') continue;
             console.log(sheet + "!" + row + "=" + worksheet[row].v);
         }
-        
     });
 }
 
@@ -236,20 +246,16 @@ function _addBulkPubVoices (uid, objs, callback) {
             uid);
     });
     var request = dbpool.createRequest();
-    request.bulk(table, function(err, rowCount) {
+
+    request.bulk(table, function (err, rowCount) {
         if (err) {
             return callback(err, null);
         }
+
         callback(err, rowCount);
     });
 }
 
-/**
- * 删除舆情
- * @param uid {Number}
- * @param pvids {Array} 舆情ID数组
- * @param callback {Function}  回调函数(err)
- */
 function removePubVoices (uid, pvids, callback) {
     var objParams = {};
     var sql_stmt = "DELETE FROM tb_publicvoice WHERE id in (%pvids%);";
@@ -263,8 +269,7 @@ function removePubVoices (uid, pvids, callback) {
             ps.execute(objParams, function (err, recordset) {
                 callback(err, recordset)
                 ps.unprepare(function (err) {
-                    if (err)
-                        console.log(err);
+                    err && console.error(err);
                 });
             });
         });
@@ -281,13 +286,17 @@ function removePubVoices (uid, pvids, callback) {
 function _updatePVState (pvids, state, callback) {
     var objParams = {};
     var sets = []
+
     for (var k in state) {
         sets.push(k + ' = ' + state[k]);
     }
     var sql_stmt = "UPDATE tb_publicvoice SET %sets% WHERE id in (%pvids%);";
+
     sql_stmt.replace('%sets%', sets.join(','));
     sql_stmt.replace('%pvids%', '\'' + pvids.join('\',\'') + '\'');
+
     console.log(sql_stmt);
+
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
             if (err) {
@@ -303,12 +312,6 @@ function _updatePVState (pvids, state, callback) {
         });
 }
 
-/**
- * 提交审批
- * @param uid {Number}
- * @param pvids  {Array} 舆情ID数组
- * @param callback {Function}  回调函数(err)
- */
 function commitApproval (uid, pvids, callback) {
     _updatePVState(pvids, {'state': 1}, callback);
 }
@@ -357,7 +360,7 @@ function findWaitApprovalPV (uid, field, order, callback) {
  */
 function approvalPubVoice (uid, obj, callback) {
     var sql_stmt = "INSERT INTO tb_pv_approved ([pvid],[createuser],[type],[createtime],[content],[result]) " +
-                "VALUES (@pvid,@createuser,@type,@createtime,@content,@result)";
+        "VALUES (@pvid,@createuser,@type,@createtime,@content,@result)";
     var objParams = {
         "pvid": obj["pvid"],
         "createuser": obj["createuser"],
@@ -382,13 +385,17 @@ function approvalPubVoice (uid, obj, callback) {
 
             ps.execute(objParams, function (err, rs) {
                 var state = {};
-                state['approved_state'] = obj['result']; /* 通过 */
+                state['approved_state'] = obj['result'];
+                /* 通过 */
                 if (obj['result'] == 1) {
-                    state['state'] = 3; /* 不通过 */
+                    state['state'] = 3;
+                    /* 不通过 */
                 } else if (obj['result'] == 2) {
-                    state['state'] = 1; /* 暂缓通过 将状态设为 待审批 */
+                    state['state'] = 1;
+                    /* 暂缓通过 将状态设为 待审批 */
                 } else {
-                    state['state'] = 2 /* 通过 */
+                    state['state'] = 2
+                    /* 通过 */
                 }
                 _updatePVState([obj["pvid"]], state, callback);
 
@@ -405,7 +412,7 @@ function approvalPubVoice (uid, obj, callback) {
  * @param order {String} - ASC,DESC
  * @param callback {Function}  回调函数(err, 日报数组[])
  */
-function findDailyList(field, order, callback) {
+function findDailyList (field, order, callback) {
     var sql_stmt = "SELECT id,issue_id,createuser,createtime,pvids FROM tb_daily ";
     if (field != null && field != "") {
         sql_stmt += " order by " + field + " " + order;
@@ -433,7 +440,7 @@ function findDailyList(field, order, callback) {
  * @param daily_ids {Number} 日报ID数组
  * @param callback {Function}  回调函数(err, object)
  */
-function findDailyDetail(daily_ids, callback) {
+function findDailyDetail (daily_ids, callback) {
     var sql_stmt = "SELECT * FROM tb_daily where id = " + daily_ids;
     var objParams = {};
     var ps = dbpool.preparedStatement()
@@ -463,9 +470,9 @@ function findDailyDetail(daily_ids, callback) {
  * }
  * @param callback
  */
-function createDaily(uid, daily, callback) {
+function createDaily (uid, daily, callback) {
     var sql_stmt = "INSERT INTO tb_daily ([id],[issue_id],[content],[createuser],[createtime],[pvids]) " +
-                    "VALUES (@id, @issue_id, @content, @createuer, @createtime, @pvids)";
+        "VALUES (@id, @issue_id, @content, @createuer, @createtime, @pvids)";
     var objParams = {
         "id": daily["id"],
         "issue_id": daily["issue_id"],
@@ -502,7 +509,7 @@ function createDaily(uid, daily, callback) {
  * 获取日报当前期号
  * @param callback {Function}  回调函数(err, {issue_id:{Number}舆情期数, id:总期数})
  */
-function getCurrentDailyID(callback) {
+function getCurrentDailyID (callback) {
     var sql_stmt = "SELECT MAX(id) as 'id', MAX(issue_id) as 'issue_id' FROM tb_daily";
     var objParams = {};
     var ps = dbpool.preparedStatement()
@@ -535,6 +542,6 @@ function getDailyTemplate (uid, callback) {
  * @param object {Array} 通报对象，用户ID列表
  * @param callback {Function}  回调函数(err)
  */
-function notifyPubVoices(uid, object, callback) {
+function notifyPubVoices (uid, object, callback) {
 
 }
