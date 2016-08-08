@@ -79,7 +79,7 @@ module.exports = {
 
 };
 
-function findPubVoiceList (uid, priority, field, order, callback) {
+function findPubVoiceList(uid, priority, field, order, callback) {
     var params = {};
     var sql_stmt = "select * from tb_publicvoice ";
     var ps = null;
@@ -114,7 +114,7 @@ function findPubVoiceList (uid, priority, field, order, callback) {
         });
 }
 
-function findPubVoiceDetail (uid, pvids, callback) {
+function findPubVoiceDetail(uid, pvids, callback) {
     var sql_stmt = "select * from tb_publicvoice where id in (%pvids%) ";
     sql_stmt.replace('%pvids%', '\'' + pvids.join('\',\'') + '\'')
     console.log(sql_stmt);
@@ -132,7 +132,7 @@ function findPubVoiceDetail (uid, pvids, callback) {
         });
 }
 
-function addPubVoices (uid, obj, callback) {
+function addPubVoices(uid, obj, callback) {
     var sql_stmt = "INSERT INTO tb_publicvoice ([title],[createtime],[item],[type],[relate_department]," +
         "[duty_department],[fellow_count],[review_count],[content],[from_website],[url],[state]," +
         "[approved_state],[dispose_stat],[feedback_state],[createuser]) " +
@@ -188,17 +188,33 @@ function addPubVoices (uid, obj, callback) {
         });
 }
 
-function importPubVoices (uid, path, callback) {
-    var workbook = xlsx.readFile('./publicvoice.xlsx'); //当前excel名字
-    var sheet_name_list = workbook.SheetNames;
-    sheet_name_list.forEach(function (sheet) { /* iterate through sheets */
-        var worksheet = workbook.Sheets[sheet];
-        for (row in worksheet) {
-            /* all keys that do not begin with "!" correspond to cell addresses */
-            if (row[0] === '!') continue;
-            console.log(sheet + "!" + row + "=" + worksheet[row].v);
-        }
+function importPubVoices(uid, gid, path, callback) {
+    var workbook = xlsx.readFile(path); //当前excel名字
+
+    var worksheet = workbook.Sheets["Sheet1"];
+    var pubvoices = xlsx.utils.sheet_to_json(worksheet, {});
+    var pvList = [];
+    pubvoices.forEach(function (pv) {
+        var value = {};
+        value["title"] = pv["标题"];
+        value["createtime"] = new Date();
+        value["item"] = pv["所属栏目"];
+        value["type"] = pv["舆情类别"];
+        value["relate_department"] = pv["涉及部门"];
+        value["duty_department"] = gid;
+        value["fellow_count"] = pv["回帖数量"];
+        value["review_count"] = pv["关注人数"];
+        value["content"] = pv["帖文内容"];
+        value["from_website"] = pv["载体"];
+        value["url"] = pv["网址"];
+        value["state"] = 0;
+        value["approved_state"] = 0;
+        value["dispose_stat"] = 0;
+        value["feedback_state"] = 0;
+        value["createuser"] = uid;
+        pvList.push(value);
     });
+    _addBulkPubVoices(uid, pvList, callback);
 }
 
 
@@ -208,7 +224,7 @@ function importPubVoices (uid, path, callback) {
  * @param obj [Arrays]  舆情详情数组
  * @param callback {Function}  回调函数(err)
  */
-function _addBulkPubVoices (uid, objs, callback) {
+function _addBulkPubVoices(uid, objs, callback) {
     var table = dbpool.table('tb_publicvoice');
     table.columns.add("title", sql.NVarChar, {nullable: true});
     table.columns.add("createtime", sql.DateTime2, {nullable: true});
@@ -229,7 +245,7 @@ function _addBulkPubVoices (uid, objs, callback) {
 
     objs.forEach(function (value) {
         table.rows.add(value["title"],
-            new Date(),
+            value["createtime"],
             value["item"],
             value["type"],
             value["relate_department"],
@@ -243,7 +259,7 @@ function _addBulkPubVoices (uid, objs, callback) {
             value["approved_state"],
             value["dispose_stat"],
             value["feedback_state"],
-            uid);
+            value["createuser"]);
     });
     var request = dbpool.createRequest();
 
@@ -256,7 +272,7 @@ function _addBulkPubVoices (uid, objs, callback) {
     });
 }
 
-function removePubVoices (uid, pvids, callback) {
+function removePubVoices(uid, pvids, callback) {
     var objParams = {};
     var sql_stmt = "DELETE FROM tb_publicvoice WHERE id in (%pvids%);";
     sql_stmt.replace('%pvids%', '\'' + pvids.join('\',\'') + '\'')
@@ -283,7 +299,7 @@ function removePubVoices (uid, pvids, callback) {
  * @param callback
  * @private
  */
-function _updatePVState (pvids, state, callback) {
+function _updatePVState(pvids, state, callback) {
     var objParams = {};
     var sets = []
 
@@ -312,7 +328,7 @@ function _updatePVState (pvids, state, callback) {
         });
 }
 
-function commitApproval (uid, pvids, callback) {
+function commitApproval(uid, pvids, callback) {
     _updatePVState(pvids, {'state': 1}, callback);
 }
 
@@ -323,7 +339,7 @@ function commitApproval (uid, pvids, callback) {
  * @param order {String} - ASC,DESC
  * @param callback {Function}  回调函数(err, 舆情数组[])
  */
-function findWaitApprovalPV (uid, field, order, callback) {
+function findWaitApprovalPV(uid, field, order, callback) {
     var sql_stmt = "SELECT * FROM tb_publicvoice WHERE state = 1 ";
     if (field != null && field != "") {
         sql_stmt += " order by " + field + " " + order;
@@ -358,7 +374,7 @@ function findWaitApprovalPV (uid, field, order, callback) {
  * result {Number} 审批结果 舆情： 0 - 通过， 1 - 不通过 2 -暂缓通过 批示处理签： 3 - 转 ， 4 - 转发 ， 5 - 阅存}
  * @param callback {Function}  回调函数(err)
  */
-function approvalPubVoice (uid, obj, callback) {
+function approvalPubVoice(uid, obj, callback) {
     var sql_stmt = "INSERT INTO tb_pv_approved ([pvid],[createuser],[type],[createtime],[content],[result]) " +
         "VALUES (@pvid,@createuser,@type,@createtime,@content,@result)";
     var objParams = {
@@ -412,7 +428,7 @@ function approvalPubVoice (uid, obj, callback) {
  * @param order {String} - ASC,DESC
  * @param callback {Function}  回调函数(err, 日报数组[])
  */
-function findDailyList (field, order, callback) {
+function findDailyList(field, order, callback) {
     var sql_stmt = "SELECT id,issue_id,createuser,createtime,pvids FROM tb_daily ";
     if (field != null && field != "") {
         sql_stmt += " order by " + field + " " + order;
@@ -440,7 +456,7 @@ function findDailyList (field, order, callback) {
  * @param daily_ids {Number} 日报ID数组
  * @param callback {Function}  回调函数(err, object)
  */
-function findDailyDetail (daily_ids, callback) {
+function findDailyDetail(daily_ids, callback) {
     var sql_stmt = "SELECT * FROM tb_daily where id = " + daily_ids;
     var objParams = {};
     var ps = dbpool.preparedStatement()
@@ -470,7 +486,7 @@ function findDailyDetail (daily_ids, callback) {
  * }
  * @param callback
  */
-function createDaily (uid, daily, callback) {
+function createDaily(uid, daily, callback) {
     var sql_stmt = "INSERT INTO tb_daily ([id],[issue_id],[content],[createuser],[createtime],[pvids]) " +
         "VALUES (@id, @issue_id, @content, @createuer, @createtime, @pvids)";
     var objParams = {
@@ -509,7 +525,7 @@ function createDaily (uid, daily, callback) {
  * 获取日报当前期号
  * @param callback {Function}  回调函数(err, {issue_id:{Number}舆情期数, id:总期数})
  */
-function getCurrentDailyID (callback) {
+function getCurrentDailyID(callback) {
     var sql_stmt = "SELECT MAX(id) as 'id', MAX(issue_id) as 'issue_id' FROM tb_daily";
     var objParams = {};
     var ps = dbpool.preparedStatement()
@@ -532,7 +548,7 @@ function getCurrentDailyID (callback) {
  * @param uid
  * @param callback
  */
-function getDailyTemplate (uid, callback) {
+function getDailyTemplate(uid, callback) {
 
 }
 
@@ -542,6 +558,6 @@ function getDailyTemplate (uid, callback) {
  * @param object {Array} 通报对象，用户ID列表
  * @param callback {Function}  回调函数(err)
  */
-function notifyPubVoices (uid, object, callback) {
+function notifyPubVoices(uid, object, callback) {
 
 }
