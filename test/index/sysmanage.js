@@ -3,7 +3,8 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
-var service = require('../../src/index/sysmanage/service')
+var service = require('../../src/index/sysmanage/member.service')
+var groupservice = require('../../src/index/sysmanage/group.service')
 module.exports = {
     _testAddUser: _testAddUser,
     _testAddGroup:_testAddGroup,
@@ -16,7 +17,8 @@ module.exports = {
     _testFindGroup:_testFindGroup,
     _testAddUser2Group:_testAddUser2Group,
     _testRemoveUserFromGroup:_testRemoveUserFromGroup,
-    _testUserGroup:_testUserGroup
+    _testUserGroup:_testUserGroup,
+    _testUpdateUserPassword:_testUpdateUserPassword
 };
 
 function _testAddUser() {
@@ -41,7 +43,7 @@ function _testAddGroup() {
     groupInfo['description'] = '李龙';
     groupInfo['priority'] = 0;
 
-    service.addGroup(groupInfo, function(err, rs) {
+    groupservice.addGroup(groupInfo, function(err, rs) {
         if (err) console.log(err);
     })
 }
@@ -53,7 +55,7 @@ function _testRemoveUsers() {
 }
 
 function _testRemoveGroup() {
-    service.removeGroup('admin', 'lilong', function(err, rs) {
+    groupservice.removeGroups(['lilong'], function(err, rs) {
         if (err) console.log(err);
     })
 }
@@ -127,6 +129,13 @@ function _testUserGroup() {
         else console.log(rs);
     })
     service.findGroupUsers("admin", function(err, rs) {
+        if (err) console.log(err);
+        else console.log(rs);
+    })
+}
+
+function _testUpdateUserPassword() {
+    service.updateUserPassword("lilong", '123456', '123', function(err, rs) {
         if (err) console.log(err);
         else console.log(rs);
     })
