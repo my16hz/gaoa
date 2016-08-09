@@ -7,8 +7,41 @@ var config = require('config');
 var multer = require('multer');
 var uuid = require('node-uuid');
 
-var cfgDatafile = config.datafile;
-var cfgUEditor = config.ueditor;
+var dfcfg = config.datafile;
+var dfhandler = multer({
+    storage: multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, dfcfg.uploadDir + (file.dirName = _buildDirName()));
+        },
+        filename: function (req, file, cb) {
+            cb(null, uuid.v4() + '.' + _getExtention(file));
+        }
+    }),
+    limits: {
+        fileSize: dfcfg.fileSize
+    },
+    fileFilter: function (req, file, cb) {
+        return cb(null, !!~dfcfg.fileType.indexOf(_getExtention(file)));
+    }
+}).single(dfcfg.field);
+
+var uecfg = config.ueditor;
+var uehandler = multer({
+    storage: multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, uecfg.uploadDir + (file.dirName = _buildDirName()));
+        },
+        filename: function (req, file, cb) {
+            cb(null, uuid.v4() + '.' + _getExtention(file));
+        }
+    }),
+    limits: {
+        fileSize: uecfg.fileSize
+    },
+    fileFilter: function (req, file, cb) {
+        return cb(null, !!~uecfg.fileType.indexOf(_getExtention(file)));
+    }
+}).single(uecfg.field);
 
 module.exports = {
     datafile: datafile,
@@ -16,31 +49,26 @@ module.exports = {
 };
 
 function datafile () {
+    dfhandler(req, res, function (err) {
+        var file = req.file;
 
+        if (err || !file) {
+
+        } else {
+
+        }
+
+        err && console.error(err);
+    });
 }
 
 function ueditor (req, res) {
-    return [multer({
-        storage: multer.diskStorage({
-            destination: function (req, file, cb) {
-                cb(null, cfgUEditor.uploadDir + (file.dirName = _buildDirName()));
-            },
-            filename: function (req, file, cb) {
-                cb(null, uuid.v4() + '.' + _getExtention(file));
-            }
-        }),
-        limits: {
-            fileSize: cfgUEditor.fileSize
-        },
-        fileFilter: function (req, file, cb) {
-            return cb(null, !!~cfgUEditor.fileType.indexOf(_getExtention(file)));
-        }
-    }).single(cfgUEditor.field), function (req, res) {
+    uehandler(req, res, function (err) {
         var file = req.file;
 
         res.send(JSON.stringify(
-            !file ? {
-                state: '文件类型错误或大于5Mb'
+            !file || err ? {
+                state: '文件类型错误或大于5MB。'
             } : {
                 name: file.filename,
                 originalName: file.originalname,
@@ -50,7 +78,9 @@ function ueditor (req, res) {
                 type: _getExtention(file)
             }
         ));
-    }];
+
+        err && console.error(err);
+    });
 }
 
 

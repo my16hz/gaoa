@@ -6,12 +6,12 @@
 var DIR_SRC = {
     imgs: 'static/core/imgs/',
     fonts: 'static/core/css/fonts/',
-    config: 'static/core/cfg/'
+    editor: 'static/editor/'
 };
 var DIR_DEST = {
     imgs: 'public/css/imgs/',
     fonts: 'public/css/fonts',
-    config: 'public/cfg'
+    editor: 'public/editor'
 };
 
 module.exports = function (gulp, plugins) {
@@ -27,9 +27,9 @@ module.exports = function (gulp, plugins) {
             .pipe(plugins.clean({force: true}));
     });
 
-    gulp.task('cleanConfig', function () {
+    gulp.task('cleanEditor', function () {
         return gulp
-            .src(DIR_DEST.config, {read: false})
+            .src(DIR_DEST.editor, {read: false})
             .pipe(plugins.clean({force: true}));
     });
 
@@ -45,9 +45,9 @@ module.exports = function (gulp, plugins) {
             .pipe(gulp.dest(DIR_DEST.fonts));
     });
 
-    gulp.task('copyConfig', ['cleanConfig'], function () {
+    gulp.task('copyEditor', ['cleanEditor'], function () {
         return gulp
-            .src(DIR_SRC.config + '*')
-            .pipe(gulp.dest(DIR_DEST.config));
+            .src(DIR_SRC.editor + '**/*')
+            .pipe(gulp.dest(DIR_DEST.editor));
     });
 };
