@@ -17,6 +17,7 @@ module.exports = function (app) {
 
     // static source
     app.use(express.static(config.root + '/public'));
+    app.use(express.static(config.root + '/upload/ueditor'));
 
     // view engine setup
     app.set('views', config.root + '/views');
