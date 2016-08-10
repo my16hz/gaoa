@@ -3,7 +3,7 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
-var config = require('config');
+var config = require('config').session;
 
 var errhandler = require('../utilities/errhandler');
 var service = require('./service');
@@ -11,6 +11,7 @@ var service = require('./service');
 module.exports = {
     pageLogin: pageLogin,
     doLogin: doLogin,
+    doLogout: doLogout,
     // middlerware
     authChecker: authChecker
 };
@@ -31,7 +32,7 @@ function doLogin (req, res) {
         if (err) {
             errhandler.internalException(res, err);
         } else if (user) {
-            req.session[config.session.userkey] = user;
+            req.session[config.userkey] = user;
 
             res.send({
                 success: true,
@@ -41,6 +42,11 @@ function doLogin (req, res) {
             errhandler.customError(res, '用户名或密码错误。');
         }
     });
+}
+
+function doLogout (req, res) {
+    req.session[config.userkey] = null;
+    return res.redirect('/login')
 }
 
 function authChecker (req, res, next) {

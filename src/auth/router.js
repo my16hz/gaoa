@@ -10,5 +10,6 @@ module.exports = function () {
     return express.Router()
         .get('/', controller.pageLogin)
         .get('/login', controller.pageLogin)
-        .post('/auth', controller.doLogin);
+        .post('/auth', controller.doLogin)
+        .post('/logout', controller.doLogout);
 };
