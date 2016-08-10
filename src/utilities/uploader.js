@@ -4,14 +4,19 @@
  * Author: lhs
  */
 var config = require('config');
+var fs = require('fs');
 var multer = require('multer');
 var uuid = require('node-uuid');
+
+var errhandler = require('./errhandler');
 
 var dfcfg = config.datafile;
 var dfhandler = multer({
     storage: multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null, dfcfg.uploadDir + (file.dirName = _buildDirName()));
+            _createDirectory(dfcfg.uploadDir + (file.dirName = _buildDirName()), function (err) {
+                cb(err, path);
+            });
         },
         filename: function (req, file, cb) {
             cb(null, uuid.v4() + '.' + _getExtention(file));
@@ -29,7 +34,9 @@ var uecfg = config.ueditor;
 var uehandler = multer({
     storage: multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null, uecfg.uploadDir + (file.dirName = _buildDirName()));
+            _createDirectory(uecfg.uploadDir + (file.dirName = _buildDirName()), function (err) {
+                cb(err, path);
+            });
         },
         filename: function (req, file, cb) {
             cb(null, uuid.v4() + '.' + _getExtention(file));
@@ -53,12 +60,10 @@ function datafile () {
         var file = req.file;
 
         if (err || !file) {
-
+            errhandler.customError('文件上传失败。');
         } else {
-
+            res.send({success: true});
         }
-
-        err && console.error(err);
     });
 }
 
@@ -97,4 +102,16 @@ function _buildDirName () {
         date.getFullYear(), !mm[1] && '0', mm,
         !dd[1] && '0', dd
     ].join('');
+}
+
+function _createDirectory (path, done) {
+    fs.access(path, fs.F_OK, function (err) {
+        if (!err) {
+            done(null, path);
+        } else {
+            fs.mkdir(path, function (err) {
+                done(err, path);
+            });
+        }
+    });
 }

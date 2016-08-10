@@ -26,7 +26,7 @@
 }
 
 .index-page .header .nav {
-    margin-left: 270px;
+    float: left;
 }
 
 .index-page .header .nav li a {
@@ -34,6 +34,12 @@
     padding: 10px 20px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+}
+
+.index-page .header .btn-logout {
+    float: right;
+    margin-top: 31px;
+    margin-right:20px;
 }
 
 .index-page .content .aside-menu {
