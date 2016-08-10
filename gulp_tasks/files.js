@@ -10,8 +10,8 @@ var DIR_SRC = {
 };
 var DIR_DEST = {
     imgs: 'public/css/imgs/',
-    fonts: 'public/css/fonts',
-    editor: 'public/editor'
+    fonts: 'public/css/fonts/',
+    editor: 'public/editor/'
 };
 
 module.exports = function (gulp, plugins) {
@@ -45,9 +45,26 @@ module.exports = function (gulp, plugins) {
             .pipe(gulp.dest(DIR_DEST.fonts));
     });
 
-    gulp.task('copyEditor', ['cleanEditor'], function () {
+    gulp.task('copyEditorJS', ['cleanEditor'], function () {
         return gulp
-            .src(DIR_SRC.editor + '**/*')
+            .src(DIR_SRC.editor + 'dialogs/**/*.js')
+            .pipe(plugins.uglify())
+            .pipe(gulp.dest(DIR_DEST.editor + 'dialogs'));
+    });
+
+    gulp.task('copyEditorCss', ['cleanEditor'], function () {
+        return gulp
+            .src(DIR_SRC.editor + '**/*.css')
+            .pipe(plugins.minifyCss())
+            .pipe(gulp.dest(DIR_DEST.editor));
+    });
+
+    gulp.task('copyEditor', ['copyEditorJS', 'copyEditorCss'], function () {
+        return gulp
+            .src([
+                DIR_SRC.editor + '**/*.png',
+                DIR_SRC.editor + '**/*.gif'
+            ])
             .pipe(gulp.dest(DIR_DEST.editor));
     });
 };

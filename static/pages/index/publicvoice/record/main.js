@@ -10,7 +10,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
 
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
 
-        // this.editor = UM.getEditor('lhsUE');
+        this.editor = UM.getEditor('lhsUE');
 
         this.initDependencies()
             ._drawDataTable();
@@ -29,6 +29,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     showDataModal: function (pubvoice) {
         var modal = $('#dataModal').show();
         var jqform = modal.find('form');
+        var self = this;
 
         modal.siblings().hide();
 

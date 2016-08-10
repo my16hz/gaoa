@@ -14,7 +14,7 @@ var dfcfg = config.datafile;
 var dfhandler = multer({
     storage: multer.diskStorage({
         destination: function (req, file, cb) {
-            _createDirectory(dfcfg.uploadDir + (file.dirName = _buildDirName()), function (err) {
+            _createDirectory(dfcfg.uploadDir + (file.dirName = _buildDirName()), function (err, path) {
                 cb(err, path);
             });
         },
@@ -34,7 +34,7 @@ var uecfg = config.ueditor;
 var uehandler = multer({
     storage: multer.diskStorage({
         destination: function (req, file, cb) {
-            _createDirectory(uecfg.uploadDir + (file.dirName = _buildDirName()), function (err) {
+            _createDirectory(uecfg.uploadDir + (file.dirName = _buildDirName()), function (err, path) {
                 cb(err, path);
             });
         },
@@ -99,8 +99,9 @@ function _buildDirName () {
     var dd = date.getDate();
 
     return [
-        date.getFullYear(), !mm[1] && '0', mm,
-        !dd[1] && '0', dd
+        date.getFullYear(),
+        mm < 10 ? '0' : '', mm,
+        dd < 10 ? '0' : '', dd
     ].join('');
 }
 
