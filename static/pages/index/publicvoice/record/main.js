@@ -10,7 +10,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
 
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
 
-        this.editor = UM.getEditor('lhsUE');
+        // this.editor = UM.getEditor('lhsUE');
 
         this.initDependencies()
             ._drawDataTable();

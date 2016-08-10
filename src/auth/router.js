@@ -11,5 +11,5 @@ module.exports = function () {
         .get('/', controller.pageLogin)
         .get('/login', controller.pageLogin)
         .post('/auth', controller.doLogin)
-        .post('/logout', controller.doLogout);
+        .get('/logout', controller.doLogout);
 };

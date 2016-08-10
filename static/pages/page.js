@@ -28,7 +28,7 @@ var LHSBasicPage = {
 
         bootbox.setDefaults({size: 'small', locale: 'zh_CN'});
 
-        return this._bindlogoutEvent();
+        return this;
     },
 
     /**
@@ -151,16 +151,6 @@ var LHSBasicPage = {
                     jqElem.val(val);
                 }
             });
-        });
-
-        return this;
-    },
-
-    _bindlogoutEvent: function () {
-        var self = this;
-
-        $('#btnLogout').bind('click', function () {
-            self._sendRequest({type: 'post', url: '/logout'});
         });
 
         return this;

@@ -112,10 +112,7 @@
                             root.push(tempPath);
                         }
                     }
-
                 }
-
-
             }
 
             var currentPath = document.getElementsByTagName('script');

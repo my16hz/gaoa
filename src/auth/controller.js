@@ -50,7 +50,7 @@ function doLogout (req, res) {
 }
 
 function authChecker (req, res, next) {
-    var user = req.session[config.session.userkey];
+    var user = req.session[config.userkey];
     var reqPath = req.path;
 
     if (!/^\/((login|auth|error(\/400)?)\/?)?$/.test(reqPath) && !user) {
