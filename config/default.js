@@ -22,14 +22,16 @@ module.exports = {
         user: 'gaoa',
         password: '1qazXSW@'
     },
-    upload: {
-        dest: path.normalize(filePath + 'files'),
-        fileFilter: /\.xl(sx|sm|tx|tm|sb|am)$/i
+    datafile: {
+        field: 'datafile',
+        uploadDir: filePath + 'datafile/', // a new dir very day: Datafile20160809
+        fileSize: 10 * 1024 * 1024, //bytes
+        fileType: []
     },
-    // https://github.com/netpi/ueditor
     ueditor: {
-        uploadDir: path.normalize(filePath + 'ueditor'),
-        configPath: '/cfg/ue.json',
-        imgUrl: '/ue/imgs/'
+        field: 'upfile',
+        uploadDir: filePath + 'ueditor/', // a new dir very day: UEditor20160809
+        fileSize: 5 * 1024 * 1024, //bytes
+        fileType: ['gif', 'png', 'jpg', 'jpeg', 'bmp']
     }
 };

@@ -6,12 +6,12 @@
 var DIR_SRC = {
     imgs: 'static/core/imgs/',
     fonts: 'static/core/css/fonts/',
-    config: 'static/core/cfg/'
+    editor: 'static/editor/'
 };
 var DIR_DEST = {
     imgs: 'public/css/imgs/',
-    fonts: 'public/css/fonts',
-    config: 'public/cfg'
+    fonts: 'public/css/fonts/',
+    editor: 'public/editor/'
 };
 
 module.exports = function (gulp, plugins) {
@@ -27,9 +27,9 @@ module.exports = function (gulp, plugins) {
             .pipe(plugins.clean({force: true}));
     });
 
-    gulp.task('cleanConfig', function () {
+    gulp.task('cleanEditor', function () {
         return gulp
-            .src(DIR_DEST.config, {read: false})
+            .src(DIR_DEST.editor, {read: false})
             .pipe(plugins.clean({force: true}));
     });
 
@@ -45,9 +45,26 @@ module.exports = function (gulp, plugins) {
             .pipe(gulp.dest(DIR_DEST.fonts));
     });
 
-    gulp.task('copyConfig', ['cleanConfig'], function () {
+    gulp.task('copyEditorJS', ['cleanEditor'], function () {
         return gulp
-            .src(DIR_SRC.config + '*')
-            .pipe(gulp.dest(DIR_DEST.config));
+            .src(DIR_SRC.editor + 'dialogs/**/*.js')
+            .pipe(plugins.uglify())
+            .pipe(gulp.dest(DIR_DEST.editor + 'dialogs'));
+    });
+
+    gulp.task('copyEditorCss', ['cleanEditor'], function () {
+        return gulp
+            .src(DIR_SRC.editor + '**/*.css')
+            .pipe(plugins.minifyCss())
+            .pipe(gulp.dest(DIR_DEST.editor));
+    });
+
+    gulp.task('copyEditor', ['copyEditorJS', 'copyEditorCss'], function () {
+        return gulp
+            .src([
+                DIR_SRC.editor + '**/*.png',
+                DIR_SRC.editor + '**/*.gif'
+            ])
+            .pipe(gulp.dest(DIR_DEST.editor));
     });
 };

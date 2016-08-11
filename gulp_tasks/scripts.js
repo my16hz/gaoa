@@ -6,6 +6,7 @@
 var DIR_SRC = {
     coreJs: 'static/core/js/',
     pages: 'static/pages/',
+    editor: 'static/editor/',
     loginPage: 'static/pages/login/',
     indexPage: 'static/pages/index/'
 };
@@ -80,24 +81,38 @@ module.exports = function (gulp, plugins, isdebug) {
     });
 
     Object.keys(SUB_PAGES).forEach(function (module, name) {
+        var dependencies = [
+            DIR_SRC.coreJs + 'jquery-2.2.4.js',
+            DIR_SRC.coreJs + 'jquery.ajaxfileupload.js',
+            DIR_SRC.coreJs + 'bootstrap-3.3.5.js',
+            DIR_SRC.coreJs + 'moment-2.14.1.js',
+            DIR_SRC.coreJs + 'bootstrap-table-1.11.0.js',
+            DIR_SRC.coreJs + 'bootstrap-table-zh-CN-1.11.0.js',
+            DIR_SRC.coreJs + 'bootbox-4.4.0.js'
+        ];
+
+        if ('sysmanage' == module) {
+            dependencies.push(DIR_SRC.coreJs + 'jshashes-1.0.5.js');
+        } else if ('publicvoice' == module) {
+            dependencies.push(
+                DIR_SRC.editor + 'config.js',
+                DIR_SRC.editor + 'main.js',
+                DIR_SRC.editor + 'lang/zh-cn.js'
+            );
+        }
+
+        dependencies.push(
+            DIR_SRC.indexPage + module + '/start.js',
+            DIR_SRC.pages + 'page.js',
+            DIR_DEST + '_subpage_' + module + '*.js',
+            DIR_SRC.indexPage + module + '/end.js'
+        );
+
         TASKS_MODULES.push(name = module + '.js');
 
         gulp.task(name, TASKS_SUBPAGES, function () {
             var mainjs = gulp
-                .src([
-                    DIR_SRC.coreJs + 'jquery-2.2.4.js',
-                    DIR_SRC.coreJs + 'jquery.ajaxfileupload.js',
-                    DIR_SRC.coreJs + 'bootstrap-3.3.5.js',
-                    DIR_SRC.coreJs + 'jshashes-1.0.5.js',
-                    DIR_SRC.coreJs + 'moment-2.14.1.js',
-                    DIR_SRC.coreJs + 'bootstrap-table-1.11.0.js',
-                    DIR_SRC.coreJs + 'bootstrap-table-zh-CN-1.11.0.js',
-                    DIR_SRC.coreJs + 'bootbox-4.4.0.js',
-                    DIR_SRC.indexPage + module + '/start.js',
-                    DIR_SRC.pages + 'page.js',
-                    DIR_DEST + '_subpage_' + module + '*.js',
-                    DIR_SRC.indexPage + module + '/end.js'
-                ])
+                .src(dependencies)
                 .pipe(plugins.concat(name));
 
             if (!isdebug) {

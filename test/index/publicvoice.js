@@ -13,7 +13,8 @@ module.exports = {
     testFindWaitApprovalPV:testFindWaitApprovalPV,
     testApprovalPV:testApprovalPV,
     testFindPubVoiceDetail:testFindPubVoiceDetail,
-    testCreateDaily:testCreateDaily
+    testCreateDaily:testCreateDaily,
+    testImportPV:testImportPV
 };
 
 function testFindPVList() {
@@ -99,6 +100,13 @@ function testCreateDaily () {
     obj['pvids'] = '1,2,3';
 
     service.createDaily('lilong', obj, function (err, rs) {
+        if (err) console.log(err);
+        else console.log(rs);
+    })
+}
+
+function testImportPV () {
+    service.importPubVoices("lilong", "admin", "D:\\workspace\\gaoa\\publicvoice.xlsx", function (err, rs) {
         if (err) console.log(err);
         else console.log(rs);
     })
