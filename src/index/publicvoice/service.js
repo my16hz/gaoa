@@ -73,13 +73,22 @@ module.exports = {
     getCurrentDailyID: getCurrentDailyID,
     /* 获取日报模板 */
     getDailyTemplate: getDailyTemplate,
+
+    /*---------- 舆情通报页面 ----------*/
     /* 舆情通报 */
-    notifyPubVoices: notifyPubVoices,
+    addPVNotify: addPVNotify,
     /* 查询通报的舆情 */
-    getNotifyPVList: getNotifyPVList
+    getNotifyPVList: getNotifyPVList,
 
-    /*---------- 舆情日报页面 ----------*/
+    /*---------- 舆情反馈页面 ----------*/
+    addPVCallback: addPVCallback,
+    updatePVCallback: updatePVCallback,
+    getPVCallback: getPVCallback,
 
+    /*---------- 舆情反馈页面 ----------*/
+    addPVGuide: addPVGuide,
+    updatePVGuide: updatePVGuide,
+    getPVGuide: getPVGuide,
 };
 
 function findPubVoiceList(uid, priority, field, order, callback) {
@@ -569,7 +578,7 @@ function getDailyTemplate(uid, callback) {
  * @param pvids {Arrays} 舆情ID列表，
  * @param callback {Function}  回调函数(err)
  */
-function notifyPubVoices(uid, userids, pvids, callback) {
+function addPVNotify(uid, userids, pvids, callback) {
     var table = dbpool.table('tb_pv_notify');
     table.columns.add("uid", sql.VarChar, {nullable: false});
     table.columns.add("pvid", sql.Int, {nullable: false});
@@ -611,6 +620,153 @@ function getNotifyPVList (uid, callback) {
                 ps.unprepare(function (err) {
                     if (err)
                         console.log(err);
+                });
+            });
+        });
+}
+
+/**
+ * 添加舆情反馈
+ * @param uid {Number} 反馈者ID
+ * @param obj {Object} 反馈内容 {id: 舆情ID，type: 0 - 书面回复， 1 - 网上回复, content: 回复内容}
+ * @param callback
+ */
+function addPVCallback (uid, obj, callback) {
+    var sql_stmt = "INSERT INTO tb_pv_feedback ([id],[type],[content],[createuser],[createtime]) " +
+        "VALUES (@id, @type, @content, @createuer, @createtime);" +
+        "UPDATE tb_publicvoice SET state = 7 WHERE id = @id";
+    var objParams = {
+        "id": obj["id"],
+        "type": obj["type"],
+        "content": obj["content"],
+        "createuer": uid,
+        "createtime": new Date()
+    };
+
+    var ps = dbpool
+        .preparedStatement()
+        .input("id", sql.Int)
+        .input("type", sql.Int)
+        .input("content", sql.NVarChar)
+        .input("createuer", sql.VarChar)
+        .input("createtime", sql.DateTime2)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+/**
+ * 更新舆情反馈
+ * @param uid {Number} 反馈者ID
+ * @param obj {Object} 反馈内容 {id: 舆情ID，type: 0 - 书面回复， 1 - 网上回复, content: 回复内容}
+ * @param callback
+ */
+function updatePVCallback (uid, obj, callback) {
+    var sql_stmt = "UPDATE tb_pv_feedback SET content = @content WHERE id = @id AND type = @type;";
+    var objParams = {
+        "id": obj["id"],
+        "type": obj["type"],
+        "content": obj["content"]
+    };
+
+    var ps = dbpool.preparedStatement()
+        .input("id", sql.Int)
+        .input("type", sql.Int)
+        .input("content", sql.NVarChar)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+/**
+ * 查看舆情反馈
+ * @param uid {Number} 反馈者ID
+ * @param obj {Object} 反馈内容 {id: 舆情ID，type: 0 - 书面回复， 1 - 网上回复, content: 回复内容}
+ * @param callback
+ */
+function getPVCallback (pvid, callback) {
+    var sql_stmt = "SELECT * FROM tb_pv_feedback WHERE id = @id;";
+    var objParams = {
+        "id": pvid
+    };
+
+    var ps = dbpool.preparedStatement()
+        .input("id", sql.Int)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+/**
+ * 添加舆情引导
+ * @param uid 填报者ID
+ * @param obj {Object} 引导对象
+ * {guide_name : 引导者, guide_type : 引导类型,
+ * guide_result : 引导结果, guide_count : 引导次数, content : 引导内容}
+ * @param callback
+ */
+function addPVGuide (uid, obj, callback) {
+    var sql_stmt = "INSERT INTO tb_pv_guide ([id], [guide_name], [guide_type], [guide_result], [guide_count], [content], [createuser], [createtime])  " +
+        "VALUES (@id, @name, @type, @result, @count, @content, @createuser, @createtime);";
+    var objParams = {
+        "id": obj["id"],
+        "guide_name": obj["guide_name"],
+        "guide_type": obj["guide_type"],
+        "guide_result": obj["guide_result"],
+        "guide_count": obj["guide_count"],
+        "content": obj["content"],
+        "createuer": uid,
+        "createtime": new Date()
+    };
+
+    var ps = dbpool
+        .preparedStatement()
+        .input("id", sql.Int)
+        .input("guide_name", sql.NVarChar)
+        .input("guide_type", sql.NVarChar)
+        .input("guide_result", sql.NVarChar)
+        .input("guide_count", sql.Int)
+        .input("content", sql.NVarChar)
+        .input("createuer", sql.VarChar)
+        .input("createtime", sql.DateTime2)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
                 });
             });
         });
