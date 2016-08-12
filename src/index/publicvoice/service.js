@@ -763,3 +763,22 @@ function addPVGuide (uid, obj, callback) {
             });
         });
 }
+
+
+/**
+ * 更新舆情引导
+ * @param uid {Number} 反馈者ID
+ * @param obj {Object} 反馈内容 {id: 舆情ID，type: 0 - 书面回复， 1 - 网上回复, content: 回复内容}
+ * @param callback
+ */
+function updatePVGuide (uid, obj, callback) {
+}
+
+/**
+ * 查看舆情反馈
+ * @param uid {Number} 反馈者ID
+ * @param obj {Object} 反馈内容 {id: 舆情ID，type: 0 - 书面回复， 1 - 网上回复, content: 回复内容}
+ * @param callback
+ */
+function getPVGuide (pvid, callback) {
+}
