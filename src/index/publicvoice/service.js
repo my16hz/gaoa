@@ -781,4 +781,23 @@ function updatePVGuide (uid, obj, callback) {
  * @param callback
  */
 function getPVGuide (pvid, callback) {
+    var sql_stmt = "SELECT * FROM tb_pv_guide WHERE id = @id;";
+    var objParams = {
+        "id": pvid
+    };
+
+    var ps = dbpool.preparedStatement()
+        .input("id", sql.Int)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
 }
