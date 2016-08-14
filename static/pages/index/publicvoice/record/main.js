@@ -20,27 +20,39 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         'click #btnImport': 'showImportModal',
         'click #btnDel': 'delSelected',
         'click #btnCommit': 'applyApprobation',
-        'click #dataModal .btn-default': 'closeDatadModal',
+        'click #dataModal .btn-default': 'closeDataModal',
         'click #dataModal .btn-primary': 'savePubVoice',
         'click #importModal .btn-default': 'closeImportModal',
         'click #importModal .btn-primary': 'uploadDataFile'
     },
-
     showDataModal: function (pubvoice) {
-        var modal = $('#dataModal').show();
-        var jqform = modal.find('form');
         var self = this;
 
-        modal.siblings().hide();
+        this._sendRequest({
+            type: 'get',
+            url: '/sysmanage/groups',
+            done: function (rs) {
+                var jqform = '#dataModal form';
+                var jqSelect = $('select[name="duty_department"]', jqform);
 
-        if (pubvoice) {
-            self._setFormControlValues(jqform, pubvoice);
-        } else {
+                $.each(rs, function (n, gp) {
+                    jqSelect.append($('<option></option>')
+                        .attr('value', gp.id)
+                        .text(gp.name));
+                });
 
-        }
+                if (pubvoice) {
+                    self._setFormControlValues(jqform, pubvoice);
+                } else {
 
-        this._shrinkTable()
-            ._showGridWrapper();
+                }
+
+                self._shrinkTable()
+                    ._showGridWrapper();
+            }
+        });
+
+        return this;
     },
     showImportModal: function () {
         $('#importModal').show().siblings().hide();
@@ -53,14 +65,30 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         // set post request!
     },
     closeDataModal: function () {
+        var self = this;
+
+        $(['checkbox', 'title', 'from_website', 'item', 'type', 'createtime', 'status', 'action'])
+            .each(function (index, field) {
+                self.dataTable.bootstrapTable('showColumn', field);
+            });
+
         this._clearFormControlValues($('#dataModal form'))
-            ._hideGridWrapper()
-            ._expandTable();
+            .$('#gridWrapper > div:first')
+            .attr('class', 'col-md-12')
+            .next()
+            .addClass('hide');
     },
     savePubVoice: function () {
-        // send post request!
-        // success: close modal
-        // error: show error
+        var self = this;
+
+        this._sendRequest({
+            type: 'post',
+            url: '/pubvoice/save',
+            validator: $.proxy(this._pvValidator, this),
+            done: function () {
+                self._refreshTable().closeDataModal();
+            }
+        });
     },
     closeImportModal: function () {
         this._hideGridWrapper()
@@ -78,7 +106,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         if (!this.dataTable) {
             (this.dataTable = $('#dataTable')).bootstrapTable({
                 method: 'get',
-                url: '/pubvoice/records',
+                url: '/pubvoice/list',
                 cache: false,
                 ajaxOptions: {
                     beforeSend: function () {
@@ -105,10 +133,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                     field: 'item'
                 }, {
                     title: '舆情类别',
-                    field: 'type',
-                    formatter: function (val) {
-                        return val == 1 ? '市级' : '县级';
-                    }
+                    field: 'type'
                 }, {
                     title: '处理时间',
                     field: 'createtime',
@@ -144,7 +169,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                         }
                     }
                 }]
-            });
+            }, this._buildTableOptions());
         } else {
             this._refreshTable();
         }
@@ -159,7 +184,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     _shrinkTable: function () {
         var self = this;
 
-        $(['checkbox', '...', 'action'])
+        $(['checkbox', 'from_website', 'item', 'type', 'createtime', 'status', 'action'])
             .each(function (index, field) {
                 self.dataTable.bootstrapTable('hideColumn', field);
             });
@@ -169,7 +194,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     _expandTable: function () {
         var self = this;
 
-        $(['checkbox', '...', 'action'])
+        $(['checkbox', 'title', 'from_website', 'item', 'type', 'createtime', 'status', 'action'])
             .each(function (index, field) {
                 self.dataTable.bootstrapTable('showColumn', field);
             });
@@ -191,5 +216,31 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             .addClass('hide');
 
         return this;
+    },
+    _pvValidator: function () {
+        var jqform = $('#dataModal form');
+        var values = this._getFormControlValues(jqform);
+
+        return  values;
+    },
+    _buildTableOptions: function () {
+        var self = this;
+
+        return {
+            method: 'get',
+            url: '/pubvoice/list',
+            cache: false,
+            ajaxOptions: {
+                beforeSend: function () {
+                    self._showLoading();
+                },
+                complete: function () {
+                    self._removeLoading();
+                }
+            },
+            onLoadError: function (xhr) {
+                self._showXHRError('请求失败:' + xhr.responseText);
+            }
+        }
     }
 });
