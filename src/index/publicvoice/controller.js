@@ -69,6 +69,15 @@ function savePubVoice (req, res) {
 }
 
 function removePubVoice (req, res) {
+    var ids = req.body.ids;
+
+    service.removePubVoices(ids.split(','), function (err) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
 }
 
 function importPubVoice (req, res) {

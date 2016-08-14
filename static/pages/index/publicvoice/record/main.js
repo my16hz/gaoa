@@ -90,6 +90,25 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             }
         });
     },
+    delSelected: function () {
+        var selected = this.dataTable.bootstrapTable('getSelections');
+        var self = this;
+        var mids = [];
+
+        $(selected).each(function (n, pv) {
+            mids.push(pv.id);
+        });
+
+        mids.length ?
+            bootbox.confirm('确定删除？', function (rs) {
+                rs && self._ajaxDelete(mids.join(), function () {
+                    self._refreshTable();
+                });
+            }) :
+            bootbox.alert('请先选择要删除的用户');
+
+        return this;
+    },
     closeImportModal: function () {
         this._hideGridWrapper()
             ._expandTable();
@@ -214,6 +233,15 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             .attr('class', 'col-md-12')
             .next()
             .addClass('hide');
+
+        return this;
+    },
+    _ajaxDelete: function (ids, done) {
+        this._sendRequest({
+            type: 'delete', url: '/pubvoice/delete',
+            data: {ids: ids},
+            done: done
+        });
 
         return this;
     },
