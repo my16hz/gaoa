@@ -34,7 +34,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             done: function (rs) {
                 var jqform = '#dataModal form';
                 var jqSelect = $('select[name="duty_department"]', jqform);
-
+                jqSelect.find('option:gt(0)').remove();
                 $.each(rs, function (n, gp) {
                     jqSelect.append($('<option></option>')
                         .attr('value', gp.id)
@@ -153,6 +153,15 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 }, {
                     title: '舆情类别',
                     field: 'type'
+                }, {
+                    title: '回帖人数',
+                    field: 'fellow_count'
+                }, {
+                    title: '关注人数',
+                    field: 'review_count'
+                }, {
+                    title: '涉及部门',
+                    field: 'relate_department'
                 }, {
                     title: '处理时间',
                     field: 'createtime',
