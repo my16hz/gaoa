@@ -283,11 +283,11 @@ function _addBulkPubVoices(uid, objs, callback) {
     });
 }
 
-function removePubVoices(uid, pvids, callback) {
+function removePubVoices(pvids, callback) {
     var objParams = {};
     var sql_stmt = "DELETE FROM tb_publicvoice WHERE id in (%pvids%);";
-    sql_stmt.replace('%pvids%', '\'' + pvids.join('\',\'') + '\'')
-    console.log(sql_stmt);
+    sql_stmt = sql_stmt.replace("%pvids%", "\'" + pvids.join("\',\'") + "\'")
+
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
             if (err) {
@@ -319,8 +319,8 @@ function _updatePVState(pvids, state, callback) {
     }
     var sql_stmt = "UPDATE tb_publicvoice SET %sets% WHERE id in (%pvids%);";
 
-    sql_stmt.replace('%sets%', sets.join(','));
-    sql_stmt.replace('%pvids%', '\'' + pvids.join('\',\'') + '\'');
+    sql_stmt = sql_stmt.replace('%sets%', sets.join(','));
+    sql_stmt = sql_stmt.replace('%pvids%', '\'' + pvids.join('\',\'') + '\'');
 
     console.log(sql_stmt);
 
