@@ -84,4 +84,13 @@ function importPubVoice (req, res) {
 }
 
 function applyApprobation (req, res) {
+    var ids = req.body.ids;
+
+    service.commitApproval(ids.split(','), function (err) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
 }

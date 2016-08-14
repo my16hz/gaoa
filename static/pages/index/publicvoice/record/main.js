@@ -58,16 +58,31 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         $('#importModal').show().siblings().hide();
 
         this._shrinkTable()
-            ._showGridWrapper();
+            ._showImportGridWrapper();
     },
     applyApprobation: function () {
-        // get selected items
-        // set post request!
+        var selected = this.dataTable.bootstrapTable('getSelections');
+        var self = this;
+        var mids = [];
+
+        $(selected).each(function (n, pv) {
+            mids.push(pv.id);
+        });
+
+        mids.length ?
+            bootbox.confirm('确定提交审批？', function (rs) {
+                rs && self._ajaxApply(mids.join(), function () {
+                    self._refreshTable();
+                });
+            }) :
+            bootbox.alert('请先选择要提交的舆情');
+
+        return this;
     },
     closeDataModal: function () {
         var self = this;
 
-        $(['checkbox', 'title', 'from_website', 'item', 'type', 'createtime', 'status', 'action'])
+        $(['checkbox', 'title', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'createtime', 'status', 'action'])
             .each(function (index, field) {
                 self.dataTable.bootstrapTable('showColumn', field);
             });
@@ -105,7 +120,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                     self._refreshTable();
                 });
             }) :
-            bootbox.alert('请先选择要删除的用户');
+            bootbox.alert('请先选择要删除的舆情');
 
         return this;
     },
@@ -170,7 +185,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                     }
                 }, {
                     title: '状态',
-                    field: 'status'
+                    field: 'state'
                 }, {
                     title: '操作',
                     field: 'action',
@@ -212,7 +227,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     _shrinkTable: function () {
         var self = this;
 
-        $(['checkbox', 'from_website', 'item', 'type', 'createtime', 'status', 'action'])
+        $(['checkbox', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'createtime', 'status', 'action'])
             .each(function (index, field) {
                 self.dataTable.bootstrapTable('hideColumn', field);
             });
@@ -222,7 +237,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     _expandTable: function () {
         var self = this;
 
-        $(['checkbox', 'title', 'from_website', 'item', 'type', 'createtime', 'status', 'action'])
+        $(['checkbox', 'title', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'createtime', 'status', 'action'])
             .each(function (index, field) {
                 self.dataTable.bootstrapTable('showColumn', field);
             });
@@ -245,9 +260,34 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
 
         return this;
     },
+    _showImportGridWrapper: function () {
+        $('#gridWrapper > div:first')
+            .attr('class', 'col-xs-2');
+        $('#gridWrapper > div:last')
+            .removeClass('hide');
+
+        return this;
+    },
+    _hideImportGridWrapper: function () {
+        $('#gridWrapper > div:first')
+            .attr('class', 'col-md-12')
+            .next().next()
+            .addClass('hide');
+
+        return this;
+    },
     _ajaxDelete: function (ids, done) {
         this._sendRequest({
             type: 'delete', url: '/pubvoice/delete',
+            data: {ids: ids},
+            done: done
+        });
+
+        return this;
+    },
+    _ajaxApply: function (ids, done) {
+        this._sendRequest({
+            type: 'post', url: '/pubvoice/apply',
             data: {ids: ids},
             done: done
         });

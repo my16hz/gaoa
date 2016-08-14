@@ -49,7 +49,6 @@ module.exports = {
     removePubVoices: removePubVoices,
     /**
      * 提交审批
-     * @param uid {Number}
      * @param pvids  {Array} 舆情ID数组
      * @param callback {Function}  回调函数(err)
      */
@@ -339,7 +338,7 @@ function _updatePVState(pvids, state, callback) {
         });
 }
 
-function commitApproval(uid, pvids, callback) {
+function commitApproval(pvids, callback) {
     _updatePVState(pvids, {'state': 1}, callback);
 }
 
