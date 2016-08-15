@@ -16,8 +16,8 @@ module.exports = function () {
         .post('/pubvoice/import', controller.importPubVoice)
         .post('/pubvoice/apply', controller.applyApprobation)
         // // examine & approve page
-        // .get('/application/list', controller.getApplications)
-        // .post('/application/pass', controller.passApplication)
+        .get('/application/list', controller.getApplications)
+        .post('/application/save', controller.saveApplication)
         // // daily report page
         // .get('/dailyreport/list', controller.getDailyReports)
         // .get('/pubvoice/unapplied', controller.getUnappliedPubVoices)

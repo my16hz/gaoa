@@ -42,9 +42,11 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 });
 
                 if (pubvoice) {
+                    $('input[name="url"]', jqform).prop('readonly', false);
                     self._setFormControlValues(jqform, pubvoice);
                 } else {
-
+                    $('input[name="url"]', jqform).prop('readonly', true);
+                    self._setFormControlValues(jqform, pubvoice);
                 }
 
                 self._shrinkTable()
@@ -199,7 +201,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                     },
                     events: {
                         'click a:first': function () {
-                            self._showMemberModal(arguments[2]);
+                            self.showDataModal(arguments[2]);
                         },
                         'click a:last': function () {
                             var uid = arguments[2].id;

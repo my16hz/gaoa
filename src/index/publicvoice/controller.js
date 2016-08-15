@@ -15,7 +15,9 @@ module.exports = {
     savePubVoice: savePubVoice,
     removePubVoice: removePubVoice,
     importPubVoice: importPubVoice,
-    applyApprobation: applyApprobation
+    applyApprobation: applyApprobation,
+    getApplications: getApplications,
+    saveApplication: saveApplication
 };
 
 function pagePubVoice (req, res) {
@@ -91,6 +93,34 @@ function applyApprobation (req, res) {
             errhandler.internalException(res, err) :
             res.send({
                 success: true
+            });
+    });
+}
+
+function getApplications (req, res) {
+    var order = req.query["order"];
+    service.findWaitApprovalPV("createtime", order, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function saveApplication (req, res) {
+    var userkey = config.session.userkey;
+    var uid = req.session[userkey].id;
+    var pvid = req.body.id,
+        content = req.query['approveContent'],
+        result = req.query['approveResult'];
+    service.approvalPubVoice(uid, {'pvid':pvid, 'content':content, 'result':result}, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
             });
     });
 }

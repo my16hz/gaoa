@@ -344,12 +344,11 @@ function commitApproval(pvids, callback) {
 
 /**
  * 查找待审批的舆情
- * @param uid {Number} - 用户ID
  * @param field {String} - 排序域
  * @param order {String} - ASC,DESC
  * @param callback {Function}  回调函数(err, 舆情数组[])
  */
-function findWaitApprovalPV(uid, field, order, callback) {
+function findWaitApprovalPV(field, order, callback) {
     var sql_stmt = "SELECT * FROM tb_publicvoice WHERE state = 1 ";
     if (field != null && field != "") {
         sql_stmt += " order by " + field + " " + order;
@@ -389,9 +388,9 @@ function approvalPubVoice(uid, obj, callback) {
         "VALUES (@pvid,@createuser,@type,@createtime,@content,@result)";
     var objParams = {
         "pvid": obj["pvid"],
-        "createuser": obj["createuser"],
-        "type": obj["type"],
-        "createtime": obj["createtime"],
+        "createuser": uid,
+        "type": 0,
+        "createtime": new Date(),
         "content": obj["content"],
         "result": obj["result"]
     };
@@ -411,19 +410,19 @@ function approvalPubVoice(uid, obj, callback) {
 
             ps.execute(objParams, function (err, rs) {
                 var state = {};
-                state['approved_state'] = obj['result'];
+                state['approved_state'] = objParams['result'];
                 /* 通过 */
-                if (obj['result'] == 1) {
+                if (objParams['result'] == 1) {
                     state['state'] = 3;
                     /* 不通过 */
-                } else if (obj['result'] == 2) {
+                } else if (objParams['result'] == 2) {
                     state['state'] = 1;
                     /* 暂缓通过 将状态设为 待审批 */
                 } else {
                     state['state'] = 2
                     /* 通过 */
                 }
-                _updatePVState([obj["pvid"]], state, callback);
+                _updatePVState([objParams["pvid"]], state, callback);
 
                 ps.unprepare(function (err) {
                     err && console.error(err);
