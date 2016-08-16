@@ -41,12 +41,13 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                         .text(gp.name));
                 });
 
-                if (pubvoice) {
-                    $('input[name="url"]', jqform).prop('readonly', false);
-                    self._setFormControlValues(jqform, pubvoice);
-                } else {
+                if (pubvoice.hasOwnProperty('id')) {
                     $('input[name="url"]', jqform).prop('readonly', true);
                     self._setFormControlValues(jqform, pubvoice);
+                    self.editor.setContent(pubvoice.content);
+                } else {
+                    self._setFormControlValues(jqform, pubvoice);
+                    self.editor.setContent('');
                 }
 
                 self._shrinkTable()
@@ -187,7 +188,17 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                     }
                 }, {
                     title: '状态',
-                    field: 'state'
+                    field: 'state',
+                    formatter: function (val) {
+                        switch (val) {
+                            case 0:
+                                return '未提交';
+                            case 1:
+                                return '待审批';
+                            case 2:
+                                return '审批通过';
+                        }
+                    }
                 }, {
                     title: '操作',
                     field: 'action',

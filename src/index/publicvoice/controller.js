@@ -17,7 +17,9 @@ module.exports = {
     importPubVoice: importPubVoice,
     applyApprobation: applyApprobation,
     getApplications: getApplications,
-    saveApplication: saveApplication
+    saveApplication: saveApplication,
+    getDailyReports: getDailyReports,
+    getDailyDetail: getDailyDetail
 };
 
 function pagePubVoice (req, res) {
@@ -112,10 +114,37 @@ function getApplications (req, res) {
 function saveApplication (req, res) {
     var userkey = config.session.userkey;
     var uid = req.session[userkey].id;
-    var pvid = req.body.id,
-        content = req.query['approveContent'],
-        result = req.query['approveResult'];
+    var pvid = req.body.id[0];
+    var content = req.body.approveContent[0];
+    var result = req.body.approveResult[0];
     service.approvalPubVoice(uid, {'pvid':pvid, 'content':content, 'result':result}, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function getDailyReports (req, res) {
+    var userkey = config.session.userkey;
+    var uid = req.session[userkey].id,
+        priority = req.session[userkey].priority,
+        order = req.query["order"];
+    service.findDailyList("createtime", order, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function getDailyDetail(req, res) {
+    var did = req.query.id;
+    service.findDailyDetail(did, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

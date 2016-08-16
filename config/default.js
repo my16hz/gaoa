@@ -14,10 +14,10 @@ module.exports = {
         timeout: 3600000 // 1hour,
     },
     db: {
-        server: '182.150.22.119',
-        port: 20492,
-        //server: '172.16.12.204',
-        //port:9200,
+        //server: '182.150.22.119',
+        //port: 20492,
+        server: '172.16.12.204',
+        port:9200,
         database: 'gaoa',
         user: 'gaoa',
         password: '1qazXSW@'

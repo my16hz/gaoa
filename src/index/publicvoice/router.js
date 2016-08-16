@@ -19,7 +19,8 @@ module.exports = function () {
         .get('/application/list', controller.getApplications)
         .post('/application/save', controller.saveApplication)
         // // daily report page
-        // .get('/dailyreport/list', controller.getDailyReports)
+        .get('/dailyreport/list', controller.getDailyReports)
+        .get('/dailyreport/detail', controller.getDailyDetail)
         // .get('/pubvoice/unapplied', controller.getUnappliedPubVoices)
         // .post('dailyreport/generate', controller.generateDailyReport)
         // dispose page

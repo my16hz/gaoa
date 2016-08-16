@@ -30,7 +30,7 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
         this._sendRequest({
             type: 'post',
             url: '/application/save',
-            validator: $.proxy(this._pvValidator, this),
+            validator: $.proxy(this._approvedValidator, this),
             done: function () {
                 self._refreshTable().closeApproveModal();
             }
@@ -195,10 +195,10 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
 
         return this;
     },
-    _pvValidator: function () {
+    _approvedValidator: function () {
         var jqform = $('#approveModal form');
         var values = this._getFormControlValues(jqform);
 
         return  values;
-    },
+    }
 });
