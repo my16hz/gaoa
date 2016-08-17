@@ -19,7 +19,8 @@ module.exports = {
     getApplications: getApplications,
     saveApplication: saveApplication,
     getDailyReports: getDailyReports,
-    getDailyDetail: getDailyDetail
+    getDailyDetail: getDailyDetail,
+    getDisposeList:getDisposeList
 };
 
 function pagePubVoice (req, res) {
@@ -152,4 +153,17 @@ function getDailyDetail(req, res) {
                 data: rs
             });
     });
+}
+
+function getDisposeList(req, res) {
+    var did = req.query.id;
+    service.getDailyPVList(did, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+    
 }

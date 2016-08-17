@@ -71,6 +71,8 @@ module.exports = {
     getCurrentDailyID: getCurrentDailyID,
     /* 获取日报模板 */
     getDailyTemplate: getDailyTemplate,
+    /* 查询日报中舆情列表 */
+    getDailyPVList: getDailyPVList,
 
     /*---------- 舆情通报页面 ----------*/
     /* 舆情通报 */
@@ -124,9 +126,9 @@ function findPubVoiceList(uid, priority, field, order, callback) {
         });
 }
 
-function findPubVoiceDetail(uid, pvids, callback) {
-    var sql_stmt = "select * from tb_publicvoice where id in (%pvids%) ";
-    sql_stmt.replace('%pvids%', '\'' + pvids.join('\',\'') + '\'')
+function findPubVoiceDetail(pvids, callback) {
+    var sql_stmt = "select * from tb_publicvoice where id in ("+ pvids + ") ";
+
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
@@ -544,6 +546,26 @@ function getCurrentDailyID(callback) {
             }
             ps.execute(objParams, function (err, recordset) {
                 callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+function getDailyPVList(did, callback) {
+    var sql_stmt = "SELECT pvids FROM tb_daily WHERE id = @did";
+    var objParams = { 'did' : did};
+    var ps = dbpool.preparedStatement()
+        .input('did', sql.Int)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                console.log(recordset);
+                findPubVoiceDetail(recordset[0]['pvids'], callback);
                 ps.unprepare(function (err) {
                     if (err)
                         console.log(err);

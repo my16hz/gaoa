@@ -24,7 +24,7 @@ module.exports = function () {
         // .get('/pubvoice/unapplied', controller.getUnappliedPubVoices)
         // .post('dailyreport/generate', controller.generateDailyReport)
         // dispose page
-
+        .get('/dispose/list', controller.getDisposeList)
         // noitfy page
 
         // feedback page
