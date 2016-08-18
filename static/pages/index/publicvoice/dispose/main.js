@@ -149,16 +149,25 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         return this;
     },
     _showDisposeModal: function (pubvoice) {
-        var jqform = '#disposeDetailModal form';
+        var self = this;
 
-        $(['url', 'title', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'relate_department', 'duty_department'])
-            .each(function (index, field) {
-                $('input[name="'+ field +'"]', jqform).prop('readonly', true);
-            });
-        this._setFormControlValues(jqform, pubvoice);
-        this.editor.setContent(pubvoice.content);
-        this._shrinkTable()
-            ._showGridWrapper();
+        this._sendRequest({
+            type: 'get',
+            url: '/dispose/detail',
+            data: {'id': pubvoice.id},
+            done: function (rs) {
+                var jqform = '#disposeDetailModal form';
+
+                self._setFormControlValues(jqform, pubvoice);
+                if (rs[0]['state'] == -1) {
+                    self.editor.setContent(rs[0]['content'] + pubvoice.content);
+                } else {
+                    self.editor.setContent(rs[0]['content']);
+                }
+                self._shrinkTable()
+                    ._showGridWrapper();
+            }
+        });
 
         return this;
     },
@@ -190,14 +199,19 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
     },
     saveDispose: function () {
         var self = this;
-        this._refreshTable().closeApproveModal();
-/*        this._sendRequest({
+        this._sendRequest({
             type: 'post',
-            url: '/application/save',
-            validator: $.proxy(this._approvedValidator, this),
+            url: '/dispose/save',
+            validator: $.proxy(this._disposeValidator, this),
             done: function () {
-                self._refreshTable().closeApproveModal();
+                self._refreshTable().closeDisposeModal();
             }
-        });*/
+        });
     },
+    _disposeValidator: function () {
+        var jqform = $('#disposeDetailModal form');
+        var values = this._getFormControlValues(jqform);
+
+        return  values;
+    }
 });
