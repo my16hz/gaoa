@@ -14,7 +14,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         // }, this));
 
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
-
+        this.editor = UM.getEditor('disposeDetailUE');
         this.initDependencies()
             ._drawDataTable();
     },
@@ -92,7 +92,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                     },
                     events: {
                         'click a:first': function () {
-                            self.showDataModal(arguments[2]);
+                            self._showDisposeModal(arguments[2]);
                         }
                     }
                 }]
@@ -144,36 +144,17 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
 
         return this;
     },
-    showDataModal: function (pubvoice) {
-        var self = this;
+    _showDisposeModal: function (pubvoice) {
+        var jqform = '#disposeDetailModal form';
 
-        this._sendRequest({
-            type: 'get',
-            url: '/sysmanage/groups',
-            data: {'id':10},
-            done: function (rs) {
-                var jqform = '#dataModal form';
-                var jqSelect = $('select[name="duty_department"]', jqform);
-                jqSelect.find('option:gt(0)').remove();
-                $.each(rs, function (n, gp) {
-                    jqSelect.append($('<option></option>')
-                        .attr('value', gp.id)
-                        .text(gp.name));
-                });
-
-                if (pubvoice.hasOwnProperty('id')) {
-                    $('input[name="url"]', jqform).prop('readonly', true);
-                    self._setFormControlValues(jqform, pubvoice);
-                    self.editor.setContent(pubvoice.content);
-                } else {
-                    self._setFormControlValues(jqform, pubvoice);
-                    self.editor.setContent('');
-                }
-
-                self._shrinkTable()
-                    ._showGridWrapper();
-            }
-        });
+        $(['url', 'title', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'relate_department', 'duty_department'])
+            .each(function (index, field) {
+                $('input[name="'+ field +'"]', jqform).prop('readonly', true);
+            });
+        this._setFormControlValues(jqform, pubvoice);
+        this.editor.setContent(pubvoice.content);
+        this._shrinkTable()
+            ._showGridWrapper();
 
         return this;
     },
