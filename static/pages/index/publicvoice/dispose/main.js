@@ -18,6 +18,10 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         this.initDependencies()
             ._drawDataTable();
     },
+    events: {
+        'click #disposeDetailModal .btn-default': 'closeDisposeModal',
+        'click #disposeDetailModal .btn-primary': 'saveDispose'
+    },
     _drawDataTable: function () {
         var self = this;
 
@@ -177,5 +181,23 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                 self._showXHRError('请求失败:' + xhr.responseText);
             }
         }
-    }
+    },
+    closeDisposeModal: function () {
+        var self = this;
+
+        this._expandTable()
+            ._hideGridWrapper();
+    },
+    saveDispose: function () {
+        var self = this;
+        this._refreshTable().closeApproveModal();
+/*        this._sendRequest({
+            type: 'post',
+            url: '/application/save',
+            validator: $.proxy(this._approvedValidator, this),
+            done: function () {
+                self._refreshTable().closeApproveModal();
+            }
+        });*/
+    },
 });
