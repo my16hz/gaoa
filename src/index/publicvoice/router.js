@@ -25,6 +25,8 @@ module.exports = function () {
         // .post('dailyreport/generate', controller.generateDailyReport)
         // dispose page
         .get('/dispose/list', controller.getDisposeList)
+        .get('/dispose/detail', controller.getDisposeDetail)
+        .post('/dispose/save', controller.savePVDispose)
         // noitfy page
 
         // feedback page

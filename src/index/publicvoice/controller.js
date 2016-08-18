@@ -20,7 +20,9 @@ module.exports = {
     saveApplication: saveApplication,
     getDailyReports: getDailyReports,
     getDailyDetail: getDailyDetail,
-    getDisposeList:getDisposeList
+    getDisposeList: getDisposeList,
+    savePVDispose: savePVDispose,
+    getDisposeDetail: getDisposeDetail
 };
 
 function pagePubVoice (req, res) {
@@ -166,4 +168,37 @@ function getDisposeList(req, res) {
             });
     });
     
+}
+
+function savePVDispose (req, res) {
+    var userkey = config.session.userkey;
+    var uid = req.session[userkey].id;
+    var obj = req.body;
+    var dispose = {
+        "id": obj["id"],
+        "createtime": new Date(),
+        "state": "0",
+        "content": obj["content"],
+        "createuser": uid
+    };
+
+    service.addPVDispose(uid, dispose, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
+}
+
+function getDisposeDetail (req, res) {
+    var pvid = req.query.id;
+    service.getPVDispose(pvid, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
 }
