@@ -20,7 +20,8 @@
     "mssql": "^3.3.0",
     "multer": "^1.2.0",
     "node-uuid": "^1.4.7",
-    "xlsx": "^0.8.0"
+    "xlsx": "^0.8.0",
+    "xss": "^0.2.13"
   },
   "devDependencies": {
     "gulp": "^3.9.1",

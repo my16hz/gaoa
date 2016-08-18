@@ -6,6 +6,7 @@
 var LHSBasicPage = {
     el: '#main_panel',
     run: $.noop,
+    reset: $.noop,
     events: {},
     initDependencies: function () {
         var self = this;

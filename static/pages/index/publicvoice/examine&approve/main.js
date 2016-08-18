@@ -7,11 +7,20 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
     run: function () {
         /*inject:jqtmpl:html*/
         /*endinject*/
+
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
+
         this.editor = UM.getEditor('approvedUE');
-        $(this.el).append(jqtmpl($, {data: {}}).join(''));
-        this.initDependencies()
+
+        this.reset()
+            .initDependencies()
             ._drawDataTable();
+    },
+    reset: function () {
+        this.dataTable = null;
+        this.editor = null;
+
+        return this;
     },
     events: {
         'click #approveModal .btn-default': 'closeApproveModal',
@@ -123,9 +132,10 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
     _showApproveModal: function (pubvoice) {
         var jqform = '#approveModal form';
 
-        $(['url', 'title', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'relate_department', 'duty_department'])
+        $(['url', 'title', 'from_website', 'item', 'type', 'review_count', 'fellow_count',
+            'relate_department', 'duty_department'])
             .each(function (index, field) {
-                $('input[name="'+ field +'"]', jqform).prop('readonly', true);
+                $('input[name="' + field + '"]', jqform).prop('readonly', true);
             });
         this._setFormControlValues(jqform, pubvoice);
         this.editor.setContent(pubvoice.content);
@@ -199,6 +209,6 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
         var jqform = $('#approveModal form');
         var values = this._getFormControlValues(jqform);
 
-        return  values;
+        return values;
     }
 });

@@ -10,10 +10,15 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
 
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
 
-        this.editor = UM.getEditor('lhsUE');
-
-        this.initDependencies()
+        this.reset()
+            .initDependencies()
             ._drawDataTable();
+    },
+    reset: function () {
+        this.dataTable = null;
+        this.editer = null;
+
+        return this;
     },
     events: {
         'click #btnAdd': 'showDataModal',
@@ -28,32 +33,35 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     showDataModal: function (pubvoice) {
         var self = this;
 
-        this._sendRequest({
-            type: 'get',
-            url: '/sysmanage/groups',
-            done: function (rs) {
-                var jqform = '#dataModal form';
-                var jqSelect = $('select[name="duty_department"]', jqform);
-                jqSelect.find('option:gt(0)').remove();
-                $.each(rs, function (n, gp) {
-                    jqSelect.append($('<option></option>')
-                        .attr('value', gp.id)
-                        .text(gp.name));
-                });
+        this._appendEditor()
+            ._sendRequest({
+                type: 'get',
+                url: '/sysmanage/groups',
+                done: function (rs) {
+                    var jqform = '#dataModal form';
+                    var jqSelect = $('select[name="duty_department"]', jqform);
 
-                if (pubvoice.hasOwnProperty('id')) {
-                    $('input[name="url"]', jqform).prop('readonly', true);
-                    self._setFormControlValues(jqform, pubvoice);
-                    self.editor.setContent(pubvoice.content);
-                } else {
-                    self._setFormControlValues(jqform, pubvoice);
-                    self.editor.setContent('');
+                    jqSelect.find('option:gt(0)').remove();
+
+                    $.each(rs, function (n, gp) {
+                        jqSelect.append($('<option></option>')
+                            .attr('value', gp.id)
+                            .text(gp.name));
+                    });
+
+                    if (pubvoice.hasOwnProperty('id')) {
+                        $('input[name="url"]', jqform).prop('readonly', true);
+                        self._setFormControlValues(jqform, pubvoice);
+                        self.editor.setContent(pubvoice.content);
+                    } else {
+                        self._setFormControlValues(jqform, pubvoice);
+                        self.editor.setContent('');
+                    }
+
+                    self._shrinkTable()
+                        ._showGridWrapper();
                 }
-
-                self._shrinkTable()
-                    ._showGridWrapper();
-            }
-        });
+            });
 
         return this;
     },
@@ -137,6 +145,19 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         // error: show error
     },
 
+    _appendEditor: function () {
+        if (!this.editor) {
+            $('#editorWrapper')
+                .append('<script type="text/plain" id="lhsUE" style="width:100%;height:300px;"></script>')
+                .width(function () {
+                    return $(this).parent().width;
+                });
+
+            this.editor = UM.getEditor('lhsUE');
+        }
+
+        return this;
+    },
     _drawDataTable: function () {
         var self = this;
 
@@ -311,7 +332,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         var jqform = $('#dataModal form');
         var values = this._getFormControlValues(jqform);
 
-        return  values;
+        return values;
     },
     _buildTableOptions: function () {
         var self = this;
