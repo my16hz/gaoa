@@ -48,6 +48,7 @@ module.exports = {
      * @param callback {Function}  回调函数(err)
      */
     removePubVoices: removePubVoices,
+    updatePubVoice: updatePubVoice,
     /**
      * 提交审批
      * @param pvids  {Array} 舆情ID数组
@@ -82,9 +83,9 @@ module.exports = {
     getNotifyPVList: getNotifyPVList,
 
     /*---------- 舆情反馈页面 ----------*/
-    addPVCallback: addPVCallback,
-    updatePVCallback: updatePVCallback,
-    getPVCallback: getPVCallback,
+    addPVFeedback: addPVFeedback,
+    updatePVFeedback: updatePVFeedback,
+    getPVFeedback: getPVFeedback,
 
     /*---------- 舆情引导页面 ----------*/
     addPVGuide: addPVGuide,
@@ -94,6 +95,7 @@ module.exports = {
     /*---------- 舆情处置页面 ----------*/
     addPVDispose: addPVDispose,
     getPVDispose: getPVDispose
+
 };
 
 function findPubVoiceList(uid, priority, field, order, callback) {
@@ -308,6 +310,10 @@ function removePubVoices(pvids, callback) {
         });
 }
 
+function updatePubVoice(pvid, obj, callback) {
+    _updatePVState([pvid], obj, callback);
+}
+
 /**
  * 更新舆情状态, 可同时更新多个状态
  * @param pvids {Arrays} 舆情ID列表
@@ -321,7 +327,7 @@ function _updatePVState(pvids, state, callback) {
     var sets = []
 
     for (var k in state) {
-        sets.push(k + ' = ' + state[k]);
+        sets.push(k + " = '" + state[k] + "'");
     }
     var sql_stmt = "UPDATE tb_publicvoice SET %sets% WHERE id in (%pvids%);";
 
@@ -648,7 +654,7 @@ function getNotifyPVList (uid, callback) {
  * @param obj {Object} 反馈内容 {id: 舆情ID，type: 0 - 书面回复， 1 - 网上回复, content: 回复内容}
  * @param callback
  */
-function addPVCallback (uid, obj, callback) {
+function addPVFeedback (uid, obj, callback) {
     var sql_stmt = "INSERT INTO tb_pv_feedback ([id],[type],[content],[createuser],[createtime]) " +
         "VALUES (@id, @type, @content, @createuer, @createtime);" +
         "UPDATE tb_publicvoice SET state = 7 WHERE id = @id";
@@ -688,7 +694,7 @@ function addPVCallback (uid, obj, callback) {
  * @param obj {Object} 反馈内容 {id: 舆情ID，type: 0 - 书面回复， 1 - 网上回复, content: 回复内容}
  * @param callback
  */
-function updatePVCallback (uid, obj, callback) {
+function updatePVFeedback (uid, obj, callback) {
     var sql_stmt = "UPDATE tb_pv_feedback SET content = @content WHERE id = @id AND type = @type;";
     var objParams = {
         "id": obj["id"],
@@ -720,7 +726,7 @@ function updatePVCallback (uid, obj, callback) {
  * @param obj {Object} 反馈内容 {id: 舆情ID，type: 0 - 书面回复， 1 - 网上回复, content: 回复内容}
  * @param callback
  */
-function getPVCallback (pvid, callback) {
+function getPVFeedback (pvid, callback) {
     var sql_stmt = "SELECT * FROM tb_pv_feedback WHERE id = @id;";
     var objParams = {
         "id": pvid

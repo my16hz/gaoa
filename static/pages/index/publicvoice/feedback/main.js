@@ -14,12 +14,13 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
         // }, this));
 
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
+        this.editor = UM.getEditor('feedbackUE');
         this.initDependencies()
             ._drawDataTable();
     },
     events: {
-        'click #disposeDetailModal .btn-default': 'closeDisposeModal',
-        'click #disposeDetailModal .btn-primary': 'saveDispose'
+        'click #feedbackModal .btn-default': 'closeModal',
+        'click #feedbackModal .btn-primary': 'saveFeedback'
     },
     _drawDataTable: function () {
         var self = this;
@@ -95,7 +96,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
                     },
                     events: {
                         'click a:first': function () {
-                            self._showDisposeModal(arguments[2]);
+                            self._showFeedbackModal(arguments[2]);
                         }
                     }
                 }]
@@ -147,22 +148,18 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
 
         return this;
     },
-    _showDisposeModal: function (pubvoice) {
+    _showFeedbackModal: function (pubvoice) {
         var self = this;
 
         this._sendRequest({
             type: 'get',
-            url: '/dispose/detail',
+            url: '/feedback/detail',
             data: {'id': pubvoice.id},
             done: function (rs) {
-                var jqform = '#disposeDetailModal form';
-
+                var jqform = '#feedbackModal form';
+                var type = rs;
                 self._setFormControlValues(jqform, pubvoice);
-                if (rs[0]['state'] == -1) {
-                    self.editor.setContent(rs[0]['content'] + pubvoice.content);
-                } else {
-                    self.editor.setContent(rs[0]['content']);
-                }
+
                 self._shrinkTable()
                     ._showGridWrapper();
             }
@@ -175,7 +172,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
 
         return {
             method: 'get',
-            url: '/dispose/list',
+            url: '/feedback/detail',
             cache: false,
             ajaxOptions: {
                 beforeSend: function () {
@@ -190,25 +187,25 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
             }
         }
     },
-    closeDisposeModal: function () {
+    closeModal: function () {
         var self = this;
 
         this._expandTable()
             ._hideGridWrapper();
     },
-    saveDispose: function () {
+    saveFeedback: function () {
         var self = this;
         this._sendRequest({
             type: 'post',
-            url: '/dispose/save',
-            validator: $.proxy(this._disposeValidator, this),
+            url: '/feedback/save',
+            validator: $.proxy(this._feedbackValidator, this),
             done: function () {
                 self._refreshTable().closeDisposeModal();
             }
         });
     },
-    _disposeValidator: function () {
-        var jqform = $('#disposeDetailModal form');
+    _feedbackValidator: function () {
+        var jqform = $('#feedbackModal form');
         var values = this._getFormControlValues(jqform);
 
         return  values;

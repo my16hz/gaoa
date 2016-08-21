@@ -13,6 +13,7 @@ module.exports = {
 
     getPubVoices: getPubVoices,
     savePubVoice: savePubVoice,
+    updatePubVoice: updatePubVoice,
     removePubVoice: removePubVoice,
     importPubVoice: importPubVoice,
     applyApprobation: applyApprobation,
@@ -22,7 +23,10 @@ module.exports = {
     getDailyDetail: getDailyDetail,
     getDisposeList: getDisposeList,
     savePVDispose: savePVDispose,
-    getDisposeDetail: getDisposeDetail
+    getDisposeDetail: getDisposeDetail,
+    getFeedbackDetail: getFeedbackDetail,
+    saveFeedback: saveFeedback
+
 };
 
 function pagePubVoice (req, res) {
@@ -48,9 +52,62 @@ function savePubVoice (req, res) {
     var userkey = config.session.userkey;
     var uid = req.session[userkey].id;
     var obj = req.body;
+
+    if(obj.hasOwnProperty('id')) {
+        var pvid = obj['id'];
+        var pubVoice = {
+            "title": obj["title"],
+            "item": obj["item"],
+            "type": obj["type"],
+            "relate_department": obj["relate_department"],
+            "duty_department": obj["duty_department"],
+            "fellow_count": obj["fellow_count"],
+            "review_count": obj["review_count"],
+            "content": obj["content"],
+            "from_website": obj["from_website"],
+            "url": obj["url"]
+        };
+        service.updatePubVoice(pvid, pubVoice, function (err) {
+            err ?
+                errhandler.internalException(res, err) :
+                res.send({
+                    success: true
+                });
+        });
+    } else {
+        var pubVoice = {
+            "title": obj["title"],
+            "createtime": new Date(),
+            "item": obj["item"],
+            "type": obj["type"],
+            "relate_department": obj["relate_department"],
+            "duty_department": obj["duty_department"],
+            "fellow_count": obj["fellow_count"],
+            "review_count": obj["review_count"],
+            "content": obj["content"],
+            "from_website": obj["from_website"],
+            "url": obj["url"],
+            "state": 0,
+            "approved_state": 0,
+            "dispose_stat": 0,
+            "feedback_state": 0,
+            "createuser": uid
+        };
+        service.addPubVoices(uid, pubVoice, function (err) {
+            err ?
+                errhandler.internalException(res, err) :
+                res.send({
+                    success: true
+                });
+        });
+    }
+}
+
+function updatePubVoice(req, res) {
+    var obj = req.body;
+    var pvid = obj['id'];
     var pubVoice = {
         "title": obj["title"],
-        "createtime": new Date(),
         "item": obj["item"],
         "type": obj["type"],
         "relate_department": obj["relate_department"],
@@ -59,14 +116,9 @@ function savePubVoice (req, res) {
         "review_count": obj["review_count"],
         "content": obj["content"],
         "from_website": obj["from_website"],
-        "url": obj["url"],
-        "state": 0,
-        "approved_state": 0,
-        "dispose_stat": 0,
-        "feedback_state": 0,
-        "createuser": uid
+        "url": obj["url"]
     };
-    service.addPubVoices(uid, pubVoice, function (err) {
+    service.updatePubVoice(pvid, pubVoice, function (err) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -199,6 +251,39 @@ function getDisposeDetail (req, res) {
             res.send({
                 success: true,
                 data: rs
+            });
+    });
+}
+
+function getFeedbackDetail(req, res) {
+    var pvid = req.query.id;
+    service.getPVFeedback(pvid, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function saveFeedback(req, res) {
+    var userkey = config.session.userkey;
+    var uid = req.session[userkey].id;
+    var obj = req.body;
+    var dispose = {
+        "id": obj["id"],
+        "createtime": new Date(),
+        "state": "0",
+        "content": obj["content"],
+        "createuser": uid
+    };
+
+    service.addPVDispose(uid, dispose, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
             });
     });
 }

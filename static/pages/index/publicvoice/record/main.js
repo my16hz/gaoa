@@ -32,7 +32,6 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     },
     showDataModal: function (pubvoice) {
         var self = this;
-
         this._appendEditor()
             ._sendRequest({
                 type: 'get',
@@ -54,7 +53,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                         self._setFormControlValues(jqform, pubvoice);
                         self.editor.setContent(pubvoice.content);
                     } else {
-                        self._setFormControlValues(jqform, pubvoice);
+                        $('input[name="url"]', jqform).prop('readonly', false);
                         self.editor.setContent('');
                     }
 
@@ -62,7 +61,6 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                         ._showGridWrapper();
                 }
             });
-
         return this;
     },
     showImportModal: function () {
@@ -153,7 +151,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                     return $(this).parent().width;
                 });
 
-            this.editor = UM.getEditor('lhsUE');
+            this.editor = UM.getEditor('recordUE');
         }
 
         return this;
