@@ -655,14 +655,15 @@ function getNotifyPVList (uid, callback) {
  * @param callback
  */
 function addPVFeedback (uid, obj, callback) {
-    var sql_stmt = "INSERT INTO tb_pv_feedback ([id],[type],[content],[createuser],[createtime]) " +
-        "VALUES (@id, @type, @content, @createuer, @createtime);" +
+    var sql_stmt = "DELETE FROM tb_pv_feedback WHERE id = @id AND type = @type; " +
+        "INSERT INTO tb_pv_feedback ([id],[type],[content],[createuser],[createtime]) " +
+        "VALUES (@id, @type, @content, @createuser, @createtime);" +
         "UPDATE tb_publicvoice SET state = 7 WHERE id = @id";
     var objParams = {
         "id": obj["id"],
         "type": obj["type"],
         "content": obj["content"],
-        "createuer": uid,
+        "createuser": uid,
         "createtime": new Date()
     };
 
@@ -671,7 +672,7 @@ function addPVFeedback (uid, obj, callback) {
         .input("id", sql.Int)
         .input("type", sql.Int)
         .input("content", sql.NVarChar)
-        .input("createuer", sql.VarChar)
+        .input("createuser", sql.VarChar)
         .input("createtime", sql.DateTime2)
         .prepare(sql_stmt, function (err) {
             if (err) {
@@ -757,8 +758,8 @@ function getPVFeedback (pvid, callback) {
  * @param callback
  */
 function addPVGuide (uid, obj, callback) {
-    var sql_stmt = "INSERT INTO tb_pv_guide ([id], [guide_name], [guide_type], [guide_result], [guide_count], [content], [createuser], [createtime])  " +
-        "VALUES (@id, @name, @type, @result, @count, @content, @createuser, @createtime);";
+    var sql_stmt = "DELETE FROM tb_pv_guide WHERE id = @id; INSERT INTO tb_pv_guide ([id], [guide_name], [guide_type], [guide_result], [guide_count], [content], [createuser], [createtime])  " +
+        "VALUES (@id, @guide_name, @guide_type, @guide_result, @guide_count, @content, @createuser, @createtime);";
     var objParams = {
         "id": obj["id"],
         "guide_name": obj["guide_name"],
@@ -766,19 +767,18 @@ function addPVGuide (uid, obj, callback) {
         "guide_result": obj["guide_result"],
         "guide_count": obj["guide_count"],
         "content": obj["content"],
-        "createuer": uid,
+        "createuser": uid,
         "createtime": new Date()
     };
-
-    var ps = dbpool
-        .preparedStatement()
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
         .input("id", sql.Int)
         .input("guide_name", sql.NVarChar)
         .input("guide_type", sql.NVarChar)
         .input("guide_result", sql.NVarChar)
         .input("guide_count", sql.Int)
         .input("content", sql.NVarChar)
-        .input("createuer", sql.VarChar)
+        .input("createuser", sql.VarChar)
         .input("createtime", sql.DateTime2)
         .prepare(sql_stmt, function (err) {
             if (err) {

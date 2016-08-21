@@ -115,7 +115,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
     _shrinkTable: function () {
         var self = this;
 
-        $(['checkbox', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'createtime', 'status', 'action'])
+        $(['checkbox', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'relate_department', 'state', 'createtime', 'status', 'action'])
             .each(function (index, field) {
                 self.dataTable.bootstrapTable('hideColumn', field);
             });
@@ -125,7 +125,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
     _expandTable: function () {
         var self = this;
 
-        $(['checkbox', 'title', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'createtime', 'status', 'action'])
+        $(['checkbox', 'title', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'relate_department', 'state', 'createtime', 'status', 'action'])
             .each(function (index, field) {
                 self.dataTable.bootstrapTable('showColumn', field);
             });
@@ -157,8 +157,12 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
             data: {'id': pubvoice.id},
             done: function (rs) {
                 var jqform = '#feedbackModal form';
-                var type = rs;
-                self._setFormControlValues(jqform, pubvoice);
+                if (rs.length > 0) {
+                    self._setFormControlValues(jqform, {'id': pubvoice.id, 'type': rs[0].type});
+                    self.editor.setContent(rs[0].content);
+                } else {
+                    self._setFormControlValues(jqform, {'id': pubvoice.id})
+                }
 
                 self._shrinkTable()
                     ._showGridWrapper();
@@ -200,7 +204,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
             url: '/feedback/save',
             validator: $.proxy(this._feedbackValidator, this),
             done: function () {
-                self._refreshTable().closeDisposeModal();
+                self._refreshTable().closeModal();
             }
         });
     },

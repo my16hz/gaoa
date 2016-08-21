@@ -14,12 +14,13 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
         // }, this));
 
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
+        this.editor = UM.getEditor('guideUE');
         this.initDependencies()
             ._drawDataTable();
     },
     events: {
-        'click #disposeDetailModal .btn-default': 'closeDisposeModal',
-        'click #disposeDetailModal .btn-primary': 'saveDispose'
+        'click #guideModal .btn-default': 'closeGuideModal',
+        'click #guideModal .btn-primary': 'saveGuide'
     },
     _drawDataTable: function () {
         var self = this;
@@ -90,12 +91,12 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
                     title: '操作',
                     field: 'action',
                     formatter: function () {
-                        return '<a href="javascript:" title="反馈">' +
+                        return '<a href="javascript:" title="引导">' +
                             '<i class="glyphicon glyphicon-tag"></i></a>';
                     },
                     events: {
                         'click a:first': function () {
-                            self._showDisposeModal(arguments[2]);
+                            self._showGuideModal(arguments[2]);
                         }
                     }
                 }]
@@ -114,7 +115,7 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
     _shrinkTable: function () {
         var self = this;
 
-        $(['checkbox', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'createtime', 'status', 'action'])
+        $(['checkbox', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'relate_department', 'state', 'createtime', 'status', 'action'])
             .each(function (index, field) {
                 self.dataTable.bootstrapTable('hideColumn', field);
             });
@@ -124,7 +125,7 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
     _expandTable: function () {
         var self = this;
 
-        $(['checkbox', 'title', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'createtime', 'status', 'action'])
+        $(['checkbox', 'title', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'relate_department', 'state', 'createtime', 'status', 'action'])
             .each(function (index, field) {
                 self.dataTable.bootstrapTable('showColumn', field);
             });
@@ -147,22 +148,21 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
 
         return this;
     },
-    _showDisposeModal: function (pubvoice) {
+    _showGuideModal: function (pubvoice) {
         var self = this;
 
         this._sendRequest({
             type: 'get',
-            url: '/dispose/detail',
+            url: '/guide/detail',
             data: {'id': pubvoice.id},
             done: function (rs) {
-                var jqform = '#disposeDetailModal form';
+                var jqform = '#guideModal form';
 
-                self._setFormControlValues(jqform, pubvoice);
-                if (rs[0]['state'] == -1) {
-                    self.editor.setContent(rs[0]['content'] + pubvoice.content);
-                } else {
-                    self.editor.setContent(rs[0]['content']);
+                if (rs.length == 1) {
+                    self._setFormControlValues(jqform, rs[0]);
+                    self.editor.setContent(rs[0].content);
                 }
+
                 self._shrinkTable()
                     ._showGridWrapper();
             }
@@ -190,25 +190,25 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
             }
         }
     },
-    closeDisposeModal: function () {
+    closeGuideModal: function () {
         var self = this;
 
         this._expandTable()
             ._hideGridWrapper();
     },
-    saveDispose: function () {
+    saveGuide: function () {
         var self = this;
         this._sendRequest({
             type: 'post',
-            url: '/dispose/save',
-            validator: $.proxy(this._disposeValidator, this),
+            url: '/guide/save',
+            validator: $.proxy(this._guideValidator, this),
             done: function () {
-                self._refreshTable().closeDisposeModal();
+                self._refreshTable().closeGuideModal();
             }
         });
     },
-    _disposeValidator: function () {
-        var jqform = $('#disposeDetailModal form');
+    _guideValidator: function () {
+        var jqform = $('#guideModal form');
         var values = this._getFormControlValues(jqform);
 
         return  values;

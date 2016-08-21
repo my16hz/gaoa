@@ -91,7 +91,7 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
                     field: 'action',
                     formatter: function () {
                         return '<a href="javascript:" title="通报">' +
-                            '<i class="glyphicon glyphicon-edit"></i></a>';
+                            '<i class="glyphicon glyphicon-envelope"></i></a>';
                     },
                     events: {
                         'click a:first': function () {

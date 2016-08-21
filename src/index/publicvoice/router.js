@@ -33,7 +33,8 @@ module.exports = function () {
         // feedback page
         .get('/feedback/detail', controller.getFeedbackDetail)
         .post('/feedback/save', controller.saveFeedback)
-        // guid page
-
+        // guide page
+        .get('/guide/detail', controller.getGuideDetail)
+        .post('/guide/save', controller.saveGuide)
         // analyze page
 };

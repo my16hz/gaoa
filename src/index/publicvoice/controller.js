@@ -25,7 +25,9 @@ module.exports = {
     savePVDispose: savePVDispose,
     getDisposeDetail: getDisposeDetail,
     getFeedbackDetail: getFeedbackDetail,
-    saveFeedback: saveFeedback
+    saveFeedback: saveFeedback,
+    getGuideDetail: getGuideDetail,
+    saveGuide: saveGuide
 
 };
 
@@ -271,15 +273,52 @@ function saveFeedback(req, res) {
     var userkey = config.session.userkey;
     var uid = req.session[userkey].id;
     var obj = req.body;
-    var dispose = {
+    var feedback = {
         "id": obj["id"],
         "createtime": new Date(),
-        "state": "0",
+        "type": obj['type'],
         "content": obj["content"],
         "createuser": uid
     };
 
-    service.addPVDispose(uid, dispose, function (err, rs) {
+    service.addPVFeedback(uid, feedback, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
+}
+
+
+function getGuideDetail(req, res) {
+    var pvid = req.query.id;
+    service.getPVGuide(pvid, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function saveGuide(req, res) {
+    var userkey = config.session.userkey;
+    var uid = req.session[userkey].id;
+    var obj = req.body;
+    var guide = {
+        "id": obj["id"],
+        "createtime": new Date(),
+        "createuser": uid,
+        "content": obj["content"],
+        "guide_name": obj['guide_name'],
+        "guide_type": obj['guide_type'],
+        "guide_result": obj['guide_result'],
+        "guide_count": obj['guide_count']
+    };
+
+    service.addPVGuide(uid, guide, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
