@@ -55,7 +55,7 @@ function savePubVoice (req, res) {
     var uid = req.session[userkey].id;
     var obj = req.body;
 
-    if(obj.hasOwnProperty('id')) {
+    if(obj['id'] != '') {
         var pvid = obj['id'];
         var pubVoice = {
             "title": obj["title"],
