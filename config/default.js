@@ -27,8 +27,8 @@ module.exports = {
         uploadDir: filePath + 'datafile/', // a new dir very day: Datafile20160809
         fileSize: 10 * 1024 * 1024, //bytes
         fileType: [
-            '.xls', '.xlt', '.xlm', '.xlsx', '.xlsm', '.xltx',
-            '.xltm', '.xlsb', '.xla', '.xlam', '.xll', '.xlw'
+            'xls', 'xlt', 'xlm', 'xlsx', 'xlsm', 'xltx',
+            'xltm', 'xlsb', 'xla', 'xlam', 'xll', 'xlw'
         ]
     },
     ueditor: {
