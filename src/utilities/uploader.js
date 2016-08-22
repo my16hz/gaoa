@@ -55,12 +55,12 @@ module.exports = {
     ueditor: ueditor
 };
 
-function datafile () {
+function datafile (req, res) {
     dfhandler(req, res, function (err) {
         var file = req.file;
 
         if (err || !file) {
-            errhandler.customError('文件上传失败。');
+            errhandler.customError(res, '文件上传失败。');
         } else {
             res.send({success: true});
         }

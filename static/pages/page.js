@@ -57,10 +57,10 @@ var LHSBasicPage = {
             if (rs.success) {
                 options.done(rs.data);
             } else {
-                self._showXHRError(rs.message);
+                self._showXHRMessage(rs.message, 'danger');
             }
         }).fail(function (xhr) {
-            self._showXHRError('请求失败:' + xhr.responseText);
+            self._showXHRMessage('请求失败:' + xhr.responseText, 'danger');
         }).always(function () {
             self._removeLoading();
         });
@@ -77,15 +77,19 @@ var LHSBasicPage = {
         return this;
     },
 
-    _showXHRError: function (err) {
-        var panel = $('#lhsErrorPanel');
+    _showXHRMessage: function (msg, type) {
+        var pid = 'lhs' + type + 'panel';
+        var panel = $('#' + pid);
 
         if (!panel.length) {
-            panel = $('<div id="lhsErrorPanel" class="alert alert-danger">' +
+            panel = $('<div id="' + pid + '" class="alert alert-' + type + '" data-dismiss="alert">' +
                 '<button type="button" class="close">' +
                 '<span>&times;</span>' +
-                '</button></div>');
+                '</button></div>').prependTo(this.$el);
             panel.alert();
+            panel.on('closed.bs.alert', function () {
+                panel.remove();
+            });
         }
 
         panel.append($('<span></span>').text(err));

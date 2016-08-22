@@ -16,7 +16,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     },
     reset: function () {
         this.dataTable = null;
-        this.editer = null;
+        this.editor = null;
 
         return this;
     },
@@ -41,6 +41,8 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                     var jqform = '#dataModal form';
                     var jqSelect = $('select[name="duty_department"]', jqform);
 
+                    $('#dataModal').removeClass('hide').siblings().addClass('hide');
+
                     jqSelect.find('option:gt(0)').remove();
 
                     $.each(rs, function (n, gp) {
@@ -49,12 +51,13 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                             .text(gp.name));
                     });
 
-                    if (pubvoice.hasOwnProperty('id')) {
+                    if (pubvoice.id) {
                         $('input[name="url"]', jqform).prop('readonly', true);
+
                         self._setFormControlValues(jqform, pubvoice);
                         self.editor.setContent(pubvoice.content);
                     } else {
-                        self._setFormControlValues(jqform, pubvoice);
+                        $('input[name="url"]', jqform).prop('readonly', false);
                         self.editor.setContent('');
                     }
 
@@ -66,10 +69,26 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         return this;
     },
     showImportModal: function () {
-        $('#importModal').show().siblings().hide();
+        var modal = $('#importModal').removeClass('hide');
+        var self = this;
+
+        modal.siblings().addClass('hide');
+        modal.find('input[type="file"]').ajaxfileupload({
+            action: '/datafile',
+            onStart: function () {
+                self._showLoading();
+            },
+            onCancel: function () {
+                self._removeLoading();
+            },
+            onComplete: function () {
+                self._removeLoading().closeImportModal();
+                self._showXHRMessage('上传成功。', 'info');
+            }
+        });
 
         this._shrinkTable()
-            ._showImportGridWrapper();
+            ._showGridWrapper();
     },
     applyApprobation: function () {
         var selected = this.dataTable.bootstrapTable('getSelections');
@@ -93,7 +112,8 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     closeDataModal: function () {
         var self = this;
 
-        $(['checkbox', 'title', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'createtime', 'status', 'action'])
+        $(['checkbox', 'title', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'createtime',
+            'status', 'action'])
             .each(function (index, field) {
                 self.dataTable.bootstrapTable('showColumn', field);
             });
@@ -137,7 +157,9 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     },
     closeImportModal: function () {
         this._hideGridWrapper()
-            ._expandTable();
+            ._expandTable()
+            .$('#importModal input')
+            .val('');
     },
     uploadDataFile: function () {
         // upload file
@@ -175,7 +197,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                     }
                 },
                 onLoadError: function (xhr) {
-                    self._showXHRError('请求失败:' + xhr.responseText);
+                    self._showXHRMessage('请求失败:' + xhr.responseText, 'danger');
                 },
                 columns: [{
                     field: 'checkbox',
@@ -294,22 +316,6 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
 
         return this;
     },
-    _showImportGridWrapper: function () {
-        $('#gridWrapper > div:first')
-            .attr('class', 'col-xs-2');
-        $('#gridWrapper > div:last')
-            .removeClass('hide');
-
-        return this;
-    },
-    _hideImportGridWrapper: function () {
-        $('#gridWrapper > div:first')
-            .attr('class', 'col-md-12')
-            .next().next()
-            .addClass('hide');
-
-        return this;
-    },
     _ajaxDelete: function (ids, done) {
         this._sendRequest({
             type: 'delete', url: '/pubvoice/delete',
@@ -350,7 +356,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 }
             },
             onLoadError: function (xhr) {
-                self._showXHRError('请求失败:' + xhr.responseText);
+                self._showXHRMessage('请求失败:' + xhr.responseText, 'danger');
             }
         }
     }
