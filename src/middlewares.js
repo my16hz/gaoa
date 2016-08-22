@@ -8,20 +8,22 @@ var compression = require('compression');
 var config = require('config');
 var cookieParser = require('cookie-parser');
 var express = require('express');
-var package = require(config.root + '/package.json');
 var session = require('express-session');
+
+var PATH_ROOT = config.root;
+var package = require(PATH_ROOT + '/package.json');
 
 module.exports = function (app) {
     // Compression middleware (must be placed before express.static)
     app.use(compression({threshold: 512}));
 
     // static source
-    app.use(express.static(config.root + '/public'));
-    app.use(express.static(config.root + '/upload/ueditor'));
-    app.use(express.static(config.root + '/templates'));
+    app.use(express.static(PATH_ROOT + '/public'));
+    app.use('/editor', express.static(PATH_ROOT + '/upload/ueditor'));
+    app.use('/sample', express.static(PATH_ROOT + '/sample'));
 
     // view engine setup
-    app.set('views', config.root + '/views');
+    app.set('views', PATH_ROOT + '/views');
     app.set('view engine', 'ejs');
 
     // json request body parser

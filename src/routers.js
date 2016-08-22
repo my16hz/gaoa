@@ -24,5 +24,5 @@ module.exports = function (app) {
     app.use(errorController.errorHandler);
 
     // must be the last one.
-    app.use(errorController.err404Handler);
+    // app.use(errorController.err404Handler);
 };
