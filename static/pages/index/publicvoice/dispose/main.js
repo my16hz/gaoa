@@ -92,7 +92,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                     field: 'action',
                     formatter: function () {
                         return '<a href="javascript:" title="处置">' +
-                            '<i class="glyphicon glyphicon-edit"></i></a>';
+                            '<i class="glyphicon glyphicon-comment"></i></a>';
                     },
                     events: {
                         'click a:first': function () {

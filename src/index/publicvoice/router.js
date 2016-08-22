@@ -12,6 +12,7 @@ module.exports = function () {
         // record page
         .get('/pubvoice/list', controller.getPubVoices)
         .post('/pubvoice/save', controller.savePubVoice)
+        .post('/pubvoice/update', controller.updatePubVoice)
         .delete('/pubvoice/delete', controller.removePubVoice)
         .post('/pubvoice/import', controller.importPubVoice)
         .post('/pubvoice/apply', controller.applyApprobation)
@@ -30,8 +31,10 @@ module.exports = function () {
         // noitfy page
 
         // feedback page
-
-        // guid page
-
+        .get('/feedback/detail', controller.getFeedbackDetail)
+        .post('/feedback/save', controller.saveFeedback)
+        // guide page
+        .get('/guide/detail', controller.getGuideDetail)
+        .post('/guide/save', controller.saveGuide)
         // analyze page
 };
