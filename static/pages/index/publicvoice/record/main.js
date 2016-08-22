@@ -27,8 +27,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         'click #btnCommit': 'applyApprobation',
         'click #dataModal .btn-default': 'closeDataModal',
         'click #dataModal .btn-primary': 'savePubVoice',
-        'click #importModal .btn-default': 'closeImportModal',
-        'click #importModal .btn-primary': 'uploadDataFile'
+        'click #importModal .btn-default': 'closeImportModal'
     },
     showDataModal: function (pubvoice) {
         var self = this;
@@ -57,7 +56,9 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                         self.editor.setContent(pubvoice.content);
                     } else {
                         $('input[name="url"]', jqform).prop('readonly', false);
-                        self.editor.setContent('');
+                        self.editor.ready(function () {
+                            self.editor.setContent('');
+                        });
                     }
 
                     self._shrinkTable()
@@ -159,21 +160,16 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             .$('#importModal input')
             .val('');
     },
-    uploadDataFile: function () {
-        // upload file
-        // success: close modal
-        // error: show error
-    },
 
     _appendEditor: function () {
         if (!this.editor) {
             $('#editorWrapper')
-                .append('<script type="text/plain" id="lhsUE" style="width:100%;height:300px;"></script>')
+                .append('<script type="text/plain" id="lhsRecordUE" style="width:100%;height:300px;"></script>')
                 .width(function () {
                     return $(this).parent().width;
                 });
 
-            this.editor = UM.getEditor('recordUE');
+            this.editor = UM.getEditor('lhsRecordUE');
         }
 
         return this;
