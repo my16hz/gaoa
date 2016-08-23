@@ -10,6 +10,7 @@ var xlsx = require('xlsx');
 
 var sysmanage = require('../sysmanage/member.service');
 var dbpool = require('../../utilities/dbpool');
+var pubvoiceRecord = require('./subpages/record.service')
 
 
 var service = module.exports = {
@@ -292,7 +293,7 @@ function getDailyPVList (did, callback) {
             }
             ps.execute(objParams, function (err, recordset) {
                 console.log(recordset);
-                findPubVoiceDetail(recordset[0]['pvids'], callback);
+                pubvoiceRecord.findPubVoiceDetail(recordset[0]['pvids'], callback);
                 ps.unprepare(function (err) {
                     if (err)
                         console.log(err);
