@@ -4,19 +4,14 @@
  * Author: lhs
  */
 var config = require('config');
+var extend = require('extend');
 
 var errhandler = require('../../utilities/errhandler');
 var service = require('./service');
 
-module.exports = {
+var controller = module.exports = {
     pagePubVoice: pagePubVoice,
 
-    getPubVoices: getPubVoices,
-    savePubVoice: savePubVoice,
-    updatePubVoice: updatePubVoice,
-    removePubVoice: removePubVoice,
-    importPubVoice: importPubVoice,
-    applyApprobation: applyApprobation,
     getApplications: getApplications,
     saveApplication: saveApplication,
     getDailyReports: getDailyReports,
@@ -28,132 +23,22 @@ module.exports = {
     saveFeedback: saveFeedback,
     getGuideDetail: getGuideDetail,
     saveGuide: saveGuide
-
 };
+
+extend(
+    controller,
+    require('./subpages/analyze.controller'),
+    require('./subpages/approve.controller'),
+    require('./subpages/dailyreport.controller'),
+    require('./subpages/dispose.controller'),
+    require('./subpages/feedback.controller'),
+    require('./subpages/guide.controller'),
+    require('./subpages/notify.controller'),
+    require('./subpages/record.controller')
+);
 
 function pagePubVoice (req, res) {
     res.render('index/publicvoice');
-}
-
-function getPubVoices (req, res) {
-    var userkey = config.session.userkey;
-    var uid = req.session[userkey].id,
-        priority = req.session[userkey].priority,
-        order = req.query["order"];
-    service.findPubVoiceList(uid, priority, "createtime", order, function (err, rs) {
-        err ?
-            errhandler.internalException(res, err) :
-            res.send({
-                success: true,
-                data: rs
-            });
-    });
-}
-
-function savePubVoice (req, res) {
-    var userkey = config.session.userkey;
-    var uid = req.session[userkey].id;
-    var obj = req.body;
-
-    if(obj['id'] != '') {
-        var pvid = obj['id'];
-        var pubVoice = {
-            "title": obj["title"],
-            "item": obj["item"],
-            "type": obj["type"],
-            "relate_department": obj["relate_department"],
-            "duty_department": obj["duty_department"],
-            "fellow_count": obj["fellow_count"],
-            "review_count": obj["review_count"],
-            "content": obj["content"],
-            "from_website": obj["from_website"],
-            "url": obj["url"]
-        };
-        service.updatePubVoice(pvid, pubVoice, function (err) {
-            err ?
-                errhandler.internalException(res, err) :
-                res.send({
-                    success: true
-                });
-        });
-    } else {
-        var pubVoice = {
-            "title": obj["title"],
-            "createtime": new Date(),
-            "item": obj["item"],
-            "type": obj["type"],
-            "relate_department": obj["relate_department"],
-            "duty_department": obj["duty_department"],
-            "fellow_count": obj["fellow_count"],
-            "review_count": obj["review_count"],
-            "content": obj["content"],
-            "from_website": obj["from_website"],
-            "url": obj["url"],
-            "state": 0,
-            "approved_state": 0,
-            "dispose_stat": 0,
-            "feedback_state": 0,
-            "createuser": uid
-        };
-        service.addPubVoices(uid, pubVoice, function (err) {
-            err ?
-                errhandler.internalException(res, err) :
-                res.send({
-                    success: true
-                });
-        });
-    }
-}
-
-function updatePubVoice(req, res) {
-    var obj = req.body;
-    var pvid = obj['id'];
-    var pubVoice = {
-        "title": obj["title"],
-        "item": obj["item"],
-        "type": obj["type"],
-        "relate_department": obj["relate_department"],
-        "duty_department": obj["duty_department"],
-        "fellow_count": obj["fellow_count"],
-        "review_count": obj["review_count"],
-        "content": obj["content"],
-        "from_website": obj["from_website"],
-        "url": obj["url"]
-    };
-    service.updatePubVoice(pvid, pubVoice, function (err) {
-        err ?
-            errhandler.internalException(res, err) :
-            res.send({
-                success: true
-            });
-    });
-}
-
-function removePubVoice (req, res) {
-    var ids = req.body.ids;
-
-    service.removePubVoices(ids.split(','), function (err) {
-        err ?
-            errhandler.internalException(res, err) :
-            res.send({
-                success: true
-            });
-    });
-}
-
-function importPubVoice (req, res) {
-}
-
-function applyApprobation (req, res) {
-    var ids = req.body.ids;
-
-    service.commitApproval(ids.split(','), function (err) {
-        err ?
-            errhandler.internalException(res, err) :
-            res.send({
-                success: true
-            });
-    });
 }
 
 function getApplications (req, res) {
@@ -174,7 +59,7 @@ function saveApplication (req, res) {
     var pvid = req.body.id[0];
     var content = req.body.approveContent[0];
     var result = req.body.approveResult[0];
-    service.approvalPubVoice(uid, {'pvid':pvid, 'content':content, 'result':result}, function (err, rs) {
+    service.approvalPubVoice(uid, {'pvid': pvid, 'content': content, 'result': result}, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -199,7 +84,7 @@ function getDailyReports (req, res) {
     });
 }
 
-function getDailyDetail(req, res) {
+function getDailyDetail (req, res) {
     var did = req.query.id;
     service.findDailyDetail(did, function (err, rs) {
         err ?
@@ -211,7 +96,7 @@ function getDailyDetail(req, res) {
     });
 }
 
-function getDisposeList(req, res) {
+function getDisposeList (req, res) {
     var did = req.query.id;
     service.getDailyPVList(did, function (err, rs) {
         err ?
@@ -221,7 +106,7 @@ function getDisposeList(req, res) {
                 data: rs
             });
     });
-    
+
 }
 
 function savePVDispose (req, res) {
@@ -257,7 +142,7 @@ function getDisposeDetail (req, res) {
     });
 }
 
-function getFeedbackDetail(req, res) {
+function getFeedbackDetail (req, res) {
     var pvid = req.query.id;
     var type = req.query.type;
     service.getPVFeedback(pvid, type, function (err, rs) {
@@ -270,7 +155,7 @@ function getFeedbackDetail(req, res) {
     });
 }
 
-function saveFeedback(req, res) {
+function saveFeedback (req, res) {
     var userkey = config.session.userkey;
     var uid = req.session[userkey].id;
     var obj = req.body;
@@ -292,7 +177,7 @@ function saveFeedback(req, res) {
 }
 
 
-function getGuideDetail(req, res) {
+function getGuideDetail (req, res) {
     var pvid = req.query.id;
     service.getPVGuide(pvid, function (err, rs) {
         err ?
@@ -304,7 +189,7 @@ function getGuideDetail(req, res) {
     });
 }
 
-function saveGuide(req, res) {
+function saveGuide (req, res) {
     var userkey = config.session.userkey;
     var uid = req.session[userkey].id;
     var obj = req.body;

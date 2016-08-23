@@ -4,7 +4,7 @@
  * Author: lhs
  */
 var path = require('path');
-var filePath = __dirname + '/../upload/';
+var filePath = path.normalize(__dirname + '/../upload/');
 
 module.exports = {
     root: path.normalize(__dirname + '/..'),

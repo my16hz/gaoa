@@ -6,9 +6,13 @@
 var config = require('config');
 var fs = require('fs');
 var multer = require('multer');
+var path = require('path');
 var uuid = require('node-uuid');
 
 var errhandler = require('./errhandler');
+var service = require('./../index/publicvoice/service');
+
+var userkey = config.session.userkey;
 
 var dfcfg = config.datafile;
 var dfhandler = multer({
@@ -58,11 +62,20 @@ module.exports = {
 function datafile (req, res) {
     dfhandler(req, res, function (err) {
         var file = req.file;
+        var user = req.session[userkey];
 
         if (err || !file) {
             errhandler.customError(res, '文件上传失败。');
         } else {
-            res.send({success: true});
+            service.importPubVoices(user.id, user.groupid, path.normalize(
+                dfcfg.uploadDir + file.dirName + '/' + file.filename + '.' + _getExtention(file)
+            ), function (err) {
+                if (err) {
+                    errhandler.customError(res, '文件解析失败。');
+                } else {
+                    res.send({success: true});
+                }
+            });
         }
     });
 }
