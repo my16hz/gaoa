@@ -20,7 +20,8 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
     },
     events: {
         'click #feedbackModal .btn-default': 'closeModal',
-        'click #feedbackModal .btn-primary': 'saveFeedback'
+        'click #feedbackModal .btn-primary': 'saveFeedback',
+        'change #feedbackType': 'changeFeedbackType'
     },
     _drawDataTable: function () {
         var self = this;
@@ -162,6 +163,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
                     self.editor.setContent(rs[0].content);
                 } else {
                     self._setFormControlValues(jqform, {'id': pubvoice.id})
+                    self.editor.setContent('');
                 }
 
                 self._shrinkTable()
@@ -196,7 +198,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
 
         this._expandTable()
             ._hideGridWrapper();
-    },
+    },    
     saveFeedback: function () {
         var self = this;
         this._sendRequest({
@@ -213,5 +215,25 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
         var values = this._getFormControlValues(jqform);
 
         return  values;
+    },
+    changeFeedbackType: function () {
+        var self = this;
+        var jqform = $('#feedbackModal form');
+        var values = this._getFormControlValues(jqform);
+        this._sendRequest({
+            type: 'get',
+            url: '/feedback/detail',
+            data: {'id': values.id, 'type': values.type},
+            done: function (rs) {
+                var jqform = '#feedbackModal form';
+                if (rs.length > 0) {
+                    self._setFormControlValues(jqform, {'id': values.id, 'type': rs[0].type});
+                    self.editor.setContent(rs[0].content);
+                } else {
+                    self._setFormControlValues(jqform, {'id': values.id})
+                    self.editor.setContent('');
+                }
+            }
+        });
     }
 });

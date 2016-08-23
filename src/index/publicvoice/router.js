@@ -43,4 +43,8 @@ module.exports = function () {
         .post('/guide/save', controller.saveGuide)
 
         // analyze page
+
+        // alert page
+        .get('/alert/list', controller.getAlertList)
+        .post('/alert/save', controller.saveAlert)
 };

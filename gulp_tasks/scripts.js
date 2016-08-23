@@ -14,7 +14,7 @@ var DIR_DEST = 'public/js/';
 
 var SUB_PAGES = {
     badinfo: ['aggregate', 'record', 'RTXDirective'],
-    publicvoice: ['dailyreport', 'dispose', 'examine&approve', 'feedback', 'guide', 'notify', 'record'],
+    publicvoice: ['dailyreport', 'dispose', 'examine&approve', 'feedback', 'guide', 'notify', 'record', 'alert'],
     smartoffice: ['allmessages', 'examine&approve', 'sendmessage'],
     socialvoice: ['dispose', 'record'],
     sysmanage: ['members', 'password']
@@ -88,7 +88,8 @@ module.exports = function (gulp, plugins, isdebug) {
             DIR_SRC.coreJs + 'moment-2.14.1.js',
             DIR_SRC.coreJs + 'bootstrap-table-1.11.0.js',
             DIR_SRC.coreJs + 'bootstrap-table-zh-CN-1.11.0.js',
-            DIR_SRC.coreJs + 'bootbox-4.4.0.js'
+            DIR_SRC.coreJs + 'bootbox-4.4.0.js',
+            DIR_SRC.coreJs + 'bootstrap-datetimepicker.min.js'
         ];
 
         if ('sysmanage' == module) {

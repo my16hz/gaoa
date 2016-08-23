@@ -22,7 +22,9 @@ var controller = module.exports = {
     getFeedbackDetail: getFeedbackDetail,
     saveFeedback: saveFeedback,
     getGuideDetail: getGuideDetail,
-    saveGuide: saveGuide
+    saveGuide: saveGuide,
+    getAlertList: getAlertList,
+    saveAlert: saveAlert
 };
 
 extend(
@@ -205,6 +207,41 @@ function saveGuide (req, res) {
     };
 
     service.addPVGuide(uid, guide, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
+}
+
+function getAlertList (req, res) {
+    var flag = req.query.flag;
+    service.getAlertList(flag, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function saveAlert (req, res) {
+    var obj = req.body;
+    var alert = {
+        "title": obj["title"],
+        "date": obj["date"],
+        "department": obj["department"],
+        "sender": obj["sender"],
+        "receiver": obj["receiver"],
+        "type": obj["type"],
+        "content": obj["content"],
+        "endtime": obj["endtime"],
+        "state": obj["state"]
+    };
+
+    service.addPVGuide(uid, alert, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

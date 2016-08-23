@@ -20,6 +20,8 @@
                     return LHSGuidePage.run();
                 case 'analyze':
                     return LHSAnalyzePage.run();
+                case 'alert':
+                    return LHSAlertPage.run();
             }
         });
 
