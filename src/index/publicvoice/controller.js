@@ -259,7 +259,8 @@ function getDisposeDetail (req, res) {
 
 function getFeedbackDetail(req, res) {
     var pvid = req.query.id;
-    service.getPVFeedback(pvid, function (err, rs) {
+    var type = req.query.type;
+    service.getPVFeedback(pvid, type, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

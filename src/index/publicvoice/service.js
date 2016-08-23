@@ -727,14 +727,20 @@ function updatePVFeedback (uid, obj, callback) {
  * @param obj {Object} 反馈内容 {id: 舆情ID，type: 0 - 书面回复， 1 - 网上回复, content: 回复内容}
  * @param callback
  */
-function getPVFeedback (pvid, callback) {
-    var sql_stmt = "SELECT * FROM tb_pv_feedback WHERE id = @id;";
+function getPVFeedback (pvid, type, callback) {
+    var sql_stmt = "SELECT * FROM tb_pv_feedback WHERE id = @id ";
+    if (type != null) {
+        sql_stmt += " AND type = @type";
+    }
+
     var objParams = {
-        "id": pvid
+        "id": pvid,
+        "type": type
     };
 
     var ps = dbpool.preparedStatement()
         .input("id", sql.Int)
+        .input("type", sql.Int)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
