@@ -47,4 +47,5 @@ module.exports = function () {
         // alert page
         .get('/alert/list', controller.getAlertList)
         .post('/alert/save', controller.saveAlert)
+        .delete('/alert/clear', controller.clearAlert)
 };

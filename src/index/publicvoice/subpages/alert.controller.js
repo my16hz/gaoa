@@ -9,7 +9,8 @@ var errhandler = require('../../../utilities/errhandler');
 var service = require('./../service');
 module.exports = {
     getAlertList: getAlertList,
-    saveAlert: saveAlert
+    saveAlert: saveAlert,
+    clearAlert: clearAlert
 };
 
 function getAlertList (req, res) {
@@ -25,20 +26,36 @@ function getAlertList (req, res) {
 }
 
 function saveAlert (req, res) {
+    var uid = req.session[userkey].id;
     var obj = req.body;
     var alert = {
         "title": obj["title"],
-        "date": obj["date"],
+        "starttime": obj["starttime"],
         "department": obj["department"],
         "sender": obj["sender"],
         "receiver": obj["receiver"],
         "type": obj["type"],
         "content": obj["content"],
         "endtime": obj["endtime"],
-        "state": obj["state"]
+        "state": 0,
+        "createuser": uid,
+        "createtime": new Date()
     };
 
-    service.addPVGuide(uid, alert, function (err, rs) {
+    service.addAlert(alert, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
+}
+
+function clearAlert (req, res) {
+    var obj = req.body;
+    var ids = obj['ids'];
+
+    service.updateAlertState(ids, 1, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

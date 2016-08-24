@@ -18,6 +18,8 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
             ._drawDataTable();
     },
     events: {
+        'click #btnAdd': 'showAlertModal',
+        'click #btnDel': 'clearSelected',
         'click #alertModal .btn-default': 'closeModal',
         'click #alertModal .btn-primary': 'saveAlert'
     },
@@ -60,7 +62,7 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
                     field: 'receiver'
                 }, {
                     title: '预警开始时间',
-                    field: 'date',
+                    field: 'starttime',
                     formatter: function (val) {
                         return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
                     }
@@ -85,12 +87,25 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
                     title: '操作',
                     field: 'action',
                     formatter: function () {
-                        return '<a href="javascript:" title="清除预警">' +
-                            '<i class="glyphicon glyphicon-refresh"></i></a>';
+                        return '<a href="javascript:" title="查看">' +
+                            '<i class="glyphicon glyphicon-edit"></i>' +
+                            '</a>&nbsp;&nbsp;' +
+                            '<a href="javascript:" title="清除预警">' +
+                            '<i class="glyphicon glyphicon-remove"></i>' +
+                            '</a>';
                     },
                     events: {
                         'click a:first': function () {
                             self._showAlertModal(arguments[2]);
+                        },
+                        'click a:last': function () {
+                            var uid = arguments[2].id;
+
+                            bootbox.confirm('确认清除预警？', function (rs) {
+                                rs && self._ajaxDelete(uid, function () {
+                                    self._refreshTable();
+                                });
+                            });
                         }
                     }
                 }]
@@ -109,7 +124,7 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
     _shrinkTable: function () {
         var self = this;
 
-        $(["checkbox", "type", "department", "sender", "receiver", "date", "endtime", "state", "action"])
+        $(['checkbox', 'type', 'department', 'sender', 'receiver', 'starttime', 'endtime', 'state', 'action'])
             .each(function (index, field) {
                 self.dataTable.bootstrapTable('hideColumn', field);
             });
@@ -119,7 +134,7 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
     _expandTable: function () {
         var self = this;
 
-        $(["checkbox", "type", "department", "sender", "receiver", "date", "endtime", "state", "action"])
+        $(["checkbox", "type", "department", "sender", "receiver", "starttime", "endtime", "state", "action"])
             .each(function (index, field) {
                 self.dataTable.bootstrapTable('showColumn', field);
             });
@@ -160,6 +175,12 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
         });
 
         return this;
+    },
+    showAlertModal: function () {
+        $('#alertModal').removeClass('hide').siblings().addClass('hide');
+        this._shrinkTable()
+            ._showGridWrapper();
+
     },
     _buildTableOptions: function () {
         var self = this;
@@ -202,5 +223,33 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
         var values = this._getFormControlValues(jqform);
 
         return  values;
+    },
+    _ajaxDelete: function (ids, done) {
+        this._sendRequest({
+            type: 'delete', url: '/alert/clear',
+            data: {ids: ids},
+            done: done
+        });
+
+        return this;
+    },
+    clearSelected: function () {
+        var selected = this.dataTable.bootstrapTable('getSelections');
+        var self = this;
+        var mids = [];
+
+        $(selected).each(function (n, pv) {
+            mids.push(pv.id);
+        });
+
+        mids.length ?
+            bootbox.confirm('确定清除？', function (rs) {
+                rs && self._ajaxDelete(mids.join(), function () {
+                    self._refreshTable();
+                });
+            }) :
+            bootbox.alert('请先选择要清除的预警');
+
+        return this;
     }
 });

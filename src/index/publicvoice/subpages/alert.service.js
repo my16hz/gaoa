@@ -9,7 +9,8 @@ var dbpool = require('../../../utilities/dbpool');
 module.exports = {
     /*---------- 舆情预警页面 ----------*/
     getAlertList: getAlertList,
-    addAlert: addAlert
+    addAlert: addAlert,
+    updateAlertState: updateAlertState
 };
 
 /**
@@ -49,24 +50,26 @@ function getAlertList (bShowAll, callback) {
  * @param callback
  */
 function addAlert (obj, callback) {
-    var sql_stmt = "INSERT INTO tb_pv_alerted ([title], [date], [department], [sender], [receiver], [type], [content], [endtime], [state]) " +
-        "VALUES (@title, @date, @department, @sender, @receiver, @type, @content, @endtime, @state);";
+    var sql_stmt = "INSERT INTO tb_pv_alerted ([title], [starttime], [department], [sender], [receiver], [type], [content], [endtime], [state]) " +
+        "VALUES (@title, @starttime, @department, @sender, @receiver, @type, @content, @endtime, @state);";
     var objParams = {
         "title": obj["title"],
-        "date": obj["date"],
+        "starttime": obj["starttime"],
         "department": obj["department"],
         "sender": obj["sender"],
         "receiver": obj["receiver"],
         "type": obj["type"],
         "content": obj["content"],
         "endtime": obj["endtime"],
-        "state": obj["state"]
+        "state": obj["state"],
+        "createuser": obj["createuser"],
+        "createtime": obj["createtime"],
     };
 
     var ps = dbpool
         .preparedStatement()
         .input("title", sql.NVarChar)
-        .input("date", sql.DateTime2)
+        .input("starttime", sql.DateTime2)
         .input("department", sql.NVarChar)
         .input("sender", sql.NVarChar)
         .input("receiver", sql.NVarChar)
@@ -74,9 +77,38 @@ function addAlert (obj, callback) {
         .input("content", sql.NVarChar)
         .input("endtime", sql.DateTime2)
         .input("state", sql.Int)
+        .input("createuser", sql.VarChar)
+        .input("createtime", sql.DateTime2)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function updateAlertState (ids, state, callback) {
+    var sql_stmt = "UPDATE tb_pv_alerted SET state = @state WHERE id in (%ids%);";
+    var objParams = {
+        "state" : state
+    };
+
+    sql_stmt = sql_stmt.replace('%ids%', ids);
+
+    console.log(sql_stmt);
+
+    var ps = dbpool.preparedStatement()
+        .input("state", sql.Int)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, false);
             }
 
             ps.execute(objParams, function (err, rs) {
