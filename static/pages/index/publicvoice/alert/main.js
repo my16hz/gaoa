@@ -18,8 +18,8 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
             ._drawDataTable();
     },
     events: {
-        'click #feedbackModal .btn-default': 'closeModal',
-        'click #feedbackModal .btn-primary': 'saveFeedback'
+        'click #alertModal .btn-default': 'closeModal',
+        'click #alertModal .btn-primary': 'saveAlert'
     },
     _drawDataTable: function () {
         var self = this;
@@ -59,7 +59,7 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
                     title: '接警人',
                     field: 'receiver'
                 }, {
-                    title: '预警时间',
+                    title: '预警开始时间',
                     field: 'date',
                     formatter: function (val) {
                         return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
@@ -109,7 +109,7 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
     _shrinkTable: function () {
         var self = this;
 
-        $(['checkbox', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'createtime', 'status', 'action'])
+        $(["checkbox", "type", "department", "sender", "receiver", "date", "endtime", "state", "action"])
             .each(function (index, field) {
                 self.dataTable.bootstrapTable('hideColumn', field);
             });
@@ -119,7 +119,7 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
     _expandTable: function () {
         var self = this;
 
-        $(['checkbox', 'title', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'createtime', 'status', 'action'])
+        $(["checkbox", "type", "department", "sender", "receiver", "date", "endtime", "state", "action"])
             .each(function (index, field) {
                 self.dataTable.bootstrapTable('showColumn', field);
             });
@@ -183,15 +183,14 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
     },
     closeModal: function () {
         var self = this;
-
         this._expandTable()
             ._hideGridWrapper();
     },
-    saveFeedback: function () {
+    saveAlert: function () {
         var self = this;
         this._sendRequest({
             type: 'post',
-            url: '/feedback/save',
+            url: '/alert/save',
             validator: $.proxy(this._alertValidator, this),
             done: function () {
                 self._refreshTable().closeModal();
