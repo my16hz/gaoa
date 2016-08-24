@@ -3,4 +3,39 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
-module.exports = {};
+var userkey = require('config').session.userkey;
+
+var errhandler = require('../../../utilities/errhandler');
+var service = require('./../service');
+
+module.exports = {
+    getApplications: getApplications,
+    saveApplication: saveApplication
+};
+
+function getApplications (req, res) {
+    var order = req.query["order"];
+    service.findWaitApprovalPV("createtime", order, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function saveApplication (req, res) {
+    var uid = req.session[userkey].id;
+    var pvid = req.body.id[0];
+    var content = req.body.approveContent[0];
+    var result = req.body.approveResult[0];
+    service.approvalPubVoice(uid, {'pvid': pvid, 'content': content, 'result': result}, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}

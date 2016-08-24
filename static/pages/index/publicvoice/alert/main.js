@@ -14,7 +14,6 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
         // }, this));
 
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
-
         this.initDependencies()
             ._drawDataTable();
     },

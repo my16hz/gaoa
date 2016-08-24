@@ -8,15 +8,13 @@ var userkey = require('config').session.userkey;
 var errhandler = require('../../../utilities/errhandler');
 var service = require('./../service');
 module.exports = {
-    getFeedbackDetail: getFeedbackDetail,
-    saveFeedback: saveFeedback
+    getAlertList: getAlertList,
+    saveAlert: saveAlert
 };
 
-
-function getFeedbackDetail (req, res) {
-    var pvid = req.query.id;
-    var type = req.query.type;
-    service.getPVFeedback(pvid, type, function (err, rs) {
+function getAlertList (req, res) {
+    var flag = req.query.flag;
+    service.getAlertList(flag, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -26,18 +24,21 @@ function getFeedbackDetail (req, res) {
     });
 }
 
-function saveFeedback (req, res) {
-    var uid = req.session[userkey].id;
+function saveAlert (req, res) {
     var obj = req.body;
-    var feedback = {
-        "id": obj["id"],
-        "createtime": new Date(),
-        "type": obj['type'],
+    var alert = {
+        "title": obj["title"],
+        "date": obj["date"],
+        "department": obj["department"],
+        "sender": obj["sender"],
+        "receiver": obj["receiver"],
+        "type": obj["type"],
         "content": obj["content"],
-        "createuser": uid
+        "endtime": obj["endtime"],
+        "state": obj["state"]
     };
 
-    service.addPVFeedback(uid, feedback, function (err, rs) {
+    service.addPVGuide(uid, alert, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
