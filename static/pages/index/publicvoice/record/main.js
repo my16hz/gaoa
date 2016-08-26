@@ -53,7 +53,11 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                         $('input[name="url"]', jqform).prop('readonly', true);
 
                         self._setFormControlValues(jqform, pubvoice);
+                        if (pubvoice.content == null) {
+                            pubvoice.content = '';
+                        }
                         self.editor.setContent(pubvoice.content);
+                        self.editor.setDisabled();
                     } else {
                         $('input[name="url"]', jqform).prop('readonly', false);
                         self.editor.ready(function () {
@@ -331,6 +335,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     _pvValidator: function () {
         var jqform = $('#dataModal form');
         var values = this._getFormControlValues(jqform);
+        values['content'] = this.editor.getContent();
 
         return values;
     },

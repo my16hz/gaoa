@@ -12,15 +12,8 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
 
         this.editor = UM.getEditor('approvedUE');
 
-        this.reset()
-            .initDependencies()
+        this.initDependencies()
             ._drawDataTable();
-    },
-    reset: function () {
-        this.dataTable = null;
-        this.editor = null;
-
-        return this;
     },
     events: {
         'click #approveModal .btn-default': 'closeApproveModal',
@@ -65,10 +58,8 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
                 onLoadError: function (xhr) {
                     self._showXHRMessage('请求失败:' + xhr.responseText, 'danger');
                 },
-                columns: [{
-                    field: 'checkbox',
-                    checkbox: true
-                }, {
+                columns: [
+                {
                     title: '标题',
                     field: 'title'
                 }, {
@@ -95,6 +86,10 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
                     formatter: function (val) {
                         return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
                     }
+                }, {
+                    title: '内容',
+                    field: 'content',
+                    visible: false
                 }, {
                     title: '状态',
                     field: 'state',
@@ -138,6 +133,9 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
                 $('input[name="' + field + '"]', jqform).prop('readonly', true);
             });
         this._setFormControlValues(jqform, pubvoice);
+        if (pubvoice.content == null) {
+            pubvoice.content = '';
+        }
         this.editor.setContent(pubvoice.content);
         this._shrinkTable()
             ._showGridWrapper();

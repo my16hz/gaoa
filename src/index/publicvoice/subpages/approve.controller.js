@@ -27,9 +27,9 @@ function getApplications (req, res) {
 
 function saveApplication (req, res) {
     var uid = req.session[userkey].id;
-    var pvid = req.body.id[0];
-    var content = req.body.approveContent[0];
-    var result = req.body.approveResult[0];
+    var pvid = req.body.id;
+    var content = req.body.approveContent;
+    var result = req.body.approveResult;
     service.approvalPubVoice(uid, {'pvid': pvid, 'content': content, 'result': result}, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :

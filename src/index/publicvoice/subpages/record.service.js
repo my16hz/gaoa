@@ -57,7 +57,8 @@ module.exports = {
      */
     commitApproval: commitApproval,
 
-    findPubVoicesByState: findPubVoicesByState
+    findPubVoicesByState: findPubVoicesByState,
+    updatePVState: updatePVState
 };
 
 function findPubVoiceList (uid, priority, field, order, callback) {
@@ -241,12 +242,14 @@ function removePubVoices (pvids, callback) {
         });
 }
 
-function updatePubVoice (pvid, obj, callback) {
-    _updatePVState([pvid], obj, callback);
+function updatePubVoice (uid, obj, callback) {
+    var pvid = obj.id;
+    delete obj.id;
+    updatePVState([pvid], obj, callback);
 }
 
 function commitApproval (pvids, callback) {
-    _updatePVState(pvids, {'state': 1}, callback);
+    updatePVState(pvids, {'state': 1}, callback);
 }
 
 /**
@@ -308,7 +311,7 @@ function _addBulkPubVoices (objs, callback) {
  * @param callback
  * @private
  */
-function _updatePVState (pvids, state, callback) {
+function updatePVState (pvids, state, callback) {
     var sql_stmt = "UPDATE tb_publicvoice SET %sets% WHERE id in (%pvids%);";
     var objParams = {};
     var sets = [];

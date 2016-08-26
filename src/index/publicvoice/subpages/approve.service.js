@@ -6,6 +6,7 @@
 
 var sql = require('mssql');
 var dbpool = require('../../../utilities/dbpool');
+var pubvoice = require('./record.service');
 
 module.exports = {
     /*---------- 舆情审批页面 ----------*/
@@ -95,7 +96,7 @@ function approvalPubVoice (uid, obj, callback) {
                     state['state'] = 2
                     /* 通过 */
                 }
-                _updatePVState([objParams["pvid"]], state, callback);
+                pubvoice.updatePVState([objParams["pvid"]], state, callback);
 
                 ps.unprepare(function (err) {
                     err && console.error(err);

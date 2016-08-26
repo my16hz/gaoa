@@ -92,7 +92,7 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
                     },
                     events: {
                         'click a:first': function () {
-                            self.showDataModal(arguments[2]);
+                            self.showDetailModal(arguments[2]);
                         },
                         'click a:last': function () {
                             var uid = arguments[2].id;
@@ -179,7 +179,7 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
         this._expandTable()
             ._hideGridWrapper();
     },
-    showDataModal: function (pubvoice) {
+    showDataModal: function () {
         var selected = this.dataTable.bootstrapTable('getSelections');
         var self = this;
         var mids = [];
@@ -205,5 +205,11 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
             }
         });
         return this;
-    }
+    },
+    showDetailModal: function (pubvoice) {
+        this.editor.setContent(pubvoice.content == null? '':pubvoice.content);
+        this._shrinkTable()
+            ._showGridWrapper();
+        return this;
+    },
 });
