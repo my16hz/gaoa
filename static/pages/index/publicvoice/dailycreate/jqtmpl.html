@@ -1,0 +1,38 @@
+<script type="text/x-jquery-tmpl">
+<div class="pubvoice-dailycreate-page">
+    <div class="row func-btns">
+        <div class="col-md-6 col-xs-offset-6">
+            <div class="pull-right">
+                <button id="btnAdd" class="btn btn-sm btn-default">生成日报</button>
+            </div>
+        </div>
+    </div>
+    <div id="pubVoiceWrapper" class="row">
+        <div class="col-md-12 ">
+            <table id="dataTable" class="table table-striped table-hover table-condensed"></table>
+        </div>
+        <div class="col-xs-10 no-padding-left hide">
+            <div id="dataModal" class="modal-content">
+                <div class="modal-header">
+                    <label><h4 class="modal-title">日报详情</h4></label>
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-default">关闭</button>
+                        <button type="button" class="btn btn-primary">保存</button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group form-group-sm">
+                            <div class="col-sm-12">
+                                <script type="text/plain" id="dailyCreateUE" name="content">
+                                </script>
+                                <textarea class="form-control hide" rows="5"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</script>

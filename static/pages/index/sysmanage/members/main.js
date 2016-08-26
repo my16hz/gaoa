@@ -38,10 +38,38 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
             this._drawMemberTable() :
             this._drawGroupTable();
     },
-    showDataModal: function () {
-        'member' == this.isShown ?
-            this._showMemberModal() :
-            this._showGroupModal();
+    showDataModal: function (pubvoice) {
+        var self = this;
+
+        var jqform = '#dataModal form';
+        var jqSelect = $('select[name="duty_department"]', jqform);
+
+        $('#dataModal').removeClass('hide').siblings().addClass('hide');
+
+        jqSelect.find('option:gt(0)').remove();
+
+        $.each(rs, function (n, gp) {
+            jqSelect.append($('<option></option>')
+                .attr('value', gp.id)
+                .text(gp.name));
+        });
+
+        if (pubvoice.id) {
+            $('input[name="url"]', jqform).prop('readonly', true);
+
+            self._setFormControlValues(jqform, pubvoice);
+            self.editor.setContent(pubvoice.content);
+        } else {
+            $('input[name="url"]', jqform).prop('readonly', false);
+            self.editor.ready(function () {
+                self.editor.setContent('');
+            });
+        }
+
+        self._shrinkTable()
+            ._showGridWrapper();
+
+
     },
     delSelectedItems: function () {
         'member' == this.isShown ?

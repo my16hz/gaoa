@@ -7,12 +7,6 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
     run: function () {
         /*inject:jqtmpl:html*/
         /*endinject*/
-
-        // this.ajax({}, $.proxy(function () {
-        //     $(this.el).append(jqtmpl($, {data: {}}).join(''));
-        //     this.initDependencies();
-        // }, this));
-
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
         this.editor = UM.getEditor('dailyDetailUE');
         this.initDependencies()
@@ -27,7 +21,7 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
         if (!this.dailyReportTable) {
             (this.dailyReportTable = $('#dailyReportTable')).bootstrapTable({
                 method: 'get',
-                url: '/dailyreport/list',
+                url: '/daily/list',
                 cache: false,
                 ajaxOptions: {
                     beforeSend: function () {
@@ -85,7 +79,7 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
 
         this._sendRequest({
             type: 'get',
-            url: '/dailyreport/detail',
+            url: '/daily/detail',
             data: {'id' : arguments.id},
             done: function (rs) {
                 var jqform = '#dailyDetailModal form';
@@ -142,7 +136,7 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
 
         return {
             method: 'get',
-            url: '/dailyreport/detail',
+            url: '/daily/detail',
             cache: false,
             ajaxOptions: {
                 beforeSend: function () {

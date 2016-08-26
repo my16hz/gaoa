@@ -3,6 +3,7 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
+var config = require('config');
 var userkey = require('config').session.userkey;
 
 var errhandler = require('../../../utilities/errhandler');
@@ -11,7 +12,10 @@ var service = require('./../service');
 module.exports = {
     getDailyReports: getDailyReports,
     getDailyDetail: getDailyDetail,
-    getDisposeList: getDisposeList
+    getDisposeList: getDisposeList,
+    getUnappliedPubVoices: getUnappliedPubVoices,
+    generateDailyReport: generateDailyReport,
+    getDailyTemplate: getDailyTemplate
 };
 
 
@@ -51,5 +55,26 @@ function getDisposeList (req, res) {
                 data: rs
             });
     });
+}
 
+function getUnappliedPubVoices(req, res) {
+    service.findPubVoicesByState(2, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function generateDailyReport(req, res) {
+    return "";
+}
+
+function getDailyTemplate(req, res) {
+    res.send({
+        success: true,
+        data: config['template'].daily
+    });
 }

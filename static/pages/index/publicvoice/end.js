@@ -10,6 +10,8 @@
                     return LHSExamineAndApprovePage.run();
                 case 'dailyreport':
                     return LHSDailyReportPage.run();
+                case 'dailycreate':
+                    return LHSDailyCreatePage.run();
                 case 'dispose':
                     return LHSDisposePage.run();
                 case 'notify':

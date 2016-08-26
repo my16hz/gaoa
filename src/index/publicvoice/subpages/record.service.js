@@ -55,7 +55,9 @@ module.exports = {
      * @param pvids  {Array} 舆情ID数组
      * @param callback {Function}  回调函数(err)
      */
-    commitApproval: commitApproval
+    commitApproval: commitApproval,
+
+    findPubVoicesByState: findPubVoicesByState
 };
 
 function findPubVoiceList (uid, priority, field, order, callback) {
@@ -78,6 +80,26 @@ function findPubVoiceList (uid, priority, field, order, callback) {
         .input("uid", sql.VarChar)
         .input("field", sql.VarChar)
         .input("order", sql.VarChar)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, []);
+            }
+
+            ps.execute(params, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function findPubVoicesByState(state, callback) {
+    var params = {'state' : state};
+    var sql_stmt = "select * from tb_publicvoice where state = @state";
+    var ps = dbpool.preparedStatement()
+        .input("state", sql.Int)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, []);

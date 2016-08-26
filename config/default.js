@@ -17,7 +17,7 @@ module.exports = {
         server: '182.150.22.119',
         port: 20492,
         //server: '172.16.12.204',
-        //port:9200,
+        //port: 9200,
         database: 'gaoa',
         user: 'gaoa',
         password: '1qazXSW@'
@@ -37,34 +37,34 @@ module.exports = {
         fileSize: 5 * 1024 * 1024, //bytes
         fileType: ['gif', 'png', 'jpg', 'jpeg', 'bmp']
     },
-    templete: {
+    template: {
         dispose: '' +
         '<p style="text-align: center;">' +
-            '<a>' +
-                '<span style="font-size:56px;font-family:方正小标宋简体;color:red"><br/></span>' +
-            '</a>' +
+        '<a>' +
+        '<span style="font-size:56px;font-family:方正小标宋简体;color:red"><br/></span>' +
+        '</a>' +
         '</p>' +
         '<p style="text-align: center;">' +
-            '<a></a>' +
-            '<a></a>' +
-            '<a></a>' +
-            '<a></a>' +
-            '<a></a>' +
-            '<a></a>' +
-            '<a></a>' +
-            '<a>' +
-                '<span style="font-size:56px;font-family:方正小标宋简体;color:red">广安市网络舆情中心</span>' +
-            '</a>' +
+        '<a></a>' +
+        '<a></a>' +
+        '<a></a>' +
+        '<a></a>' +
+        '<a></a>' +
+        '<a></a>' +
+        '<a></a>' +
+        '<a>' +
+        '<span style="font-size:56px;font-family:方正小标宋简体;color:red">广安市网络舆情中心</span>' +
+        '</a>' +
         '</p><hr/>' +
         '<p style="text-align:right;line-height:31px">' +
-            '<span style="font-size:21px;font-family:仿宋_GB2312">广舆函〔</span>' +
-            '<span style="font-size:21px">2016</span>' +
-            '<span style="font-size:21px;font-family:仿宋_GB2312">〕</span>' +
-            '<span style="font-size:20px;letter-spacing:-0">1</span>' +
-            '<span style="font-size:21px;font-family:仿宋_GB2312">号</span>' +
+        '<span style="font-size:21px;font-family:仿宋_GB2312">广舆函〔</span>' +
+        '<span style="font-size:21px">2016</span>' +
+        '<span style="font-size:21px;font-family:仿宋_GB2312">〕</span>' +
+        '<span style="font-size:20px;letter-spacing:-0">1</span>' +
+        '<span style="font-size:21px;font-family:仿宋_GB2312">号</span>' +
         '</p>' +
         '<p style="margin-top:16px;text-align:center;line-height:40px">' +
-            '<span style="font-size:29px;font-family:方正小标宋简体">广安市重要网络舆情处置通知书</span>' +
+        '<span style="font-size:29px;font-family:方正小标宋简体">广安市重要网络舆情处置通知书</span>' +
         '</p>' +
         '<p><br/></p>' +
         '<p><br/></p>' +
@@ -73,29 +73,121 @@ module.exports = {
         '<p><br/></p>' +
         '<p><br/></p>' +
         '<p>' +
-            '<span style="font-size: 20px;">附件：网络舆情日报第 266 期</span>' +
+        '<span style="font-size: 20px;">附件：网络舆情日报第 266 期</span>' +
         '</p>' +
         '<p style="text-indent:42px;line-height:27px;text-align:right;">' +
-            '<span style="text-align:center;text-indent:333px;font-family:仿宋_GB2312;font-size:21px;letter-spacing:0px;"></span>' +
+        '<span style="text-align:center;text-indent:333px;font-family:仿宋_GB2312;font-size:21px;letter-spacing:0px;"></span>' +
         '</p>' +
         '<p style="text-indent:333px;line-height:27px;text-align:right;">' +
-            '<span style="font-size:20px;">广安市网络舆情中心</span>' +
+        '<span style="font-size:20px;">广安市网络舆情中心</span>' +
         '</p>' +
         '<p style="text-indent: 42px; line-height: 27px; text-align: right;">' +
-            '<span style="text-align:center;font-family:仿宋_GB2312;letter-spacing:0px;font-size:20px;">2016年1月5日</span>' +
+        '<span style="text-align:center;font-family:仿宋_GB2312;letter-spacing:0px;font-size:20px;">2016年1月5日</span>' +
         '</p>' +
         '<p><br/></p>' +
         '<hr/>' +
         '<p>' +
-            '<span style="font-size: 20px;">附件：</span>' +
+        '<span style="font-size: 20px;">附件：</span>' +
         '</p>' +
         '<p><br/></p>' +
         '<p><br/></p>' +
         '<p><br/></p>' +
         '<p><br/></p>' +
         '<p>' +
-            '<span style="font-size: 20px;">舆情详情：</span>' +
-            '<br/>' +
+        '<span style="font-size: 20px;">舆情详情：</span>' +
+        '<br/>' +
+        '</p>',
+        daily: '' +
+        '<p>' +
+        '    <span style=";position: relative;z-index:251657728"> </span>' +
+        '</p>' +
+        '<p>' +
+        '    <span style="font-size:21px;font-family:黑体"><br/>秘 密</span>' +
+        '</p>' +
+        '<p>' +
+        '    <br/>' +
+        '</p>' +
+        '<p>' +
+        '    <br/>' +
+        '</p>' +
+        '<p>' +
+        '    <br/>' +
+        '</p>' +
+        '<p>' +
+        '    <br/>' +
+        '</p>' +
+        '<p>' +
+        '    <br/>' +
+        '</p>' +
+        '<p style="text-align:center;line-height:27px">' +
+        '    <span style="font-size:19px;font-family:楷体_GB2312">第 %issue_id% 期</span>' +
+        '</p>' +
+        '<p style="text-align:center;line-height:40px">' +
+        '    <span style="font-size:19px;font-family:楷体_GB2312">（总第 %id% 期）</span>' +
+        '</p>' +
+        '<p style="line-height: 32px; text-align: center;">' +
+        '    <span style="font-size:20px;font-family:楷体_GB2312">广安市网络舆情中心</span><span style="font-size:20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%date%</span>' +
+        '</p>' +
+        '<p>' +
+        '    <br/>' +
+        '</p>' +
+        '<hr/>' +
+        '<p>' +
+        '    <br/>' +
+        '</p>' +
+        '<p style="margin-top:40px;margin-right:0;margin-bottom:16px;margin-left:0;text-align:center">' +
+        '    <span style="font-size:29px;font-family:方正小标宋简体">≡本期要目≡</span>' +
+        '</p>' +
+        '<p style="line-height:32px">' +
+        '    <strong><span style="font-size:20px;font-family: 楷体_GB2312">【正面舆情】</span></strong>' +
+        '</p>' +
+        '<p>' +
+        '    %zmyq_title%' +
+        '</p>' +
+        '<p style="line-height:32px">' +
+        '    <strong><span style="font-size:20px;font-family: 楷体_GB2312">【负面舆情】</span></strong>' +
+        '</p>' +
+        '<p>' +
+        '    %fmyq_title%' +
+        '</p>' +
+        '<p style="line-height:32px">' +
+        '    <strong><span style="font-size:20px;font-family: 楷体_GB2312">【舆情追踪】</span></strong>' +
+        '</p>' +
+        '<p>' +
+        '    %yqzz_title%' +
+        '</p>' +
+        '<p style="line-height:32px">' +
+        '    <strong><span style="font-size:20px;font-family: 楷体_GB2312">【热点话题】</span></strong>' +
+        '</p>' +
+        '<p>' +
+        '    %rdht_title%' +
+        '</p>' +
+        '<p>' +
+        '    <br/>' +
+        '</p>' +
+        '<p style="white-space: normal; line-height: 32px;">' +
+        '    <strong><span style="font-size: 20px; font-family: 楷体_GB2312;">【正面舆情】</span></strong>' +
+        '</p>' +
+        '<p style="white-space: normal;">' +
+        '    %zmyq_content%' +
+        '</p>' +
+        '<p style="white-space: normal; line-height: 32px;">' +
+        '    <strong><span style="font-size: 20px; font-family: 楷体_GB2312;">【负面舆情】</span></strong>' +
+        '</p>' +
+        '<p style="white-space: normal;">' +
+        '    %fmyq_content%' +
+        '</p>' +
+        '<p style="white-space: normal; line-height: 32px;">' +
+        '    <strong><span style="font-size: 20px; font-family: 楷体_GB2312;">【舆情追踪】</span></strong>' +
+        '</p>' +
+        '<p style="white-space: normal;">' +
+        '    %yqzz_content%' +
+        '</p>' +
+        '<p style="white-space: normal; line-height: 32px;">' +
+        '    <strong><span style="font-size: 20px; font-family: 楷体_GB2312;">【热点话题】</span></strong>' +
+        '</p>' +
+        '<p>' +
+        '    %rdht_content%' +
         '</p>'
     }
 };

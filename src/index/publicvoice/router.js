@@ -22,10 +22,15 @@ module.exports = function () {
         .post('/application/save', controller.saveApplication)
 
         // daily report page
-        .get('/dailyreport/list', controller.getDailyReports)
-        .get('/dailyreport/detail', controller.getDailyDetail)
+        .get('/daily/list', controller.getDailyReports)
+        .get('/daily/detail', controller.getDailyDetail)
         // .get('/pubvoice/unapplied', controller.getUnappliedPubVoices)
         // .post('dailyreport/generate', controller.generateDailyReport)
+
+        // daiyly create page
+        .get('/daily/unapplied', controller.getUnappliedPubVoices)
+        .post('daily/generate', controller.generateDailyReport)
+        .get('/daily/template', controller.getDailyTemplate)
 
         // dispose page
         .get('/dispose/list', controller.getDisposeList)
