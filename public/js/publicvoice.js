@@ -12717,15 +12717,223 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
+var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
+    run: function () {
+        var jqtmpl =function (jQuery,$item/**/) {var $=jQuery,call,__=[],$data=$item.data;with($data){__.push('<div class="pubvoice-dailycreate-page"><div class="row func-btns"><div class="col-md-6 col-xs-offset-6"><div class="pull-right"> <button id="btnAdd" class="btn btn-sm btn-default">生成日报</button></div></div></div><div id="pubVoiceWrapper" class="row"><div class="col-md-12 "><table id="dataTable" class="table table-striped table-hover table-condensed"></table></div><div class="col-xs-10 no-padding-left hide"><div id="dataModal" class="modal-content"><div class="modal-header"><label><h4 class="modal-title">日报详情</h4></label><div class="pull-right"> <button type="button" class="btn btn-default">关闭</button> <button type="button" class="btn btn-primary">保存</button></div></div><div class="modal-body"><form class="form-horizontal"><div class="form-group form-group-sm"><div class="col-sm-12"><script type="text/plain" id="dailyCreateUE">');}return __;};
+
+        $(this.el).append(jqtmpl($, {data: {}}).join(''));
+        this.editor = UM.getEditor('dailyCreateUE');
+        this.initDependencies()
+            ._drawDataTable();
+    },
+    events: {
+        'click #btnAdd': 'showDataModal',
+        'click #dataModal .btn-default': 'closeDataModal',
+    },
+    _drawDataTable: function () {
+        var self = this;
+
+        if (!this.dataTable) {
+            (this.dataTable = $('#dataTable')).bootstrapTable({
+                method: 'get',
+                url: '/daily/unapplied',
+                cache: false,
+                ajaxOptions: {
+                    beforeSend: function () {
+                        self._showLoading();
+                    },
+                    complete: function () {
+                        self._removeLoading();
+                    }
+                },
+                onLoadError: function (xhr) {
+                    self._showXHRMessage('请求失败:' + xhr.responseText, 'danger');
+                },
+                columns: [{
+                    field: 'checkbox',
+                    checkbox: true
+                }, {
+                    title: '标题',
+                    field: 'title'
+                }, {
+                    title: '载体',
+                    field: 'from_website'
+                }, {
+                    title: '所属栏目',
+                    field: 'item'
+                }, {
+                    title: '舆情类别',
+                    field: 'type'
+                }, {
+                    title: '回帖人数',
+                    field: 'fellow_count'
+                }, {
+                    title: '关注人数',
+                    field: 'review_count'
+                }, {
+                    title: '涉及部门',
+                    field: 'relate_department'
+                }, {
+                    title: '处理时间',
+                    field: 'createtime',
+                    formatter: function (val) {
+                        return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
+                    }
+                }, {
+                    title: '状态',
+                    field: 'state',
+                    formatter: function (val) {
+                        switch (val) {
+                            case 0:
+                                return '未提交';
+                            case 1:
+                                return '待审批';
+                            case 2:
+                                return '审批通过';
+                        }
+                    }
+                }, {
+                    title: '操作',
+                    field: 'action',
+                    formatter: function () {
+                        return '<a href="javascript:" title="查看">' +
+                            '<i class="glyphicon glyphicon-edit"></i>' +
+                            '</a>&nbsp;&nbsp;' +
+                            '<a href="javascript:" title="删除">' +
+                            '<i class="glyphicon glyphicon-trash"></i>' +
+                            '</a>';
+                    },
+                    events: {
+                        'click a:first': function () {
+                            self.showDetailModal(arguments[2]);
+                        },
+                        'click a:last': function () {
+                            var uid = arguments[2].id;
+
+                            bootbox.confirm('确认删除？', function (rs) {
+                                rs && self._ajaxDelete(uid, function () {
+                                    self._refreshTable();
+                                });
+                            });
+                        }
+                    }
+                }]
+            }, this._buildTableOptions());
+        } else {
+            this._refreshTable();
+        }
+
+        return this;
+    },
+    _refreshTable: function () {
+        this.dataTable.bootstrapTable('refresh');
+
+        return this;
+    },
+    _shrinkTable: function () {
+        var self = this;
+
+        $(['checkbox', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'relate_department', 'state', 'createtime', 'status', 'action'])
+            .each(function (index, field) {
+                self.dataTable.bootstrapTable('hideColumn', field);
+            });
+
+        return this;
+    },
+    _expandTable: function () {
+        var self = this;
+
+        $(['checkbox', 'from_website', 'item', 'type', 'review_count', 'fellow_count', 'relate_department', 'state', 'createtime', 'status', 'action'])
+            .each(function (index, field) {
+                self.dataTable.bootstrapTable('showColumn', field);
+            });
+
+        return this;
+    },
+    _showGridWrapper: function () {
+        $('#pubVoiceWrapper > div:first')
+            .attr('class', 'col-xs-2')
+            .next()
+            .removeClass('hide');
+
+        return this;
+    },
+    _hideGridWrapper: function () {
+        $('#pubVoiceWrapper > div:first')
+            .attr('class', 'col-md-12')
+            .next()
+            .addClass('hide');
+
+        return this;
+    },
+    _buildTableOptions: function () {
+        var self = this;
+
+        return {
+            method: 'get',
+            url: '/daily/detail',
+            cache: false,
+            ajaxOptions: {
+                beforeSend: function () {
+                    self._showLoading();
+                },
+                complete: function () {
+                    self._removeLoading();
+                }
+            },
+            onLoadError: function (xhr) {
+                self._showXHRMessage('请求失败:' + xhr.responseText, 'danger');
+            }
+        }
+    },
+    closeDataModal: function () {
+        var self = this;
+
+        this._expandTable()
+            ._hideGridWrapper();
+    },
+    showDataModal: function () {
+        var selected = this.dataTable.bootstrapTable('getSelections');
+        var self = this;
+        var mids = [];
+
+        $(selected).each(function (n, pv) {
+            mids.push(pv);
+        });
+
+        mids.length ?
+            self.genDaily(mids):
+            bootbox.alert('请先选择要编报的舆情');
+        return this;
+    },
+    genDaily: function(pubvoices) {
+        var self = this;
+        this._sendRequest({
+            type: 'get',
+            url: '/daily/template',
+            done: function (rs) {
+                self.editor.setContent(rs);
+                self._shrinkTable()
+                    ._showGridWrapper();
+            }
+        });
+        return this;
+    },
+    showDetailModal: function (pubvoice) {
+        this.editor.setContent(pubvoice.content == null? '':pubvoice.content);
+        this._shrinkTable()
+            ._showGridWrapper();
+        return this;
+    },
+});
+/**
+ * Build Date: 06-29-2016
+ * Copyright (c): LHS Develop Group
+ * Author: lhs
+ */
 var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
     run: function () {
-        var jqtmpl =function (jQuery,$item/**/) {var $=jQuery,call,__=[],$data=$item.data;with($data){__.push('<div class="pubvoice-dailyreport-page"><div class="row func-btns"><div class="col-xs-6"><div id="content-switch" class="btn-group"> <button type="button" data-type="dailyreport" class="btn btn-sm btn-primary">日报列表</button> <button type="button" data-type=\'pubvoice\' class="btn btn-sm btn-default">生成日报</button></div></div><div class="col-md-6"><div class="pull-right hide"> <button id="btnBuild" class="btn btn-sm btn-default">生成</button></div></div></div><div id="dailyReportWrapper" class="row"><div class="col-md-12 "><table id="dailyReportTable" class="table table-striped table-hover table-condensed"></table></div><div class="col-xs-10 no-padding-left hide"><div id="dailyDetailModal" class="modal-content"><div class="modal-header"><label><h4 class="modal-title">日报详情</h4></label><div class="pull-right"> <button type="button" class="btn btn-default">关闭</button></div></div><div class="modal-body"><form class="form-horizontal"><div class="form-group form-group-sm"><div class="col-sm-12"><script type="text/plain" id="dailyDetailUE" name="content">');}return __;};
-
-        // this.ajax({}, $.proxy(function () {
-        //     $(this.el).append(jqtmpl($, {data: {}}).join(''));
-        //     this.initDependencies();
-        // }, this));
-
+        var jqtmpl =function (jQuery,$item/**/) {var $=jQuery,call,__=[],$data=$item.data;with($data){__.push('<div class="pubvoice-dailyreport-page"><div id="dailyReportWrapper" class="row"><div class="col-md-12 "><table id="dailyReportTable" class="table table-striped table-hover table-condensed"></table></div><div class="col-xs-10 no-padding-left hide"><div id="dailyDetailModal" class="modal-content"><div class="modal-header"><label><h4 class="modal-title">日报详情</h4></label><div class="pull-right"> <button type="button" class="btn btn-default">关闭</button></div></div><div class="modal-body"><form class="form-horizontal"><div class="form-group form-group-sm"><div class="col-sm-12"><script type="text/plain" id="dailyDetailUE" name="content">');}return __;};
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
         this.editor = UM.getEditor('dailyDetailUE');
         this.initDependencies()
@@ -12740,7 +12948,7 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
         if (!this.dailyReportTable) {
             (this.dailyReportTable = $('#dailyReportTable')).bootstrapTable({
                 method: 'get',
-                url: '/dailyreport/list',
+                url: '/daily/list',
                 cache: false,
                 ajaxOptions: {
                     beforeSend: function () {
@@ -12798,7 +13006,7 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
 
         this._sendRequest({
             type: 'get',
-            url: '/dailyreport/detail',
+            url: '/daily/detail',
             data: {'id' : arguments.id},
             done: function (rs) {
                 var jqform = '#dailyDetailModal form';
@@ -12855,7 +13063,7 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
 
         return {
             method: 'get',
-            url: '/dailyreport/detail',
+            url: '/daily/detail',
             cache: false,
             ajaxOptions: {
                 beforeSend: function () {
@@ -13100,21 +13308,14 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
  */
 var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
     run: function () {
-        var jqtmpl =function (jQuery,$item/**/) {var $=jQuery,call,__=[],$data=$item.data;with($data){__.push('<div class="pubvoice-approve-page"><div id="gridWrapper" class="row"><div class="col-md-12"><table id="dataTable" class="table table-striped table-hover table-condensed"></table></div><div class="col-xs-10 no-padding-left hide"><div id="approveModal" class="modal-content"><div class="modal-header"><label><h4 class="modal-title">舆情审批</h4></label><div class="pull-right"> <button type="button" class="btn btn-default">取消</button> <button type="button" class="btn btn-primary">确定</button></div></div><div class="modal-body"><form class="form-horizontal"><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">审批结果：</label><div class="col-sm-2"> <select name="approveResult" class="form-control"><option value="0" selected="selected">通过</option><option value="1">未通过</option><option value="2">暂缓通过</option></select></div> <input type="text" name="id" class="form-control hide"> <label class="col-sm-2 control-label">审批意见：</label><div class="col-sm-6"> <input type="text" name="approveContent" class="form-control"></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">舆情网址：</label><div class="col-sm-10"> <input type="text" name="url" class="form-control"></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">舆情标题：</label><div class="col-sm-4"> <input type="text" name="title" class="form-control"></div> <label class="col-sm-2 control-label">舆情载体：</label><div class="col-sm-4"> <input type="text" name="from_website" class="form-control"></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">涉及部门：</label><div class="col-sm-4"> <input type="text" name="relate_department" class="form-control"></div> <label class="col-sm-2 control-label">舆情类别：</label><div class="col-sm-4"> <input type="text" name="type" class="form-control"></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">关注人数：</label><div class="col-sm-4"> <input type="text" name="review_count" class="form-control"></div> <label class="col-sm-2 control-label">回帖数量：</label><div class="col-sm-4"> <input type="text" name="fellow_count" class="form-control"></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">考核部门：</label><div class="col-sm-4"> <input type="text" name="duty_department" class="form-control"></div> <label class="col-sm-2 control-label">所属栏目：</label><div class="col-sm-4"> <input type="text" name="item" class="form-control"></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">舆情详情：</label><div class="col-sm-10"><script type="text/plain" id="approvedUE" name="content">');}return __;};
+        var jqtmpl =function (jQuery,$item/**/) {var $=jQuery,call,__=[],$data=$item.data;with($data){__.push('<div class="pubvoice-approve-page"><div id="gridWrapper" class="row"><div class="col-md-12"><table id="dataTable" class="table table-striped table-hover table-condensed"></table></div><div class="col-xs-10 no-padding-left hide"><div id="approveModal" class="modal-content"><div class="modal-header"><label><h4 class="modal-title">舆情审批</h4></label><div class="pull-right"> <button type="button" class="btn btn-default">取消</button> <button type="button" class="btn btn-primary">确定</button></div></div><div class="modal-body"><form class="form-horizontal"><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">审批结果：</label><div class="col-sm-2"> <select name="approveResult" class="form-control"><option value="0" selected="selected">通过</option><option value="1">未通过</option><option value="2">暂缓通过</option></select></div> <input type="text" name="id" class="form-control hide"> <label class="col-sm-2 control-label">审批意见：</label><div class="col-sm-6"> <input type="text" name="approveContent" class="form-control"></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">舆情网址：</label><div class="col-sm-10"> <input type="text" name="url" class="form-control"></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">舆情标题：</label><div class="col-sm-4"> <input type="text" name="title" class="form-control"></div> <label class="col-sm-2 control-label">舆情载体：</label><div class="col-sm-4"> <input type="text" name="from_website" class="form-control"></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">涉及部门：</label><div class="col-sm-4"> <input type="text" name="relate_department" class="form-control"></div> <label class="col-sm-2 control-label">舆情类别：</label><div class="col-sm-4"> <input type="text" name="type" class="form-control"></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">关注人数：</label><div class="col-sm-4"> <input type="text" name="review_count" class="form-control"></div> <label class="col-sm-2 control-label">回帖数量：</label><div class="col-sm-4"> <input type="text" name="fellow_count" class="form-control"></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">考核部门：</label><div class="col-sm-4"> <input type="text" name="duty_department" class="form-control"></div> <label class="col-sm-2 control-label">所属栏目：</label><div class="col-sm-4"> <input type="text" name="item" class="form-control"></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">舆情详情：</label><div class="col-sm-10"><script type="text/plain" id="approvedUE">');}return __;};
 
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
 
         this.editor = UM.getEditor('approvedUE');
 
-        this.reset()
-            .initDependencies()
+        this.initDependencies()
             ._drawDataTable();
-    },
-    reset: function () {
-        this.dataTable = null;
-        this.editor = null;
-
-        return this;
     },
     events: {
         'click #approveModal .btn-default': 'closeApproveModal',
@@ -13159,10 +13360,8 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
                 onLoadError: function (xhr) {
                     self._showXHRMessage('请求失败:' + xhr.responseText, 'danger');
                 },
-                columns: [{
-                    field: 'checkbox',
-                    checkbox: true
-                }, {
+                columns: [
+                {
                     title: '标题',
                     field: 'title'
                 }, {
@@ -13189,6 +13388,10 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
                     formatter: function (val) {
                         return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
                     }
+                }, {
+                    title: '内容',
+                    field: 'content',
+                    visible: false
                 }, {
                     title: '状态',
                     field: 'state',
@@ -13232,6 +13435,9 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
                 $('input[name="' + field + '"]', jqform).prop('readonly', true);
             });
         this._setFormControlValues(jqform, pubvoice);
+        if (pubvoice.content == null) {
+            pubvoice.content = '';
+        }
         this.editor.setContent(pubvoice.content);
         this._shrinkTable()
             ._showGridWrapper();
@@ -13981,7 +14187,7 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
  */
 var LHSRecordPage = $.extend({}, LHSBasicPage, {
     run: function () {
-        var jqtmpl =function (jQuery,$item/**/) {var $=jQuery,call,__=[],$data=$item.data;with($data){__.push('<div class="pubvoice-record-page"><div class="row func-btns"><div class="col-md-6 col-xs-offset-6"><div class="pull-right"> <button id="btnAdd" class="btn btn-sm btn-default">新增</button> <button id="btnImport" class="btn btn-sm btn-default">导入</button> <button id="btnDel" class="btn btn-sm btn-default">删除</button> <button id="btnCommit" class="btn btn-sm btn-default">提交审批</button></div></div></div><div id="gridWrapper" class="row"><div class="col-md-12"><table id="dataTable" class="table table-striped table-hover table-condensed"></table></div><div class="col-xs-10 no-padding-left hide"><div id="dataModal" class="modal-content"><div class="modal-header"><h4 class="modal-title">舆情录入</h4></div><div class="modal-body"><form class="form-horizontal"> <input type="text" name="id" class="form-control hide"><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">舆情网址：</label><div class="col-sm-10"> <input type="text" name="url" class="form-control"></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">舆情标题：</label><div class="col-sm-4"> <input type="text" name="title" class="form-control"></div> <label class="col-sm-2 control-label">舆情载体：</label><div class="col-sm-4"> <input type="text" name="from_website" class="form-control"></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">涉及部门：</label><div class="col-sm-4"> <input type="text" name="relate_department" class="form-control"></div> <label class="col-sm-2 control-label">舆情类别：</label><div class="col-sm-4"> <select name="type" class="form-control"><option value="作风效能">作风效能</option><optgroup label="行业管理"><option value="劳动人事">劳动人事</option><option value="公共安全">公共安全</option><option value="医卫食安">医卫食安</option><option value="教育">教育</option><option value="环保">环保</option><option value="交通">交通</option><option value="城建">城建</option><option value="房产">房产</option><option value="征地">征地</option><option value="其他">其他</option></optgroup><option value="其他类">其他类</option></select></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">关注人数：</label><div class="col-sm-4"> <input type="text" name="review_count" class="form-control"></div> <label class="col-sm-2 control-label">回帖数量：</label><div class="col-sm-4"> <input type="text" name="fellow_count" class="form-control"></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">考核部门：</label><div class="col-sm-4"> <select name="duty_department" class="form-control"></select></div> <label class="col-sm-2 control-label">所属栏目：</label><div class="col-sm-4"> <select name="item" class="form-control"><option value="正面舆情">正面舆情</option><option value="负面舆情">负面舆情</option><option value="舆情追踪">舆情追踪</option><option value="热点话题">热点话题</option></select></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">舆情详情：</label><div class="col-sm-10" id="editorWrapper"></div></div></form></div><div class="modal-footer"> <button type="button" class="btn btn-default">取消</button> <button type="button" class="btn btn-primary">保存</button></div></div><div id="importModal" class="modal-content hide"><div class="modal-header"><h4 class="modal-title">舆情导入</h4></div><div class="modal-body"><form class="form-horizontal"><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">文件路径：</label><div class="col-sm-9"> <input type="file" name="datafile" class="form-control"></div></div></form></div><div class="modal-footer"> <a href="sample/publicvoice.xlsx" class="pull-left">模板下载</a> <button type="button" class="btn btn-default" data-dismiss="modal">取消</button></div></div></div></div></div>');}return __;};
+        var jqtmpl =function (jQuery,$item/**/) {var $=jQuery,call,__=[],$data=$item.data;with($data){__.push('<div class="pubvoice-record-page"><div class="row func-btns"><div class="col-md-6 col-xs-offset-6"><div class="pull-right"> <button id="btnAdd" class="btn btn-sm btn-default">新增</button> <button id="btnImport" class="btn btn-sm btn-default">导入</button> <button id="btnDel" class="btn btn-sm btn-default">删除</button> <button id="btnCommit" class="btn btn-sm btn-default">提交审批</button></div></div></div><div id="gridWrapper" class="row"><div class="col-md-12"><table id="dataTable" class="table table-striped table-hover table-condensed"></table></div><div class="col-xs-10 no-padding-left hide"><div id="dataModal" class="modal-content"><div class="modal-header"><h4 class="modal-title">舆情录入</h4></div><div class="modal-body"><form class="form-horizontal"> <input type="text" name="id" class="form-control hide"><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">舆情网址：</label><div class="col-sm-10"> <input type="text" name="url" class="form-control"></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">舆情标题：</label><div class="col-sm-4"> <input type="text" name="title" class="form-control"></div> <label class="col-sm-2 control-label">舆情载体：</label><div class="col-sm-4"> <input type="text" name="from_website" class="form-control"></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">涉及部门：</label><div class="col-sm-4"> <input type="text" name="relate_department" class="form-control"></div> <label class="col-sm-2 control-label">舆情类别：</label><div class="col-sm-4"> <select name="type" class="form-control"><option value="作风效能">作风效能</option><optgroup label="行业管理"><option value="劳动人事">劳动人事</option><option value="公共安全">公共安全</option><option value="医卫食安">医卫食安</option><option value="教育">教育</option><option value="环保">环保</option><option value="交通">交通</option><option value="城建">城建</option><option value="房产">房产</option><option value="征地">征地</option><option value="其他">其他</option></optgroup><option value="其他类">其他类</option></select></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">关注人数：</label><div class="col-sm-4"> <input type="text" name="review_count" class="form-control"></div> <label class="col-sm-2 control-label">回帖数量：</label><div class="col-sm-4"> <input type="text" name="fellow_count" class="form-control"></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">考核部门：</label><div class="col-sm-4"> <select name="duty_department" class="form-control"></select></div> <label class="col-sm-2 control-label">所属栏目：</label><div class="col-sm-4"> <select name="item" class="form-control"><option value="正面舆情">正面舆情</option><option value="负面舆情">负面舆情</option><option value="舆情追踪">舆情追踪</option><option value="热点话题">热点话题</option></select></div></div><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">舆情详情：</label><div class="col-sm-10" id="editorWrapper" name="content"></div></div></form></div><div class="modal-footer"> <button type="button" class="btn btn-default">取消</button> <button type="button" class="btn btn-primary">保存</button></div></div><div id="importModal" class="modal-content hide"><div class="modal-header"><h4 class="modal-title">舆情导入</h4></div><div class="modal-body"><form class="form-horizontal"><div class="form-group form-group-sm"> <label class="col-sm-2 control-label">文件路径：</label><div class="col-sm-9"> <input type="file" name="datafile" class="form-control"></div></div></form></div><div class="modal-footer"> <a href="sample/publicvoice.xlsx" class="pull-left">模板下载</a> <button type="button" class="btn btn-default" data-dismiss="modal">取消</button></div></div></div></div></div>');}return __;};
 
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
 
@@ -14028,7 +14234,11 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                         $('input[name="url"]', jqform).prop('readonly', true);
 
                         self._setFormControlValues(jqform, pubvoice);
+                        if (pubvoice.content == null) {
+                            pubvoice.content = '';
+                        }
                         self.editor.setContent(pubvoice.content);
+                        self.editor.setDisabled();
                     } else {
                         $('input[name="url"]', jqform).prop('readonly', false);
                         self.editor.ready(function () {
@@ -14306,6 +14516,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     _pvValidator: function () {
         var jqform = $('#dataModal form');
         var values = this._getFormControlValues(jqform);
+        values['content'] = this.editor.getContent();
 
         return values;
     },
@@ -14343,6 +14554,8 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                     return LHSExamineAndApprovePage.run();
                 case 'dailyreport':
                     return LHSDailyReportPage.run();
+                case 'dailycreate':
+                    return LHSDailyCreatePage.run();
                 case 'dispose':
                     return LHSDisposePage.run();
                 case 'notify':
