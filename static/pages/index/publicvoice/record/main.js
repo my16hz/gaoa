@@ -62,6 +62,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                         $('input[name="url"]', jqform).prop('readonly', false);
                         self.editor.ready(function () {
                             self.editor.setContent('');
+                            self.editor.setEnabled();
                         });
                     }
 
@@ -238,6 +239,8 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                                 return '待审批';
                             case 2:
                                 return '审批通过';
+                            case 3:
+                                return '审批未通过';
                         }
                     }
                 }, {

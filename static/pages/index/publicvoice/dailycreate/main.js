@@ -16,6 +16,8 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
     events: {
         'click #btnAdd': 'showDataModal',
         'click #dataModal .btn-default': 'closeDataModal',
+        'click #detailModal .btn-default': 'closeDataModal',
+        'click #dataModal .btn-primary': 'saveDataModal',
     },
     _drawDataTable: function () {
         var self = this;
@@ -84,24 +86,12 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
                     field: 'action',
                     formatter: function () {
                         return '<a href="javascript:" title="查看">' +
-                            '<i class="glyphicon glyphicon-edit"></i>' +
-                            '</a>&nbsp;&nbsp;' +
-                            '<a href="javascript:" title="删除">' +
-                            '<i class="glyphicon glyphicon-trash"></i>' +
+                            '<i class="glyphicon glyphicon-eye-open"></i>' +
                             '</a>';
                     },
                     events: {
                         'click a:first': function () {
                             self.showDetailModal(arguments[2]);
-                        },
-                        'click a:last': function () {
-                            var uid = arguments[2].id;
-
-                            bootbox.confirm('确认删除？', function (rs) {
-                                rs && self._ajaxDelete(uid, function () {
-                                    self._refreshTable();
-                                });
-                            });
                         }
                     }
                 }]
@@ -188,6 +178,9 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
             mids.push(pv);
         });
 
+        $('#detailModal').addClass('hide');
+        $('#dailyModal').removeClass('hide');
+
         mids.length ?
             self.genDaily(mids):
             bootbox.alert('请先选择要编报的舆情');
@@ -200,6 +193,7 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
             url: '/daily/template',
             done: function (rs) {
                 self.editor.setContent(rs);
+                self.editor.setEnabled();
                 self._shrinkTable()
                     ._showGridWrapper();
             }
@@ -208,8 +202,14 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
     },
     showDetailModal: function (pubvoice) {
         this.editor.setContent(pubvoice.content == null? '':pubvoice.content);
+        this.editor.setDisabled();
+        $('#detailModal').removeClass('hide');
+        $('#dailyModal').addClass('hide');
         this._shrinkTable()
             ._showGridWrapper();
         return this;
     },
+    saveDataModal: function () {
+        var values= {'content': this.editor.getContent()};
+    }
 });

@@ -24,7 +24,8 @@ module.exports = {
  */
 function addPVGuide (uid, obj, callback) {
     var sql_stmt = "DELETE FROM tb_pv_guide WHERE id = @id; INSERT INTO tb_pv_guide ([id], [guide_name], [guide_type], [guide_result], [guide_count], [content], [createuser], [createtime])  " +
-        "VALUES (@id, @guide_name, @guide_type, @guide_result, @guide_count, @content, @createuser, @createtime);";
+        "VALUES (@id, @guide_name, @guide_type, @guide_result, @guide_count, @content, @createuser, @createtime);" +
+        "UPDATE tb_publicvoice SET guide_state = 1 WHERE id = @id";
     var objParams = {
         "id": obj["id"],
         "guide_name": obj["guide_name"],

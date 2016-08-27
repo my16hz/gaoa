@@ -76,15 +76,13 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
                     }
                 }, {
                     title: '状态',
-                    field: 'state',
+                    field: 'guide_state',
                     formatter: function (val) {
                         switch (val) {
                             case 0:
-                                return '未提交';
+                                return '未引导';
                             case 1:
-                                return '待审批';
-                            case 2:
-                                return '审批通过';
+                                return '已引导';
                         }
                     }
                 }, {
@@ -161,6 +159,10 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
                 if (rs.length == 1) {
                     self._setFormControlValues(jqform, rs[0]);
                     self.editor.setContent(rs[0].content);
+                } else {
+                    self._clearFormControlValues($(jqform));
+                    self._setFormControlValues(jqform, {'id':pubvoice.id});
+                    self.editor.setContent('');
                 }
 
                 self._shrinkTable()

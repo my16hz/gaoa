@@ -178,6 +178,8 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
     },
     showAlertModal: function () {
         $('#alertModal').removeClass('hide').siblings().addClass('hide');
+        this._clearFormControlValues($('#alertModal form'));
+
         this._shrinkTable()
             ._showGridWrapper();
 
