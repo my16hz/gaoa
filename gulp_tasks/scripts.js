@@ -94,7 +94,7 @@ module.exports = function (gulp, plugins, isdebug) {
 
         if ('sysmanage' == module) {
             dependencies.push(DIR_SRC.coreJs + 'jshashes-1.0.5.js');
-        } else if ('publicvoice' == module) {
+        } else {
             dependencies.push(
                 DIR_SRC.editor + 'config.js',
                 DIR_SRC.editor + 'main.js',

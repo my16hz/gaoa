@@ -38,6 +38,8 @@ module.exports = function () {
         .post('/dispose/save', controller.savePVDispose)
 
         // noitfy page
+        .get('/notify/list', controller.getWaitNotifyPVList)
+        .post('/notify/save', controller.saveNotify)
 
         // feedback page
         .get('/feedback/detail', controller.getFeedbackDetail)

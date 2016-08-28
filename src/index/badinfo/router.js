@@ -9,4 +9,5 @@ var controller = require('./controller');
 module.exports = function () {
     return express.Router()
         .get('/badinfo', controller.pageBadInfo)
+        .get('/badinfo/list', controller.listBadInfo)
 };

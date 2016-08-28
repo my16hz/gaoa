@@ -4,9 +4,14 @@
  * Author: lhs
  */
 module.exports = {
-    pageBadInfo: pageBadInfo
+    pageBadInfo: pageBadInfo,
+    listBadInfo: listBadInfo
 };
 
 function pageBadInfo (req, res) {
     res.render('index/badinfo');
+}
+
+function listBadInfo (req, res) {
+
 }

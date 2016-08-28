@@ -57,13 +57,11 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                             pubvoice.content = '';
                         }
                         self.editor.setContent(pubvoice.content);
-                        self.editor.setDisabled();
                     } else {
                         $('input[name="url"]', jqform).prop('readonly', false);
                         self.editor.ready(function () {
                             self.editor.setContent('');
-                            self.editor.setEnabled();
-                        });
+                         });
                     }
 
                     self._shrinkTable()

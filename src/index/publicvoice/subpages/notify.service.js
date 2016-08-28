@@ -11,7 +11,8 @@ module.exports = {
     /* 舆情通报 */
     addPVNotify: addPVNotify,
     /* 查询通报的舆情 */
-    getNotifyPVList: getNotifyPVList
+    getNotifyPVList: getNotifyPVList,
+    getWaitNotifyPVList: getWaitNotifyPVList
 };
 
 
@@ -55,6 +56,24 @@ function getNotifyPVList (uid, callback) {
     var objParams = {"uid": uid};
     var ps = dbpool.preparedStatement()
         .input("uid", sql.VarChar)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+function getWaitNotifyPVList (callback) {
+    var sql_stmt = "SELECT * FROM tb_publicvoice where state > 3;";
+    var objParams = {};
+    var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);

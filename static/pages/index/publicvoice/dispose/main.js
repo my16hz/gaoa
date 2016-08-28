@@ -92,11 +92,18 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                     field: 'action',
                     formatter: function () {
                         return '<a href="javascript:" title="处置">' +
-                            '<i class="glyphicon glyphicon-comment"></i></a>';
+                            '<i class="glyphicon glyphicon-comment"></i>' +
+                            '</a>&nbsp;&nbsp;' +
+                            '<a href="javascript:" title="通报">' +
+                            '<i class="glyphicon glyphicon-bullhorn"></i>' +
+                            '</a>';
                     },
                     events: {
                         'click a:first': function () {
                             self._showDisposeModal(arguments[2]);
+                        },
+                        'click a:last': function () {
+                            self._showNotifyModal(arguments[2]);
                         }
                     }
                 }]

@@ -5,7 +5,7 @@
 
             switch ($(this).attr('data-page')) {
                 case 'record':
-                    return LHSRecordPage.run();
+                    return BadInfoRecordPage.run();
                 case 'aggregate':
                     return LHSAggregatePage.run();
                 case 'RTXDirective':
@@ -13,6 +13,6 @@
             }
         });
 
-        LHSRecordPage.run();
+        BadInfoRecordPage.run();
     });
 })();
