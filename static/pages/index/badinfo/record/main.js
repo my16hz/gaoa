@@ -9,6 +9,9 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
         /*endinject*/
 
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
+        $("#startTimepicker").datetimepicker({
+            format: 'YYYY-MM-DD'
+        });
         this.editor = UM.getEditor('badinfoUE');
         this.initDependencies()
             ._drawDataTable();
@@ -17,7 +20,7 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
         'click #btnAdd': 'showDataModal',
         'click #btnDel': 'delSelected',
         'click #dataModal .btn-default': 'closeModal',
-        'click #dataModal .btn-primary': 'saveGuide'
+        'click #dataModal .btn-primary': 'saveBadInfo'
     },
     _drawDataTable: function () {
         var self = this;
@@ -61,9 +64,9 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
                     field: 'type'
                 }, {
                     title: '举报时间',
-                    field: 'date',
+                    field: 'reportdate',
                     formatter: function (val) {
-                        return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
+                        return moment(val).format('YYYY年MM月DD日');
                     }
                 }, {
                     title: '举报查询码',
@@ -136,12 +139,48 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
     showDataModal: function () {
         var self = this;
         $('#dataModal').removeClass('hide').siblings().addClass('hide');
+        this._clearFormControlValues($('#dataModal form'));
+        this.editor.setContent('');
 
-        self._shrinkTable()
+        this._shrinkTable()
             ._showGridWrapper();
     },
     _showDetailModal: function (pubvoice) {
+        var jqform = $('#dataModal form');
+        var values = this._setFormControlValues(jqform, pubvoice);
+        $('#dataModal').removeClass('hide').siblings().addClass('hide');
+        this.editor.setContent(pubvoice.remark? pubvoice.remark: '');
 
+        this._shrinkTable()
+            ._showGridWrapper();
+    },
+    delSelected: function () {
+        var selected = this.dataTable.bootstrapTable('getSelections');
+        var self = this;
+        var mids = [];
+
+        $(selected).each(function (n, pv) {
+            mids.push(pv.id);
+        });
+
+        mids.length ?
+            bootbox.confirm('确定删除？', function (rs) {
+                rs && self._ajaxDelete(mids, function () {
+                    self._refreshTable();
+                });
+            }) :
+            bootbox.alert('请先选择要删除的舆情');
+
+        return this;
+    },
+    _ajaxDelete: function (ids, done) {
+        this._sendRequest({
+            type: 'delete', url: '/badinfo/delete',
+            data: {ids: ids},
+            done: done
+        });
+
+        return this;
     },
     _buildTableOptions: function () {
         var self = this;
@@ -169,19 +208,19 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
         this._expandTable()
             ._hideGridWrapper();
     },
-    saveGuide: function () {
+    saveBadInfo: function () {
         var self = this;
         this._sendRequest({
             type: 'post',
-            url: '/guide/save',
-            validator: $.proxy(this._guideValidator, this),
+            url: '/badinfo/save',
+            validator: $.proxy(this._badinfoValidator, this),
             done: function () {
-                self._refreshTable().closeGuideModal();
+                self._refreshTable().closeModal();
             }
         });
     },
-    _guideValidator: function () {
-        var jqform = $('#guideModal form');
+    _badinfoValidator: function () {
+        var jqform = $('#dataModal form');
         var values = this._getFormControlValues(jqform);
 
         return  values;

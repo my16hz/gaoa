@@ -10,4 +10,6 @@ module.exports = function () {
     return express.Router()
         .get('/badinfo', controller.pageBadInfo)
         .get('/badinfo/list', controller.listBadInfo)
+        .post('/badinfo/save', controller.saveBadInfo)
+        .delete('/badinfo/delete', controller.deleteBadInfo)
 };
