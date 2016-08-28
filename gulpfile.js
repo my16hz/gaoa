@@ -17,7 +17,7 @@ var tasks = [
 
 require('./gulp_tasks/css')(gulp, plugins);
 require('./gulp_tasks/scripts')(gulp, plugins, IS_DEBUG);
-require('./gulp_tasks/files')(gulp, plugins);
+require('./gulp_tasks/files')(gulp, plugins, IS_DEBUG);
 require('./gulp_tasks/clean')(gulp, plugins);
 require('./gulp_tasks/watch')(gulp);
 

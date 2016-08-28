@@ -14,7 +14,7 @@ var DIR_DEST = {
     editor: 'public/editor/'
 };
 
-module.exports = function (gulp, plugins) {
+module.exports = function (gulp, plugins, isdebug) {
     gulp.task('cleanPics', function () {
         return gulp
             .src(DIR_DEST.imgs, {read: false})
@@ -46,9 +46,13 @@ module.exports = function (gulp, plugins) {
     });
 
     gulp.task('copyEditorJS', ['cleanEditor'], function () {
-        return gulp
-            .src(DIR_SRC.editor + 'dialogs/**/*.js')
-            .pipe(plugins.uglify())
+        var editor = gulp.src(DIR_SRC.editor + 'dialogs/**/*.js');
+
+        if (!isdebug) {
+            editor.pipe(plugins.uglify());
+        }
+
+        return editor
             .pipe(gulp.dest(DIR_DEST.editor + 'dialogs'));
     });
 

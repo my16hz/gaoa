@@ -442,4 +442,3 @@
         Base.callback(editor, $w, url, state)
     })
 })();
-
