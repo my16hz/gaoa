@@ -15,7 +15,8 @@ module.exports = {
     getDisposeList: getDisposeList,
     getUnappliedPubVoices: getUnappliedPubVoices,
     generateDailyReport: generateDailyReport,
-    getDailyTemplate: getDailyTemplate
+    getDailyTemplate: getDailyTemplate,
+    saveDailyReport: saveDailyReport
 };
 
 
@@ -73,8 +74,17 @@ function generateDailyReport(req, res) {
 }
 
 function getDailyTemplate(req, res) {
-    res.send({
-        success: true,
-        data: config['template'].daily
+    service.getCurrentDailyID(function (err, rs) {
+        rs['template'] = config['template'].daily;
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: {'template': config['template'].daily, 'issue': rs}
+            });
     });
+}
+
+function saveDailyReport(req, res) {
+
 }

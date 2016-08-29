@@ -17,8 +17,6 @@ module.exports = {
     createDaily: createDaily,
     /* 获取日报当前期数 */
     getCurrentDailyID: getCurrentDailyID,
-    /* 获取日报模板 */
-    getDailyTemplate: getDailyTemplate,
     /* 查询日报中舆情列表 */
     getDailyPVList: getDailyPVList
 };
@@ -165,11 +163,3 @@ function getDailyPVList (did, callback) {
         });
 }
 
-/**
- * 获取日报模板
- * @param uid
- * @param callback
- */
-function getDailyTemplate (uid, callback) {
-
-}
