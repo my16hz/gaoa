@@ -1,2 +1,79 @@
 <script type="text/x-jquery-tmpl">
+    <div class="badinfo-rtx-page">
+    <div class="row func-btns">
+        <div class="col-md-6 col-xs-offset-6">
+            <div class="pull-right">
+                <button id="btnAdd" class="btn btn-sm btn-default">新增</button>
+                <button id="btnDel" class="btn btn-sm btn-default">删除</button>
+            </div>
+        </div>
+    </div>
+    <div id="gridWrapper" class="row">
+        <div class="col-md-12">
+            <table id="dataTable" class="table table-striped table-hover table-condensed"></table>
+        </div>
+        <div class="col-xs-10 no-padding-left hide">
+            <div id="rtxModal" class="modal-content">
+                <div class="modal-header">
+                    <label><h4 class="modal-title">RTX指令</h4></label>
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-default">关闭</button>
+                        <button type="button" class="btn btn-primary">保存</button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group form-group-sm">
+                            <input type="text" name="id" class="form-control hide">
+                            <label class="col-sm-2 control-label">网站名称：</label>
+                            <div class="col-sm-4">
+                                <input type="text" name="website" class="form-control">
+                            </div>
+                            <label class="col-sm-2 control-label">网址：</label>
+                            <div class="col-sm-4">
+                                <input type="text" name="url" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-2 control-label">指令方式：</label>
+                            <div class="col-sm-4">
+                                <input type="text" name="type" class="form-control">
+                            </div>
+                            <label class="col-sm-2 control-label">指令部门：</label>
+                            <div class="col-sm-4">
+                                <input type="text" name="department" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-2 control-label">填报时间：</label>
+                            <div class="col-sm-4">
+                                <input type="text" name="rtx_time" class="form-control" id="rtxTimepicker">
+                            </div>
+                            <label class="col-sm-2 control-label">责任人：</label>
+                            <div class="col-sm-4">
+                                <input type="text" name="duty_user" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-2 control-label">指令内容：</label>
+                            <div class="col-sm-4">
+                                <textarea name='content' class="form-control" rows="5"></textarea>
+                            </div>
+                            <label class="col-sm-2 control-label">完成情况：</label>
+                            <div class="col-sm-4">
+                                <textarea name='result' class="form-control" rows="5"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-sm-2 control-label">备注：</label>
+                            <div class="col-sm-10">
+                                <script type="text/plain" id="rtxUE" name="remark" class="height:300px"></script>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </script>

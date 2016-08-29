@@ -12,4 +12,8 @@ module.exports = function () {
         .get('/badinfo/list', controller.listBadInfo)
         .post('/badinfo/save', controller.saveBadInfo)
         .delete('/badinfo/delete', controller.deleteBadInfo)
+
+        .get('/badinfo/rtxlist', controller.listRTX)
+        .post('/badinfo/rtxsave', controller.saveRTX)
+        .delete('/badinfo/rtxdelete', controller.deleteRTX)
 };

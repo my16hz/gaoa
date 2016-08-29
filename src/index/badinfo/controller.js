@@ -11,7 +11,11 @@ module.exports = {
     pageBadInfo: pageBadInfo,
     listBadInfo: listBadInfo,
     saveBadInfo: saveBadInfo,
-    deleteBadInfo: deleteBadInfo
+    deleteBadInfo: deleteBadInfo,
+
+    listRTX: listRTX,
+    saveRTX: saveRTX,
+    deleteRTX: deleteRTX
 };
 
 function pageBadInfo (req, res) {
@@ -19,7 +23,6 @@ function pageBadInfo (req, res) {
 }
 
 function listBadInfo (req, res) {
-    var pvid = req.query.id;
     service.listBadInfo("createtime", "asc", function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
@@ -59,6 +62,55 @@ function saveBadInfo (req, res) {
 function deleteBadInfo (req, res) {
     var bdids = req.body.ids;
     service.deleteBadInfo( bdids, function (err) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
+}
+
+function listRTX (req, res) {
+    service.listRTX("createtime", "asc", function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function saveRTX (req, res) {
+    var uid = req.session[userkey].id;
+    var obj = req.body;
+    var objParams = {
+        'id': obj['id'],
+        "rtx_time": obj['rtx_time'],
+        "website": obj['website'],
+        "url": obj['url'],
+        "department": obj['department'],
+        "type": obj['type'],
+        "content": obj['content'],
+        "result": obj['result'],
+        "duty_user": obj['duty_user'],
+        "remark": obj['remark'],
+        'createuser': uid,
+        'createtime': new Date()
+    };
+    service.saveRTX( objParams, function (err) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
+}
+
+
+function deleteRTX (req, res) {
+    var bdids = req.body.ids;
+    service.deleteRTX( bdids, function (err) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
