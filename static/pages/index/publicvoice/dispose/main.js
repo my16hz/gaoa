@@ -164,13 +164,18 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
             data: {'id': pubvoice.id},
             done: function (rs) {
                 var jqform = '#disposeDetailModal form';
-
-                self._setFormControlValues(jqform, pubvoice);
                 if (rs[0]['state'] == -1) {
-                    self.editor.setContent(rs[0]['content'] + pubvoice.content);
+                    pubvoice['doc_year'] = new Date().getYear() + 1900;
+                    pubvoice['doc_no'] = 1;
+                    var template = rs[0]['template'];
+                    template = template.replace('%doc_year%', pubvoice['doc_year']);
+                    template = template.replace('%doc_no%', pubvoice['doc_no']);
+                    template = template.replace('%date%', moment(new Date()).format('YYYY年MM月DD日'));
+                    self.editor.setContent(template + pubvoice.content);
                 } else {
                     self.editor.setContent(rs[0]['content']);
                 }
+                self._setFormControlValues(jqform, pubvoice);
                 self._shrinkTable()
                     ._showGridWrapper();
             }

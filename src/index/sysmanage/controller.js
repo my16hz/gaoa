@@ -51,7 +51,7 @@ function saveUser (req, res) {
         groupid: req.body.groupid
     };
 
-    memberService[isNew ? 'addUser' : 'updateUser'](user, function (err) {
+    memberService[isNew == 'true'? 'addUser' : 'updateUser'](user, function (err) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
