@@ -17,7 +17,7 @@ var SUB_PAGES = {
     publicvoice: ['dailyreport', 'dailycreate', 'dispose', 'examine&approve', 'feedback', 'guide', 'notify', 'record', 'alert'],
     smartoffice: ['allmessages', 'examine&approve', 'sendmessage'],
     socialvoice: ['dispose', 'record'],
-    sysmanage: ['members', 'password']
+    sysmanage: ['members', 'password', 'configure']
 };
 
 var TASKS_SUBPAGES = [];

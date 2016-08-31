@@ -126,7 +126,7 @@ function createDaily (uid, daily, callback) {
  * @param callback {Function}  回调函数(err, {issue_id:{Number}舆情期数, id:总期数})
  */
 function getCurrentDailyID (callback) {
-    var sql_stmt = "SELECT MAX(id) as 'id', MAX(issue_id) as 'issue_id' FROM tb_daily";
+    var sql_stmt = "SELECT daily_id as 'id', daily_issue_id as 'issue_id' FROM tb_sys_config";
     var objParams = {};
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {

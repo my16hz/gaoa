@@ -204,8 +204,7 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
                 self.editor.setContent(daily);
                 self.editor.setEnabled();
 
-                self._setFormControlValues('#contentModal form',
-                    {'total_id':total_id, 'issue_id':issue_id});
+                self._setFormControlValues('#contentModal form', {'total_id':total_id, 'issue_id':issue_id});
 
                 self._shrinkTable()
                     ._showGridWrapper();
