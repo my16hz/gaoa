@@ -28,7 +28,7 @@ var LHSRTXDirectivePage = $.extend({}, LHSBasicPage, {
         if (!this.dataTable) {
             (this.dataTable = $('#dataTable')).bootstrapTable({
                 method: 'get',
-                url: '/badinfo/rtxlist',
+                url: '/rtx/directive/list',
                 cache: false,
                 ajaxOptions: {
                     beforeSend: function () {
@@ -44,12 +44,6 @@ var LHSRTXDirectivePage = $.extend({}, LHSBasicPage, {
                 columns: [{
                     field: 'checkbox',
                     checkbox: true
-                }, {
-                    title: '网站名称',
-                    field: 'website'
-                }, {
-                    title: '网页路径',
-                    field: 'url'
                 }, {
                     title: '指令部门',
                     field: 'department'
@@ -178,7 +172,7 @@ var LHSRTXDirectivePage = $.extend({}, LHSBasicPage, {
     },
     _ajaxDelete: function (ids, done) {
         this._sendRequest({
-            type: 'delete', url: '/badinfo/rtxdelete',
+            type: 'delete', url: '/rtx/directive/delete',
             data: {ids: ids},
             done: done
         });
@@ -190,7 +184,7 @@ var LHSRTXDirectivePage = $.extend({}, LHSBasicPage, {
 
         return {
             method: 'get',
-            url: '/badinfo/rtxlist',
+            url: '/rtx/directive/list',
             cache: false,
             ajaxOptions: {
                 beforeSend: function () {
@@ -215,7 +209,7 @@ var LHSRTXDirectivePage = $.extend({}, LHSBasicPage, {
         var self = this;
         this._sendRequest({
             type: 'post',
-            url: '/badinfo/rtxsave',
+            url: '/rtx/directive/save',
             validator: $.proxy(this._rtxValidator, this),
             done: function () {
                 self._refreshTable().closeModal();

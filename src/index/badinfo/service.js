@@ -13,23 +13,28 @@ module.exports = {
 
     listRTX: listRTX,
     saveRTX: saveRTX,
-    deleteRTX: deleteRTX
+    deleteRTX: deleteRTX,
+
+    listRTXReport: listRTXReport,
+    saveRTXReport: saveRTXReport,
+    deleteRTXReport: deleteRTXReport
 };
 
-function listBadInfo (field, order, callback) {
+function listBadInfo (uid, priority, field, order, callback) {
     var params = {};
     var sql_stmt = "select * from tb_badinfo ";
-    var ps = null;
-
+    if (priority != 1) {
+        sql_stmt += ' where createuser = @uid ';
+        params['uid'] = uid;
+    }
     if (field) {
         sql_stmt += " order by " + field + " " + order;
     }
 
     console.log(sql_stmt);
 
-    ps = dbpool.preparedStatement()
-        .input("field", sql.VarChar)
-        .input("order", sql.VarChar)
+    var ps = dbpool.preparedStatement()
+        .input("uid", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, []);
@@ -143,13 +148,11 @@ function listRTX (field, order, callback) {
 
 function saveRTX (obj, callback) {
     var sql_stmt = 'DELETE FROM tb_rtx WHERE id in (@id); ' +
-        'INSERT INTO tb_rtx ([rtx_time], [website], [url], [department], [type], [content], [result], [duty_user], [remark], [createuser], [createtime])  ' +
-        'VALUES (@rtx_time, @website, @url, @department, @type, @content, @result, @duty_user, @remark, @createuser, @createtime);';
+        'INSERT INTO tb_rtx ([rtx_time], [department], [type], [content], [result], [duty_user], [remark], [createuser], [createtime])  ' +
+        'VALUES (@rtx_time, @department, @type, @content, @result, @duty_user, @remark, @createuser, @createtime);';
     var objParams = {
         'id': obj['id'] == ''? 0 : obj['id'],
         "rtx_time": obj['rtx_time'],
-        "website": obj['website'],
-        "url": obj['url'],
         "department": obj['department'],
         "type": obj['type'],
         "content": obj['content'],
@@ -162,8 +165,6 @@ function saveRTX (obj, callback) {
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .input("id", sql.Int)
-        .input("website", sql.NVarChar)
-        .input("url", sql.NVarChar)
         .input("rtx_time", sql.Date)
         .input("department", sql.NVarChar)
         .input("type", sql.NVarChar)
@@ -177,7 +178,6 @@ function saveRTX (obj, callback) {
             if (err) {
                 return callback(err, null);
             }
-
             ps.execute(objParams, function (err, rs) {
                 callback(err, rs);
 
@@ -192,6 +192,95 @@ function saveRTX (obj, callback) {
 function deleteRTX (dbids, callback) {
     var objParams = {};
     var sql_stmt = "DELETE FROM tb_rtx WHERE id in (%dbids%);";
+    sql_stmt = sql_stmt.replace("%dbids%", "\'" + dbids.join("\',\'") + "\'");
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, false);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+
+function listRTXReport (field, order, callback) {
+    var params = {};
+    var sql_stmt = "select * from tb_rtx_report ";
+    var ps = null;
+
+    if (field) {
+        sql_stmt += " order by " + field + " " + order;
+    }
+
+    console.log(sql_stmt);
+
+    ps = dbpool.preparedStatement()
+        .input("field", sql.VarChar)
+        .input("order", sql.VarChar)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, []);
+            }
+
+            ps.execute(params, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function saveRTXReport (obj, callback) {
+    var sql_stmt = 'DELETE FROM tb_rtx_report WHERE id in (@id); ' +
+        'INSERT INTO tb_rtx_report ([report_time], [website], [url], [report_user], [remark], [createuser], [createtime])  ' +
+        'VALUES (@report_time, @website, @url, @report_user, @remark, @createuser, @createtime);';
+    var objParams = {
+        'id': obj['id'] == ''? 0 : obj['id'],
+        'report_time' : obj['report_time'],
+        'website' : obj['website'],
+        'url' : obj['url'],
+        'report_user' : obj['report_user'],
+        'remark' : obj['remark'],
+        'createuser' : obj['createuser'],
+        'createtime' : obj['createtime']
+    };
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("id", sql.Int)
+        .input("report_time", sql.Date)
+        .input("website", sql.NVarChar)
+        .input("url", sql.NVarChar)
+        .input("report_user", sql.NVarChar)
+        .input("remark", sql.NVarChar)
+        .input("createuser", sql.VarChar)
+        .input("createtime", sql.DateTime2)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function deleteRTXReport (dbids, callback) {
+    var objParams = {};
+    var sql_stmt = "DELETE FROM tb_rtx_report WHERE id in (%dbids%);";
     sql_stmt = sql_stmt.replace("%dbids%", "\'" + dbids.join("\',\'") + "\'");
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()

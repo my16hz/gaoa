@@ -13,7 +13,11 @@ module.exports = function () {
         .post('/badinfo/save', controller.saveBadInfo)
         .delete('/badinfo/delete', controller.deleteBadInfo)
 
-        .get('/badinfo/rtxlist', controller.listRTX)
-        .post('/badinfo/rtxsave', controller.saveRTX)
-        .delete('/badinfo/rtxdelete', controller.deleteRTX)
+        .get('/rtx/directive/list', controller.listRTX)
+        .post('/rtx/directive/save', controller.saveRTX)
+        .delete('/rtx/directive/delete', controller.deleteRTX)
+
+        .get('/rtx/report/list', controller.listRTXReport)
+        .post('/rtx/report/save', controller.saveRTXReport)
+        .delete('/rtx/report/delete', controller.deleteRTXReport)
 };

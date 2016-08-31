@@ -15,7 +15,11 @@ module.exports = {
 
     listRTX: listRTX,
     saveRTX: saveRTX,
-    deleteRTX: deleteRTX
+    deleteRTX: deleteRTX,
+
+    listRTXReport: listRTXReport,
+    saveRTXReport: saveRTXReport,
+    deleteRTXReport: deleteRTXReport
 };
 
 function pageBadInfo (req, res) {
@@ -23,7 +27,9 @@ function pageBadInfo (req, res) {
 }
 
 function listBadInfo (req, res) {
-    service.listBadInfo("createtime", "asc", function (err, rs) {
+    var uid = req.session[userkey].id;
+    var priority = req.session[userkey].priority;
+    service.listBadInfo(uid, priority, "createtime", "asc", function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -87,8 +93,6 @@ function saveRTX (req, res) {
     var objParams = {
         'id': obj['id'],
         "rtx_time": obj['rtx_time'],
-        "website": obj['website'],
-        "url": obj['url'],
         "department": obj['department'],
         "type": obj['type'],
         "content": obj['content'],
@@ -111,6 +115,52 @@ function saveRTX (req, res) {
 function deleteRTX (req, res) {
     var bdids = req.body.ids;
     service.deleteRTX( bdids, function (err) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
+}
+
+
+function listRTXReport (req, res) {
+    service.listRTXReport("createtime", "asc", function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function saveRTXReport (req, res) {
+    var uid = req.session[userkey].id;
+    var obj = req.body;
+    var objParams = {
+        'id': obj['id'],
+        'report_time' : obj['report_time'],
+        'website' : obj['website'],
+        'url' : obj['url'],
+        'report_user' : obj['report_user'],
+        'remark' : obj['remark'],
+        'createuser': uid,
+        'createtime': new Date()
+    };
+    service.saveRTXReport( objParams, function (err) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
+}
+
+
+function deleteRTXReport (req, res) {
+    var bdids = req.body.ids;
+    service.deleteRTXReport( bdids, function (err) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

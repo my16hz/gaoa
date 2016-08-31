@@ -10,6 +10,8 @@
                     return LHSAggregatePage.run();
                 case 'RTXDirective':
                     return LHSRTXDirectivePage.run();
+                case 'RTXReport':
+                    return LHSRTXReportPage.run();
             }
         });
 

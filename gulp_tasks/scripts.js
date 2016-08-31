@@ -13,7 +13,7 @@ var DIR_SRC = {
 var DIR_DEST = 'public/js/';
 
 var SUB_PAGES = {
-    badinfo: ['aggregate', 'record', 'RTXDirective'],
+    badinfo: ['aggregate', 'record', 'RTXDirective', 'RTXReport'],
     publicvoice: ['dailyreport', 'dailycreate', 'dispose', 'examine&approve', 'feedback', 'guide', 'notify', 'record', 'alert'],
     smartoffice: ['allmessages', 'examine&approve', 'sendmessage'],
     socialvoice: ['dispose', 'record'],
