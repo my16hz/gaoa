@@ -15,9 +15,9 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
     },
     events: {
         'click #btnAdd': 'showDataModal',
-        'click #dataModal .btn-default': 'closeDataModal',
-        'click #detailModal .btn-default': 'closeDataModal',
-        'click #dataModal .btn-primary': 'saveDataModal',
+        'click #dailyModal .btn-default': 'closeDataModal',
+        'click #dailyModal .btn-primary': 'saveDataModal',
+        'click #detailModal .btn-default': 'closeDataModal'
     },
     _drawDataTable: function () {
         var self = this;
@@ -180,7 +180,6 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
 
         $('#detailModal').addClass('hide');
         $('#dailyModal').removeClass('hide');
-        $('#issueModal').removeClass('hide');
 
         mids.length ?
             self.genDaily(mids):
@@ -196,16 +195,14 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
                 var template = rs.template;
                 var total_id = 0,
                     issue_id = 0;
-                if (rs.issue.length) {
-                    total_id = rs.issue[0].id + 1;
-                    issue_id = rs.issue[0].issue_id + 1;
+                if (rs.issue) {
+                    total_id = parseInt(rs.issue.daily_id, 10) + 1;
+                    issue_id = parseInt(rs.issue.daily_issue_id, 10) + 1;
                 }
                 var daily = self.buildDaily(template, total_id, issue_id, pubvoices);
+                self._setFormControlValues('#contentModal form', {'id':total_id, 'issue_id':issue_id});
                 self.editor.setContent(daily);
                 self.editor.setEnabled();
-
-                self._setFormControlValues('#contentModal form', {'total_id':total_id, 'issue_id':issue_id});
-
                 self._shrinkTable()
                     ._showGridWrapper();
             }
@@ -254,12 +251,25 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
         this.editor.setDisabled();
         $('#detailModal').removeClass('hide');
         $('#dailyModal').addClass('hide');
-        $('#issueModal').addClass('hide');
         this._shrinkTable()
             ._showGridWrapper();
         return this;
     },
     saveDataModal: function () {
-        var values= {'content': this.editor.getContent()};
+        var self = this;
+        this._sendRequest({
+            type: 'post',
+            url: '/daily/save',
+            validator: $.proxy(this._dailyValidator, this),
+            done: function () {
+                self._refreshTable().closeDataModal();
+            }
+        });
+    },
+    _dailyValidator: function () {
+        var values = this._getFormControlValues($('#contentModal form'));
+        values['content'] = this.editor.getContent();
+
+        return  values;
     }
 });
