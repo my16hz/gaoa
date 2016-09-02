@@ -17,7 +17,7 @@
                     <label><h4 class="modal-title">日报详情</h4></label>
                     <div class="pull-right">
                         <button type="button" class="btn btn-default">关闭</button>
-                        <button type="button" class="btn btn-primary">保存</button>
+                        <button id="btnSave" type="button" class="btn btn-default">保存</button>
                     </div>
                 </div>
                 <div id="detailModal" class="modal-header hide" >
@@ -26,15 +26,14 @@
                         <button type="button" class="btn btn-default">关闭</button>
                     </div>
                 </div>
-                <div id="contentModal" class="modal-body">
+                <div class="modal-body">
                     <label>注意：如果日报期数与实际不相符，请通知管理员修改后，重新创建日报！</label>
                     <form class="form-horizontal">
-                        <input type="text" name="id" class="form-control hide">
-                        <input type="text" name="issue_id" class="form-control hide">
                         <div class="form-group form-group-sm">
+                            <input type="text" name="id" class="form-control hide">
+                            <input type="text" name="issue_id" class="form-control hide">
                             <div class="col-sm-12">
-                                <script type="text/plain" id="dailyCreateUE">
-                                </script>
+                                <script type="text/plain" id="dailyCreateUE"></script>
                             </div>
                         </div>
                     </form>

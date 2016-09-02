@@ -16,7 +16,7 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
     events: {
         'click #btnAdd': 'showDataModal',
         'click #dailyModal .btn-default': 'closeDataModal',
-        'click #dailyModal .btn-primary': 'saveDataModal',
+        'click #btnSave': 'saveDataModal',
         'click #detailModal .btn-default': 'closeDataModal'
     },
     _drawDataTable: function () {
@@ -200,7 +200,7 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
                     issue_id = parseInt(rs.issue.daily_issue_id, 10) + 1;
                 }
                 var daily = self.buildDaily(template, total_id, issue_id, pubvoices);
-                self._setFormControlValues('#contentModal form', {'id':total_id, 'issue_id':issue_id});
+                self._setFormControlValues('#dataModal form', {'id':total_id, 'issue_id':issue_id});
                 self.editor.setContent(daily);
                 self.editor.setEnabled();
                 self._shrinkTable()
@@ -267,7 +267,8 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
         });
     },
     _dailyValidator: function () {
-        var values = this._getFormControlValues($('#contentModal form'));
+        var jqform = $('#dataModal form');
+        var values = this._getFormControlValues(jqform);
         values['content'] = this.editor.getContent();
 
         return  values;

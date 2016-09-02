@@ -86,5 +86,15 @@ function getDailyTemplate(req, res) {
 }
 
 function saveDailyReport(req, res) {
+    var uid = req.session[userkey].id;
+    var obj = req.body;
+    var objParams = {
+        'id': obj['id'],
+        'issue_id': obj['issue_id'],
+        'content': obj['content'],
+        'pvids': obj['pvids'],
+        'createuser': uid,
+        'createtime': new Date()
+    };
 
 }
