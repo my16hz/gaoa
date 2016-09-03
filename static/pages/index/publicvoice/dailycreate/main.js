@@ -62,10 +62,10 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
     },
     
     closeDataModal: function () {
-        var self = this;
+        var modal = $('#dataModal');
 
-        this._expandTable()
-            ._hideGridWrapper();
+        this._clearFormControlValues(modal.find('form'))
+            ._closeModal(modal, this.dataTable);
     },
     showDataModal: function () {
         var selected = this.dataTable.bootstrapTable('getSelections');

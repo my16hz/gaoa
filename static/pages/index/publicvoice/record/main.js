@@ -127,7 +127,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             this.closeImportModal();
         });
 
-        thi._showModal(modal, this.dataTable);
+        this._showModal(modal, this.dataTable);
     },
     applyApprobation: function () {
         var dataTable = this.dataTable;

@@ -88,7 +88,8 @@ function findDailyDetail (daily_ids, callback) {
  */
 function createDaily (uid, daily, callback) {
     var sql_stmt = "INSERT INTO tb_daily ([id],[issue_id],[content],[createuser],[createtime],[pvids]) " +
-        "VALUES (@id, @issue_id, @content, @createuer, @createtime, @pvids)";
+        "VALUES (@id, @issue_id, @content, @createuer, @createtime, @pvids);" +
+        "UPDATE tb_sys_config SET daily_id = @id, daily_issue_id = @issue_id;";
     var objParams = {
         "id": daily["id"],
         "issue_id": daily["issue_id"],

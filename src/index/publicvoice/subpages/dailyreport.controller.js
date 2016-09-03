@@ -96,5 +96,11 @@ function saveDailyReport(req, res) {
         'createuser': uid,
         'createtime': new Date()
     };
-
+    service.createDaily(uid, objParams, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
 }

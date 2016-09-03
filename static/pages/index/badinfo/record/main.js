@@ -52,9 +52,9 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
     showDataModal: function (info) {
         var modal = $('#dataModal');
 
-        info.id && self._setFormControlValues(modal.find('form'), info);
+        info.id && this._setFormControlValues(modal.find('form'), info);
 
-        self._showModal(modal, self.dataTable);
+        this._showModal(modal, this.dataTable);
     },
     delSelected: function () {
         var dataTable = this.dataTable;
