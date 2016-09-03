@@ -68,7 +68,7 @@ function datafile (req, res) {
             errhandler.customError(res, '文件上传失败。');
         } else {
             service.importPubVoices(user.id, user.groupid, path.normalize(
-                dfcfg.uploadDir + file.dirName + '/' + file.filename + '.' + _getExtention(file)
+                dfcfg.uploadDir + file.dirName + '/' + file.filename
             ), function (err) {
                 if (err) {
                     errhandler.customError(res, '文件解析失败。');
@@ -103,7 +103,7 @@ function ueditor (req, res) {
 
 
 function _getExtention (file) {
-    return file.mimetype.split('/').pop();
+    return file.originalname.split('.').pop();
 }
 
 function _buildDirName () {
