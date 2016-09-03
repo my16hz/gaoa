@@ -88,7 +88,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             this._removeLoading().closeImportModal();
         });
 
-        thi._showModal(modal, this.dataTable);
+        this._showModal(modal, this.dataTable);
     },
     delSelected: function () {
         var dataTable = this.dataTable;

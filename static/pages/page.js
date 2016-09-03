@@ -269,6 +269,7 @@ var LHSBasicPage = {
 
         $(input).ajaxfileupload({
             action: action,
+            validate_extensions: false,
             onStart: function () {
                 self._showLoading();
             },
