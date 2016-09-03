@@ -1,2 +1,65 @@
-<script type="text/x-jquery-tmpl">
-</script>
+<!--<script type="text/x-jquery-tmpl">-->
+<div class="badinfo-rtxdirective-page">
+    <div class="row func-btns">
+        <div class="col-md-6 col-xs-offset-6">
+            <div class="pull-right">
+                <button id="btnAdd" class="btn btn-sm btn-default">新增</button>
+                <button id="btnDel" class="btn btn-sm btn-default">删除</button>
+            </div>
+        </div>
+    </div>
+    <div class="row data-wrapper">
+        <div id="tableWrapper" class="col-md-12"></div>
+        <div class="col-xs-10 no-padding-left hide">
+            <div id="dataModal" class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">RTX指令</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <input type="hidden" name="id" class="form-control">
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">指令方式：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="type" class="form-control">
+                            </div>
+                            <label class="col-xs-2 control-label">指令部门：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="department" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">填报时间：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="rtx_time" class="form-control lhstimepicker">
+                            </div>
+                            <label class="col-xs-2 control-label">责任人：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="duty_user" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">指令内容：</label>
+                            <div class="col-xs-4">
+                                <textarea name='content' class="form-control" rows="5"></textarea>
+                            </div>
+                            <label class="col-xs-2 control-label">完成情况：</label>
+                            <div class="col-xs-4">
+                                <textarea name='result' class="form-control" rows="5"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">备注：</label>
+                            <div id="editorWrapper" class="col-xs-10"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default">关闭</button>
+                    <button type="button" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--</script>-->

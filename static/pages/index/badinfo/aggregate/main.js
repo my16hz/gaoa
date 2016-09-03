@@ -5,14 +5,18 @@
  */
 var LHSAggregatePage = $.extend({}, LHSBasicPage, {
     run: function () {
+        var self = this;
         /*inject:jqtmpl:html*/
         /*endinject*/
 
-        // this.ajax({}, $.proxy(function () {
-        //     $(this.el).append(jqtmpl($, {data: {}}).join(''));
-        //     this.initDependencies();
-        // }, this));
-
         $(this.el).append(jqtmpl($, {data: {}}).join(''));
+
+        this.initDependencies();
+
+        this.dataTable = this._createTable('#tableWrapper', '/badinfo/list', [
+        ]);
+        this.editor = this._createEditor('#editorWrapper');
+    },
+    events: {
     }
 });

@@ -25,9 +25,9 @@ var LHSBasicPage = {
             });
         });
 
-        $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['zh-CN']);
+        $.fn.bootstrapTable && $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['zh-CN']);
 
-        bootbox.setDefaults({size: 'small', locale: 'zh_CN'});
+        window.bootbox && bootbox.setDefaults({size: 'small', locale: 'zh_CN'});
 
         return this;
     },
@@ -76,7 +76,6 @@ var LHSBasicPage = {
 
         return this;
     },
-
     _showXHRMessage: function (msg, type) {
         var pid = 'lhs' + type + 'panel';
         var panel = $('#' + pid);
@@ -92,7 +91,7 @@ var LHSBasicPage = {
             });
         }
 
-        panel.append($('<span></span>').text(err));
+        panel.append($('<span></span>').text(msg));
 
         return this;
     },
@@ -157,6 +156,158 @@ var LHSBasicPage = {
                 }
             });
         });
+
+        return this;
+    },
+
+    _createEditor: function (panel) {
+        var ueid = 'lhsUeditor' + $('.edui-container').length;
+
+        $(panel).empty().append(
+            $('<script type="text/plain"></script>')
+                .attr('id', ueid)
+                .css({
+                    width: '100%',
+                    height: 300
+                })
+        ).width(function () {
+            return $(this).parent().width;
+        });
+
+        return UM.getEditor(ueid);
+    },
+    _createTable: function (panel, url, columns) {
+        var self = this;
+        var dataTable = $(panel).empty().append(
+            $('<table></table>').addClass('table table-striped table-hover table-condensed')
+        ).children('table');
+
+        dataTable.bootstrapTable({
+            method: 'get',
+            url: url,
+            cache: false,
+            ajaxOptions: {
+                beforeSend: function () {
+                    self._showLoading();
+                },
+                complete: function () {
+                    self._removeLoading();
+                }
+            },
+            onLoadError: function (xhr) {
+                self._showXHRMessage('请求失败:' + xhr.responseText, 'danger');
+            },
+            columns: columns
+        });
+
+        return {
+            origin: dataTable,
+            shrink: function () {
+                $.each(columns, function (i, cfg) {
+                    if (!cfg.alwaysDisplay) {
+                        dataTable.bootstrapTable('hideColumn', cfg.field);
+                    }
+                });
+
+                $(panel)
+                    .attr('class', 'col-xs-2')
+                    .next()
+                    .removeClass('hide');
+
+                return this;
+            },
+            expand: function () {
+                $.each(columns, function (i, cfg) {
+                    dataTable.bootstrapTable('showColumn', cfg.field);
+                });
+
+                $(panel)
+                    .attr('class', 'col-md-12')
+                    .next()
+                    .addClass('hide');
+
+                return this;
+            },
+            refresh: function () {
+                dataTable.bootstrapTable('refresh');
+
+                return this;
+            },
+            getSelected: function (field) {
+                var selected = dataTable.bootstrapTable('getSelections');
+                var values = [];
+
+                field = field || 'id';
+
+                selected.length && $(selected).each(function (n, val) {
+                    values.push(val[field]);
+                });
+
+                return values;
+            },
+            filterBy: function (data) {
+                dataTable.bootstrapTable('filterBy', data);
+            },
+            showDataWrapper: function () {
+                $(panel)
+                    .parent()
+                    .removeClass('hide')
+                    .siblings('.data-wrapper')
+                    .addClass('hide');
+
+                return this;
+            },
+            hidedDataWrapper: function () {
+                $(panel).parent().addClass('hide');
+
+                return this;
+            }
+        };
+    },
+    _createUploader: function (input, action, complete) {
+        var self = this;
+
+        $(input).ajaxfileupload({
+            action: action,
+            onStart: function () {
+                self._showLoading();
+            },
+            onCancel: function () {
+                self._removeLoading();
+            },
+            onComplete: function () {
+                self._removeLoading();
+                $.isFunction(complete) && complete.call(self);
+                self._showXHRMessage('上传成功。', 'info');
+            }
+        });
+
+        return this;
+    },
+    _createTimepicker: function (input, format, defVal) {
+        var picker = $(input).datetimepicker({
+            format: format || 'YYYY-MM-DD'
+        });
+        var self = this;
+
+        return {
+            onChange: function (cb) {
+                picker.on('dp.change', $.proxy(cb, self));
+            }
+        };
+    },
+
+    _showModal: function (jqmodal, table) {
+        $(jqmodal).removeClass('hide')
+            .siblings()
+            .addClass('hide');
+        table.shrink();
+
+        return this;
+    },
+    _closeModal: function (jqmodal, table) {
+        $(jqmodal).addClass('hide');
+        table.expand();
 
         return this;
     }
