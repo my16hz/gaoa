@@ -31,6 +31,7 @@ module.exports = function () {
         .get('/daily/unapplied', controller.getUnappliedPubVoices)
         .post('daily/generate', controller.generateDailyReport)
         .get('/daily/template', controller.getDailyTemplate)
+        .post('/daily/save', controller.saveDailyReport)
 
         // dispose page
         .get('/dispose/list', controller.getDisposeList)

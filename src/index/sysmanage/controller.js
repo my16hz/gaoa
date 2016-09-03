@@ -8,6 +8,7 @@ var config = require('config');
 var errhandler = require('../../utilities/errhandler');
 var memberService = require('./member.service');
 var groupService = require('./group.service');
+var configService = require('./configure.service');
 
 module.exports = {
     pageSysManage: pageSysManage,
@@ -21,7 +22,10 @@ module.exports = {
     saveGroup: saveGroup,
     removeGroups: removeGroups,
     getGroupMembers: getGroupMembers,
-    addUserToGroup: addUserToGroup
+    addUserToGroup: addUserToGroup,
+
+    getConfigure: getConfigure,
+    updateConfigure: updateConfigure
 };
 
 function pageSysManage (req, res) {
@@ -51,7 +55,7 @@ function saveUser (req, res) {
         groupid: req.body.groupid
     };
 
-    memberService[isNew ? 'addUser' : 'updateUser'](user, function (err) {
+    memberService[isNew == 'true'? 'addUser' : 'updateUser'](user, function (err) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -180,6 +184,34 @@ function addUserToGroup (req, res) {
             errhandler.internalException(res, err) :
             res.send({
                 success: true
+            });
+    })
+}
+
+function getConfigure (req, res) {
+    configService.getConfigure(function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    })
+}
+
+function updateConfigure (req, res) {
+    var body = req.body;
+    var config = {
+        "id" : body['id'],
+        "name" : body['name'],
+        "value" : body['value']
+    }
+    configService.updateConfigure(config, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
             });
     })
 }

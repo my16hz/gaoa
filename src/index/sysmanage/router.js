@@ -20,4 +20,7 @@ module.exports = function () {
         .delete('/sysmanage/groups/delete', controller.removeGroups)
         .get('/sysmanage/groups/:gpid/members', controller.getGroupMembers)
         .post('/sysmanage/groups/:gpid/addmember', controller.addUserToGroup)
+
+        .get('/sysmanage/configure', controller.getConfigure)
+        .post('/sysmanage/configure/update', controller.updateConfigure)
 };

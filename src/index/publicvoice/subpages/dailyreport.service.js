@@ -17,8 +17,6 @@ module.exports = {
     createDaily: createDaily,
     /* 获取日报当前期数 */
     getCurrentDailyID: getCurrentDailyID,
-    /* 获取日报模板 */
-    getDailyTemplate: getDailyTemplate,
     /* 查询日报中舆情列表 */
     getDailyPVList: getDailyPVList
 };
@@ -128,7 +126,7 @@ function createDaily (uid, daily, callback) {
  * @param callback {Function}  回调函数(err, {issue_id:{Number}舆情期数, id:总期数})
  */
 function getCurrentDailyID (callback) {
-    var sql_stmt = "SELECT MAX(id) as 'id', MAX(issue_id) as 'issue_id' FROM tb_daily";
+    var sql_stmt = "SELECT * FROM tb_sys_config WHERE id in ('daily_id', 'daily_issue_id');";
     var objParams = {};
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
@@ -136,7 +134,12 @@ function getCurrentDailyID (callback) {
                 return callback(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
-                callback(err, recordset)
+                var rs = {}
+                recordset.forEach(function (val) {
+                    rs[val.id] = val.value;
+                })
+
+                callback(err, rs)
                 ps.unprepare(function (err) {
                     if (err)
                         console.log(err);
@@ -165,11 +168,3 @@ function getDailyPVList (did, callback) {
         });
 }
 
-/**
- * 获取日报模板
- * @param uid
- * @param callback
- */
-function getDailyTemplate (uid, callback) {
-
-}

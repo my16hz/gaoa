@@ -14,10 +14,10 @@ module.exports = {
         timeout: 3600000 // 1hour,
     },
     db: {
-        server: '182.150.22.119',
-        port: 20492,
-        //server: '172.16.12.204',
-        //port: 9200,
+        //server: '182.150.22.119',
+        //port: 20492,
+        server: '172.16.12.204',
+        port: 9200,
         database: 'gaoa',
         user: 'gaoa',
         password: '1qazXSW@'
@@ -58,9 +58,9 @@ module.exports = {
         '</p><hr/>' +
         '<p style="text-align:right;line-height:31px">' +
         '<span style="font-size:21px;font-family:仿宋_GB2312">广舆函〔</span>' +
-        '<span style="font-size:21px">2016</span>' +
+        '<span style="font-size:21px">%doc_year%</span>' +
         '<span style="font-size:21px;font-family:仿宋_GB2312">〕</span>' +
-        '<span style="font-size:20px;letter-spacing:-0">1</span>' +
+        '<span style="font-size:20px;letter-spacing:-0">%doc_no%</span>' +
         '<span style="font-size:21px;font-family:仿宋_GB2312">号</span>' +
         '</p>' +
         '<p style="margin-top:16px;text-align:center;line-height:40px">' +
@@ -82,7 +82,7 @@ module.exports = {
         '<span style="font-size:20px;">广安市网络舆情中心</span>' +
         '</p>' +
         '<p style="text-indent: 42px; line-height: 27px; text-align: right;">' +
-        '<span style="text-align:center;font-family:仿宋_GB2312;letter-spacing:0px;font-size:20px;">2016年1月5日</span>' +
+        '<span style="text-align:center;font-family:仿宋_GB2312;letter-spacing:0px;font-size:20px;">%date%</span>' +
         '</p>' +
         '<p><br/></p>' +
         '<hr/>' +

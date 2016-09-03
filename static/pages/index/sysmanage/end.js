@@ -8,6 +8,8 @@
                     return LHSMembersPage.run();
                 case 'password':
                     return LHSPasswordPage.run();
+                case 'configure':
+                    return LHSConfigurePage.run();
             }
         });
 

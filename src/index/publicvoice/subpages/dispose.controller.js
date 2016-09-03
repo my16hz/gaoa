@@ -9,7 +9,8 @@ var errhandler = require('../../../utilities/errhandler');
 var service = require('./../service');
 module.exports = {
     savePVDispose: savePVDispose,
-    getDisposeDetail: getDisposeDetail
+    getDisposeDetail: getDisposeDetail,
+    getDisposeTemplate: getDisposeTemplate
 };
 
 
@@ -43,4 +44,8 @@ function getDisposeDetail (req, res) {
                 data: rs
             });
     });
+}
+
+function getDisposeTemplate(req, res) {
+    
 }

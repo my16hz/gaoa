@@ -3,6 +3,7 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
+var config = require('config');
 var sql = require('mssql');
 var dbpool = require('../../../utilities/dbpool');
 
@@ -33,7 +34,7 @@ function getPVDispose (pvid, callback) {
             }
             ps.execute(objParams, function (err, recordset) {
                 if (recordset.length == 0) {
-                    recordset = [{'id': pvid, 'state': -1, 'content': config.templete.dispose}]
+                    recordset = [{'id': pvid, 'state': -1, 'template': config.template.dispose}]
                 }
                 callback(err, recordset)
                 ps.unprepare(function (err) {
