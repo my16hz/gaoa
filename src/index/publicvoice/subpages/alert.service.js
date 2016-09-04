@@ -50,9 +50,11 @@ function getAlertList (bShowAll, callback) {
  * @param callback
  */
 function addAlert (obj, callback) {
-    var sql_stmt = "INSERT INTO tb_pv_alerted ([title], [starttime], [department], [sender], [receiver], [type], [content], [endtime], [state]) " +
+    var sql_stmt = "DELETE FROM tb_pv_alerted WHERE id in ( @id ); " +
+        "INSERT INTO tb_pv_alerted ([title], [starttime], [department], [sender], [receiver], [type], [content], [endtime], [state]) " +
         "VALUES (@title, @starttime, @department, @sender, @receiver, @type, @content, @endtime, @state);";
     var objParams = {
+        "id": obj["id"] == "" ? 0 : obj["id"],
         "title": obj["title"],
         "starttime": obj["starttime"],
         "department": obj["department"],
@@ -65,9 +67,10 @@ function addAlert (obj, callback) {
         "createuser": obj["createuser"],
         "createtime": obj["createtime"],
     };
-
+    console.log(sql_stmt);
     var ps = dbpool
         .preparedStatement()
+        .input("id", sql.Int)
         .input("title", sql.NVarChar)
         .input("starttime", sql.DateTime2)
         .input("department", sql.NVarChar)

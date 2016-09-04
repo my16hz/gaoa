@@ -68,7 +68,7 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
             ._closeModal(modal, this.dataTable);
     },
     showDataModal: function () {
-        var selected = this.dataTable.bootstrapTable('getSelections');
+        var selected = this.dataTable.getSelected();
         var self = this;
         var mids = [];
 

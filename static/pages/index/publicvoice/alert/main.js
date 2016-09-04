@@ -23,13 +23,13 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
             {
                 title: '预警开始时间', field: 'starttime',
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
+                    return moment(val).format('YYYY年MM月DD日');
                 }
             },
             {
                 title: '预警结束时间', field: 'endtime',
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
+                    return moment(val).format('YYYY年MM月DD日');
                 }
             },
             {
@@ -53,7 +53,7 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
                 },
                 events: {
                     'click a:first': function () {
-                        self._showAlertModal(arguments[2]);
+                        self.showDataModal(arguments[2]);
                     },
                     'click a:last': function () {
                         var uid = arguments[2].id;
@@ -86,6 +86,7 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
         this._showModal(modal, this.dataTable);
     },
     delSelected: function () {
+        var self = this;
         var dataTable = this.dataTable;
         var ids = dataTable.getSelected();
 
@@ -116,10 +117,10 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
             }
         });
     },
-
     _ajaxDelete: function (ids, done) {
         this._sendRequest({
-            type: 'delete', url: '/alert/clear',
+            type: 'delete',
+            url: '/alert/clear',
             data: {ids: ids},
             done: done
         });

@@ -16,8 +16,9 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
             {field: 'checkbox', checkbox: true},
             {title: '总期数', field: 'id'},
             {title: '当季期数', field: 'issue_id'},
+            {title: '创建用户', field: 'createuser'},
             {
-                title: '处理时间', field: 'createtime',
+                title: '创建时间', field: 'createtime',
                 formatter: function (val) {
                     return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
                 }

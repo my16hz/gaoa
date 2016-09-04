@@ -29,6 +29,7 @@ function saveAlert (req, res) {
     var uid = req.session[userkey].id;
     var obj = req.body;
     var alert = {
+        "id": obj["id"],
         "title": obj["title"],
         "starttime": obj["starttime"],
         "department": obj["department"],

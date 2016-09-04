@@ -130,12 +130,13 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         this._showModal(modal, this.dataTable);
     },
     applyApprobation: function () {
+        var self = this;
         var dataTable = this.dataTable;
         var pids = dataTable.getSelected();
 
         pids.length ?
             bootbox.confirm('确定提交审批？', function (rs) {
-                rs && this._sendRequest({
+                rs && self._sendRequest({
                     type: 'post', url: '/pubvoice/apply',
                     data: {ids: pids.join()},
                     done: function () {
@@ -167,6 +168,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         });
     },
     delSelected: function () {
+        var self = this;
         var dataTable = this.dataTable;
         var ids = dataTable.getSelected();
 
