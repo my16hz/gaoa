@@ -63,12 +63,24 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
         this.editor = this._createEditor('#editorWrapper');
     },
     events: {
+        'keydown #inputSearch': 'autoSearch',
+        'click #btnSearch': 'doSearch',
         'click #btnNotify': 'showNotifyModal',
         'click #dataModal .btn-default': 'closeDataModal',
         'click #notifyModal .btn-default': 'closeNotifyModal',
         'click #notifyModal .btn-primary': 'saveNotify'
     },
-
+    autoSearch: function (jqinput, evt) {
+        13 == evt.keyCode && this.dataTable.refresh({
+            query: {id: jqinput.val()}
+        });
+    },
+    doSearch: function (jqbtn) {
+        var daily_id = $.trim(jqbtn.prev('input').val());
+        this.dataTable.refresh({
+            query: {id: daily_id}
+        });
+    },
     showNotifyModal: function () {
         var dataTable = this.dataTable;
         var ids = dataTable.getSelected();
