@@ -46,17 +46,7 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
                 },
                 events: {
                     'click a:first': function () {
-                        var editor = self.editor;
-                        var modal = $('#dataModal');
-                        var guid = arguments[2];
-
-                        self._setFormControlValues(modal.find('form'), guid);
-
-                        editor.ready(function () {
-                            editor.setContent(guid.content || '');
-                        });
-
-                        self._showModal(modal, self.dataTable);
+                        self.showDataModal(arguments[2])
                     }
                 }
             }
@@ -66,6 +56,40 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
     events: {
         'click #dataModal .btn-default': 'closeDataModal',
         'click #dataModal .btn-primary': 'saveGuide'
+    },
+    showDataModal: function (pubvoice) {
+        var modal = $('#dataModal');
+        var jqform = modal.find('form');
+        var editor = this.editor;
+        var self = this;
+
+        this._sendRequest({
+            type: 'get',
+            url: '/guide/detail',
+            data: {id: pubvoice.id},
+            done: function (rs) {
+                if (rs.length != 0) {
+                    rs[0]['id'] = pubvoice.id;
+                    _fillFormValues(rs[0]);
+                }
+                else {
+                    rs = { id: pubvoice.id};
+                    _fillFormValues(rs);
+                }
+
+                self._showModal(modal, self.dataTable);
+            }
+        });
+
+        function _fillFormValues (rs) {
+            self._setFormControlValues(jqform, rs);
+
+            editor.ready(function () {
+                editor.setContent(rs.content || '');
+            });
+        }
+
+        return this;
     },
     closeDataModal: function () {
         var modal = $('#dataModal');
