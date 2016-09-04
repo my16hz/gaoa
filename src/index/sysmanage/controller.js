@@ -29,7 +29,9 @@ module.exports = {
 };
 
 function pageSysManage (req, res) {
-    res.render('index/sysmanage');
+    res.render('index/sysmanage', {
+        menus: req.session[config.session.menukey]
+    });
 }
 
 function getUsers (req, res) {
@@ -55,7 +57,7 @@ function saveUser (req, res) {
         groupid: req.body.groupid
     };
 
-    memberService[isNew == 'true'? 'addUser' : 'updateUser'](user, function (err) {
+    memberService[isNew == 'true' ? 'addUser' : 'updateUser'](user, function (err) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -202,9 +204,9 @@ function getConfigure (req, res) {
 function updateConfigure (req, res) {
     var body = req.body;
     var config = {
-        "id" : body['id'],
-        "name" : body['name'],
-        "value" : body['value']
+        "id": body['id'],
+        "name": body['name'],
+        "value": body['value']
     }
     configService.updateConfigure(config, function (err, rs) {
         err ?

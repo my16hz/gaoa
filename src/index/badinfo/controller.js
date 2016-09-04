@@ -3,7 +3,7 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
-var userkey = require('config').session.userkey;
+var sesskeys = require('config').session;
 var errhandler = require('../../utilities/errhandler');
 var service = require('./service');
 
@@ -23,12 +23,14 @@ module.exports = {
 };
 
 function pageBadInfo (req, res) {
-    res.render('index/badinfo');
+    res.render('index/badinfo', {
+        menus: req.session[sesskeys.menukey]
+    });
 }
 
 function listBadInfo (req, res) {
-    var uid = req.session[userkey].id;
-    var priority = req.session[userkey].priority;
+    var uid = req.session[sesskeys.userkey].id;
+    var priority = req.session[sesskeys.userkey].priority;
     service.listBadInfo(uid, priority, "createtime", "asc", function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
@@ -40,7 +42,7 @@ function listBadInfo (req, res) {
 }
 
 function saveBadInfo (req, res) {
-    var uid = req.session[userkey].id;
+    var uid = req.session[sesskeys.userkey].id;
     var obj = req.body;
     var objParams = {
         'id': obj['id'],
@@ -56,7 +58,7 @@ function saveBadInfo (req, res) {
         'createuser': uid,
         'createtime': new Date()
     };
-    service.saveBadInfo( objParams, function (err) {
+    service.saveBadInfo(objParams, function (err) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -67,7 +69,7 @@ function saveBadInfo (req, res) {
 
 function deleteBadInfo (req, res) {
     var bdids = req.body.ids;
-    service.deleteBadInfo( bdids, function (err) {
+    service.deleteBadInfo(bdids, function (err) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -88,7 +90,7 @@ function listRTX (req, res) {
 }
 
 function saveRTX (req, res) {
-    var uid = req.session[userkey].id;
+    var uid = req.session[sesskeys.userkey].id;
     var obj = req.body;
     var objParams = {
         'id': obj['id'],
@@ -102,7 +104,7 @@ function saveRTX (req, res) {
         'createuser': uid,
         'createtime': new Date()
     };
-    service.saveRTX( objParams, function (err) {
+    service.saveRTX(objParams, function (err) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -114,7 +116,7 @@ function saveRTX (req, res) {
 
 function deleteRTX (req, res) {
     var bdids = req.body.ids;
-    service.deleteRTX( bdids, function (err) {
+    service.deleteRTX(bdids, function (err) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -136,19 +138,19 @@ function listRTXReport (req, res) {
 }
 
 function saveRTXReport (req, res) {
-    var uid = req.session[userkey].id;
+    var uid = req.session[sesskeys.userkey].id;
     var obj = req.body;
     var objParams = {
         'id': obj['id'],
-        'report_time' : obj['report_time'],
-        'website' : obj['website'],
-        'url' : obj['url'],
-        'report_user' : obj['report_user'],
-        'remark' : obj['remark'],
+        'report_time': obj['report_time'],
+        'website': obj['website'],
+        'url': obj['url'],
+        'report_user': obj['report_user'],
+        'remark': obj['remark'],
         'createuser': uid,
         'createtime': new Date()
     };
-    service.saveRTXReport( objParams, function (err) {
+    service.saveRTXReport(objParams, function (err) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -160,7 +162,7 @@ function saveRTXReport (req, res) {
 
 function deleteRTXReport (req, res) {
     var bdids = req.body.ids;
-    service.deleteRTXReport( bdids, function (err) {
+    service.deleteRTXReport(bdids, function (err) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

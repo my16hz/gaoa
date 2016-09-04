@@ -33,6 +33,7 @@ function doLogin (req, res) {
             errhandler.internalException(res, err);
         } else if (user) {
             req.session[config.userkey] = user;
+            req.session[config.menukey] = _getAccessibleMenus(user);
 
             res.send({
                 success: true,
@@ -58,4 +59,21 @@ function authChecker (req, res, next) {
     }
 
     next();
+}
+
+function _getAccessibleMenus (user) {
+    var menuCodes = user.role.replace(/\s/g, '');
+    var menusAuth = {};
+
+    if (menuCodes) {
+        menusAuth['1'] = /(^1|,1)\d+/.test(menuCodes);
+        menusAuth['2'] = /(^2|,2)\d+/.test(menuCodes);
+        menusAuth['3'] = /(^3|,3)\d+/.test(menuCodes);
+
+        menuCodes.split(',').forEach(function (code) {
+            menusAuth[code] = true;
+        });
+    }
+
+    return menusAuth;
 }

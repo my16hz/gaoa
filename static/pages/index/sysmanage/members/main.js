@@ -281,7 +281,6 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
 
         !hasErr && (values.password = sha1.hex(values.password));
         !values.groupid && (delete values.groupid);
-        !values.role && (values.role = 0);
 
         return hasErr ? false : values;
     },

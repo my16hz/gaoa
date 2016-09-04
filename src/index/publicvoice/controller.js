@@ -3,10 +3,10 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
-var config = require('config');
+
 var extend = require('extend');
 
-var errhandler = require('../../utilities/errhandler');
+var menukey = require('config').session.menukey;
 var service = require('./service');
 
 var controller = module.exports = {
@@ -27,7 +27,9 @@ extend(
 );
 
 function pagePubVoice (req, res) {
-    res.render('index/publicvoice');
+    res.render('index/publicvoice', {
+        menus: req.session[menukey]
+    });
 }
 
 

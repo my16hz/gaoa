@@ -3,10 +3,14 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
+var menukey = require('config').session.menukey;
+
 module.exports = {
     pageSmartOffice: pageSmartOffice
 };
 
 function pageSmartOffice (req, res) {
-    res.render('index/smartoffice');
+    res.render('index/smartoffice', {
+        menus: req.session[menukey]
+    });
 }

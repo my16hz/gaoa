@@ -11,6 +11,7 @@ module.exports = {
     port: 8009,
     session: {
         userkey: 'LHS_USER_INFO',
+        menukey: 'LHS_USER_MENUS',
         timeout: 3600000 // 1hour,
     },
     db: {

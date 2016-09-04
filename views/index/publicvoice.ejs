@@ -12,21 +12,15 @@
         <h3>@@舆情管理平台</h3>
     </div>
     <ul class="nav nav-pills">
-        <li class="active">
-            <a href="/pubvoice">舆情及处置</a>
-        </li>
-        <li>
-            <a href="/socialvoice">社会舆情信息</a>
-        </li>
-        <li>
-            <a href="/badinfo">不良信息举报</a>
-        </li>
-        <li>
-            <a href="/smartoffice">智能办公</a>
-        </li>
-        <li>
-            <a href="/sysmanage">系统管理</a>
-        </li>
+        <% if(menus['1']) { %>
+            <li class="active"><a href="/pubvoice">舆情及处置</a></li>
+        <% } if(menus['2']) { %>
+            <li><a href="/socialvoice">社会舆情信息</a></li>
+        <% } if(menus['3']) { %>
+            <li><a href="/badinfo">不良信息举报</a></li>
+        <% } %>
+        <li><a href="/smartoffice">智能办公</a></li>
+        <li><a href="/sysmanage">系统管理</a></li>
     </ul>
     <a class="btn-logout" href="/logout">
         <i class="glyphicon glyphicon-off"></i>
@@ -36,36 +30,27 @@
 <div class="content">
     <div class="aside-menu">
         <ul id="lhs_aside_menu" class=" nav nav-pills nav-stacked">
-            <li class="selected" data-page="record">
-                <a href="javascript:">舆情录入</a>
-            </li>
-            <li data-page="examine&approve">
-                <a href="javascript:">舆情审批</a>
-            </li>
-            <li data-page="dailyreport">
-                <a href="javascript:">舆情日报</a>
-            </li>
-            <li data-page="dailycreate">
-                <a href="javascript:">舆情编报</a>
-            </li>
-            <li data-page="dispose">
-                <a href="javascript:">舆情处置</a>
-            </li>
-            <li data-page="notify">
-                <a href="javascript:">舆情通报</a>
-            </li>
-            <li data-page="feedback">
-                <a href="javascript:">舆情反馈</a>
-            </li>
-            <li data-page="guide">
-                <a href="javascript:">舆情引导</a>
-            </li>
-            <li data-page="analyze">
-                <a href="javascript:">舆情分析</a>
-            </li>
-            <li data-page="alert">
-                <a href="javascript:">舆情预警</a>
-            </li>
+            <% if(menus['11']) { %>
+                <li class="selected" data-page="record"><a href="javascript:">舆情录入</a></li>
+            <% } if(menus['18']) { %>
+                <li data-page="examine&approve"><a href="javascript:">舆情审批</a></li>
+            <% } if(menus['12']) { %>
+                <li data-page="dailyreport"><a href="javascript:">舆情日报</a></li>
+            <% } if(menus['20']) { %>
+                <li data-page="dailycreate"><a href="javascript:">舆情编报</a></li>
+            <% } if(menus['13']) { %>
+                <li data-page="dispose"><a href="javascript:">舆情处置</a></li>
+            <% } if(menus['14']) { %>
+                <li data-page="notify"><a href="javascript:">舆情通报</a></li>
+            <% } if(menus['15']) { %>
+                <li data-page="feedback"><a href="javascript:">舆情反馈</a></li>
+            <% } if(menus['16']) { %>
+                <li data-page="guide"><a href="javascript:">舆情引导</a></li>
+            <% } if(menus['17']) { %>
+                <li data-page="analyze"><a href="javascript:">舆情分析</a></li>
+            <% } if(menus['19']) { %>
+                <li data-page="alert"><a href="javascript:">舆情预警</a></li>
+            <% } %>
         </ul>
     </div>
     <div id="main_panel" class="main-panel container-fluid"></div>

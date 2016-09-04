@@ -12,21 +12,15 @@
         <h3>@@舆情管理平台</h3>
     </div>
     <ul class="nav nav-pills">
-        <li>
-            <a href="/pubvoice">舆情及处置</a>
-        </li>
-        <li class="active">
-            <a href="/socialvoice">社会舆情信息</a>
-        </li>
-        <li>
-            <a href="/badinfo">不良信息举报</a>
-        </li>
-        <li>
-            <a href="/smartoffice">智能办公</a>
-        </li>
-        <li>
-            <a href="/sysmanage">系统管理</a>
-        </li>
+        <% if(menus['1']) { %>
+            <li><a href="/pubvoice">舆情及处置</a></li>
+        <% } if(menus['2']) { %>
+            <li class="active"><a href="/socialvoice">社会舆情信息</a></li>
+        <% } if(menus['3']) { %>
+            <li><a href="/badinfo">不良信息举报</a></li>
+        <% } %>
+        <li><a href="/smartoffice">智能办公</a></li>
+        <li><a href="/sysmanage">系统管理</a></li>
     </ul>
     <a class="btn-logout" href="/logout">
         <i class="glyphicon glyphicon-off"></i>
@@ -36,12 +30,11 @@
 <div class="content">
     <div class="aside-menu">
         <ul id="lhs_aside_menu" class=" nav nav-pills nav-stacked">
-            <li class="selected" data-page="record">
-                <a href="javascript:">社情录入</a>
-            </li>
-            <li data-page="dispose">
-                <a href="javascript:">社情编报</a>
-            </li>
+            <% if(menus['21']) { %>
+                <li class="selected" data-page="record"><a href="javascript:">社情录入</a></li>
+            <% } if(menus['22']) { %>
+                <li data-page="dispose"><a href="javascript:">社情编报</a></li>
+            <% } %>
         </ul>
     </div>
     <div id="main_panel" class="main-panel container-fluid"></div>
