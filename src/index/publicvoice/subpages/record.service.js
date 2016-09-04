@@ -63,11 +63,11 @@ module.exports = {
 
 function findPubVoiceList (uid, priority, field, order, callback) {
     var params = {};
-    var sql_stmt = "select * from tb_publicvoice ";
+    var sql_stmt = "select * from tb_publicvoice where state in (0, 1, 3) ";
     var ps = null;
 
     if (priority != 1) {
-        sql_stmt += ' where createuser = @uid ';
+        sql_stmt += ' and createuser = @uid ';
         params['uid'] = uid;
     }
 

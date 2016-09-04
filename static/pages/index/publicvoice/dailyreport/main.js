@@ -14,7 +14,7 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/daily/list', [
             {field: 'checkbox', checkbox: true},
-            {title: '总期数', field: 'id'},
+            {title: '总期数', field: 'id', alwaysDisplay: true},
             {title: '当季期数', field: 'issue_id'},
             {title: '创建用户', field: 'createuser'},
             {
@@ -29,9 +29,10 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
                     return '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>';
                 },
                 events: {
-                    'click a:first': function (report) {
+                    'click a:first': function () {
                         var modal = $('#dataModal');
-                        var editor = this.editor;
+                        var editor = self.editor;
+                        var report = arguments[2];
 
                         report.id && self._setFormControlValues(modal.find('form'), report);
 
@@ -44,6 +45,7 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
                 }
             }
         ]);
+        this.editor = this._createEditor('#editorWrapper');
     },
     events: {
         'click #dataModal .btn-default': 'closeDataModal'

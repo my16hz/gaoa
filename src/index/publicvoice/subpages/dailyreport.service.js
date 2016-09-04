@@ -29,7 +29,7 @@ module.exports = {
  * @param callback {Function}  回调函数(err, 日报数组[])
  */
 function findDailyList (field, order, callback) {
-    var sql_stmt = "SELECT id,issue_id,createuser,createtime,pvids FROM tb_daily ";
+    var sql_stmt = "SELECT * FROM tb_daily ";
     if (field != null && field != "") {
         sql_stmt += " order by " + field + " " + order;
     }

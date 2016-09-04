@@ -52,13 +52,33 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                 },
                 events: {
                     'click a:first': function () {
+                        var modal = $('#disposeModal');
+                        var jqform = modal.find('form');
                         var editor = self.editor;
 
-                        editor.ready(function () {
-                            editor.setContent(arguments[2].content || '');
+                        self._sendRequest({
+                            type: 'get',
+                            url: '/dispose/detail',
+                            data: {id: arguments[2].id},
+                            done: function (rs) {
+                                _fillFormValues(rs);
+                                self._showModal(modal, self.dataTable);
+                            }
                         });
 
-                        self._showModal('#disposeModal', self.dataTable);
+                        function _fillFormValues(dispose) {
+                            var content = "";
+                            if (dispose[0].state != -1) {
+                                // 填充...
+                                content = dispose[0].content;
+                            } else {
+                                // 生成...
+                                content = dispose[0].template + arguments[2].content;
+                            }
+                            editor.ready(function () {
+                                editor.setContent(content || '');
+                            });
+                        }
                     },
                     'click a:last': function () {
                         /*inject:jqtmplsample:html*/
@@ -70,6 +90,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         this.editor = this._createEditor('#editorWrapper');
     },
     events: {
+        'keydown #inputSearch': 'autoSearch',
         'click #btnSearch': 'doSearch',
         'click #disposeModal .btn-default': 'closeDisposeModal',
         'click #disposeModal .btn-info': 'exportDispose',
@@ -77,9 +98,14 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         'click #notiModal .btn-default': 'closeNotiModal',
         'click #notiModal .btn-primary': 'saveNotification'
     },
-
+    autoSearch: function (jqinput, evt) {
+        13 == evt.keyCode && this.dataTable.refresh({
+            query: {id: jqinput.val()}
+        });
+    },
     doSearch: function (jqbtn) {
         var daily_id = $.trim(jqbtn.prev('input').val());
+
         this.dataTable.refresh({
             query: {id: daily_id}
         });
