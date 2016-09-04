@@ -35,7 +35,7 @@ module.exports = function (gulp, plugins, isdebug) {
     gulp.task('buildLoginJs', ['cleanJs'], function () {
         var mainjs = gulp
             .src([
-                DIR_SRC.coreJs + 'jquery-2.2.4.js',
+                DIR_SRC.coreJs + 'jquery-1.12.4.js',
                 DIR_SRC.coreJs + 'bootstrap-3.3.5.js',
                 DIR_SRC.coreJs + 'jshashes-1.0.5.js',
                 DIR_SRC.pages + 'page.js',
@@ -85,7 +85,7 @@ module.exports = function (gulp, plugins, isdebug) {
 
     Object.keys(SUB_PAGES).forEach(function (module, name) {
         var dependencies = [
-            DIR_SRC.coreJs + 'jquery-2.2.4.js',
+            DIR_SRC.coreJs + 'jquery-1.12.4.js',
             DIR_SRC.coreJs + 'jquery.ajaxfileupload.js',
             DIR_SRC.coreJs + 'bootstrap-3.3.5.js',
             DIR_SRC.coreJs + 'moment-2.14.1.js',
