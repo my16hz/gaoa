@@ -53,11 +53,12 @@ module.exports = function (gulp, plugins, isdebug) {
     Object.keys(SUB_PAGES).forEach(function (module) {
         SUB_PAGES[module].forEach(function (page, name, path) {
             path = DIR_SRC.indexPage + [module, page].join('/');
-            name = '_subpage_' + [module, page].join('.') + '.js'
+            name = '_subpage_' + [module, page].join('.') + '.js';
+
             TASKS_SUBPAGES.push(name);
 
             gulp.task(name, ['cleanJs'], function () {
-                var mainjs = gulp
+                return gulp
                     .src(path + '/main.js')
                     .pipe(plugins.inject(
                         gulp.src(path + '/jqtmpl.html')
@@ -74,28 +75,8 @@ module.exports = function (gulp, plugins, isdebug) {
                                 return file.contents.toString('utf8');
                             }
                         }
-                    ));
-
-                if ('publicvoice' == module && ('dispose' == page || 'dailycreate' == page)) {
-                    mainjs.pipe(plugins.inject(
-                        gulp.src(path + '/jqtmplsample.html')
-                            .pipe(plugins.jqtmpl({
-                                map: function (tmpl) {
-                                    return 'var sample =' + tmpl.template + ';';
-                                }
-                            })),
-                        {
-                            starttag: '/*inject:jqtmplsample:{{ext}}*/',
-                            endtag: '/*endinject*/',
-                            removeTags: true,
-                            transform: function (path, file) {
-                                return file.contents.toString('utf8');
-                            }
-                        }
                     ))
-                }
-
-                return mainjs.pipe(plugins.concat(name))
+                    .pipe(plugins.concat(name))
                     .pipe(gulp.dest(DIR_DEST));
             });
         });
@@ -104,13 +85,12 @@ module.exports = function (gulp, plugins, isdebug) {
     Object.keys(SUB_PAGES).forEach(function (module, name) {
         var dependencies = [
             DIR_SRC.coreJs + 'jquery-1.12.4.js',
-            DIR_SRC.coreJs + 'jquery.ajaxfileupload.js',
             DIR_SRC.coreJs + 'bootstrap-3.3.5.js',
             DIR_SRC.coreJs + 'moment-2.14.1.js',
             DIR_SRC.coreJs + 'bootstrap-table-1.11.0.js',
             DIR_SRC.coreJs + 'bootstrap-table-zh-CN-1.11.0.js',
-            DIR_SRC.coreJs + 'bootbox-4.4.0.js',
-            DIR_SRC.coreJs + 'bootstrap-datetimepicker.min.js'
+            DIR_SRC.coreJs + 'bootbox-4.4.0.js'
+
         ];
 
         if ('sysmanage' == module) {
@@ -121,6 +101,14 @@ module.exports = function (gulp, plugins, isdebug) {
                 DIR_SRC.editor + 'main.js',
                 DIR_SRC.editor + 'lang/zh-cn.js'
             );
+
+            if('publicvoice' == module) {
+                dependencies.push(
+                    DIR_SRC.coreJs + 'jquery.ajaxfileupload.js',
+                    DIR_SRC.coreJs + 'jquery.template-1.4.4.js',
+                    DIR_SRC.coreJs + 'bootstrap-datetimepicker.min.js'
+                );
+            }
         }
 
         dependencies.push(

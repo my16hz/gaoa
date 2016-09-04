@@ -66,7 +66,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                             }
                         });
 
-                        function _fillFormValues(dispose) {
+                        function _fillFormValues (dispose) {
                             var content = "";
                             if (dispose[0].state != -1) {
                                 // 填充...
@@ -81,8 +81,10 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                         }
                     },
                     'click a:last': function () {
-                        /*inject:jqtmplsample:html*/
-                        /*endinject*/
+                        $(self.el).loadTemplate("/sample/dispose.html", {
+                            name: 'dispose page',
+                            numbers: [1, 2, 3, 4, 5, 6]
+                        });
                     }
                 }
             }
