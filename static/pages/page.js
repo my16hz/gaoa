@@ -21,9 +21,11 @@ var LHSBasicPage = {
         $.each(this.events, function (name, handler) {
             var evtkey = name.split(/\s+/)[0];
 
-            $(self.el).on(evtkey, $.trim(name.replace(evtkey, '')), function (evt) {
-                self[handler].call(self, $(this), evt);
-            });
+            $($.trim(name.replace(evtkey, '')), self.el)
+                .unbind(evtkey)
+                .bind(evtkey, function (evt) {
+                    self[handler].call(self, $(this), evt);
+                });
         });
 
         $.fn.bootstrapTable && $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['zh-CN']);
@@ -217,7 +219,8 @@ var LHSBasicPage = {
             onLoadError: function (xhr) {
                 self._showXHRMessage('请求失败:' + xhr.responseText, 'danger');
             },
-            columns: columns
+            columns: columns,
+            pagination: true
         });
 
         this.__tableCaches__.push(dataTable);
