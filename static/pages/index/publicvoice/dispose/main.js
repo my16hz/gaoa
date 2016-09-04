@@ -61,7 +61,8 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                         self._showModal('#disposeModal', self.dataTable);
                     },
                     'click a:last': function () {
-                        // ...
+                        /*inject:jqtmplsample:html*/
+                        /*endinject*/
                     }
                 }
             }

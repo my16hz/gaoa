@@ -57,17 +57,15 @@ module.exports = function (gulp, plugins, isdebug) {
             TASKS_SUBPAGES.push(name);
 
             gulp.task(name, ['cleanJs'], function () {
-                return gulp
+                var mainjs = gulp
                     .src(path + '/main.js')
                     .pipe(plugins.inject(
-                        // inject the compiled templates.
                         gulp.src(path + '/jqtmpl.html')
                             .pipe(plugins.jqtmpl({
                                 map: function (tmpl) {
                                     return 'var jqtmpl =' + tmpl.template + ';';
                                 }
                             })),
-                        // inject options.
                         {
                             starttag: '/*inject:jqtmpl:{{ext}}*/',
                             endtag: '/*endinject*/',
@@ -76,8 +74,28 @@ module.exports = function (gulp, plugins, isdebug) {
                                 return file.contents.toString('utf8');
                             }
                         }
+                    ));
+
+                if ('publicvoice' == module && ('dispose' == page || 'dailycreate' == page)) {
+                    mainjs.pipe(plugins.inject(
+                        gulp.src(path + '/jqtmplsample.html')
+                            .pipe(plugins.jqtmpl({
+                                map: function (tmpl) {
+                                    return 'var sample =' + tmpl.template + ';';
+                                }
+                            })),
+                        {
+                            starttag: '/*inject:jqtmplsample:{{ext}}*/',
+                            endtag: '/*endinject*/',
+                            removeTags: true,
+                            transform: function (path, file) {
+                                return file.contents.toString('utf8');
+                            }
+                        }
                     ))
-                    .pipe(plugins.concat(name))
+                }
+
+                return mainjs.pipe(plugins.concat(name))
                     .pipe(gulp.dest(DIR_DEST));
             });
         });
