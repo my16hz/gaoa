@@ -149,7 +149,11 @@ function addPubVoices (uid, obj, callback) {
         "@approved_state,@dispose_stat,@feedback_state,@createuser)";
     var objParams = extend({}, obj, {
         createtime: new Date(),
-        createuser: uid
+        createuser: uid,
+        state: 0,
+        approved_state: 0,
+        dispose_stat: 0,
+        feedback_state: 0
     });
     var ps = null;
 
@@ -195,22 +199,22 @@ function importPubVoices (uid, gid, path, callback) {
 
     pubvoices.forEach(function (pv) {
         var obj = {};
-
-        obj["title"] = pv["标题"];
-        obj["createtime"] = new Date();
+        obj["timestamp"] = pv["时间"];
         obj["item"] = pv["所属栏目"];
+        obj["title"] = pv["标题"];
         obj["type"] = pv["舆情类别"];
         obj["relate_department"] = pv["涉及部门"];
         obj["duty_department"] = gid;
         obj["fellow_count"] = pv["回帖数量"];
         obj["review_count"] = pv["关注人数"];
         obj["content"] = xss(pv["帖文内容"]);
-        obj["from_website"] = pv["载体"];
-        obj["url"] = pv["网址"];
+        obj["from_website"] = pv["载体1"] ? pv["载体1"] : " " + pv["载体2"] ? pv["载体2"] : " " + pv["载体3"] ? pv["载体3"] : " " + pv["载体4"] ? pv["载体4"] : " ";
+        obj["url"] = pv["网址1"] ? pv["网址1"] : " " + pv["网址2"] ? pv["网址2"] : " " + pv["网址3"] ? pv["网址3"] : " " + pv["网址4"] ? pv["网址5"] : " ";
         obj["state"] = 0;
         obj["approved_state"] = 0;
         obj["dispose_stat"] = 0;
         obj["feedback_state"] = 0;
+        obj["createtime"] = new Date();
         obj["createuser"] = uid;
 
         pvList.push(obj);

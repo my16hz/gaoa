@@ -158,9 +158,13 @@ function getDailyPVList (did, callback) {
             if (err) {
                 return callback(err, null);
             }
-            ps.execute(objParams, function (err, recordset) {
+            ps.execute(objParams, function (err, recordset, affected) {
                 console.log(recordset);
-                pubvoiceRecord.findPubVoiceDetail(recordset[0]['pvids'], callback);
+                if (affected == 0) {
+                    callback(err, [])
+                } else {
+                    pubvoiceRecord.findPubVoiceDetail(recordset[0]['pvids'], callback);
+                }
                 ps.unprepare(function (err) {
                     if (err)
                         console.log(err);
