@@ -77,8 +77,11 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         'click #notiModal .btn-primary': 'saveNotification'
     },
 
-    doSearch: function () {
-        this.dataTable.filterBy({});
+    doSearch: function (jqbtn) {
+        var daily_id = $.trim(jqbtn.prev('input').val());
+        this.dataTable.refresh({
+            query: {id: daily_id}
+        });
     },
     closeDisposeModal: function () {
         this._closeModal('#disposeModal', this.dataTable);
