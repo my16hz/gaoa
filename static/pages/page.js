@@ -250,8 +250,10 @@ var LHSBasicPage = {
 
                 return this;
             },
-            refresh: function () {
-                dataTable.bootstrapTable('refresh');
+            refresh: function (opts) {
+                dataTable.bootstrapTable('refresh', $.extend({
+                    silent: true
+                }, opts));
 
                 return this;
             },
@@ -266,9 +268,6 @@ var LHSBasicPage = {
                 });
 
                 return values;
-            },
-            filterBy: function (data) {
-                dataTable.bootstrapTable('filterBy', data);
             },
             showDataWrapper: function () {
                 $(panel)
