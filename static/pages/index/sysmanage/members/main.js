@@ -9,7 +9,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
         /*inject:jqtmpl:html*/
         /*endinject*/
 
-        $(this.el).append(jqtmpl($, {data: {}}).join(''));
+        $(this.el).empty().append(jqtmpl($, {data: {}}).join(''));
 
         this.initDependencies();
 
@@ -80,7 +80,8 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                 events: {
                     'click a:eq(0)': function () {
                         var gpid = arguments[2].id;
-                        var dataTable = self._createTable('#groupMembersTableWrapper', '/sysmanage/groups/' + gpid + '/members', [
+
+                        self.groupMembersTable = self._createTable('#groupMembersTableWrapper', '/sysmanage/groups/' + gpid + '/members', [
                             {title: '用户ID', field: 'id'},
                             {title: '用户名', field: 'name'},
                             {title: '描述', field: 'description'},
@@ -110,7 +111,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                                                     jqico.removeClass('glyphicon-plus').addClass('glyphicon-minus') :
                                                     jqico.removeClass('glyphicon-minus').addClass('glyphicon-plus');
 
-                                                dataTable.refresh();
+                                                self.groupMembersTable.refresh();
                                             }
                                         });
                                     }

@@ -6,10 +6,11 @@
 var LHSBasicPage = {
     el: '#main_panel',
     run: $.noop,
-    reset: $.noop,
     events: {},
+    __tableCaches__: [],
+    __editorCaches__: [],
     initDependencies: function () {
-        var self = this;
+        var self = this.reset();
 
         this.$el = $(this.el);
 
@@ -28,6 +29,20 @@ var LHSBasicPage = {
         $.fn.bootstrapTable && $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['zh-CN']);
 
         window.bootbox && bootbox.setDefaults({size: 'small', locale: 'zh_CN'});
+
+        return this;
+    },
+    reset: function () {
+        $.each(this.__tableCaches__, function () {
+            this.bootstrapTable('destroy');
+        });
+
+        $.each(this.__editorCaches__, function () {
+            this.id && this.destroy();
+        });
+
+        this.__tableCaches__.length = 0;
+        this.__editorCaches__.length = 0;
 
         return this;
     },
@@ -162,8 +177,9 @@ var LHSBasicPage = {
 
     _createEditor: function (panel) {
         var ueid = 'lhsUeditor' + $('.edui-container').length;
+        var editor = null;
 
-        $(panel).empty().append(
+        $(panel).append(
             $('<script type="text/plain"></script>')
                 .attr('id', ueid)
                 .css({
@@ -174,11 +190,15 @@ var LHSBasicPage = {
             return $(this).parent().width;
         });
 
-        return UM.getEditor(ueid);
+        editor = UM.getEditor(ueid);
+
+        this.__editorCaches__.push(editor);
+
+        return editor;
     },
     _createTable: function (panel, url, columns) {
         var self = this;
-        var dataTable = $(panel).empty().append(
+        var dataTable = $(panel).append(
             $('<table></table>').addClass('table table-striped table-hover table-condensed')
         ).children('table');
 
@@ -199,6 +219,8 @@ var LHSBasicPage = {
             },
             columns: columns
         });
+
+        this.__tableCaches__.push(dataTable);
 
         return {
             origin: dataTable,
@@ -261,6 +283,9 @@ var LHSBasicPage = {
                 $(panel).parent().addClass('hide');
 
                 return this;
+            },
+            destroy: function () {
+                dataTable.bootstrapTable('destroy');
             }
         };
     },

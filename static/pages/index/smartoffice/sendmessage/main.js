@@ -9,7 +9,7 @@ var LHSSendMessagePage = $.extend({}, LHSBasicPage, {
         /*inject:jqtmpl:html*/
         /*endinject*/
 
-        $(this.el).append(jqtmpl($, {data: {}}).join(''));
+        $(this.el).empty().append(jqtmpl($, {data: {}}).join(''));
 
         this.initDependencies();
         this.dataTable = this._createTable('#tableWrapper', 'URL', [

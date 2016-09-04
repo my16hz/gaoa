@@ -8,7 +8,7 @@ var LHSPasswordPage = $.extend({}, LHSBasicPage, {
         /*inject:jqtmpl:html*/
         /*endinject*/
 
-        $(this.el).append(jqtmpl($, {data: {}}).join(''));
+        $(this.el).empty().append(jqtmpl($, {data: {}}).join(''));
         
         this.initDependencies();
     },

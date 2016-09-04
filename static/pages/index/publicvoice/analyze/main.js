@@ -9,10 +9,10 @@ var LHSAnalyzePage = $.extend({}, LHSBasicPage, {
         /*endinject*/
 
         // this.ajax({}, $.proxy(function () {
-        //     $(this.el).append(jqtmpl($, {data: {}}).join(''));
+        //     $(this.el).empty().append(jqtmpl($, {data: {}}).join(''));
         //     this.initDependencies();
         // }, this));
 
-        $(this.el).append(jqtmpl($, {data: {}}).join(''));
+        $(this.el).empty().append(jqtmpl($, {data: {}}).join(''));
     }
 });
