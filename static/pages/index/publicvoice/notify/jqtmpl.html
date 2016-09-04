@@ -9,28 +9,28 @@
                 </a>
             </div>
         </div>
-        <div class="col-xs-6">
+        <div class="col-xs-8">
             <button id="btnNotify" class="btn btn-sm btn-default pull-right">通报</button>
         </div>
     </div>
     <div class="row data-wrapper">
         <div id="tableWrapper" class="col-md-12"></div>
-        <div id="dataModal" class="modal-content hide">
-            <div class="modal-header">
-                <h4 class="modal-title">舆情详情</h4>
-            </div>
-            <div class="modal-body">
-                <form class="form-horizontal">
-                    <div class="form-group form-group-sm">
-                        <div id="editorWrapper" class="col-xs-10"></div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default">关闭</button>
-            </div>
-        </div>
         <div class="col-xs-10 no-padding-left hide">
+            <div id="dataModal" class="modal-content hide">
+                <div class="modal-header">
+                    <h4 class="modal-title">舆情详情</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group form-group-sm">
+                            <div id="editorWrapper" class="col-xs-10"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default">关闭</button>
+                </div>
+            </div>
             <div id="notifyModal" class="modal-content hide">
                 <div class="modal-header">
                     <h4 class="modal-title">舆情通报</h4>
@@ -38,23 +38,10 @@
                 <div class="modal-body">
                     <form class="form-horizontal">
                         <div class="form-group form-group-sm">
+                            <input type="hidden" name="pvids" class="form-control">
                             <label class="col-xs-2 control-label">通报对象：</label>
                             <div class="col-xs-4">
-                                <select name="type" class="form-control selectpicker">
-                                    <option value="作风效能">作风效能</option>
-                                    <optgroup label="行业管理">
-                                        <option value="劳动人事">劳动人事</option>
-                                        <option value="公共安全">公共安全</option>
-                                        <option value="医卫食安">医卫食安</option>
-                                        <option value="教育">教育</option>
-                                        <option value="环保">环保</option>
-                                        <option value="交通">交通</option>
-                                        <option value="城建">城建</option>
-                                        <option value="房产">房产</option>
-                                        <option value="征地">征地</option>
-                                        <option value="其他">其他</option>
-                                    </optgroup>
-                                    <option value="其他类">其他类</option>
+                                <select name="uids" multiple="multiple" class="form-control selectpicker">
                                 </select>
                             </div>
                         </div>

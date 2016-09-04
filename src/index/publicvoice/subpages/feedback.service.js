@@ -10,9 +10,13 @@ module.exports = {
     /*---------- 舆情反馈页面 ----------*/
     addPVFeedback: addPVFeedback,
     updatePVFeedback: updatePVFeedback,
-    getPVFeedback: getPVFeedback
+    getPVFeedback: getPVFeedback,
+    getFeedbackList: getFeedbackList
 };
 
+function getFeedbackList (uid, callback) {
+    var sql_stmt = "SELECT * FROM tb_pv_"
+}
 
 /**
  * 添加舆情反馈

@@ -24,6 +24,7 @@ module.exports = function () {
         // daily report page
         .get('/daily/list', controller.getDailyReports)
         .get('/daily/detail', controller.getDailyDetail)
+        .get('/daily/pvlist', controller.getDailyPVList)
         // .get('/pubvoice/unapplied', controller.getUnappliedPubVoices)
         // .post('dailyreport/generate', controller.generateDailyReport)
 
@@ -34,15 +35,16 @@ module.exports = function () {
         .post('/daily/save', controller.saveDailyReport)
 
         // dispose page
-        .get('/dispose/list', controller.getDisposeList)
+        .get('/dispose/list', controller.getDailyPVList)
         .get('/dispose/detail', controller.getDisposeDetail)
         .post('/dispose/save', controller.savePVDispose)
 
         // noitfy page
-        .get('/notify/list', controller.getWaitNotifyPVList)
+        .get('/notify/list', controller.getNotifyPVByUid)
         .post('/notify/save', controller.saveNotify)
 
         // feedback page
+        .get('/feedback/list', controller.getFeedbackList)
         .get('/feedback/detail', controller.getFeedbackDetail)
         .post('/feedback/save', controller.saveFeedback)
 

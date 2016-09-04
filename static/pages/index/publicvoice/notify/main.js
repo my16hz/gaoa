@@ -13,9 +13,9 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
 
-        this.dataTable = this._createTable('#tableWrapper', '/notify/list', [
+        this.dataTable = this._createTable('#tableWrapper', '/daily/pvlist', [
             {field: 'checkbox', checkbox: true},
-            {title: '标题', field: 'title'},
+            {title: '标题', field: 'title', alwaysDisplay: true},
             {title: '载体', field: 'from_website'},
             {title: '所属栏目', field: 'item'},
             {title: '舆情类别', field: 'type'},
@@ -49,10 +49,10 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
                 events: {
                     'click a:first': function () {
                         var editor = self.editor;
-
+                        var content = arguments[2];
                         editor.ready(function () {
-                            editor.setContent(arguments[2].content || '')
-                                .setDisabled();
+                            editor.setContent(content.content || '');
+                            editor.setDisabled();
                         });
 
                         self._showModal('#dataModal', self.dataTable);
@@ -86,12 +86,51 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
         var ids = dataTable.getSelected();
 
         ids.length ?
-            bootbox.confirm('确定通报？', function (rs) {
-                rs && self._ajaxDelete(ids.join(), function () {
-                    dataTable.refresh();
-                });
-            }) :
+            this._showNotifyModal(ids.join()) :
             bootbox.alert('请先选择要通报的记录！');
+
+        return this;
+    },
+    _showNotifyModal: function (pvids) {
+        var self = this;
+        var modal = $('#notifyModal');
+        var jqform = modal.find('form');
+        this._setFormControlValues(jqform, {pvids:pvids});
+        this._sendRequest({
+            type: 'get',
+            url: '/sysmanage/members',
+            done: function (rs) {
+                _appendOptions(rs);
+
+                self._showModal(modal, self.dataTable);
+                self._closeModal($('#dataModal'));
+            }
+        });
+
+        function _appendOptions (values) {
+            var jqSelect = $('select[name="uids"]', jqform);
+            jqSelect.find('option:gt(0)').remove();
+
+            var groups = {};
+            $.each(values, function (n, gp) {
+                if (!gp.groupname) {
+                    gp.groupname = '未分组';
+                }
+                if (groups[gp.groupname]) {
+                    groups[gp.groupname].push({id: gp.id, name : gp.name});
+                } else {
+                    groups[gp.groupname] = [{id: gp.id, name : gp.name}];
+                }
+            });
+
+            for(var p in groups) {
+                var opt = "";
+                $.each (groups[p], function (n, user) {
+                    opt += '<option value=\"' + user.id + '\">' + user.name + '</option>'
+                });
+                jqSelect.append('<optgroup label=\"'+ p + '\">'+ opt +'</optgroup>');
+            }
+        }
 
         return this;
     },
@@ -108,18 +147,23 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
             ._closeModal(modal, this.dataTable);
     },
 
-    saveNotify: function (ids, done) {
+    saveNotify: function () {
+        var self = this;
         this._sendRequest({
             type: 'post', url: '/notify/save',
-            data: {ids: ids},
-            done: done
+            validator: $.proxy(this._validator, this),
+            done: function () {
+                var modal = $('#notfiyModal');
+                self._closeModal(modal, self.dataTable);
+                self.dataTable.refresh();
+            }
         });
 
         return this;
     },
 
     _validator: function () {
-        var jqform = $('#disposeDetailModal form');
+        var jqform = $('#notifyModal form');
         var values = this._getFormControlValues(jqform);
 
         return values;

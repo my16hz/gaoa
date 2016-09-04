@@ -12,7 +12,8 @@ module.exports = {
     addPVNotify: addPVNotify,
     /* 查询通报的舆情 */
     getNotifyPVList: getNotifyPVList,
-    getWaitNotifyPVList: getWaitNotifyPVList
+    getWaitNotifyPVList: getWaitNotifyPVList,
+    getNotifyPVByUid: getNotifyPVByUid
 };
 
 
@@ -27,12 +28,12 @@ function addPVNotify (uid, userids, pvids, callback) {
     var table = dbpool.table('tb_pv_notify');
     table.columns.add("uid", sql.VarChar, {nullable: false});
     table.columns.add("pvid", sql.Int, {nullable: false});
-    table.columns.add("createtime", sql.DateTime2, {nullable: true});
+    table.columns.add("createtime", sql.DateTime, {nullable: true});
     table.columns.add("createuser", sql.VarChar, {nullable: true});
-
+    
     userids.forEach(function (user) {
         pvids.forEach(function (pv) {
-            table.rows.add(user, pv, uid, new Date());
+            table.rows.add(user, pv, new Date(), uid);
         })
     });
     var request = dbpool.createRequest();
@@ -74,6 +75,27 @@ function getWaitNotifyPVList (callback) {
     var sql_stmt = "SELECT * FROM tb_publicvoice where state > 3;";
     var objParams = {};
     var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+function getNotifyPVByUid (uid, callback) {
+    var sql_stmt = "SELECT tb_publicvoice.* " +
+        "FROM tb_pv_notify left join tb_publicvoice on tb_pv_notify.pvid = tb_publicvoice.id " +
+        "WHERE tb_pv_notify.uid = @uid;";
+    var objParams = {"uid": uid};
+    var ps = dbpool.preparedStatement()
+        .input("uid", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);

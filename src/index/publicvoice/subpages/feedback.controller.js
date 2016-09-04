@@ -9,9 +9,14 @@ var errhandler = require('../../../utilities/errhandler');
 var service = require('./../service');
 module.exports = {
     getFeedbackDetail: getFeedbackDetail,
-    saveFeedback: saveFeedback
+    saveFeedback: saveFeedback,
+    getFeedbackList: getFeedbackList
 };
 
+function getFeedbackList (req, res) {
+    var uid = req.session[userkey].id;
+    
+}
 
 function getFeedbackDetail (req, res) {
     var pvid = req.query.id;

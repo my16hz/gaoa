@@ -13,7 +13,7 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
 
-        this.dataTable = this._createTable('#tableWrapper', '/dispose/list', [
+        this.dataTable = this._createTable('#tableWrapper', '/notify/list', [
             {field: 'checkbox', checkbox: true},
             {title: '标题', field: 'title'},
             {title: '载体', field: 'from_website'},

@@ -9,7 +9,8 @@ var errhandler = require('../../../utilities/errhandler');
 var service = require('./../service');
 module.exports = {
     getWaitNotifyPVList: getWaitNotifyPVList,
-    saveNotify: saveNotify
+    saveNotify: saveNotify,
+    getNotifyPVByUid: getNotifyPVByUid
 };
 
 function getWaitNotifyPVList (req, res) {
@@ -24,7 +25,25 @@ function getWaitNotifyPVList (req, res) {
 }
 
 function saveNotify (req, res) {
-    service.getWaitNotifyPVList(function (err, rs) {
+    var uid = req.session[userkey].id;
+    var userids = req.body.uids;
+    var pvids = req.body.pvids.split(',');
+
+    if (!Array.isArray(userids)) {
+        userids = [userids];
+    }
+    service.addPVNotify(uid, userids, pvids, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+            });
+    });
+}
+
+function getNotifyPVByUid (req, res) {
+    var uid = req.session[userkey].id;
+    service.getNotifyPVByUid(uid, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

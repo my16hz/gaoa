@@ -12,7 +12,7 @@ var service = require('./../service');
 module.exports = {
     getDailyReports: getDailyReports,
     getDailyDetail: getDailyDetail,
-    getDisposeList: getDisposeList,
+    getDailyPVList: getDailyPVList,
     getUnappliedPubVoices: getUnappliedPubVoices,
     generateDailyReport: generateDailyReport,
     getDailyTemplate: getDailyTemplate,
@@ -46,7 +46,7 @@ function getDailyDetail (req, res) {
     });
 }
 
-function getDisposeList (req, res) {
+function getDailyPVList (req, res) {
     var did = req.query.id;
     service.getDailyPVList(did, function (err, rs) {
         err ?

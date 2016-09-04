@@ -13,7 +13,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
 
-        this.dataTable = this._createTable('#tableWrapper', '/dispose/list', [
+        this.dataTable = this._createTable('#tableWrapper', '/notify/list', [
             {field: 'checkbox', checkbox: true},
             {title: '标题', field: 'title'},
             {title: '载体', field: 'from_website'},
@@ -29,7 +29,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
                 }
             },
             {
-                title: '状态', field: 'state',
+                title: '状态', field: 'feedback_state',
                 formatter: function (val) {
                     switch (val) {
                         case 0:
@@ -66,11 +66,16 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
         this.editor = this._createEditor('#editorWrapper');
     },
     events: {
+        'keydown #inputSearch': 'autoSearch',
         'change #feedbackModal select[name="type"]': 'changeFeedbackType',
         'click #feedbackModal .btn-default': 'closeModal',
         'click #feedbackModal .btn-primary': 'saveFeedback'
     },
-
+    autoSearch: function (jqinput, evt) {
+        13 == evt.keyCode && this.dataTable.refresh({
+            query: {id: jqinput.val()}
+        });
+    },
     changeFeedbackType: function () {
 
     },

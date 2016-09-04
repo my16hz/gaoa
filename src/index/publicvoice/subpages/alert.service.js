@@ -19,7 +19,7 @@ module.exports = {
  * @param callback
  */
 function getAlertList (bShowAll, callback) {
-    var sql_stmt = "SELECT * FROM tb_pv_alerted WHERE endtime > @endtime ORDER BY state";
+    var sql_stmt = "SELECT * FROM tb_pv_alerted WHERE endtime > @endtime ORDER BY state, endtime desc";
     var endtime = new Date();
     if (bShowAll == true) {
         endtime = new Date(0);
