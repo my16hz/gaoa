@@ -95,11 +95,11 @@ function findUsers (done) {
 }
 
 function addUser (user, done) {
-    var sql_stmt = 'INSERT INTO tb_user (' +
-        '[id],[name],[password],[description],[role],[priority],[createtime],[groupid]' +
-        ') VALUES (' +
-        '@id, @name, @password, @description, @role, @priority, @createtime, @groupid' +
-        ');';
+    var sql_stmt =
+        'IF NOT EXISTS (SELECT * FROM tb_user WHERE id = @id) ' +
+        '    INSERT INTO tb_user ([id],[name],[password],[description],[role],[priority],[createtime],[groupid]) VALUES (@id, @name, @password, @description, @role, @priority, @createtime, @groupid);' +
+        'ELSE ' +
+        '    UPDATE tb_user SET [name] = @name, [description] = @description, [role] = @role, [priority] = @priority, [groupid] = @groupid WHERE [id] = @id;';
     var objParams = {
         id: user.id,
         name: user.name,

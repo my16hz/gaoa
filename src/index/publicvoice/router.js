@@ -35,9 +35,13 @@ module.exports = function () {
         .post('/daily/save', controller.saveDailyReport)
 
         // dispose page
-        .get('/dispose/list', controller.getDailyPVList)
+        .get('/dispose/pvlist', controller.getDailyPVList)
+        .get('/dispose/list', controller.getDisposeList)
         .get('/dispose/detail', controller.getDisposeDetail)
         .post('/dispose/save', controller.savePVDispose)
+        /* 舆情批示 */
+        .get('/dispose/comment', controller.getPVComment)
+        .post('/dispose/comment/save', controller.savePVComment)
 
         // noitfy page
         .get('/notify/list', controller.getNotifyPVByUid)

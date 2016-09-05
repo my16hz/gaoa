@@ -15,6 +15,7 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/daily/pvlist', [
             {field: 'checkbox', checkbox: true},
+            {title: '期数', field: 'daily_id'},
             {title: '标题', field: 'title', alwaysDisplay: true},
             {title: '载体', field: 'from_website'},
             {title: '所属栏目', field: 'item'},
@@ -23,7 +24,7 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
             {title: '关注人数', field: 'review_count'},
             {title: '涉及部门', field: 'relate_department'},
             {
-                title: '处理时间', field: 'createtime',
+                title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
                     return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
                 }
@@ -32,12 +33,15 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
                 title: '状态', field: 'state',
                 formatter: function (val) {
                     switch (val) {
-                        case 0:
-                            return '未提交';
-                        case 1:
-                            return '待审批';
-                        case 2:
-                            return '审批通过';
+                        case 0: return '未提交';
+                        case 1: return '待审核';
+                        case 2: return '审核通过';
+                        case 3: return '审核不通过';
+                        case 4: return '已入报';
+                        case 5: return '待批示';
+                        case 6: return '已批示';
+                        case 7: return '待回复';
+                        case 8: return '已回复';
                     }
                 }
             },

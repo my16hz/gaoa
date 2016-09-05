@@ -10,7 +10,14 @@ var service = require('./../service');
 module.exports = {
     savePVDispose: savePVDispose,
     getDisposeDetail: getDisposeDetail,
-    getDisposeTemplate: getDisposeTemplate
+    getDisposeTemplate: getDisposeTemplate,
+
+    /** 处置审批 **/
+    getDisposeList: getDisposeList,
+
+    /** 获取舆情批示 **/
+    getPVComment: getPVComment,
+    savePVComment: savePVComment
 };
 
 
@@ -47,5 +54,25 @@ function getDisposeDetail (req, res) {
 }
 
 function getDisposeTemplate(req, res) {
+    
+}
+
+function getDisposeList (req, res) {
+
+}
+
+function getPVComment (req, res) {
+    var pvid = req.query.id;
+    service.getPVDispose(pvid, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function savePVComment (req, res) {
     
 }

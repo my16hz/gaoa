@@ -13,7 +13,8 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
 
-        this.dataTable = this._createTable('#tableWrapper', '/dispose/list', [
+        this.dataTable = this._createTable('#tableWrapper', '/dispose/pvlist', [
+            {field: 'checkbox', checkbox: true},
             {title: '日报期数', field: 'daily_id'},
             {title: '标题', field: 'title', alwaysDisplay: true},
             {title: '载体', field: 'from_website'},
@@ -25,7 +26,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                 title: '涉及部门', field: 'relate_department'
             },
             {
-                title: '处理时间', field: 'createtime',
+                title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
                     return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
                 }
@@ -43,39 +44,13 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                 title: '操作', field: 'action',
                 formatter: function () {
                     return [
-                        '<a href="javascript:" title="处置"><i class="glyphicon glyphicon-comment"></i></a>',
-                        '<a href="javascript:" title="通报"><i class="glyphicon glyphicon-bullhorn"></i></a>'
+                        '<a href="javascript:" title="添加批示"><i class="glyphicon glyphicon-comment"></i></a>',
+                        '<a href="javascript:" title="转发"><i class="glyphicon glyphicon-bullhorn"></i></a>'
                     ].join('&nbsp;&nbsp;');
                 },
                 events: {
                     'click a:first': function () {
-                        var modal = $('#disposeModal');
-                        var jqform = modal.find('form');
-                        var editor = self.editor;
-
-                        self._sendRequest({
-                            type: 'get',
-                            url: '/dispose/detail',
-                            data: {id: arguments[2].id},
-                            done: function (rs) {
-                                _fillFormValues(rs);
-                                self._showModal(modal, self.dataTable);
-                            }
-                        });
-
-                        function _fillFormValues (dispose) {
-                            var content = "";
-                            if (dispose[0].state != -1) {
-                                // 填充...
-                                content = dispose[0].content;
-                            } else {
-                                // 生成...
-                                content = dispose[0].template + arguments[2].content;
-                            }
-                            editor.ready(function () {
-                                editor.setContent(content || '');
-                            });
-                        }
+                        self.showDataModal(arguments[2]);
                     },
                     'click a:last': function () {
                         $(self.el).loadTemplate("/sample/dispose.html", {
@@ -91,11 +66,11 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
     events: {
         'keydown #inputSearch': 'autoSearch',
         'click #btnSearch': 'doSearch',
+        'click #commentModal .btn-default': 'closeCommentModal',
+        'click #commentModal .btn-primary': 'saveComment',
         'click #disposeModal .btn-default': 'closeDisposeModal',
-        'click #disposeModal .btn-info': 'exportDispose',
         'click #disposeModal .btn-primary': 'saveDispose',
-        'click #notiModal .btn-default': 'closeNotiModal',
-        'click #notiModal .btn-primary': 'saveNotification'
+        'click #disposeModal .btn-info': 'exportDispose',
     },
     autoSearch: function (jqinput, evt) {
         13 == evt.keyCode && this.dataTable.refresh({
@@ -107,6 +82,53 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
 
         this.dataTable.refresh({
             query: {id: daily_id}
+        });
+    },
+    showDataModal: function (pubvoice) {
+        var modal = $('#disposeModal');
+        var jqform = modal.find('form');
+        var editor = this.editor;
+        var self = this;
+
+        self._sendRequest({
+            type: 'get',
+            url: '/dispose/comment',
+            data: {id: pubvoice.id},
+            done: function (rs) {
+                if (rs.length != 0) {
+                    rs[0]['id'] = pubvoice.id;
+                    _fillFormValues(rs[0]);
+                }
+                else {
+                    rs = { id: pubvoice.id};
+                    _fillFormValues(rs);
+                }
+                self._showModal(modal, self.dataTable);
+            }
+        });
+
+        function _fillFormValues (rs) {
+            self._setFormControlValues(jqform, rs);
+
+            editor.ready(function () {
+                editor.setContent(rs.content || '');
+            });
+        }
+    },
+    closeCommentModal: function () {
+        this._closeModal('#disposeModal', this.dataTable);
+    },
+    saveComment: function () {
+        var self = this;
+
+        this._sendRequest({
+            type: 'post',
+            url: '/dispose/comment/save',
+            validator: $.proxy(this._disposeValidator, this),
+            done: function () {
+                self.closeDisposeModal();
+                self.dataTable.refresh();
+            }
         });
     },
     closeDisposeModal: function () {

@@ -9,6 +9,9 @@
                 </a>
             </div>
         </div>
+        <div class="col-xs-8">
+            <button id="btnCommit" class="btn btn-sm btn-default pull-right">提交审批</button>
+        </div>
     </div>
     <div class="row data-wrapper">
         <div id="tableWrapper" class="col-md-12"></div>
@@ -20,23 +23,24 @@
                 <div class="modal-body">
                     <form class="form-horizontal">
                         <input type="hidden" name="id" class="form-control">
-                        <input type="hidden" name="doc_year" class="form-control">
-                        <input type="hidden" name="doc_no" class="form-control">
                         <div class="form-group form-group-sm">
-                            <label class="control-label">注意：如果期数不一致，请先通知管理员修改后再生成处置通知书！</label>
+                            <label class="col-xs-2 control-label">批示内容：</label>
+                            <div class="col-xs-10">
+                                <input type="text" name="content" class="form-control">
+                            </div>
                         </div>
                         <div class="form-group form-group-sm">
-                            <div id="editorWrapper" class="col-xs-12"></div>
+                            <label class="col-xs-2 control-label">批示附件：</label>
+                            <div id="editorWrapper" class="col-xs-10"></div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default">关闭</button>
-                    <button type="button" class="btn btn-info">导出</button>
                     <button type="button" class="btn btn-primary">保存</button>
                 </div>
             </div>
-            <div id="notiModal" class="modal-content">
+            <div id="dataModal" class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">舆情通报</h4>
                 </div>

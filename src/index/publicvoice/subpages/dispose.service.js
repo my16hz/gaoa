@@ -10,7 +10,10 @@ var dbpool = require('../../../utilities/dbpool');
 module.exports = {
     /*---------- 舆情处置页面 ----------*/
     addPVDispose: addPVDispose,
-    getPVDispose: getPVDispose
+    getPVDispose: getPVDispose,
+
+    getPVListByDisposeState: getPVListByDisposeState,
+    getPVComment: getPVComment
 };
 
 
@@ -52,9 +55,11 @@ function getPVDispose (pvid, callback) {
  * @param callback
  */
 function addPVDispose (uid, obj, callback) {
-    var sql_stmt = "DELETE FROM tb_pv_dispose WHERE [id] = @id;" +
-        "INSERT INTO tb_pv_dispose ([id],[content],[createuser],[createtime],[state]) " +
-        "VALUES (@id, @content, @createuer, @createtime, @state);"
+    var sql_stmt =
+        'IF NOT EXISTS (SELECT * FROM tb_pv_dispose WHERE id = @id) ' +
+        '   INSERT INTO tb_pv_dispose ([id],[content],[createuser],[createtime],[state]) VALUES (@id, @content, @createuer, @createtime, @state); ' +
+        'ELSE ' +
+        '   UPDATE tb_pv_dispose SET [content] = @content, [state] = @state WHERE [id] = @id;';
     var objParams = {
         "id": obj["id"],
         "state": obj["state"],
@@ -80,6 +85,47 @@ function addPVDispose (uid, obj, callback) {
 
                 ps.unprepare(function (err) {
                     err && console.error(err);
+                });
+            });
+        });
+}
+
+function getPVListByDisposeState (state, callback) {
+    var sql_stmt = "SELECT tb_publicvoice.*, tb_pv_dispose.state FROM tb_pv_dispose,tb_publicvoice WHERE  tb_publicvoice.id = tb_pv_dispose.id AND tb_pv_dispose.state in (" + state + ");";
+    var objParams = {};
+
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+function getPVComment (pvid, callback) {
+    var sql_stmt = "SELECT * FROM tb_pv_comment WHERE id = @id;";
+    var objParams = {
+        "id": pvid
+    };
+
+    var ps = dbpool.preparedStatement()
+        .input("id", sql.Int)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
                 });
             });
         });

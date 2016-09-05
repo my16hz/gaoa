@@ -175,6 +175,7 @@ function getDailyPVList (did, callback) {
                 return callback(err, null);
             }
             ps.execute(objParams, function (err, rs) {
+                rs['daily_id'] = did;
                 callback(err, rs);
                 ps.unprepare(function (err) {
                     if (err)
