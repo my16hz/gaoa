@@ -51,17 +51,18 @@ module.exports = function (gulp, plugins, isdebug) {
     });
 
     Object.keys(SUB_PAGES).forEach(function (module) {
-        SUB_PAGES[module].forEach(function (page, name, path) {
-            path = DIR_SRC.indexPage + [module, page].join('/');
-            name = '_subpage_' + [module, page].join('.') + '.js';
+        SUB_PAGES[module].forEach(function (page) {
+            var srcPath = DIR_SRC.indexPage + [module, page].join('/');
+            var taskName = '_subpage_' + module + '.' + page;
+            var destFile = taskName + '.js';
 
-            TASKS_SUBPAGES.push(name);
+            TASKS_SUBPAGES.push(destFile);
 
-            gulp.task(name, ['cleanJs'], function () {
+            gulp.task(destFile, ['cleanJs'], function () {
                 return gulp
-                    .src(path + '/main.js')
+                    .src(srcPath + '/main.js')
                     .pipe(plugins.inject(
-                        gulp.src(path + '/jqtmpl.html')
+                        gulp.src(srcPath + '/jqtmpl.html')
                             .pipe(plugins.jqtmpl({
                                 map: function (tmpl) {
                                     return 'var jqtmpl =' + tmpl.template + ';';
@@ -76,9 +77,38 @@ module.exports = function (gulp, plugins, isdebug) {
                             }
                         }
                     ))
-                    .pipe(plugins.concat(name))
+                    .pipe(plugins.concat(destFile))
                     .pipe(gulp.dest(DIR_DEST));
             });
+
+            if ('publicvoice' == module && ('dispose' == page || 'dailycreate' == page)) {
+                taskName += '.html';
+
+                TASKS_SUBPAGES.push(taskName);
+
+                gulp.task(taskName, [destFile], function () {
+                    return gulp
+                        .src(DIR_DEST + destFile)
+                        .pipe(plugins.inject(
+                            gulp.src(srcPath + '/jqtmplsample.html')
+                                .pipe(plugins.jqtmpl({
+                                    map: function (tmpl) {
+                                        return 'var jqtmpl =' + tmpl.template + ';';
+                                    }
+                                })),
+                            {
+                                starttag: '/*inject:jqtmplsample:{{ext}}*/',
+                                endtag: '/*endinject*/',
+                                removeTags: true,
+                                transform: function (path, file) {
+                                    return file.contents.toString('utf8');
+                                }
+                            }
+                        ))
+                        .pipe(gulp.dest(DIR_DEST));
+                });
+            }
+
         });
     });
 
@@ -102,7 +132,7 @@ module.exports = function (gulp, plugins, isdebug) {
                 DIR_SRC.editor + 'lang/zh-cn.js'
             );
 
-            if('publicvoice' == module) {
+            if ('publicvoice' == module) {
                 dependencies.push(
                     DIR_SRC.coreJs + 'jquery.ajaxfileupload.js',
                     DIR_SRC.coreJs + 'jquery.template-1.4.4.js',

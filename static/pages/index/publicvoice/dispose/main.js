@@ -113,7 +113,8 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         this._closeModal('#disposeModal', this.dataTable);
     },
     exportDispose: function () {
-
+        /*inject:jqtmplsample:html*/
+        /*endinject*/
     },
     saveDispose: function () {
         var self = this;
