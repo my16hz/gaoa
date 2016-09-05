@@ -18,7 +18,8 @@ module.exports = {
     /* 获取日报当前期数 */
     getCurrentDailyID: getCurrentDailyID,
     /* 查询日报中舆情列表 */
-    getDailyPVList: getDailyPVList
+    getDailyPVList: getDailyPVList,
+    getLatestDailyPVList: getLatestDailyPVList
 };
 
 
@@ -87,24 +88,39 @@ function findDailyDetail (daily_ids, callback) {
  * @param callback
  */
 function createDaily (uid, daily, callback) {
-    var sql_stmt = "INSERT INTO tb_daily ([id],[issue_id],[content],[createuser],[createtime],[pvids]) " +
-        "VALUES (@id, @issue_id, @content, @createuer, @createtime, @pvids);" +
-        "UPDATE tb_sys_config SET daily_id = @id, daily_issue_id = @issue_id;";
+/*    var sql_stmt = "INSERT INTO tb_daily ([id],[issue_id],[content],[createuser],[createtime],[pvids]) " +
+        "VALUES (@id, @issue_id, @content, @createuser, @createtime, @pvids);" +
+        "UPDATE tb_sys_config SET daily_id = @id, daily_issue_id = @issue_id;";*/
+    var sql_stmt =
+        "IF NOT EXISTS (SELECT * FROM tb_daily WHERE id = @id) " +
+        "    INSERT INTO tb_daily ([id],[issue_id],[content],[createuser],[createtime],[pvids]) VALUES (@id, @issue_id, @content, @createuser, @createtime, @pvids); " +
+        "ELSE " +
+        "    UPDATE tb_daily SET [issue_id] = @issue_id, [content] = @content, [createuser] = @createuser, [pvids] = @pvids WHERE [id] = @id; " +
+        "UPDATE tb_sys_config SET [value] = @id WHERE [id] = 'daily_id';" +
+        "UPDATE tb_sys_config SET [value] = @issue_id WHERE [id] = 'daily_issue_id';" +
+        "DELETE FROM tb_daily_pv WHERE [did] = @id;";
+    var pvids = daily["pvids"].split(",");
+    var daily_pv = [];
+    for(var idx in pvids) {
+        daily_pv.push("("+ daily['id'] + "," + pvids[idx] + ")");
+    }
+    sql_stmt += "INSERT INTO tb_daily_pv ([did], [pvid]) VALUES " + daily_pv.join() + ";";
+    sql_stmt += "UPDATE tb_publicvoice SET [state] = 4 WHERE [id] in (" + daily["pvids"] + ");"
+    console.log(sql_stmt);
     var objParams = {
         "id": daily["id"],
         "issue_id": daily["issue_id"],
         "content": daily["content"],
-        "createuer": uid,
+        "createuser": uid,
         "createtime": new Date(),
         "pvids": daily["pvids"]
     };
-
     var ps = dbpool
         .preparedStatement()
         .input("id", sql.Int)
         .input("issue_id", sql.Int)
         .input("content", sql.NVarChar)
-        .input("createuer", sql.VarChar)
+        .input("createuser", sql.VarChar)
         .input("createtime", sql.DateTime2)
         .input("pvids", sql.VarChar)
         .prepare(sql_stmt, function (err) {
@@ -150,7 +166,7 @@ function getCurrentDailyID (callback) {
 }
 
 function getDailyPVList (did, callback) {
-    var sql_stmt = "SELECT pvids FROM tb_daily WHERE id = @did";
+    var sql_stmt = "SELECT tb_publicvoice.*, tb_daily_pv.did as daily_id  FROM tb_daily_pv, tb_publicvoice WHERE tb_daily_pv.pvid = tb_publicvoice.id AND tb_daily_pv.did = @did";
     var objParams = {'did': did};
     var ps = dbpool.preparedStatement()
         .input('did', sql.Int)
@@ -158,13 +174,26 @@ function getDailyPVList (did, callback) {
             if (err) {
                 return callback(err, null);
             }
-            ps.execute(objParams, function (err, recordset) {
-                console.log(recordset);
-                if (recordset.length == 0) {
-                    callback(err, [])
-                } else {
-                    pubvoiceRecord.findPubVoiceDetail(recordset[0]['pvids'], callback);
-                }
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+function getLatestDailyPVList (callback) {
+    var sql_stmt = "SELECT tb_publicvoice.*, tb_daily_pv.did as daily_id  FROM tb_daily_pv, tb_publicvoice WHERE tb_daily_pv.pvid = tb_publicvoice.id AND tb_daily_pv.did IN ( SELECT MAX(id) as id FROM tb_daily);";
+    var objParams = {};
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
                 ps.unprepare(function (err) {
                     if (err)
                         console.log(err);

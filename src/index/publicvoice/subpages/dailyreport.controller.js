@@ -48,14 +48,25 @@ function getDailyDetail (req, res) {
 
 function getDailyPVList (req, res) {
     var did = req.query.id;
-    service.getDailyPVList(did, function (err, rs) {
-        err ?
-            errhandler.internalException(res, err) :
-            res.send({
-                success: true,
-                data: rs
-            });
-    });
+    if (did) {
+        service.getDailyPVList(did, function (err, rs) {
+            err ?
+                errhandler.internalException(res, err) :
+                res.send({
+                    success: true,
+                    data: rs
+                });
+        });
+    } else {
+        service.getLatestDailyPVList(function (err, rs) {
+            err ?
+                errhandler.internalException(res, err) :
+                res.send({
+                    success: true,
+                    data: rs
+                });
+        });
+    }
 }
 
 function getUnappliedPubVoices(req, res) {

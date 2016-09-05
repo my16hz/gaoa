@@ -58,7 +58,7 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
     events: {
         'click #btnAdd': 'showDataModal',
         'click #dataModal .btn-default': 'closeDataModal',
-        'click #dataModal .btn-primary': 'saveReport'
+        'click #dataModal .btn-primary': 'saveDataModal'
     },
     
     closeDataModal: function () {
@@ -92,8 +92,11 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
                 var daily = self.buildDaily(template, total_id, issue_id, pubvoices);
                 self.editor.setContent(daily);
                 self.editor.setEnabled();
-
-                self._setFormControlValues('#contentModal form', {'total_id':total_id, 'issue_id':issue_id});
+                var pvids = [];
+                for(var idx in pubvoices) {
+                    pvids.push(pubvoices[idx].id);
+                }
+                self._setFormControlValues('#dataModal form', {'id':total_id, 'issue_id':issue_id, 'pvids':pvids.join()});
                 self._showModal($('#dataModal'), self.dataTable);
             }
         });
@@ -143,6 +146,24 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
         return this;
     },
     saveDataModal: function () {
-        var values = {'content': this.editor.getContent()};
+        var dataTable = this.dataTable;
+
+        this._sendRequest({
+            type: 'post',
+            url: '/daily/save',
+            validator: $.proxy(this._validator, this),
+            done: function () {
+                dataTable.expand().refresh();
+            }
+        });
+    },
+
+    _validator: function () {
+        var jqform = $('#dataModal form');
+        var values = this._getFormControlValues(jqform);
+
+        values['content'] = this.editor.getContent();
+
+        return values;
     }
 });

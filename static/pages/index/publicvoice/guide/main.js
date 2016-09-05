@@ -15,6 +15,7 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/notify/list', [
             {field: 'checkbox', checkbox: true},
+            {title: '编号', field: 'id'},
             {title: '标题', field: 'title'},
             {title: '载体', field: 'from_website'},
             {title: '所属栏目', field: 'item'},

@@ -32,14 +32,15 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 title: '状态', field: 'state',
                 formatter: function (val) {
                     switch (val) {
-                        case 0:
-                            return '未提交';
-                        case 1:
-                            return '待审批';
-                        case 2:
-                            return '审批通过';
-                        case 3:
-                            return '审批未通过';
+                        case 0: return '未提交';
+                        case 1: return '待审核';
+                        case 2: return '审核通过';
+                        case 3: return '审核不通过';
+                        case 4: return '已入报';
+                        case 5: return '待批示';
+                        case 6: return '已批示';
+                        case 7: return '待回复';
+                        case 8: return '已回复';
                     }
                 }
             },

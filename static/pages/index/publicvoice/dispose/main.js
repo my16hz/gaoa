@@ -14,6 +14,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         this.initDependencies();
 
         this.dataTable = this._createTable('#tableWrapper', '/dispose/list', [
+            {title: '日报期数', field: 'daily_id'},
             {title: '标题', field: 'title', alwaysDisplay: true},
             {title: '载体', field: 'from_website'},
             {title: '所属栏目', field: 'item'},
@@ -30,15 +31,11 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                 }
             },
             {
-                title: '状态', field: 'state',
+                title: '处置状态', field: 'dispose_state',
                 formatter: function (val) {
                     switch (val) {
-                        case 0:
-                            return '未提交';
-                        case 1:
-                            return '待审批';
-                        case 2:
-                            return '审批通过';
+                        case 1: return '已处置';
+                        default: return '未处置';
                     }
                 }
             },
