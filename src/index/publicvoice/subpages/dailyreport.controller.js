@@ -75,7 +75,6 @@ function generateDailyReport(req, res) {
 
 function getDailyTemplate(req, res) {
     service.getCurrentDailyID(function (err, rs) {
-        rs['template'] = config['template'].daily;
         err ?
             errhandler.internalException(res, err) :
             res.send({

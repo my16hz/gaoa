@@ -272,6 +272,16 @@ var LHSBasicPage = {
 
                 return values;
             },
+            getWholeSelected: function () {
+                var selected = dataTable.bootstrapTable('getSelections');
+                var values = [];
+
+                selected.length && $(selected).each(function (n, val) {
+                    values.push(val);
+                });
+
+                return values;
+            },
             showDataWrapper: function () {
                 $(panel)
                     .parent()
