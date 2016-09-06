@@ -13,14 +13,10 @@ var LHSDisposeAndApprovePage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
 
-        this.dataTable = this._createTable('#tableWrapper', '/dispose/list', [
+        this.dataTable = this._createTable('#tableWrapper', '/dispose/comment/list', [
             {title: '标题', field: 'title', alwaysDisplay: true},
             {title: '载体', field: 'from_website'},
-            {title: '所属栏目', field: 'item'},
-            {title: '舆情类别', field: 'type'},
-            {title: '回帖人数', field: 'fellow_count'},
-            {title: '关注人数', field: 'review_count'},
-            {title: '涉及部门', field: 'relate_department'},
+            {title: '批示内容', field: 'comment'},
             {
                 title: '处理时间', field: 'createtime',
                 formatter: function (val) {
@@ -28,15 +24,15 @@ var LHSDisposeAndApprovePage = $.extend({}, LHSBasicPage, {
                 }
             },
             {
-                title: '状态', field: 'state',
+                title: '状态', field: 'dispose_stat',
                 formatter: function (val) {
                     switch (val) {
-                        case 0:
-                            return '未提交';
-                        case 1:
-                            return '待审批';
-                        case 2:
-                            return '审批通过';
+                        case 0: return "未批示";
+                        case 1: return "已批示";
+                        case 2: return "待审批";
+                        case 3: return "转";
+                        case 4: return "转发";
+                        case 5: return "阅存";
                     }
                 }
             },
@@ -55,7 +51,7 @@ var LHSDisposeAndApprovePage = $.extend({}, LHSBasicPage, {
                         self._setFormControlValues(modal.find('form'), pubvoice);
 
                         editor.ready(function () {
-                            editor.setContent(pubvoice.content || '');
+                            editor.setContent(pubvoice.attachment || '');
                         });
 
                         self._showModal(modal, self.dataTable);
@@ -81,7 +77,7 @@ var LHSDisposeAndApprovePage = $.extend({}, LHSBasicPage, {
 
         this._sendRequest({
             type: 'post',
-            url: '/application/save',
+            url: '/dispose/comment/approve',
             validator: $.proxy(this._validator, this),
             done: function () {
                 dataTable.expand().refresh();
@@ -92,8 +88,6 @@ var LHSDisposeAndApprovePage = $.extend({}, LHSBasicPage, {
     _validator: function () {
         var jqform = $('#dataModal form');
         var values = this._getFormControlValues(jqform);
-
-        values['content'] = this.editor.getContent();
 
         return values;
     }

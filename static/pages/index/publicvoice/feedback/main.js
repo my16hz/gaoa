@@ -32,12 +32,10 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
                 title: '状态', field: 'feedback_state',
                 formatter: function (val) {
                     switch (val) {
-                        case 0:
-                            return '未提交';
-                        case 1:
-                            return '待审批';
-                        case 2:
-                            return '审批通过';
+                        case 0: return "已回复";
+                        case 1: return "必须回复";
+                        case 2: return "建议回复";
+                        case 3: return "可以回复";
                     }
                 }
             },

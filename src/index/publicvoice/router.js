@@ -42,6 +42,12 @@ module.exports = function () {
         /* 舆情批示 */
         .get('/dispose/comment', controller.getPVComment)
         .post('/dispose/comment/save', controller.savePVComment)
+        /*处置提交审批*/
+        .post('/dispose/comment/commit', controller.commitComment)
+        /*批示审批*/
+        .post('/dispose/comment/approve', controller.approveComment)
+        /* 待审批批示列表 */
+        .get('/dispose/comment/list', controller.getUnapprovedComment)
 
         // noitfy page
         .get('/notify/list', controller.getNotifyPVByUid)

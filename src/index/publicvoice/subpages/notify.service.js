@@ -24,7 +24,7 @@ module.exports = {
  * @param pvids {Arrays} 舆情ID列表，
  * @param callback {Function}  回调函数(err)
  */
-function addPVNotify (uid, userids, pvids, callback) {
+function addPVNotify1 (uid, userids, pvids, callback) {
     var table = dbpool.table('tb_pv_notify');
     table.columns.add("uid", sql.VarChar, {nullable: false});
     table.columns.add("pvid", sql.Int, {nullable: false});
@@ -45,6 +45,33 @@ function addPVNotify (uid, userids, pvids, callback) {
 
         callback(err, rowCount);
     });
+}
+
+function addPVNotify (uid, userids, pvids, callback) {
+    var sql_stmt = "";
+    userids.forEach(function (user) {
+        pvids.forEach(function (pv) {
+            sql_stmt += "IF NOT EXISTS (SELECT * FROM tb_pv_notify WHERE uid = '" + user + "' AND pvid = '" + pv + "') " +
+                "BEGIN " +
+                "INSERT INTO tb_pv_notify ([uid],[pvid],[createuser]) VALUES ('" + user + "','" + pv + "','" + uid + "'); " +
+                "END ";
+
+        })
+    });
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute({}, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
 }
 
 /**

@@ -13,7 +13,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
 
-        this.dataTable = this._createTable('#tableWrapper', '/dispose/pvlist', [
+        this.dataTable = this._createTable('#tableWrapper', '/daily/pvlist', [
             {field: 'checkbox', checkbox: true},
             {title: '日报期数', field: 'daily_id'},
             {title: '标题', field: 'title', alwaysDisplay: true},
@@ -32,11 +32,15 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                 }
             },
             {
-                title: '处置状态', field: 'dispose_state',
+                title: '处置状态', field: 'dispose_stat',
                 formatter: function (val) {
                     switch (val) {
-                        case 1: return '已处置';
-                        default: return '未处置';
+                        case 0: return "未批示";
+                        case 1: return "已批示";
+                        case 2: return "待审批";
+                        case 3: return "转";
+                        case 4: return "转发";
+                        case 5: return "阅存";
                     }
                 }
             },
@@ -45,7 +49,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                 formatter: function () {
                     return [
                         '<a href="javascript:" title="添加批示"><i class="glyphicon glyphicon-comment"></i></a>',
-                        '<a href="javascript:" title="转发"><i class="glyphicon glyphicon-bullhorn"></i></a>'
+                        '<a href="javascript:" title="提交审批"><i class="glyphicon glyphicon-bullhorn"></i></a>'
                     ].join('&nbsp;&nbsp;');
                 },
                 events: {
@@ -53,10 +57,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                         self.showDataModal(arguments[2]);
                     },
                     'click a:last': function () {
-                        $(self.el).loadTemplate("/sample/dispose.html", {
-                            name: 'dispose page',
-                            numbers: [1, 2, 3, 4, 5, 6]
-                        });
+                        self.showCommitModal(arguments[2]);
                     }
                 }
             }
@@ -84,8 +85,30 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
             query: {id: daily_id}
         });
     },
+    showCommitModal: function (pubvoice) {
+        var self = this;
+        var ids = pubvoice.id;
+
+        bootbox.confirm('确定提交审批？', function (rs) {
+            rs && self._ajaxCommit(ids, function () {
+                self.dataTable.refresh();
+            });
+        }) ;
+
+        return this;
+    },
+    _ajaxCommit: function (ids, done) {
+        this._sendRequest({
+            type: 'post',
+            url: '/dispose/comment/commit',
+            data: {ids: ids},
+            done: done
+        });
+
+        return this;
+    },
     showDataModal: function (pubvoice) {
-        var modal = $('#disposeModal');
+        var modal = $('#commentModal');
         var jqform = modal.find('form');
         var editor = this.editor;
         var self = this;
@@ -100,7 +123,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                     _fillFormValues(rs[0]);
                 }
                 else {
-                    rs = { id: pubvoice.id};
+                    rs = { id: pubvoice.id, comment:"", attachment:""};
                     _fillFormValues(rs);
                 }
                 self._showModal(modal, self.dataTable);
@@ -111,12 +134,12 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
             self._setFormControlValues(jqform, rs);
 
             editor.ready(function () {
-                editor.setContent(rs.content || '');
+                editor.setContent(rs.attachment || '');
             });
         }
     },
     closeCommentModal: function () {
-        this._closeModal('#disposeModal', this.dataTable);
+        this._closeModal('#commentModal', this.dataTable);
     },
     saveComment: function () {
         var self = this;
@@ -124,9 +147,9 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         this._sendRequest({
             type: 'post',
             url: '/dispose/comment/save',
-            validator: $.proxy(this._disposeValidator, this),
+            validator: $.proxy(this._commentValidator, this),
             done: function () {
-                self.closeDisposeModal();
+                self.closeCommentModal();
                 self.dataTable.refresh();
             }
         });
@@ -160,8 +183,13 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
 
     },
 
-    _disposeValidator: function () {
+    _commentValidator: function () {
+        var jqform = $('#commentModal form');
+        var values = this._getFormControlValues(jqform);
 
+        values['attachment'] = this.editor.getContent();
+
+        return values;
     },
     _notiValidator: function () {
 
