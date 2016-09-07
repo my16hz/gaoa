@@ -163,11 +163,9 @@ var LHSBasicPage = {
                 jqElem = $(this);
 
                 if (jqElem.is('input[type="radio"]')) {
-                    jqElem.find('[value="' + val + '"]').attr('checked', 'checked');
+                    val == jqElem.val() && jqElem.prop('checked', true);
                 } else if (jqElem.is('input[type="checkbox"]')) {
-                    $.each(val, function (i, v) {
-                        jqElem.find('[value="' + v + '"]').attr('checked', 'checked');
-                    });
+                    ~$.inArray(jqElem.val(), val) && jqElem.prop('checked', true);
                 } else {
                     jqElem.val(val);
                 }
