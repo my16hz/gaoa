@@ -8,5 +8,7 @@ var controller = require('./controller');
 
 module.exports = function () {
     return express.Router()
-        .get('/socialvoice', controller.pageSocialVoice);
+        .get('/socialvoice', controller.pageSocialVoice)
+        .get('/socialvoice/list', controller.getSocialVoices)
+        .post('/socialvoice/save', controller.saveSocialVoice)
 };

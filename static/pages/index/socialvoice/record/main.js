@@ -13,33 +13,25 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
 
-        this.dataTable = this._createTable('#tableWrapper', '/pubvoice/list', [
+        this.dataTable = this._createTable('#tableWrapper', '/socialvoice/list', [
             {field: 'checkbox', checkbox: true},
             {title: '标题', field: 'title', alwaysDisplay: true},
-            {title: '载体', field: 'from_website'},
-            {title: '所属栏目', field: 'item'},
-            {title: '舆情类别', field: 'type'},
-            {title: '回帖人数', field: 'fellow_count'},
-            {title: '关注人数', field: 'review_count'},
-            {title: '涉及部门', field: 'relate_department'},
+            {title: '作者', field: 'reportuser'},
+            {title: '单位', field: 'department'},
+            {title: '内容', field: 'origin_content'},
             {
-                title: '处理时间', field: 'createtime',
+                title: '上报时间', field: 'createtime',
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
+                    return moment(val).format('YYYY年MM月DD日');
                 }
             },
             {
                 title: '状态', field: 'state',
                 formatter: function (val) {
                     switch (val) {
-                        case 0:
-                            return '未提交';
-                        case 1:
-                            return '待审批';
-                        case 2:
-                            return '审批通过';
-                        case 3:
-                            return '审批未通过';
+                        case 0: return '待上报';
+                        case 1: return '已上报';
+                        case 2: return '已采用';
                     }
                 }
             },
@@ -53,7 +45,12 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 },
                 events: {
                     'click a:first': function () {
-                        self.showDataModal(arguments[2]);
+                        var modal = $('#dataModal');
+                        var report = arguments[2];
+
+                        report.id && self._setFormControlValues(modal.find('form'), report);
+
+                        self._showModal(modal, self.dataTable);
                     },
                     'click a:last': function () {
                         var uid = arguments[2].id;
@@ -79,7 +76,27 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     },
 
     showDataModal: function () {
+        var modal = $('#dataModal');
 
+        this._showModal(modal, this.dataTable);
+    },
+    saveSocialVoice: function () {
+        var dataTable = this.dataTable;
+
+        this._sendRequest({
+            type: 'post',
+            url: '/socialvoice/save',
+            validator: $.proxy(this._validator, this),
+            done: function () {
+                dataTable.expand().refresh();
+            }
+        });
+    },
+    _validator: function () {
+        var jqform = $('#dataModal form');
+        var values = this._getFormControlValues(jqform);
+
+        return values;
     },
     showImportModal: function () {
         var modal = $('#importModal');

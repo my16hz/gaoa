@@ -47,17 +47,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
                 },
                 events: {
                     'click a:first': function () {
-                        var editor = self.editor;
-                        var modal = $('#dataModal');
-                        var feedback = arguments[2];
-
-                        self._setFormControlValues(modal.find('form'), feedback);
-
-                        editor.ready(function () {
-                            editor.setContent(feedback.content || '');
-                        });
-
-                        self._showModal(modal, self.dataTable);
+                        self.showDataModal(arguments[2], 0)
                     }
                 }
             }
@@ -65,18 +55,49 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
         this.editor = this._createEditor('#editorWrapper');
     },
     events: {
-        'keydown #inputSearch': 'autoSearch',
-        'change #feedbackModal select[name="type"]': 'changeFeedbackType',
-        'click #feedbackModal .btn-default': 'closeModal',
-        'click #feedbackModal .btn-primary': 'saveFeedback'
-    },
-    autoSearch: function (jqinput, evt) {
-        13 == evt.keyCode && this.dataTable.refresh({
-            query: {id: jqinput.val()}
-        });
+        'change #dataModal select[name="type"]': 'changeFeedbackType',
+        'click #dataModal .btn-default': 'closeModal',
+        'click #dataModal .btn-primary': 'saveFeedback'
     },
     changeFeedbackType: function () {
+        var jqform = $('#dataModal form');
+        var values = this._getFormControlValues(jqform);
 
+        this.showDataModal(values, values.type);
+    },
+    showDataModal: function (pubvoice, type) {
+        var modal = $('#dataModal');
+        var jqform = modal.find('form');
+        var editor = this.editor;
+        var self = this;
+
+        this._sendRequest({
+            type: 'get',
+            url: '/feedback/detail',
+            data: {id: pubvoice.id, type: type},
+            done: function (rs) {
+                if (rs.length != 0) {
+                    rs[0]['id'] = pubvoice.id;
+                    _fillFormValues(rs[0]);
+                }
+                else {
+                    rs = { id: pubvoice.id, type: type};
+                    _fillFormValues(rs);
+                }
+
+                self._showModal(modal, self.dataTable);
+            }
+        });
+
+        function _fillFormValues (rs) {
+            self._setFormControlValues(jqform, rs);
+
+            editor.ready(function () {
+                editor.setContent(rs.content || '');
+            });
+        }
+
+        return this;
     },
     closeModal: function () {
         var modal = $('#dataModal');

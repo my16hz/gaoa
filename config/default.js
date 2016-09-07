@@ -63,7 +63,7 @@ module.exports = {
         '    <br/>' +
         '</p>' +
         '<p>' +
-        '    <span style="font-size: 20px;">附件：网络舆情日报第 %daily_id% 期</span>' +
+        '    <span style="font-size: 20px;font-family:方正小标宋简体">附件：网络舆情日报第 %daily_id% 期</span>' +
         '</p>' +
         '<p>' +
         '    <br/>' +
@@ -79,13 +79,13 @@ module.exports = {
         '</p>' +
         '<hr/>' +
         '<p>' +
-        '    <span style="font-size: 20px;">附件：</span>' +
+        '    <span style="font-size: 20px;font-family:方正小标宋简体">附件：</span>' +
         '</p>' +
         '<p>' +
         '    %doc_attachment%' +
         '</p>' +
         '<p>' +
-        '    <span style="font-size: 20px;">舆情详情：</span>' +
+        '    <span style="font-size: 20px;font-family:方正小标宋简体">舆情详情：</span>' +
         '</p>' +
         '<p>' +
         '    %doc_content%' +
