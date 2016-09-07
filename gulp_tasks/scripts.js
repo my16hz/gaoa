@@ -87,6 +87,7 @@ module.exports = function (gulp, plugins, isdebug) {
             DIR_SRC.coreJs + 'jquery-1.12.4.js',
             DIR_SRC.coreJs + 'bootstrap-3.3.5.js',
             DIR_SRC.coreJs + 'moment-2.14.1.js',
+            DIR_SRC.coreJs + 'bootstrap-table-1.11.0.js',
             DIR_SRC.coreJs + 'bootstrap-table-zh-CN-1.11.0.js',
             DIR_SRC.coreJs + 'bootbox-4.4.0.js'
 
