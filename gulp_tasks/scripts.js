@@ -16,7 +16,7 @@ var SUB_PAGES = {
     badinfo: ['aggregate', 'record', 'RTXDirective', 'RTXReport'],
     publicvoice: [
         'alert', 'analyze', 'dailyreport', 'dailycreate', 'dispose',
-        'examine&approve', 'feedback', 'guide', 'notify', 'record'
+        'examine&approve', 'dispose&approve', 'feedback', 'guide', 'notify', 'record'
     ],
     smartoffice: ['allmessages', 'examine&approve', 'sendmessage'],
     socialvoice: ['dispose', 'record'],

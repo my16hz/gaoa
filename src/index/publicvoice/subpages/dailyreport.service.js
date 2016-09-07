@@ -166,7 +166,11 @@ function getCurrentDailyID (callback) {
 }
 
 function getDailyPVList (did, callback) {
-    var sql_stmt = "SELECT tb_publicvoice.*, tb_daily_pv.did as daily_id  FROM tb_daily_pv, tb_publicvoice WHERE tb_daily_pv.pvid = tb_publicvoice.id AND tb_daily_pv.did = @did";
+    var sql_stmt = "SELECT tb_publicvoice.*, tb_daily_pv.did AS daily_id, tb_pv_comment.comment, tb_pv_comment.attachment " +
+        " FROM tb_daily_pv, tb_publicvoice " +
+        " LEFT JOIN tb_pv_comment " +
+        " ON tb_publicvoice.id = tb_pv_comment.id " +
+        " WHERE tb_daily_pv.pvid = tb_publicvoice.id AND tb_daily_pv.did = @did;";
     var objParams = {'did': did};
     var ps = dbpool.preparedStatement()
         .input('did', sql.Int)
@@ -185,7 +189,11 @@ function getDailyPVList (did, callback) {
 }
 
 function getLatestDailyPVList (callback) {
-    var sql_stmt = "SELECT tb_publicvoice.*, tb_daily_pv.did as daily_id  FROM tb_daily_pv, tb_publicvoice WHERE tb_daily_pv.pvid = tb_publicvoice.id AND tb_daily_pv.did IN ( SELECT MAX(id) as id FROM tb_daily);";
+    var sql_stmt = "SELECT tb_publicvoice.*, tb_daily_pv.did AS daily_id, tb_pv_comment.comment, tb_pv_comment.attachment " +
+        " FROM tb_daily_pv, tb_publicvoice " +
+        " LEFT JOIN tb_pv_comment " +
+        " ON tb_publicvoice.id = tb_pv_comment.id " +
+        " WHERE tb_daily_pv.pvid = tb_publicvoice.id AND tb_daily_pv.did IN ( SELECT MAX(id) as id FROM tb_daily);";
     var objParams = {};
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {

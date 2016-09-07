@@ -10,7 +10,15 @@ var dbpool = require('../../../utilities/dbpool');
 module.exports = {
     /*---------- 舆情处置页面 ----------*/
     addPVDispose: addPVDispose,
-    getPVDispose: getPVDispose
+    getPVDispose: getPVDispose,
+
+    getPVListByDisposeState: getPVListByDisposeState,
+    getPVComment: getPVComment,
+    addPVComment: addPVComment,
+    commitComment: commitComment,
+    /* 获取待审批的批示 */
+    getUnapprovedComment: getUnapprovedComment,
+    approveComment: approveComment
 };
 
 
@@ -21,7 +29,10 @@ module.exports = {
  * @param callback
  */
 function getPVDispose (pvid, callback) {
-    var sql_stmt = "SELECT * FROM tb_pv_dispose WHERE id = @id;";
+    var sql_stmt = "IF NOT EXISTS (SELECT * FROM tb_pv_dispose WHERE id = @id) " +
+                    "   SELECT id,value FROM tb_sys_config WHERE id IN ('dispose_doc_no', 'dispose_doc_year');" +
+                    "ELSE " +
+                    "   SELECT * FROM tb_pv_dispose WHERE id = @id;";
     var objParams = {
         "id": pvid
     };
@@ -33,10 +44,15 @@ function getPVDispose (pvid, callback) {
                 return callback(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
-                if (recordset.length == 0) {
-                    recordset = [{'id': pvid, 'state': -1, 'template': config.template.dispose}]
+                if (recordset.length == 2) {
+                    var docID = {'id': pvid, 'state': -1, 'content': config.template.dispose};
+                    recordset.forEach(function (record) {
+                        docID[record['id']] = record["value"];
+                    });
+
+                    recordset = [docID];
                 }
-                callback(err, recordset)
+                callback(err, recordset);
                 ps.unprepare(function (err) {
                     if (err)
                         console.log(err);
@@ -52,15 +68,19 @@ function getPVDispose (pvid, callback) {
  * @param callback
  */
 function addPVDispose (uid, obj, callback) {
-    var sql_stmt = "DELETE FROM tb_pv_dispose WHERE [id] = @id;" +
-        "INSERT INTO tb_pv_dispose ([id],[content],[createuser],[createtime],[state]) " +
-        "VALUES (@id, @content, @createuer, @createtime, @state);"
+    var sql_stmt =
+        'IF NOT EXISTS (SELECT * FROM tb_pv_dispose WHERE id = @id) ' +
+        '   INSERT INTO tb_pv_dispose ([id],[content],[createuser],[createtime],[state], [dispose_doc_no], [dispose_doc_year]) VALUES (@id, @content, @createuser, @createtime, @state, @dispose_doc_no, @dispose_doc_year); ' +
+        'ELSE ' +
+        '   UPDATE tb_pv_dispose SET [content] = @content, [state] = @state, [dispose_doc_no] = @dispose_doc_no, [dispose_doc_year] = @dispose_doc_year WHERE [id] = @id;';
     var objParams = {
         "id": obj["id"],
         "state": obj["state"],
         "content": obj["content"],
-        "createuer": uid,
-        "createtime": new Date()
+        "createuser": uid,
+        "createtime": new Date(),
+        "dispose_doc_no": obj["dispose_doc_no"],
+        "dispose_doc_year": obj["dispose_doc_year"]
     };
 
     var ps = dbpool
@@ -68,8 +88,160 @@ function addPVDispose (uid, obj, callback) {
         .input("id", sql.Int)
         .input("state", sql.Int)
         .input("content", sql.NVarChar)
-        .input("createuer", sql.VarChar)
+        .input("createuser", sql.VarChar)
         .input("createtime", sql.DateTime2)
+        .input("dispose_doc_no", sql.Int)
+        .input("dispose_doc_year", sql.Int)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function getPVListByDisposeState (state, callback) {
+    var sql_stmt = "SELECT tb_publicvoice.*, tb_pv_dispose.state FROM tb_pv_dispose,tb_publicvoice WHERE  tb_publicvoice.id = tb_pv_dispose.id AND tb_pv_dispose.state in (" + state + ");";
+    var objParams = {};
+
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+function getPVComment (pvid, callback) {
+    var sql_stmt = "SELECT * FROM tb_pv_comment WHERE id = @id;";
+    var objParams = {
+        "id": pvid
+    };
+
+    var ps = dbpool.preparedStatement()
+        .input("id", sql.Int)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+function addPVComment (uid, obj, callback) {
+    var sql_stmt =
+        'IF NOT EXISTS (SELECT * FROM tb_pv_comment WHERE [id] = @id) ' +
+        'BEGIN ' +
+        '   INSERT INTO tb_pv_comment ([id],[comment],[attachment],[createuser],[createtime],[state]) VALUES (@id, @comment, @attachment, @createuser, @createtime, @state); ' +
+        '   UPDATE tb_publicvoice SET [dispose_stat] = 1, [feedback_state] = 1 WHERE [id] = @id; ' +
+        'END ' +
+        'ELSE ' +
+        '   UPDATE tb_pv_comment SET [comment] = @comment, [attachment] = @attachment WHERE [id] = @id;';
+
+    var objParams = {
+        "id": obj["id"],
+        "state": obj["state"],
+        "comment": obj["comment"],
+        "attachment": obj["attachment"],
+        "createuser": uid,
+        "createtime": new Date()
+    };
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("id", sql.Int)
+        .input("state", sql.Int)
+        .input("comment", sql.NVarChar)
+        .input("attachment", sql.NVarChar)
+        .input("createuser", sql.VarChar)
+        .input("createtime", sql.DateTime2)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+/* 舆情批示提交审批 */
+function commitComment (pvids, callback) {
+    var sql_stmt = 'UPDATE tb_publicvoice SET [content] = @content, [type] = @type WHERE [id] = @id;';
+}
+
+function approveComment (obj, callback) {
+    var sql_stmt =
+        'IF NOT EXISTS (SELECT * FROM tb_pv_dispose_approved WHERE id = @id) ' +
+        'BEGIN ' +
+        '   INSERT INTO tb_pv_dispose_approved ([id],[content],[createuser],[createtime],[type]) VALUES (@id, @content, @createuser, @createtime, @type); ' +
+        '   UPDATE tb_publicvoice SET [dispose_stat] = @type WHERE [id] = @id; ' +
+        'END ' +
+        'ELSE ' +
+        '   UPDATE tb_pv_dispose_approved SET [content] = @content, [type] = @type WHERE [id] = @id;';
+
+    var objParams = {
+        "id": obj["id"],
+        "type": obj["type"],
+        "content": obj["content"],
+        "createuser": obj["createuser"],
+        "createtime": obj["createtime"]
+    };
+    console.log(sql_stmt);
+    var ps = dbpool
+        .preparedStatement()
+        .input("id", sql.Int)
+        .input("type", sql.Int)
+        .input("content", sql.NVarChar)
+        .input("createuser", sql.VarChar)
+        .input("createtime", sql.DateTime2)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function getUnapprovedComment (callback) {
+    var sql_stmt = "SELECT tb_publicvoice.id, tb_publicvoice.title, tb_publicvoice.from_website, " +
+        " tb_publicvoice.url, tb_publicvoice.createtime, tb_publicvoice.content AS pv_content, " +
+        " tb_pv_comment.comment, tb_pv_comment.attachment, tb_publicvoice.dispose_stat, tb_daily_pv.did AS daily_id " +
+        " FROM tb_publicvoice, tb_pv_comment, tb_daily_pv " +
+        " WHERE tb_publicvoice.id = tb_pv_comment.id AND tb_daily_pv.pvid = tb_publicvoice.id AND tb_publicvoice.dispose_stat = 2;";
+    var objParams = {};
+    var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
