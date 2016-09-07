@@ -41,28 +41,56 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                         case 3: return "转";
                         case 4: return "转发";
                         case 5: return "阅存";
+                        default: return "未批示";
                     }
                 }
             },
             {
                 title: '操作', field: 'action',
                 formatter: function () {
-                    return [
-                        '<a href="javascript:" title="添加批示"><i class="glyphicon glyphicon-comment"></i></a>',
-                        '<a href="javascript:" title="提交审批"><i class="glyphicon glyphicon-bullhorn"></i></a>'
-                    ].join('&nbsp;&nbsp;');
+                    var args = arguments[1].dispose_stat;
+                    switch(args) {
+
+                        case 1 :  return [
+                                        '<a href="javascript:" title="批示详情"><i class="glyphicon glyphicon-eye-open"></i></a>',
+                                        '<a href="javascript:" title="提交审批"><i class="glyphicon glyphicon-ok"></i></a>'
+                                        ].join('&nbsp;&nbsp;');
+                        case 2 : return ['<a href="javascript:" title="批示详情"><i class="glyphicon glyphicon-eye-open"></i></a>',
+                                            '<a></a>'
+                                        ].join('&nbsp;&nbsp;');
+                        case 3 :
+                        case 4 :
+                        case 5 :
+                            return [
+                                '<a href="javascript:" title="批示详情"><i class="glyphicon glyphicon-eye-open"></i></a>',
+                                '<a href="javascript:" title="批示处置"><i class="glyphicon glyphicon-retweet"></i></a>'
+                            ].join('&nbsp;&nbsp;');
+                        case 0 :
+                        default: return ['<a href="javascript:" title="添加批示"><i class="glyphicon glyphicon-comment"></i></a>',
+                            '<a></a>'
+                        ].join('&nbsp;&nbsp;');
+                    }
                 },
                 events: {
                     'click a:first': function () {
                         self.showDataModal(arguments[2]);
                     },
                     'click a:last': function () {
-                        self.showCommitModal(arguments[2]);
+                        var state = arguments[2].dispose_stat;
+                        switch (state) {
+                            case 1: return self.showCommitModal(arguments[2]);
+                            case 3:
+                            case 4:
+                            case 5:
+                                return self.showDisposeModal(arguments[2]);
+                        }
+
                     }
                 }
             }
         ]);
         this.editor = this._createEditor('#editorWrapper');
+        this.disposeEditor = this._createEditor('#disposeWrapper');
     },
     events: {
         'keydown #inputSearch': 'autoSearch',
@@ -154,6 +182,46 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
             }
         });
     },
+    showDisposeModal: function (pubvoice) {
+        var modal = $('#disposeModal');
+        var jqform = modal.find('form');
+        var editor = this.disposeEditor;
+        var self = this;
+
+        self._sendRequest({
+            type: 'get',
+            url: '/dispose/detail',
+            data: {id: pubvoice.id},
+            done: function (rs) {
+                if (rs[0].state == -1) {
+                    rs['0']['dispose_doc_no'] = parseInt(rs['0']['dispose_doc_no']) + 1;
+                    rs[0]['content'] = self.genDisposeDoc(pubvoice, rs[0]);
+                }
+                 _fillFormValues(rs[0]);
+                self._showModal(modal, self.dataTable);
+            }
+        });
+
+        function _fillFormValues (rs) {
+            self._setFormControlValues(jqform, rs);
+
+            editor.ready(function () {
+                editor.setContent(rs.content || '');
+            });
+        }
+    },
+    genDisposeDoc: function (pubvoice, value) {
+        var template = value.content;
+        template = template.replace("%doc_year%", value.dispose_doc_year);
+        template = template.replace("%doc_no%", value.dispose_doc_no);
+        template = template.replace("%doc_content%", pubvoice.content);
+        template = template.replace("%doc_comment%", pubvoice.comment);
+        template = template.replace("%doc_attachment%", pubvoice.attachment);
+        template = template.replace("%daily_id%", pubvoice.daily_id);
+        template = template.replace('%date%', moment(new Date()).format('YYYY年MM月DD日'));
+
+        return template;
+    },
     closeDisposeModal: function () {
         this._closeModal('#disposeModal', this.dataTable);
     },
@@ -173,16 +241,6 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
             }
         });
     },
-    closeNotiModal: function () {
-        var modal = $('#notiModal');
-
-        this._clearFormControlValues(modal.find('form'))
-            ._closeModal(modal, this.dataTable);
-    },
-    saveNotification: function () {
-
-    },
-
     _commentValidator: function () {
         var jqform = $('#commentModal form');
         var values = this._getFormControlValues(jqform);
@@ -191,7 +249,12 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
 
         return values;
     },
-    _notiValidator: function () {
+    _disposeValidator: function () {
+        var jqform = $('#disposeModal form');
+        var values = this._getFormControlValues(jqform);
 
+        values['content'] = this.disposeEditor.getContent();
+
+        return values;
     }
 });

@@ -29,7 +29,10 @@ module.exports = {
  * @param callback
  */
 function getPVDispose (pvid, callback) {
-    var sql_stmt = "SELECT * FROM tb_pv_dispose WHERE id = @id;";
+    var sql_stmt = "IF NOT EXISTS (SELECT * FROM tb_pv_dispose WHERE id = @id) " +
+                    "   SELECT id,value FROM tb_sys_config WHERE id IN ('dispose_doc_no', 'dispose_doc_year');" +
+                    "ELSE " +
+                    "   SELECT * FROM tb_pv_dispose WHERE id = @id;";
     var objParams = {
         "id": pvid
     };
@@ -41,10 +44,15 @@ function getPVDispose (pvid, callback) {
                 return callback(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
-                if (recordset.length == 0) {
-                    recordset = [{'id': pvid, 'state': -1, 'template': config.template.dispose}]
+                if (recordset.length == 2) {
+                    var docID = {'id': pvid, 'state': -1, 'content': config.template.dispose};
+                    recordset.forEach(function (record) {
+                        docID[record['id']] = record["value"];
+                    });
+
+                    recordset = [docID];
                 }
-                callback(err, recordset)
+                callback(err, recordset);
                 ps.unprepare(function (err) {
                     if (err)
                         console.log(err);
@@ -62,15 +70,17 @@ function getPVDispose (pvid, callback) {
 function addPVDispose (uid, obj, callback) {
     var sql_stmt =
         'IF NOT EXISTS (SELECT * FROM tb_pv_dispose WHERE id = @id) ' +
-        '   INSERT INTO tb_pv_dispose ([id],[content],[createuser],[createtime],[state]) VALUES (@id, @content, @createuser, @createtime, @state); ' +
+        '   INSERT INTO tb_pv_dispose ([id],[content],[createuser],[createtime],[state], [dispose_doc_no], [dispose_doc_year]) VALUES (@id, @content, @createuser, @createtime, @state, @dispose_doc_no, @dispose_doc_year); ' +
         'ELSE ' +
-        '   UPDATE tb_pv_dispose SET [content] = @content, [state] = @state WHERE [id] = @id;';
+        '   UPDATE tb_pv_dispose SET [content] = @content, [state] = @state, [dispose_doc_no] = @dispose_doc_no, [dispose_doc_year] = @dispose_doc_year WHERE [id] = @id;';
     var objParams = {
         "id": obj["id"],
         "state": obj["state"],
         "content": obj["content"],
         "createuser": uid,
-        "createtime": new Date()
+        "createtime": new Date(),
+        "dispose_doc_no": obj["dispose_doc_no"],
+        "dispose_doc_year": obj["dispose_doc_year"]
     };
 
     var ps = dbpool
@@ -80,6 +90,8 @@ function addPVDispose (uid, obj, callback) {
         .input("content", sql.NVarChar)
         .input("createuser", sql.VarChar)
         .input("createtime", sql.DateTime2)
+        .input("dispose_doc_no", sql.Int)
+        .input("dispose_doc_year", sql.Int)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
@@ -224,10 +236,10 @@ function approveComment (obj, callback) {
 
 function getUnapprovedComment (callback) {
     var sql_stmt = "SELECT tb_publicvoice.id, tb_publicvoice.title, tb_publicvoice.from_website, " +
-        "tb_publicvoice.url, tb_publicvoice.createtime, tb_publicvoice.content AS pv_content, " +
-        "tb_pv_comment.comment, tb_pv_comment.attachment, tb_publicvoice.dispose_stat " +
-        "FROM tb_publicvoice, tb_pv_comment " +
-        "WHERE tb_publicvoice.id = tb_pv_comment.id AND tb_publicvoice.dispose_stat = 2;";
+        " tb_publicvoice.url, tb_publicvoice.createtime, tb_publicvoice.content AS pv_content, " +
+        " tb_pv_comment.comment, tb_pv_comment.attachment, tb_publicvoice.dispose_stat, tb_daily_pv.did AS daily_id " +
+        " FROM tb_publicvoice, tb_pv_comment, tb_daily_pv " +
+        " WHERE tb_publicvoice.id = tb_pv_comment.id AND tb_daily_pv.pvid = tb_publicvoice.id AND tb_publicvoice.dispose_stat = 2;";
     var objParams = {};
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {

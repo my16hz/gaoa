@@ -118,7 +118,8 @@ function getWaitNotifyPVList (callback) {
 
 function getNotifyPVByUid (uid, callback) {
     var sql_stmt = "SELECT tb_publicvoice.* " +
-        "FROM tb_pv_notify left join tb_publicvoice on tb_pv_notify.pvid = tb_publicvoice.id " +
+        "FROM tb_pv_notify LEFT JOIN tb_publicvoice " +
+        "ON tb_pv_notify.pvid = tb_publicvoice.id " +
         "WHERE tb_pv_notify.uid = @uid;";
     var objParams = {"uid": uid};
     var ps = dbpool.preparedStatement()

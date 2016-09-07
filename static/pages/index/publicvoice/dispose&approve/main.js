@@ -14,6 +14,7 @@ var LHSDisposeAndApprovePage = $.extend({}, LHSBasicPage, {
         this.initDependencies();
 
         this.dataTable = this._createTable('#tableWrapper', '/dispose/comment/list', [
+            {title: '日报期数', field: 'daily_id'},
             {title: '标题', field: 'title', alwaysDisplay: true},
             {title: '载体', field: 'from_website'},
             {title: '批示内容', field: 'comment'},

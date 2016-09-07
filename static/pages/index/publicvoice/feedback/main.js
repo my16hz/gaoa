@@ -15,6 +15,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/notify/list', [
             {field: 'checkbox', checkbox: true},
+            {title: '日报期数', field: 'daily_id'},
             {title: '标题', field: 'title'},
             {title: '载体', field: 'from_website'},
             {title: '所属栏目', field: 'item'},

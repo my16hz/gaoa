@@ -35,7 +35,9 @@ function savePVDispose (req, res) {
         "createtime": new Date(),
         "state": "0",
         "content": obj["content"],
-        "createuser": uid
+        "createuser": uid,
+        "dispose_doc_no" : obj["dispose_doc_no"],
+        "dispose_doc_year" : obj["dispose_doc_year"]
     };
 
     service.addPVDispose(uid, dispose, function (err, rs) {
