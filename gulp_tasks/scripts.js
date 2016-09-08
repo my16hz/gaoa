@@ -102,7 +102,7 @@ module.exports = function (gulp, plugins, isdebug) {
                 DIR_SRC.editor + 'lang/zh-cn.js'
             );
 
-            if ('publicvoice' == module) {
+            //if ('publicvoice' == module) {
                 dependencies.push(
                     DIR_SRC.coreJs + 'jquery.ajaxfileupload.js',
                     DIR_SRC.coreJs + 'jquery.template-1.4.4.js',
@@ -110,7 +110,7 @@ module.exports = function (gulp, plugins, isdebug) {
                     DIR_SRC.coreJs + 'select2-zh-CN-2.4.3.js',
                     DIR_SRC.coreJs + 'bootstrap-datetimepicker-4.17.42.js'
                 );
-            }
+            //}
         }
 
         dependencies.push(

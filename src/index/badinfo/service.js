@@ -51,10 +51,16 @@ function listBadInfo (uid, priority, field, order, callback) {
 }
 
 function saveBadInfo (obj, callback) {
-    var sql_stmt = 'DELETE FROM tb_badinfo WHERE id in (@id); INSERT INTO tb_badinfo ([website], [url], [reportdate], [department], [username], [duty_zone], [type], [sn], [remark], [createuser], [createtime]) ' +
-        'VALUES (@website, @url, @reportdate, @department, @username, @duty_zone, @type, @sn, @remark, @createuser, @createtime);';
+    var sql_stmt = 'IF NOT EXISTS (SELECT * FROM tb_badinfo WHERE id = @id) ' +
+        '    INSERT INTO tb_badinfo ([website], [url], [reportdate], [department], [username], [duty_zone], [type], [sn], [remark], [createuser], [createtime]) ' +
+        '    VALUES (@website, @url, @reportdate, @department, @username, @duty_zone, @type, @sn, @remark, @createuser, @createtime);' +
+        'ELSE ' +
+        '   UPDATE tb_badinfo SET [website] = @website, [url] = @url, [reportdate] = @reportdate, ' +
+        '   [department] = @department, [username] = @username, [duty_zone] = @duty_zone, ' +
+        '   [type] = @type, [sn] = @sn, [remark] = @remark ' +
+        '   WHERE id = @id;';
     var objParams = {
-        'id': obj['id'] == '' ? 0 : obj['id'],
+        'id': obj['id']?obj['id']:0,
         'website': obj['website'],
         'url': obj['url'],
         'reportdate': obj['reportdate'],
@@ -99,7 +105,7 @@ function saveBadInfo (obj, callback) {
 function deleteBadInfo (dbids, callback) {
     var objParams = {};
     var sql_stmt = "DELETE FROM tb_badinfo WHERE id in (%dbids%);";
-    sql_stmt = sql_stmt.replace("%dbids%", "\'" + dbids.join("\',\'") + "\'");
+    sql_stmt = sql_stmt.replace("%dbids%", dbids);
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {

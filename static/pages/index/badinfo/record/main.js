@@ -15,19 +15,19 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/badinfo/list', [
             {field: 'checkbox', checkbox: true},
-            {title: '网站名称', field: 'website'},
+            {title: '网站名称', field: 'website', alwaysDisplay: true},
             {title: '网页路径', field: 'url'},
             {title: '举报者', field: 'username'},
             {title: '举报单位', field: 'department'},
             {title: '所属地域', field: 'duty_zone'},
             {title: '危害类型', field: 'type'},
+            {title: '举报查询码', field: 'sn'},
             {
-                title: '举报时间', field: 'date',
+                title: '举报时间', field: 'reportdate',
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
+                    return moment(val).format('YYYY年MM月DD日');
                 }
             },
-            {title: '举报查询码', field: 'sn'},
             {
                 title: '操作', field: 'action',
                 formatter: function () {
@@ -41,24 +41,36 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
             }
         ]);
         this.editor = this._createEditor('#editorWrapper');
+        this._createTimepicker('#reportdate');
     },
     events: {
-        'click #btnAdd': 'showDataModal',
+        'click #btnAdd': 'showNewDataModal',
         'click #btnDel': 'delSelected',
         'click #dataModal .btn-default': 'closeDataModal',
         'click #dataModal .btn-primary': 'saveInfo'
     },
-
+    showNewDataModal: function () {
+        var editor = this.editor;
+        var modal = $('#dataModal');
+        this._showModal(modal, this.dataTable);
+        editor.ready(function () {
+            editor.setContent('');
+        });
+    },
     showDataModal: function (info) {
+        var editor = this.editor;
         var modal = $('#dataModal');
 
         info.id && this._setFormControlValues(modal.find('form'), info);
-
+        editor.ready(function () {
+            editor.setContent(info.remark || '');
+        });
         this._showModal(modal, this.dataTable);
     },
     delSelected: function () {
         var dataTable = this.dataTable;
         var ids = dataTable.getSelected();
+        var self = this;
 
         ids.length ?
             bootbox.confirm('确定删除？', function (rs) {
@@ -77,13 +89,30 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
             ._closeModal(modal, this.dataTable);
     },
     saveInfo: function () {
-
+        var self = this;
+        this._sendRequest({
+            type: 'post',
+            url: '/badinfo/save',
+            validator: $.proxy(this._badinfoValidator, this),
+            done: function () {
+                self.closeDataModal();
+                self.dataTable.refresh();
+            }
+        });
     },
-
+    _badinfoValidator: function () {
+        var jqform = $('#dataModal form');
+        var values = this._getFormControlValues(jqform);
+        values['remark'] = this.editor.getContent();
+        return  values;
+    },
     _ajaxDelete: function (ids, done) {
+        this._sendRequest({
+            type: 'delete', url: '/badinfo/delete',
+            data: {ids: ids},
+            done: done
+        });
 
-    },
-    _validator: function () {
-
+        return this;
     }
 });
