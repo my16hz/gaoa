@@ -11,7 +11,8 @@ var dbpool = require('../../utilities/dbpool');
 
 module.exports = {
     getSocialVoices: getSocialVoices,
-    saveSocialVoice: saveSocialVoice
+    saveSocialVoice: saveSocialVoice,
+    updateSocialVoice: updateSocialVoice
 };
 
 function getSocialVoices (uid, priority, callback) {
@@ -63,6 +64,29 @@ function saveSocialVoice (objParams, callback) {
             }
 
             ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function updateSocialVoice(obj, callback) {
+    var sql_stmt = "UPDATE tb_socialvoice SET [title] = @title, [origin_content] = @origin_content, [report_content] = @report_content  WHERE [id] = @id; ";
+
+    var ps = dbpool.preparedStatement()
+        .input("id", sql.Int)
+        .input("title", sql.NVarChar)
+        .input("origin_content", sql.NVarChar)
+        .input("report_content", sql.NVarChar)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            ps.execute(obj, function (err, rs) {
                 callback(err, rs);
 
                 ps.unprepare(function (err) {

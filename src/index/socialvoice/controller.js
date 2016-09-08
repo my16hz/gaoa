@@ -41,7 +41,7 @@ function saveSocialVoice (req, res) {
     var socialvoice = {
         "id": obj["id"],
         "createtime": new Date(),
-        "report_content": obj['origin_content'],
+        "report_content": obj['report_content'],
         "origin_content": obj["origin_content"],
         "createuser": uid,
         "reportuser": user,

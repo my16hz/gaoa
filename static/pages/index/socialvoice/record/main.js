@@ -64,7 +64,6 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 }
             }
         ]);
-        this.editor = this._createEditor('#editorWrapper');
     },
     events: {
         'click #btnAdd': 'showDataModal',
@@ -77,7 +76,6 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
 
     showDataModal: function () {
         var modal = $('#dataModal');
-
         this._showModal(modal, this.dataTable);
     },
     saveSocialVoice: function () {
