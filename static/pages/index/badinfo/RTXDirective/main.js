@@ -15,7 +15,7 @@ var LHSRTXDirectivePage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/rtx/directive/list', [
             {field: 'checkbox', checkbox: true},
-            {title: '指令部门', field: 'department'},
+            {title: '指令部门', field: 'department', alwaysDisplay: true},
             {title: '指令方式', field: 'type'},
             {title: '责任人', field: 'duty_user'},
             {

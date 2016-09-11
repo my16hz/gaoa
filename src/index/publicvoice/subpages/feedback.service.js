@@ -28,7 +28,7 @@ function addPVFeedback (uid, obj, callback) {
     var sql_stmt = "DELETE FROM tb_pv_feedback WHERE id = @id AND type = @type; " +
         "INSERT INTO tb_pv_feedback ([id],[type],[content],[createuser],[createtime]) " +
         "VALUES (@id, @type, @content, @createuser, @createtime);" +
-        "UPDATE tb_publicvoice SET feedback_state = 0 WHERE id = @id";
+        "UPDATE tb_publicvoice SET state = 8,feedback_state = 0 WHERE id = @id";
     var objParams = {
         "id": obj["id"],
         "type": obj["type"],

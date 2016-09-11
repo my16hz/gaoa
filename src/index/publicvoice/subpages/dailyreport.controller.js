@@ -70,7 +70,7 @@ function getDailyPVList (req, res) {
 }
 
 function getUnappliedPubVoices(req, res) {
-    service.findPubVoicesByState(2, function (err, rs) {
+    service.getUnappliedPubVoices(function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

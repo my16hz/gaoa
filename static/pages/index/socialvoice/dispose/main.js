@@ -20,7 +20,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
             {title: '单位', field: 'department'},
             {title: '内容', field: 'origin_content'},
             {
-                title: '上报时间', field: 'createtime',
+                title: '上报时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
                     return moment(val).format('YYYY年MM月DD日');
                 }
@@ -29,8 +29,8 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                 title: '状态', field: 'state',
                 formatter: function (val) {
                     switch (val) {
-                        case 0: return '待上报';
-                        case 1: return '已上报';
+                        case 0: return '待报送';
+                        case 1: return '已报送';
                         case 2: return '已采用';
                     }
                 }
@@ -56,12 +56,11 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
     },
     events: {
         'click #btnAdd': 'showReportModal',
-        'click #btnAccept': 'showImportModal',
-        'click #btnDel': 'delSelected',
+        'click #btnAccept': 'showAcceptModal',
         'click #dataModal .btn-default': 'closeDataModal',
-        'click #reportModal .btn-default': 'closeReportModal',
         'click #dataModal .btn-primary': 'saveSocialVoice',
-        'click #importModal .btn-default': 'closeImportModal'
+        'click #reportModal .btn-primary': 'saveReportModal',
+        'click #reportModal .btn-default': 'closeReportModal'
     },
 
     showReportModal: function () {
@@ -102,17 +101,17 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
 
         return values;
     },
-    delSelected: function () {
+    showAcceptModal: function () {
         var dataTable = this.dataTable;
         var ids = dataTable.getSelected();
 
         ids.length ?
-            bootbox.confirm('确定删除？', function (rs) {
-                rs && self._ajaxDelete(ids.join(), function () {
+            bootbox.confirm('确定被采用？', function (rs) {
+                rs && self._ajaxAccept(ids.join(), function () {
                     dataTable.refresh();
                 });
             }) :
-            bootbox.alert('请先选择要删除的记录！');
+            bootbox.alert('请先选择要采用的记录！');
 
         return this;
     },
@@ -122,13 +121,25 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         this._clearFormControlValues(modal.find('form'))
             ._closeModal(modal, this.dataTable);
     },
+    saveReportModal: function () {
+
+    },
     closeReportModal: function () {
         var modal = $('#reportModal');
 
         this._clearFormControlValues(modal.find('form'))
             ._closeModal(modal, this.dataTable);
     },
-    _ajaxDelete: function (ids, done) {
+    _ajaxAccept: function (ids, done) {
+        var dataTable = this.dataTable;
 
+        this._sendRequest({
+            type: 'post',
+            url: '/socialvoice/accept',
+            data: {"ids" : ids},
+            done: function () {
+                dataTable.expand().refresh();
+            }
+        });
     }
 });

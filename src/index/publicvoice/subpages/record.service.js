@@ -96,11 +96,15 @@ function findPubVoiceList (uid, priority, field, order, callback) {
         });
 }
 
+/**
+ * 通过状态查找舆情
+ * @param state {Array} 舆情状态数组
+ * @param callback
+ */
 function findPubVoicesByState(state, callback) {
-    var params = {'state' : state};
-    var sql_stmt = "select * from tb_publicvoice where state = @state";
+    var params = {};
+    var sql_stmt = "select * from tb_publicvoice where state in (" + state.join() + ")";
     var ps = dbpool.preparedStatement()
-        .input("state", sql.Int)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, []);
@@ -141,19 +145,17 @@ function findPubVoiceDetail (pvids, callback) {
 function addPubVoices (uid, obj, callback) {
     var sql_stmt = "INSERT INTO tb_publicvoice (" +
         "[title],[createtime],[item],[type],[relate_department]," +
-        "[duty_department],[fellow_count],[review_count],[content],[from_website],[url],[state]," +
-        "[approved_state],[dispose_stat],[feedback_state],[createuser]" +
+        "[duty_department],[fellow_count],[review_count],[content],[from_website],[url],[state],[createuser]" +
         ") VALUES (" +
         "@title,@createtime,@item,@type,@relate_department," +
-        "@duty_department,@fellow_count,@review_count,@content,@from_website,@url,@state," +
-        "@approved_state,@dispose_stat,@feedback_state,@createuser)";
+        "@duty_department,@fellow_count,@review_count,@content,@from_website,@url,@state,@createuser)";
     var objParams = extend({}, obj, {
         createtime: new Date(),
         createuser: uid,
         state: 0,
         approved_state: 0,
         dispose_stat: 0,
-        feedback_state: 0
+        feedback_state: 3
     });
     var ps = null;
 
@@ -213,7 +215,7 @@ function importPubVoices (uid, gid, path, callback) {
         obj["state"] = 0;
         obj["approved_state"] = 0;
         obj["dispose_stat"] = 0;
-        obj["feedback_state"] = 0;
+        obj["feedback_state"] = 3;
         obj["createtime"] = new Date();
         obj["createuser"] = uid;
 

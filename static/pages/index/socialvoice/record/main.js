@@ -20,7 +20,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             {title: '单位', field: 'department'},
             {title: '内容', field: 'origin_content'},
             {
-                title: '上报时间', field: 'createtime',
+                title: '上报时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
                     return moment(val).format('YYYY年MM月DD日');
                 }
@@ -29,8 +29,8 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 title: '状态', field: 'state',
                 formatter: function (val) {
                     switch (val) {
-                        case 0: return '待上报';
-                        case 1: return '已上报';
+                        case 0: return '待报送';
+                        case 1: return '已报送';
                         case 2: return '已采用';
                     }
                 }

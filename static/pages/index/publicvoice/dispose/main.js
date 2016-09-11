@@ -50,7 +50,6 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                 formatter: function () {
                     var args = arguments[1].dispose_stat;
                     switch(args) {
-
                         case 1 :  return [
                                         '<a href="javascript:" title="批示详情"><i class="glyphicon glyphicon-eye-open"></i></a>',
                                         '<a href="javascript:" title="提交审批"><i class="glyphicon glyphicon-ok"></i></a>'

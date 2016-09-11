@@ -19,7 +19,10 @@ module.exports = {
     getCurrentDailyID: getCurrentDailyID,
     /* 查询日报中舆情列表 */
     getDailyPVList: getDailyPVList,
-    getLatestDailyPVList: getLatestDailyPVList
+    getLatestDailyPVList: getLatestDailyPVList,
+
+    /* 获取未入报的舆情，包括审批通过和有回复 */
+    getUnappliedPubVoices: getUnappliedPubVoices
 };
 
 
@@ -75,6 +78,11 @@ function findDailyDetail (daily_ids, callback) {
         });
 }
 
+function _ArrayUnique(a) {
+    return a.concat().sort().filter(function(item, pos, ary) {
+        return !pos || item != ary[pos - 1];
+    });
+}
 /**
  * 创建日报
  * @param uid
@@ -93,13 +101,15 @@ function createDaily (uid, daily, callback) {
         "UPDATE tb_sys_config SET daily_id = @id, daily_issue_id = @issue_id;";*/
     var sql_stmt =
         "IF NOT EXISTS (SELECT * FROM tb_daily WHERE id = @id) " +
+        "BEGIN " +
         "    INSERT INTO tb_daily ([id],[issue_id],[content],[createuser],[createtime],[pvids]) VALUES (@id, @issue_id, @content, @createuser, @createtime, @pvids); " +
+        "END " +
         "ELSE " +
         "    UPDATE tb_daily SET [issue_id] = @issue_id, [content] = @content, [createuser] = @createuser, [pvids] = @pvids WHERE [id] = @id; " +
         "UPDATE tb_sys_config SET [value] = @id WHERE [id] = 'daily_id';" +
         "UPDATE tb_sys_config SET [value] = @issue_id WHERE [id] = 'daily_issue_id';" +
         "DELETE FROM tb_daily_pv WHERE [did] = @id;";
-    var pvids = daily["pvids"].split(",");
+    var pvids = _ArrayUnique(daily["pvids"].split(","));
     var daily_pv = [];
     for(var idx in pvids) {
         daily_pv.push("("+ daily['id'] + "," + pvids[idx] + ")");
@@ -194,6 +204,28 @@ function getLatestDailyPVList (callback) {
         " LEFT JOIN tb_pv_comment " +
         " ON tb_publicvoice.id = tb_pv_comment.id " +
         " WHERE tb_daily_pv.pvid = tb_publicvoice.id AND tb_daily_pv.did IN ( SELECT MAX(id) as id FROM tb_daily);";
+    var objParams = {};
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+function getUnappliedPubVoices (callback) {
+    var sql_stmt = " SELECT tb_publicvoice.*, tb_pv_feedback.type AS feedback_type, tb_pv_feedback.content AS feedback_content " +
+        " FROM tb_publicvoice " +
+        " LEFT JOIN tb_pv_feedback " +
+        " ON tb_publicvoice.id = tb_pv_feedback.id  " +
+        " WHERE tb_publicvoice.state IN (2, 8); ";
     var objParams = {};
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {

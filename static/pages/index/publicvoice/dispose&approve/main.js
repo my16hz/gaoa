@@ -19,7 +19,7 @@ var LHSDisposeAndApprovePage = $.extend({}, LHSBasicPage, {
             {title: '载体', field: 'from_website'},
             {title: '批示内容', field: 'comment'},
             {
-                title: '处理时间', field: 'createtime',
+                title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
                     return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
                 }
@@ -53,6 +53,7 @@ var LHSDisposeAndApprovePage = $.extend({}, LHSBasicPage, {
 
                         editor.ready(function () {
                             editor.setContent(pubvoice.attachment || '');
+                            editor.setDisabled();
                         });
 
                         self._showModal(modal, self.dataTable);

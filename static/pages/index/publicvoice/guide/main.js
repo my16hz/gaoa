@@ -16,7 +16,7 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
         this.dataTable = this._createTable('#tableWrapper', '/notify/list', [
             {field: 'checkbox', checkbox: true},
             {title: '舆情编号', field: 'id'},
-            {title: '舆情标题', field: 'title'},
+            {title: '舆情标题', field: 'title', alwaysDisplay: true},
             {title: '舆情载体', field: 'from_website'},
             {title: '所属栏目', field: 'item'},
             {title: '舆情类别', field: 'type'},
@@ -24,7 +24,7 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
             {title: '关注人数', field: 'review_count'},
             {title: '涉及部门', field: 'relate_department'},
             {
-                title: '处理时间', field: 'createtime',
+                title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
                     return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
                 }

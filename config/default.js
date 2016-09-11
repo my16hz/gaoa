@@ -155,6 +155,9 @@ module.exports = {
         '<p>' +
         '    %rdht_title%' +
         '</p>' +
+        '<p style="margin-top:40px;margin-right:0;margin-bottom:16px;margin-left:0;text-align:center">' +
+        '    <span style="font-size:29px;font-family:方正小标宋简体">≡本期详情≡</span>' +
+        '</p>' +
         '<p>' +
         '    <br/>' +
         '</p>' +
@@ -181,6 +184,17 @@ module.exports = {
         '</p>' +
         '<p>' +
         '    %rdht_content%' +
+        '</p>' +
+        '<hr/>' +
+        '<p style="margin-left:37px;line-height:32px">' +
+        '    <strong><span style="font-size: 19px;font-family: 仿宋_GB2312">报：</span></strong><span style="font-size: 19px;font-family: 仿宋_GB2312">市委常委。</span>' +
+        '</p>' +
+        '<hr/>' +
+        '<p style="text-align: right;">' +
+        '<span style="font-size: 19px;font-family: 仿宋_GB2312">（共印16份）</span>' +
+        '</p>' +
+        '<p>' +
+        '<br/>' +
         '</p>'
     }
 };

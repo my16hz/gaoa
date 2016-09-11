@@ -21,13 +21,13 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
             {title: '预警人', field: 'sender'},
             {title: '接警人', field: 'receiver'},
             {
-                title: '预警开始时间', field: 'starttime',
+                title: '预警开始时间', field: 'starttime', sortable: true, order: 'desc',
                 formatter: function (val) {
                     return moment(val).format('YYYY年MM月DD日');
                 }
             },
             {
-                title: '预警结束时间', field: 'endtime',
+                title: '预警结束时间', field: 'endtime', sortable: true, order: 'desc',
                 formatter: function (val) {
                     return moment(val).format('YYYY年MM月DD日');
                 }

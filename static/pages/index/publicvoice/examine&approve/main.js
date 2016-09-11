@@ -22,7 +22,7 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
             {title: '关注人数', field: 'review_count'},
             {title: '涉及部门', field: 'relate_department'},
             {
-                title: '处理时间', field: 'createtime',
+                title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
                     return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
                 }

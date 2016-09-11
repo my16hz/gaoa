@@ -47,10 +47,18 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             {
                 title: '操作', field: 'action',
                 formatter: function () {
-                    return [
-                        '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
-                        '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
-                    ].join('&nbsp;&nbsp;');
+                    var args = arguments[1].state;
+                    switch(args) {
+                        case 0:
+                        case 3:  return [
+                                    '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
+                                    '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
+                                ].join('&nbsp;&nbsp;');
+                        case 1: return [
+                                    '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
+                                    '<a></a>'
+                                ].join('&nbsp;&nbsp;');
+                    }
                 },
                 events: {
                     'click a:first': function () {

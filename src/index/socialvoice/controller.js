@@ -11,7 +11,9 @@ var service = require('./service');
 module.exports = {
     pageSocialVoice: pageSocialVoice,
     getSocialVoices: getSocialVoices,
-    saveSocialVoice: saveSocialVoice
+    saveSocialVoice: saveSocialVoice,
+    acceptSocialVoice: acceptSocialVoice,
+    reportSocialVoice: reportSocialVoice
 };
 
 function pageSocialVoice (req, res) {
@@ -57,4 +59,20 @@ function saveSocialVoice (req, res) {
                 success: true
             });
     });
+}
+
+function acceptSocialVoice (req, res) {
+    var obj = req.body;
+
+    service.acceptSocialVoice(obj["ids"], function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
+}
+
+function reportSocialVoice (req, res) {
+    
 }

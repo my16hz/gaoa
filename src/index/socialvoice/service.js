@@ -12,7 +12,9 @@ var dbpool = require('../../utilities/dbpool');
 module.exports = {
     getSocialVoices: getSocialVoices,
     saveSocialVoice: saveSocialVoice,
-    updateSocialVoice: updateSocialVoice
+    updateSocialVoice: updateSocialVoice,
+    acceptSocialVoice: acceptSocialVoice,
+    reportSocialVoice: reportSocialVoice
 };
 
 function getSocialVoices (uid, priority, callback) {
@@ -94,5 +96,36 @@ function updateSocialVoice(obj, callback) {
                 });
             });
         });
+}
+
+function _updateSoialVoiceState (ids, state, callback) {
+    var sql_stmt = "UPDATE tb_socialvoice SET [state] = @state WHERE [id] IN (" + ids + ");";
+    var params = {
+        "state" : state
+    };
+
+    var ps = dbpool.preparedStatement()
+        .input("state", sql.Int)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            ps.execute(params, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function acceptSocialVoice (ids, callback) {
+    _updateSoialVoiceState(ids, 2, callback);
+}
+
+function reportSocialVoice (ids, callback) {
+    _updateSoialVoiceState(ids, 1, callback);
 }
 
