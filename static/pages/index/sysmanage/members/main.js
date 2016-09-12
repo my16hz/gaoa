@@ -193,7 +193,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
             $('input[name="id"]', jqform).prop('readonly', !!data.id);
 
             if (data.id) {
-                'string' == $.type(data.role) && (data.role = data.role.split(','));
+                data.role = data.role.split(',');
                 self._setFormControlValues(jqform, data);
             }
 

@@ -1,3 +1,6 @@
 .pubvoice-record-page .func-btns {
     margin-bottom: 20px;
 }
+.pubvoice-record-page #dataModal .pubvoice-address {
+    margin-top: 10px;
+}

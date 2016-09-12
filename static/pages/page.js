@@ -159,7 +159,7 @@ var LHSBasicPage = {
     },
     _setFormControlValues: function (jqform, values) {
         $.each(values, function (name, val) {
-            $('[name="' + name + '"]', jqform).each(function (jqElem) {
+            $('[name="' + name + '"]', jqform).each(function (index, jqElem) {
                 jqElem = $(this);
 
                 if (jqElem.is('input[type="radio"]')) {
@@ -167,7 +167,9 @@ var LHSBasicPage = {
                 } else if (jqElem.is('input[type="checkbox"]')) {
                     ~$.inArray(jqElem.val(), val) && jqElem.prop('checked', true);
                 } else {
-                    jqElem.val(val);
+                    $.isArray(val) ?
+                        jqElem.val(val[index] || '') :
+                        jqElem.val(val);
                 }
             });
         });

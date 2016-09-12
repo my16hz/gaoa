@@ -32,15 +32,24 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 title: '状态', field: 'state',
                 formatter: function (val) {
                     switch (val) {
-                        case 0: return '未提交';
-                        case 1: return '待审核';
-                        case 2: return '审核通过';
-                        case 3: return '审核不通过';
-                        case 4: return '已入报';
-                        case 5: return '待批示';
-                        case 6: return '已批示';
-                        case 7: return '待回复';
-                        case 8: return '已回复';
+                        case 0:
+                            return '未提交';
+                        case 1:
+                            return '待审核';
+                        case 2:
+                            return '审核通过';
+                        case 3:
+                            return '审核不通过';
+                        case 4:
+                            return '已入报';
+                        case 5:
+                            return '待批示';
+                        case 6:
+                            return '已批示';
+                        case 7:
+                            return '待回复';
+                        case 8:
+                            return '已回复';
                     }
                 }
             },
@@ -48,16 +57,18 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 title: '操作', field: 'action',
                 formatter: function () {
                     var args = arguments[1].state;
-                    switch(args) {
+                    switch (args) {
                         case 0:
-                        case 3:  return [
-                                    '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
-                                    '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
-                                ].join('&nbsp;&nbsp;');
-                        case 1: return [
-                                    '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
-                                    '<a></a>'
-                                ].join('&nbsp;&nbsp;');
+                        case 3:
+                            return [
+                                '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
+                                '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
+                            ].join('&nbsp;&nbsp;');
+                        case 1:
+                            return [
+                                '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
+                                '<a></a>'
+                            ].join('&nbsp;&nbsp;');
                     }
                 },
                 events: {
@@ -85,6 +96,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         'click #btnCommit': 'applyApprobation',
         'click #dataModal .btn-default': 'closeDataModal',
         'click #dataModal .btn-primary': 'savePubVoice',
+        'click #dataModal .btn-addurl': 'appendUrlInput',
         'click #importModal .btn-default': 'closeImportModal'
     },
 
@@ -118,9 +130,18 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         }
 
         function _fillFormValues (pubvoice) {
-            $('input[name="url"]', jqform).prop('readonly', !!pubvoice.id);
+            var self = this;
+            var jqInput = $('input[name="url"]', jqform);
 
-            pubvoice.id && self._setFormControlValues(jqform, pubvoice);
+            jqInput.prop('readonly', !!pubvoice.id);
+
+            if (pubvoice.id) {
+                $.each(pubvoice.url = pubvoice.url.split(','), function () {
+                    self._appendUrlInput(jqInput.parent());
+                });
+
+                self._setFormControlValues(jqform, pubvoice);
+            }
 
             editor.ready(function () {
                 editor.setContent(pubvoice.content || '');
@@ -160,6 +181,8 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     closeDataModal: function () {
         var modal = $('#dataModal');
 
+        modal.find('div.pubvoice-address').remove();
+
         this._clearFormControlValues(modal.find('form'))
             ._closeModal(modal, this.dataTable);
     },
@@ -175,6 +198,12 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 self.dataTable.refresh();
             }
         });
+    },
+    appendUrlInput: function (jqbtn) {
+        this._appendUrlInput(
+            jqbtn.parents('.form-group')
+                .children('.col-xs-10')
+        );
     },
     delSelected: function () {
         var self = this;
@@ -201,6 +230,21 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         dataTable.refresh();
     },
 
+    _appendUrlInput: function (panel, val) {
+        $('<div></div>')
+            .addClass('input-group input-group-sm pubvoice-address')
+            .append($('<input type="text" name="url" class="form-control">').val(val || ''))
+            .append(
+                $('<a class="btn btn-default input-group-addon btn-delurl"></a>')
+                    .append('<i class="glyphicon glyphicon-minus"></i>')
+                    .bind('click', function () {
+                        $(this).parents('div.pubvoice-address').remove();
+                    })
+            )
+            .appendTo(panel);
+
+        return this;
+    },
     _ajaxDelete: function (ids, done) {
         this._sendRequest({
             type: 'delete', url: '/pubvoice/delete',
