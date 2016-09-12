@@ -19,7 +19,7 @@ var SUB_PAGES = {
         'examine&approve', 'dispose&approve', 'feedback', 'guide', 'notify', 'record'
     ],
     smartoffice: ['allmessages', 'examine&approve', 'sendmessage'],
-    socialvoice: ['dispose', 'record'],
+    socialvoice: ['dispose', 'record', 'report'],
     sysmanage: ['members', 'password', 'configure']
 };
 

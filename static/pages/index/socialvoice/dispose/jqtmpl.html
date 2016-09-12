@@ -3,7 +3,7 @@
     <div class="row func-btns">
         <div class="col-md-6 col-xs-offset-6">
             <div class="pull-right">
-                <button id="btnAdd" class="btn btn-sm btn-default">报送</button>
+                <button id="btnAdd" class="btn btn-sm btn-default">编报</button>
                 <button id="btnAccept" class="btn btn-sm btn-default">采用</button>
             </div>
         </div>
@@ -49,13 +49,15 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal">
+                        <input type="hidden" name="title" class="form-control">
+                        <input type="hidden" name="svids" class="form-control">
                         <div class="form-group form-group-sm">
                             <div id="editorWrapper" class="col-xs-12"></div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">导出</button>
+                    <button type="button" class="btn btn-primary">保存</button>
                     <button type="button" class="btn btn-default">取消</button>
                 </div>
             </div>

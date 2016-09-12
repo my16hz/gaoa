@@ -14,7 +14,8 @@ module.exports = {
     saveSocialVoice: saveSocialVoice,
     updateSocialVoice: updateSocialVoice,
     acceptSocialVoice: acceptSocialVoice,
-    reportSocialVoice: reportSocialVoice
+    saveSVReport: saveSVReport,
+    getSVReport: getSVReport
 };
 
 function getSocialVoices (uid, priority, callback) {
@@ -77,7 +78,7 @@ function saveSocialVoice (objParams, callback) {
 
 function updateSocialVoice(obj, callback) {
     var sql_stmt = "UPDATE tb_socialvoice SET [title] = @title, [origin_content] = @origin_content, [report_content] = @report_content  WHERE [id] = @id; ";
-
+    console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .input("id", sql.Int)
         .input("title", sql.NVarChar)
@@ -103,7 +104,7 @@ function _updateSoialVoiceState (ids, state, callback) {
     var params = {
         "state" : state
     };
-
+    console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .input("state", sql.Int)
         .prepare(sql_stmt, function (err) {
@@ -125,7 +126,50 @@ function acceptSocialVoice (ids, callback) {
     _updateSoialVoiceState(ids, 2, callback);
 }
 
-function reportSocialVoice (ids, callback) {
-    _updateSoialVoiceState(ids, 1, callback);
+function saveSVReport (report, callback) {
+    var sql_stmt = 'INSERT INTO tb_sv_report ([title], [content], [svids], [createuser], [createtime]) ' +
+        'VALUES (@title, @content, @svids, @createuser, @createtime);' +
+        "UPDATE tb_socialvoice SET [state] = 1 WHERE [id] IN (" + report["svids"] + ");";
+
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("title", sql.NVarChar)
+        .input("content", sql.NVarChar)
+        .input("svids", sql.VarChar)
+        .input("createuser", sql.VarChar)
+        .input("createtime", sql.DateTime2)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            ps.execute(report, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function getSVReport(callback) {
+    var params = {};
+    var sql_stmt = "select * from tb_sv_report;";
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, []);
+            }
+
+            ps.execute(params, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
 }
 

@@ -8,11 +8,8 @@ var LHSAnalyzePage = $.extend({}, LHSBasicPage, {
         /*inject:jqtmpl:html*/
         /*endinject*/
 
-        // this.ajax({}, $.proxy(function () {
-        //     $(this.el).empty().append(jqtmpl($, {data: {}}).join(''));
-        //     this.initDependencies();
-        // }, this));
-
         $(this.el).empty().append(jqtmpl($, {data: {}}).join(''));
+
+        this.initDependencies();
     }
 });

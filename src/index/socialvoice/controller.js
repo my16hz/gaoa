@@ -13,7 +13,8 @@ module.exports = {
     getSocialVoices: getSocialVoices,
     saveSocialVoice: saveSocialVoice,
     acceptSocialVoice: acceptSocialVoice,
-    reportSocialVoice: reportSocialVoice
+    saveSVReport: saveSVReport,
+    getSVReport: getSVReport
 };
 
 function pageSocialVoice (req, res) {
@@ -73,6 +74,36 @@ function acceptSocialVoice (req, res) {
     });
 }
 
-function reportSocialVoice (req, res) {
-    
+function saveSVReport (req, res) {
+    var uid = req.session[userkey].id;
+    var user = req.session[userkey].name;
+    var group = req.session[userkey].groupid;
+    var obj = req.body;
+    var report = {
+        "id": obj["id"],
+        "createtime": new Date(),
+        "content": obj['content'],
+        "createuser": uid,
+        "title": obj['title'],
+        "svids": obj['svids']
+    };
+
+    service.saveSVReport(report, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
+}
+
+function getSVReport(req, res) {
+    service.getSVReport(function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
 }

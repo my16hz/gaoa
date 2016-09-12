@@ -10,6 +10,8 @@
                     return LHSRecordPage.run();
                 case 'dispose':
                     return LHSDisposePage.run();
+                case 'report':
+                    return LHSReportPage.run();
             }
         });
 

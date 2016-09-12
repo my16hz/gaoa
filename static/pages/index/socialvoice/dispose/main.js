@@ -73,14 +73,18 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
     _showReportModal: function (ids) {
         var editor = this.editor;
         var modal = $('#reportModal');
-        var content = '<p style="font-size:21px;font-family: 黑体;font-weight:normal">广安市网络舆情中心'+ moment(new Date()).format('MM月DD日') +"报送舆情信息"+ ids.length +"条</p>";
+        var title = '广安市网络舆情中心'+ moment(new Date()).format('MM月DD日') +"报送舆情信息"+ ids.length +'条';
+        var content = '<p style="font-size:21px;font-family: 黑体;font-weight:normal">' + title + "</p>";
             content += '<p style="font-size:21px;font-family: 黑体;font-weight:normal">信息目录：</p>';
+        var svids = [];
         for (var idx in ids) {
-            content += '<p style="font-size:21px;font-family: 黑体;font-weight:normal">'+ idx + '. ' + ids[idx].title + '</p>'
+            content += '<p style="font-size:21px;font-family: 黑体;font-weight:normal">'+ idx + '. ' + ids[idx].title + '</p>';
+            svids.push(ids[idx].id);
         }
         editor.ready(function () {
             editor.setContent(content || '');
         });
+        this._setFormControlValues(modal.find('form'), {"title":title, 'svids':svids.join()});
         this._showModal(modal, this.dataTable);
     },
     saveSocialVoice: function () {
@@ -102,6 +106,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         return values;
     },
     showAcceptModal: function () {
+        var self = this;
         var dataTable = this.dataTable;
         var ids = dataTable.getSelected();
 
@@ -122,7 +127,23 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
             ._closeModal(modal, this.dataTable);
     },
     saveReportModal: function () {
+        var dataTable = this.dataTable;
 
+        this._sendRequest({
+            type: 'post',
+            url: '/socialvoice/report/save',
+            validator: $.proxy(this._reportValidator, this),
+            done: function () {
+                dataTable.expand().refresh();
+            }
+        });
+    },
+    _reportValidator: function () {
+        var jqform = $('#reportModal form');
+        var values = this._getFormControlValues(jqform);
+        values['content'] = this.editor.getContent();
+
+        return values;
     },
     closeReportModal: function () {
         var modal = $('#reportModal');
