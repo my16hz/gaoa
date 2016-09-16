@@ -18,6 +18,7 @@
                 <div class="modal-body">
                     <form class="form-horizontal">
                         <input type="hidden" name="id" class="form-control">
+                        <input type="hidden" name="smartoffice_recvmessage_id" class="form-control">
                         <div class="form-group form-group-sm">
                             <label class="col-xs-2 control-label">文件标题：</label>
                             <div class="col-xs-10">
@@ -25,23 +26,29 @@
                             </div>
                         </div>
                         <div class="form-group form-group-sm">
-                            <label class="col-xs-2 control-label">收文时间：</label>
-                            <div class="col-xs-4">
-                                <input type="text" name="major_department" class="form-control">
-                            </div>
-                            <label class="col-xs-2 control-label">抄送机关：</label>
-                            <div class="col-xs-4">
-                                <input type="text" name="cc_department" class="form-control">
+                            <label class="col-xs-2 control-label">领导批示：</label>
+                            <div class="col-xs-10">
+                                <input type="text" name="comment" class="form-control">
                             </div>
                         </div>
                         <div class="form-group form-group-sm">
-                            <label class="col-xs-2 control-label">发文字号：</label>
+                            <label class="col-xs-2 control-label">收文日期：</label>
+                            <div class="col-xs-4">
+                                <input id="recv_date" type="text" name="recv_date" class="form-control">
+                            </div>
+                            <label class="col-xs-2 control-label">收文编号：</label>
                             <div class="col-xs-4">
                                 <input type="text" name="message_id" class="form-control">
                             </div>
-                            <label class="col-xs-2 control-label">份数：</label>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">来文单位：</label>
                             <div class="col-xs-4">
-                                <input type="text" name="copies" class="form-control" value="5">
+                                <input type="text" name="origin_department" class="form-control">
+                            </div>
+                            <label class="col-xs-2 control-label">原文字号：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="origin_id" class="form-control">
                             </div>
                         </div>
                         <div class="form-group form-group-sm">
@@ -54,29 +61,41 @@
                                     <option value="绝密">绝密</option>
                                 </select>
                             </div>
-                            <label class="col-xs-2 control-label">紧急程度：</label>
+                            <label class="col-xs-2 control-label">原文日期：</label>
                             <div class="col-xs-4">
-                                <select name="urgent_level" class="form-control">
-                                    <option value="常规" selected="selected">常规</option>
-                                    <option value="紧急">紧急</option>
-                                    <option value="特急">特急</option>
-                                </select>
+                                <input id="origin_date" type="text" name="origin_date" class="form-control">
                             </div>
                         </div>
                         <div class="form-group form-group-sm">
-                            <label class="col-xs-2 control-label">拟稿人：</label>
+                            <label class="col-xs-2 control-label">从何领取：</label>
                             <div class="col-xs-4">
-                                <input type="text" name="draft_user" class="form-control">
+                                <input type="text" name="from_department" class="form-control">
                             </div>
-                            <label class="col-xs-2 control-label">关键词：</label>
+                            <label class="col-xs-2 control-label">领取人：</label>
                             <div class="col-xs-4">
-                                <input type="text" name="keyword" class="form-control">
+                                <input type="text" name="from_user" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">批示领导：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="comment_user" class="form-control">
+                            </div>
+                            <label class="col-xs-2 control-label">份数：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="copies" class="form-control"  value="5">
                             </div>
                         </div>
                         <div class="form-group form-group-sm">
                             <label class="col-xs-2 control-label">拟办意见：</label>
                             <div class="col-xs-10">
-                                <input type="text" name="content" class="form-control" value="请严主任审签。">
+                                <input type="text" name="content" class="form-control" value="请严主任阅示。">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">办理结果：</label>
+                            <div class="col-xs-10">
+                                <input type="text" name="result" class="form-control">
                             </div>
                         </div>
                     </form>

@@ -119,7 +119,7 @@ module.exports = {
         '    <span style="font-size:19px;font-family:楷体_GB2312">（总第 %id% 期）</span>' +
         '</p>' +
         '<p style="line-height: 32px; text-align: center;">' +
-        '    <span style="font-size:20px;font-family:楷体_GB2312">广安市网络舆情中心</span><span style="font-size:20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%date%</span>' +
+        '    <span style="font-size:20px;font-family:楷体_GB2312">广安市网络舆情中心&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%date%</span>' +
         '</p>' +
         '<p>' +
         '    <br/>' +

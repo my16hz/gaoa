@@ -12,7 +12,7 @@ module.exports = {
     updateSendMsg: updateSendMsg,
     removeSendMsg: removeSendMsg,
     commitSendMsg: commitSendMsg,
-    getSendMsgTemplate: getSendMsgTemplate
+    getTemplate: getTemplate
 };
 
 function getSendMsg (callback) {
@@ -130,8 +130,8 @@ function commitSendMsg(ids, callback) {
         });
 }
 
-function getSendMsgTemplate(callback) {
-    var sql_stmt = "SELECT * FROM tb_sys_config WHERE id in ('smartoffice_sendmessage_id');";
+function getTemplate(callback) {
+    var sql_stmt = "SELECT * FROM tb_sys_config WHERE id in ('smartoffice_sendmessage_id', 'smartoffice_recvmessage_id');";
     var objParams = {};
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {

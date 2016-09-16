@@ -14,7 +14,7 @@ module.exports = {
     saveSendMsg: saveSendMsg,
     deleteSendMsg: deleteSendMsg,
     commitSendMsg: commitSendMsg,
-    getSendMsgTemplate: getSendMsgTemplate
+    getTemplate: getTemplate
 };
 
 function pageSmartOffice (req, res) {
@@ -91,8 +91,8 @@ function commitSendMsg(req, res) {
     });
 }
 
-function getSendMsgTemplate(req, res) {
-    service.getSendMsgTemplate(function (err, rs) {
+function getTemplate(req, res) {
+    service.getTemplate(function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

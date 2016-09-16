@@ -12,7 +12,7 @@ var LHSRecvMessagePage = $.extend({}, LHSBasicPage, {
         $(this.el).empty().append(jqtmpl($, {data: {}}).join(''));
 
         this.initDependencies();
-        this.dataTable = this._createTable('#tableWrapper', '/smartoffice/sendmsg/list', [
+        this.dataTable = this._createTable('#tableWrapper', '/smartoffice/recvmsg/list', [
             {field: 'checkbox', checkbox: true},
             {title: '文件标题', field: 'title', alwaysDisplay: true},
             {title: '主送机关', field: 'major_department'},
@@ -67,6 +67,8 @@ var LHSRecvMessagePage = $.extend({}, LHSBasicPage, {
                 }
             }
         ]);
+        this._createTimepicker('#recv_date');
+        this._createTimepicker('#origin_date');
     },
     events: {
         'click #btnAdd': 'showDataModal',
@@ -97,13 +99,13 @@ var LHSRecvMessagePage = $.extend({}, LHSBasicPage, {
         var self = this;
         this._sendRequest({
             type: 'get',
-            url: '/smartoffice/sendmsg/template',
+            url: '/smartoffice/template',
             done: function (rs) {
                 var modal = $('#dataModal');
                 var jqform = modal.find('form');
-                var no = parseInt(rs.smartoffice_sendmessage_id) + 1;
-                var prefix = "广市举[" + moment(new Date()).format('YYYY') + "] " + no + "号";
-                self._setFormControlValues(jqform, {'message_id': prefix, "smartoffice_sendmessage_id":no});
+                var no = parseInt(rs.smartoffice_recvmessage_id) + 1;
+                var prefix = "广舆中心收[" + moment(new Date()).format('YYYY') + "] " + no + "号";
+                self._setFormControlValues(jqform, {'message_id': prefix, "smartoffice_recvmessage_id":no});
             }
         });
     },
