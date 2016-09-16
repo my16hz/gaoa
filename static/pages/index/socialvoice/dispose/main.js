@@ -15,6 +15,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/socialvoice/list', [
             {field: 'checkbox', checkbox: true},
+            {title: "编号", field: 'id'},
             {title: '标题', field: 'title', alwaysDisplay: true},
             {title: '作者', field: 'reportuser'},
             {title: '单位', field: 'department'},
@@ -78,7 +79,8 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
             content += '<p style="font-size:21px;font-family: 黑体;font-weight:normal">信息目录：</p>';
         var svids = [];
         for (var idx in ids) {
-            content += '<p style="font-size:21px;font-family: 黑体;font-weight:normal">'+ idx + '. ' + ids[idx].title + '</p>';
+            var id = parseInt(idx) + 1;
+            content += '<p style="font-size:21px;font-family: 黑体;font-weight:normal">'+ id + '. ' + ids[idx].title + '</p>';
             svids.push(ids[idx].id);
         }
         editor.ready(function () {

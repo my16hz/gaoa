@@ -15,6 +15,7 @@ var LHSReportPage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/socialvoice/report/list', [
             {field: 'checkbox', checkbox: true},
+            {title: "编号", field: 'id'},
             {title: '标题', field: 'title', alwaysDisplay: true},
             {title: '作者', field: 'createuser'},
             {title: '社情ID', field: 'svids'},

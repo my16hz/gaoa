@@ -26,7 +26,7 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
             {
                 title: '操作', field: 'action',
                 formatter: function () {
-                    return '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>';
+                    return '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-eye-open"></i></a>';
                 },
                 events: {
                     'click a:first': function () {
@@ -49,6 +49,7 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
         this.editor = this._createEditor('#editorWrapper');
     },
     events: {
+        'click #dataModal .btn-primary': 'exportDaily',
         'click #dataModal .btn-default': 'closeDataModal'
     },
 

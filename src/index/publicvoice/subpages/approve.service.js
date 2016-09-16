@@ -27,6 +27,7 @@ function findWaitApprovalPV (field, order, callback) {
     if (field != null && field != "") {
         sql_stmt += " order by " + field + " " + order;
     }
+    
     console.log(sql_stmt);
 
     var objParams = {};
