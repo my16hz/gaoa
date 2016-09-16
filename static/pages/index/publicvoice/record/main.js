@@ -96,7 +96,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         'click #btnCommit': 'applyApprobation',
         'click #dataModal .btn-default': 'closeDataModal',
         'click #dataModal .btn-primary': 'savePubVoice',
-        'click #dataModal .btn-addurl': 'appendUrlInput',
+        'click #dataModal .btn-infosrc': 'addInfoSrcRow',
         'click #importModal .btn-default': 'closeImportModal'
     },
 
@@ -130,17 +130,16 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         }
 
         function _fillFormValues (pubvoice) {
-            var self = this;
             var jqInput = $('input[name="url"]', jqform);
 
             jqInput.prop('readonly', !!pubvoice.id);
 
             if (pubvoice.id) {
-                $.each(pubvoice.url = pubvoice.url.split(','), function () {
-                    self._appendUrlInput(jqInput.parent());
-                });
+                !$.isArray(pubvoice.url) && (pubvoice.url = pubvoice.url.split(','));
+                !$.isArray(pubvoice.from_website) && (pubvoice.from_website = pubvoice.from_website.split(','));
 
-                self._setFormControlValues(jqform, pubvoice);
+                self._appendInfoSrcRow(jqInput.parents('div.form-group'))
+                    ._setFormControlValues(jqform, pubvoice);
             }
 
             editor.ready(function () {
@@ -181,7 +180,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     closeDataModal: function () {
         var modal = $('#dataModal');
 
-        modal.find('div.pubvoice-address').remove();
+        modal.find('div.info-src-row').remove();
 
         this._clearFormControlValues(modal.find('form'))
             ._closeModal(modal, this.dataTable);
@@ -199,11 +198,8 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             }
         });
     },
-    appendUrlInput: function (jqbtn) {
-        this._appendUrlInput(
-            jqbtn.parents('.form-group')
-                .children('.col-xs-10')
-        );
+    addInfoSrcRow: function (jqbtn) {
+        this._appendInfoSrcRow(jqbtn.parents('.form-group'));
     },
     delSelected: function () {
         var self = this;
@@ -227,21 +223,20 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         modal.find('input[type="file"]').val('');
 
         this._closeModal(modal, dataTable);
+
         dataTable.refresh();
     },
 
-    _appendUrlInput: function (panel, val) {
-        $('<div></div>')
-            .addClass('input-group input-group-sm pubvoice-address')
-            .append($('<input type="text" name="url" class="form-control">').val(val || ''))
-            .append(
-                $('<a class="btn btn-default input-group-addon btn-delurl"></a>')
-                    .append('<i class="glyphicon glyphicon-minus"></i>')
-                    .bind('click', function () {
-                        $(this).parents('div.pubvoice-address').remove();
-                    })
-            )
-            .appendTo(panel);
+    _appendInfoSrcRow: function (formRow) {
+        var newRow = formRow.clone(false).addClass('info-src-row');
+
+        newRow.find('input').val('');
+        newRow.find('i')
+            .removeClass('glyphicon-plus').addClass('glyphicon-minus')
+            .parent().bind('click', function () {
+            $(this).parents('div.form-group').remove();
+        });
+        newRow.insertAfter(formRow);
 
         return this;
     },

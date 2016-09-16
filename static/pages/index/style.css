@@ -39,7 +39,7 @@
 .index-page .header .btn-logout {
     float: right;
     margin-top: 31px;
-    margin-right:20px;
+    margin-right: 20px;
 }
 
 .index-page .content .aside-menu {
@@ -67,4 +67,8 @@
 .index-page .content .main-panel {
     margin-left: 180px;
     padding-top: 20px;
+}
+
+.index-page .content .main-panel .func-btns {
+    margin-bottom: 20px;
 }
