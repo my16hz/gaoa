@@ -57,11 +57,11 @@ function findDailyList (field, order, callback) {
 
 /**
  * 查询日报详情
- * @param daily_ids {Number} 日报ID数组
+ * @param daily_id {Number} 日报ID数组
  * @param callback {Function}  回调函数(err, object)
  */
-function findDailyDetail (daily_ids, callback) {
-    var sql_stmt = "SELECT * FROM tb_daily where id = " + daily_ids;
+function findDailyDetail (daily_id, callback) {
+    var sql_stmt = "SELECT * FROM tb_daily where id = " + daily_id;
     var objParams = {};
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
@@ -69,7 +69,8 @@ function findDailyDetail (daily_ids, callback) {
                 return callback(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
-                callback(err, recordset)
+                callback(err, recordset);
+                
                 ps.unprepare(function (err) {
                     if (err)
                         console.log(err);
@@ -78,8 +79,8 @@ function findDailyDetail (daily_ids, callback) {
         });
 }
 
-function _ArrayUnique(a) {
-    return a.concat().sort().filter(function(item, pos, ary) {
+function _ArrayUnique (a) {
+    return a.concat().sort().filter(function (item, pos, ary) {
         return !pos || item != ary[pos - 1];
     });
 }
@@ -96,9 +97,9 @@ function _ArrayUnique(a) {
  * @param callback
  */
 function createDaily (uid, daily, callback) {
-/*    var sql_stmt = "INSERT INTO tb_daily ([id],[issue_id],[content],[createuser],[createtime],[pvids]) " +
-        "VALUES (@id, @issue_id, @content, @createuser, @createtime, @pvids);" +
-        "UPDATE tb_sys_config SET daily_id = @id, daily_issue_id = @issue_id;";*/
+    /*    var sql_stmt = "INSERT INTO tb_daily ([id],[issue_id],[content],[createuser],[createtime],[pvids]) " +
+     "VALUES (@id, @issue_id, @content, @createuser, @createtime, @pvids);" +
+     "UPDATE tb_sys_config SET daily_id = @id, daily_issue_id = @issue_id;";*/
     var sql_stmt =
         "IF NOT EXISTS (SELECT * FROM tb_daily WHERE id = @id) " +
         "BEGIN " +
@@ -111,8 +112,8 @@ function createDaily (uid, daily, callback) {
         "DELETE FROM tb_daily_pv WHERE [did] = @id;";
     var pvids = _ArrayUnique(daily["pvids"].split(","));
     var daily_pv = [];
-    for(var idx in pvids) {
-        daily_pv.push("("+ daily['id'] + "," + pvids[idx] + ")");
+    for (var idx in pvids) {
+        daily_pv.push("(" + daily['id'] + "," + pvids[idx] + ")");
     }
     sql_stmt += "INSERT INTO tb_daily_pv ([did], [pvid]) VALUES " + daily_pv.join() + ";";
     sql_stmt += "UPDATE tb_publicvoice SET [state] = 4 WHERE [id] in (" + daily["pvids"] + ");"
