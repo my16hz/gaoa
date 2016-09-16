@@ -9,6 +9,20 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal">
+                        <input type="hidden" name="id" class="form-control">
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">审批结果：</label>
+                            <div class="col-xs-2">
+                                <select name="approveResult" class="form-control">
+                                    <option value="0" selected="selected">通过</option>
+                                    <option value="1">未通过</option>
+                                </select>
+                            </div>
+                            <label class="col-xs-2 control-label">审批意见：</label>
+                            <div class="col-xs-6">
+                                <input type="text" name="approveContent" class="form-control" value="同意">
+                            </div>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">

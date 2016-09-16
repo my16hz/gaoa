@@ -10,5 +10,8 @@ module.exports = function () {
     return express.Router()
         .get('/smartoffice', controller.pageSmartOffice)
         .get('/smartoffice/sendmsg/list', controller.getSendMsg)
-        .get('/smartoffice/sendmsg/save', controller.saveSendMsg)
+        .post('/smartoffice/sendmsg/save', controller.saveSendMsg)
+        .delete('/smartoffice/sendmsg/delete', controller.deleteSendMsg)
+        .post('/smartoffice/sendmsg/commit', controller.commitSendMsg)
+        .get('/smartoffice/sendmsg/template', controller.getSendMsgTemplate)
 };

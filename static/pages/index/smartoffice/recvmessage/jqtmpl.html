@@ -3,60 +3,82 @@
     <div class="row func-btns">
         <div class="col-md-6 col-xs-offset-6">
             <div class="pull-right">
-                <button id="btnSend" class="btn btn-default">发文</button>
-                <button id="btnRecieve" class="btn btn-default">收文</button>
-                <button id="btnNotify" class="btn btn-default">通知</button>
+                <button id="btnAdd" class="btn btn-default">创建收文签</button>
+                <button id="btnCommit" class="btn btn-default">提交审批</button>
             </div>
         </div>
     </div>
     <div class="row data-wrapper">
         <div id="tableWrapper" class="col-md-12"></div>
         <div class="col-xs-10 no-padding-left hide">
-            <div id="sendModal" class="modal-content">
+            <div id="dataModal" class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title"></h4>
+                    <h4 class="modal-title">收文签</h4>
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal">
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default">取消</button>
-                    <button type="button" class="btn btn-primary">保存</button>
-                </div>
-            </div>
-            <div id="receiveModal" class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title"></h4>
-                </div>
-                <div class="modal-body">
-                    <form class="form-horizontal">
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default">取消</button>
-                    <button type="button" class="btn btn-primary">保存</button>
-                </div>
-            </div>
-            <div id="notifyModal" class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title"></h4>
-                </div>
-                <div class="modal-body">
-                    <form class="form-horizontal">
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default">取消</button>
-                    <button type="button" class="btn btn-primary">保存</button>
-                </div>
-            </div>
-            <div id="viewModal" class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title"></h4>
-                </div>
-                <div class="modal-body">
-                    <form class="form-horizontal">
+                        <input type="hidden" name="id" class="form-control">
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">文件标题：</label>
+                            <div class="col-xs-10">
+                                <input type="text" name="title" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">收文时间：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="major_department" class="form-control">
+                            </div>
+                            <label class="col-xs-2 control-label">抄送机关：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="cc_department" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">发文字号：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="message_id" class="form-control">
+                            </div>
+                            <label class="col-xs-2 control-label">份数：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="copies" class="form-control" value="5">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">秘密等级：</label>
+                            <div class="col-xs-4">
+                                <select name="secret_level" class="form-control">
+                                    <option value="公开">公开</option>
+                                    <option value="秘密" selected="selected">秘密</option>
+                                    <option value="机密">机密</option>
+                                    <option value="绝密">绝密</option>
+                                </select>
+                            </div>
+                            <label class="col-xs-2 control-label">紧急程度：</label>
+                            <div class="col-xs-4">
+                                <select name="urgent_level" class="form-control">
+                                    <option value="常规" selected="selected">常规</option>
+                                    <option value="紧急">紧急</option>
+                                    <option value="特急">特急</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">拟稿人：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="draft_user" class="form-control">
+                            </div>
+                            <label class="col-xs-2 control-label">关键词：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="keyword" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">拟办意见：</label>
+                            <div class="col-xs-10">
+                                <input type="text" name="content" class="form-control" value="请严主任审签。">
+                            </div>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
