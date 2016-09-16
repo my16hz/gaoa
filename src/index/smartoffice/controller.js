@@ -4,9 +4,14 @@
  * Author: lhs
  */
 var menukey = require('config').session.menukey;
+var sesskeys = require('config').session;
+var errhandler = require('../../utilities/errhandler');
+var service = require('./service');
 
 module.exports = {
-    pageSmartOffice: pageSmartOffice
+    pageSmartOffice: pageSmartOffice,
+    getSendMsg: getSendMsg,
+    saveSendMsg: saveSendMsg
 };
 
 function pageSmartOffice (req, res) {
@@ -14,3 +19,19 @@ function pageSmartOffice (req, res) {
         menus: req.session[menukey]
     });
 }
+
+function getSendMsg (req, res) {
+    service.getSendMsg(function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function saveSendMsg (req, res) {
+    
+}
+
