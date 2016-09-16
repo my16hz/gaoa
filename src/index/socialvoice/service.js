@@ -28,8 +28,6 @@ function getSocialVoices (uid, priority, callback) {
         params['uid'] = uid;
     }
 
-    sql_stmt += ' order by createtime desc;';
-
     console.log(sql_stmt);
 
     ps = dbpool.preparedStatement()

@@ -27,6 +27,7 @@ module.exports = function () {
         .get('/daily/pvlist', controller.getDailyPVList)
         // .get('/pubvoice/unapplied', controller.getUnappliedPubVoices)
         // .post('dailyreport/generate', controller.generateDailyReport)
+        .get('/daily/export/:id', controller.exportDailyReport)
 
         // daiyly create page
         .get('/daily/unapplied', controller.getUnappliedPubVoices)

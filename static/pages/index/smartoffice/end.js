@@ -12,6 +12,8 @@
                     return LHSExamineAndApprovePage.run();
                 case 'sendmessage':
                     return LHSSendMessagePage.run();
+                case 'recvmessage':
+                    return LHSRecvMessagePage.run();
             }
         });
 

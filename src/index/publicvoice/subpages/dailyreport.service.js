@@ -61,8 +61,7 @@ function findDailyList (field, order, callback) {
  * @param callback {Function}  回调函数(err, object)
  */
 function findDailyDetail (daily_ids, callback) {
-    var sql_stmt = "SELECT * FROM tb_daily where id = " + daily_ids + " ORDER BY createtime desc;";
-    console.log(sql_stmt);
+    var sql_stmt = "SELECT * FROM tb_daily where id = " + daily_ids;
     var objParams = {};
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
@@ -181,8 +180,7 @@ function getDailyPVList (did, callback) {
         " FROM tb_daily_pv, tb_publicvoice " +
         " LEFT JOIN tb_pv_comment " +
         " ON tb_publicvoice.id = tb_pv_comment.id " +
-        " WHERE tb_daily_pv.pvid = tb_publicvoice.id AND tb_daily_pv.did = @did " +
-        " ORDER BY tb_publicvoice.createtime desc;";
+        " WHERE tb_daily_pv.pvid = tb_publicvoice.id AND tb_daily_pv.did = @did;";
     var objParams = {'did': did};
     var ps = dbpool.preparedStatement()
         .input('did', sql.Int)
