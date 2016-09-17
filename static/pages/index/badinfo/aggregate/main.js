@@ -15,7 +15,7 @@ var LHSAggregatePage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/badinfo/list', [
         ]);
-        this.editor = this._createEditor('#editorWrapper');
+        //this.editor = this._createEditor('#editorWrapper');
     },
     events: {
     }
