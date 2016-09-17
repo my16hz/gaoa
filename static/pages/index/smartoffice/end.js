@@ -14,6 +14,8 @@
                     return LHSSendMessagePage.run();
                 case 'recvmessage':
                     return LHSRecvMessagePage.run();
+                case 'notifymessage':
+                    return LHSNotifyMessagePage.run();
             }
         });
 

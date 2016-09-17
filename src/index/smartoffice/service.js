@@ -3,6 +3,7 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
+var config = require('config');
 var sql = require('mssql');
 var dbpool = require('../../utilities/dbpool');
 
@@ -131,7 +132,7 @@ function commitSendMsg(ids, callback) {
 }
 
 function getTemplate(callback) {
-    var sql_stmt = "SELECT * FROM tb_sys_config WHERE id in ('smartoffice_sendmessage_id', 'smartoffice_recvmessage_id');";
+    var sql_stmt = "SELECT * FROM tb_sys_config WHERE id in ('smartoffice_sendmessage_id', 'smartoffice_recvmessage_id', 'smartoffice_notify_id');";
     var objParams = {};
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
@@ -143,7 +144,11 @@ function getTemplate(callback) {
                 recordset.forEach(function (val) {
                     rs[val.id] = val.value;
                 });
-
+                rs['template'] = {
+                    'sendmessage' : config.template.sendmessage,
+                    'recvmessage' : config.template.recvmessage,
+                    'notify' : config.template.notify
+                };
                 callback(err, rs);
                 ps.unprepare(function (err) {
                     if (err)
