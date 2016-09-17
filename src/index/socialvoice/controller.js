@@ -3,8 +3,10 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
+var HtmlDocx = require('html-docx-js');
 var menukey = require('config').session.menukey;
 var userkey = require('config').session.userkey;
+
 var errhandler = require('../../utilities/errhandler');
 var service = require('./service');
 
@@ -14,7 +16,8 @@ module.exports = {
     saveSocialVoice: saveSocialVoice,
     acceptSocialVoice: acceptSocialVoice,
     saveSVReport: saveSVReport,
-    getSVReport: getSVReport
+    getSVReport: getSVReport,
+    exportSocialReport: exportSocialReport
 };
 
 function pageSocialVoice (req, res) {
@@ -53,7 +56,7 @@ function saveSocialVoice (req, res) {
         "state": 0
     };
 
-    service[obj.id ? 'updateSocialVoice': 'saveSocialVoice'](socialvoice, function (err, rs) {
+    service[obj.id ? 'updateSocialVoice' : 'saveSocialVoice'](socialvoice, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -97,7 +100,7 @@ function saveSVReport (req, res) {
     });
 }
 
-function getSVReport(req, res) {
+function getSVReport (req, res) {
     service.getSVReport(function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
@@ -106,4 +109,24 @@ function getSVReport(req, res) {
                 data: rs
             });
     });
+}
+
+function exportSocialReport (req, res) {
+    var id = req.params.id;
+
+    service.findSocialVoiceDetail(id, function (err, voice) {
+        if (err) {
+            errhandler.internalException(res, err)
+        } else {
+            try {
+                res
+                    .set({
+                        'content-type': 'application/msword',
+                        'content-disposition': 'attachment;filename="' + encodeURIComponent('网络舆情日报第' + id + '期') + '.doc"'
+                    }).send(HtmlDocx.asBlob(voice[0].report_content));
+            } catch (e) {
+                errhandler.internalException(res, e);
+            }
+        }
+    })
 }

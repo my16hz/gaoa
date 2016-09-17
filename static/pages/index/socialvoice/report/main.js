@@ -35,10 +35,14 @@ var LHSReportPage = $.extend({}, LHSBasicPage, {
                         var modal = $('#dataModal');
                         var report = arguments[2];
                         var editor = self.editor;
+
                         editor.ready(function () {
                             editor.setContent(report.content || '');
                             editor.setDisabled();
                         });
+
+                        modal.find('a.btn-primary').attr('href', '/socialvoice/export/' + report.id);
+
                         self._showModal(modal, self.dataTable);
                     }
                 }
@@ -47,9 +51,9 @@ var LHSReportPage = $.extend({}, LHSBasicPage, {
         this.editor = this._createEditor('#editorWrapper');
     },
     events: {
-        'click #dataModal .btn-default': 'closeDataModal',
-        'click #dataModal .btn-primary': 'exportReport'
+        'click #dataModal .btn-default': 'closeDataModal'
     },
+
     closeDataModal: function () {
         var modal = $('#dataModal');
 

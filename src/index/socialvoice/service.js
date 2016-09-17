@@ -11,6 +11,7 @@ var dbpool = require('../../utilities/dbpool');
 
 module.exports = {
     getSocialVoices: getSocialVoices,
+    findSocialVoiceDetail: findSocialVoiceDetail,
     saveSocialVoice: saveSocialVoice,
     updateSocialVoice: updateSocialVoice,
     acceptSocialVoice: acceptSocialVoice,
@@ -39,6 +40,25 @@ function getSocialVoices (uid, priority, callback) {
 
             ps.execute(params, function (err, rs) {
                 callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function findSocialVoiceDetail (voice_id, callback) {
+    var sql_stmt = "SELECT * FROM tb_socialvoice where [id] = " + voice_id;
+    var objParams = {};
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset);
 
                 ps.unprepare(function (err) {
                     err && console.error(err);
@@ -76,7 +96,7 @@ function saveSocialVoice (objParams, callback) {
         });
 }
 
-function updateSocialVoice(obj, callback) {
+function updateSocialVoice (obj, callback) {
     var sql_stmt = "UPDATE tb_socialvoice SET [title] = @title, [origin_content] = @origin_content, [report_content] = @report_content  WHERE [id] = @id; ";
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
@@ -102,7 +122,7 @@ function updateSocialVoice(obj, callback) {
 function _updateSoialVoiceState (ids, state, callback) {
     var sql_stmt = "UPDATE tb_socialvoice SET [state] = @state WHERE [id] IN (" + ids + ");";
     var params = {
-        "state" : state
+        "state": state
     };
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
@@ -153,7 +173,7 @@ function saveSVReport (report, callback) {
         });
 }
 
-function getSVReport(callback) {
+function getSVReport (callback) {
     var params = {};
     var sql_stmt = "select * from tb_sv_report;";
     console.log(sql_stmt);
