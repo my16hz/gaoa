@@ -33,15 +33,24 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
                 title: '状态', field: 'state',
                 formatter: function (val) {
                     switch (val) {
-                        case 0: return '未提交';
-                        case 1: return '待审核';
-                        case 2: return '审核通过';
-                        case 3: return '审核不通过';
-                        case 4: return '已入报';
-                        case 5: return '待批示';
-                        case 6: return '已批示';
-                        case 7: return '待回复';
-                        case 8: return '已回复';
+                        case 0:
+                            return '未提交';
+                        case 1:
+                            return '待审核';
+                        case 2:
+                            return '审核通过';
+                        case 3:
+                            return '审核不通过';
+                        case 4:
+                            return '已入报';
+                        case 5:
+                            return '待批示';
+                        case 6:
+                            return '已批示';
+                        case 7:
+                            return '待回复';
+                        case 8:
+                            return '已回复';
                     }
                 }
             },
@@ -53,9 +62,10 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
                 events: {
                     'click a:first': function () {
                         var editor = self.editor;
-                        var content = arguments[2];
+                        var content = arguments[2].content;
+
                         editor.ready(function () {
-                            editor.setContent(content.content || '');
+                            editor.setContent(content || '');
                             editor.setDisabled();
                         });
 
@@ -88,55 +98,62 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
     showNotifyModal: function () {
         var dataTable = this.dataTable;
         var ids = dataTable.getSelected();
-
-        ids.length ?
-            this._showNotifyModal(ids.join()) :
-            bootbox.alert('请先选择要通报的记录！');
-
-        return this;
-    },
-    _showNotifyModal: function (pvids) {
-        var self = this;
         var modal = $('#notifyModal');
         var jqform = modal.find('form');
-        this._setFormControlValues(jqform, {pvids:pvids});
+        var self = this;
+
+        if (!ids.length) {
+            return bootbox.alert('请先选择要通报的记录！');
+        }
+
+        this._setFormControlValues(jqform, {pvids: ids});
         this._sendRequest({
             type: 'get',
             url: '/sysmanage/members',
             done: function (rs) {
-                _appendOptions(rs);
-
+                _initMultipleSelect(rs);
                 self._showModal(modal, self.dataTable);
-                self._closeModal($('#dataModal'));
             }
         });
 
-        function _appendOptions (values) {
+        function _initMultipleSelect (members) {
             var jqSelect = $('select[name="uids"]', jqform);
-            jqSelect.find('option:gt(0)').remove();
+            var options = [$('<optgroup label="未分组"></optgroup>')];
+            var index = {nogroup: 0};
 
-            var groups = {};
-            $.each(values, function (n, gp) {
-                if (!gp.groupname) {
-                    gp.groupname = '未分组';
-                }
-                if (groups[gp.groupname]) {
-                    groups[gp.groupname].push({id: gp.id, name : gp.name});
+            $.each(members, function (gpid, user) {
+                gpid = user.groupid;
+
+                if (!gpid) {
+                    options[index.nogroup].append(
+                        $('<option></option>')
+                            .attr('value', user.id)
+                            .text(user.name)
+                    );
                 } else {
-                    groups[gp.groupname] = [{id: gp.id, name : gp.name}];
+                    if (!index[gpid]) {
+                        options.push(
+                            $('<optgroup></optgroup>')
+                                .attr('label', user.groupname)
+                                .append(
+                                    $('<option></option>')
+                                        .attr('value', user.id)
+                                        .text(user.name)
+                                )
+                        );
+                    } else {
+                        options[index[gpid]].append(
+                            $('<option></option>')
+                                .attr('value', user.id)
+                                .text(user.name)
+                        );
+                    }
                 }
             });
 
-            for(var p in groups) {
-                var opt = "";
-                $.each (groups[p], function (n, user) {
-                    opt += '<option value=\"' + user.id + '\">' + user.name + '</option>'
-                });
-                jqSelect.append('<optgroup label=\"'+ p + '\">'+ opt +'</optgroup>');
-            }
+            self._createSelect2(jqSelect.append(options))
+                .clear();
         }
-
-        return this;
     },
     closeDataModal: function () {
         var modal = $('#dataModal');
@@ -150,15 +167,13 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
         this._clearFormControlValues(modal.find('form'))
             ._closeModal(modal, this.dataTable);
     },
-
     saveNotify: function () {
         var self = this;
         this._sendRequest({
             type: 'post', url: '/notify/save',
             validator: $.proxy(this._validator, this),
             done: function () {
-                var modal = $('#notfiyModal');
-                self._closeModal(modal, self.dataTable);
+                self._closeModal($('#notfiyModal'), self.dataTable);
                 self.dataTable.refresh();
             }
         });

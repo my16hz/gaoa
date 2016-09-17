@@ -3,7 +3,7 @@
     <div class="row func-btns">
         <div class="col-xs-4">
             <div class="input-group">
-                <input id="inputSearch"  type="text" placeholder="请输入日报期号" class="form-control">
+                <input id="inputSearch" type="text" placeholder="请输入日报期号" class="form-control">
                 <a id="btnSearch" class="btn btn-default input-group-addon">
                     <i class="glyphicon glyphicon-search"></i>
                 </a>
@@ -37,12 +37,12 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal">
+                        <input type="hidden" name="pvids" class="form-control"/>
                         <div class="form-group form-group-sm">
-                            <input type="hidden" name="pvids" class="form-control">
                             <label class="col-xs-2 control-label">通报对象：</label>
-                            <div class="col-xs-4">
-                                <select name="uids" multiple="multiple" class="form-control selectpicker">
-                                </select>
+                            <div class="col-xs-10">
+                                <select name="uids" multiple="multiple" placeholder="点击选择通报对象"
+                                        class="form-control" style="width:100%;"></select>
                             </div>
                         </div>
                     </form>

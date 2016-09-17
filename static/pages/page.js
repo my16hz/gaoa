@@ -9,6 +9,7 @@ var LHSBasicPage = {
     events: {},
     __tableCaches__: [],
     __editorCaches__: [],
+    __timepickersCaches__: [],
     initDependencies: function () {
         var self = this.reset();
 
@@ -43,8 +44,13 @@ var LHSBasicPage = {
             this.id && this.destroy();
         });
 
+        $.each(this.__timepickersCaches__, function () {
+            this.data("DateTimePicker").destroy();
+        });
+
         this.__tableCaches__.length = 0;
         this.__editorCaches__.length = 0;
+        this.__timepickersCaches__.length = 0;
 
         return this;
     },
@@ -322,15 +328,37 @@ var LHSBasicPage = {
 
         return this;
     },
-    _createTimepicker: function (input, format, defVal) {
+    _createTimepicker: function (input, format, defval) {
         var picker = $(input).datetimepicker({
             format: format || 'YYYY-MM-DD'
         });
-        var self = this;
+
+        defval && picker.val(defval);
+
+        this.__timepickersCaches__.push(picker);
 
         return {
+            value: function () {
+                return picker.val();
+            },
+            getTime: function () {
+                return moment(picker.val, format).getTime();
+            },
             onChange: function (cb) {
                 picker.on('dp.change', $.proxy(cb, self));
+            }
+        };
+    },
+    _createSelect2: function (select) {
+        var placeholder = $(select).attr('placeholder');
+        var selector = $(select).select2();
+
+        return {
+            getSelected: function () {
+                return selector.val();
+            },
+            clear: function () {
+                selector.val(placeholder || '').trigger("change");
             }
         };
     },
