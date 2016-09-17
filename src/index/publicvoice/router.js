@@ -66,6 +66,10 @@ module.exports = function () {
         // analyze page
         .get('/analyze/pvitem', controller.getPVItemAnalyze)
         .get('/analyze/pvtype', controller.getPVTypeAnalyze)
+        .get('/analyze/pvduty', controller.getPVDutyAnalyze)
+        .get('/analyze/pvreview', controller.getPVReviewAnalyze)
+        .get('/analyze/pvfellow', controller.getPVFellowAnalyze)
+            
         // alert page
         .get('/alert/list', controller.getAlertList)
         .post('/alert/save', controller.saveAlert)
