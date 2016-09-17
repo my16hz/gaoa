@@ -13,5 +13,10 @@ module.exports = function () {
         .post('/smartoffice/sendmsg/save', controller.saveSendMsg)
         .delete('/smartoffice/sendmsg/delete', controller.deleteSendMsg)
         .post('/smartoffice/sendmsg/commit', controller.commitSendMsg)
+
         .get('/smartoffice/template', controller.getTemplate)
+        .get('/smartoffice/notify/list', controller.getNotifyList)
+        .get('/smartoffice/message/list', controller.getMessageList)
+        .post('/smartoffice/message/save', controller.saveMessage)
+        .delete('/smartoffice/message/delete', controller.deleteMessage)
 };

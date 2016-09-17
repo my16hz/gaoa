@@ -13,7 +13,13 @@ module.exports = {
     updateSendMsg: updateSendMsg,
     removeSendMsg: removeSendMsg,
     commitSendMsg: commitSendMsg,
-    getTemplate: getTemplate
+
+    getTemplate: getTemplate,
+    getNotifyList: getNotifyList,
+    saveMessage: saveMessage,
+    updateMessage: updateMessage,
+    getMessageList: getMessageList,
+    deleteMessage: deleteMessage
 };
 
 function getSendMsg (callback) {
@@ -153,6 +159,128 @@ function getTemplate(callback) {
                 ps.unprepare(function (err) {
                     if (err)
                         console.log(err);
+                });
+            });
+        });
+}
+
+function getNotifyList (uid, callback) {
+    var params = {};
+    var sql_stmt = "select * from tb_so_message where type = 2 and order by createtime desc;";
+
+    console.log(sql_stmt);
+
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, []);
+            }
+
+            ps.execute(params, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function saveMessage (obj, callback) {
+    var sql_stmt = 'INSERT INTO tb_so_message ([title] ,[type] ,[content] ,[state] ,[message_id] ,[createtime] ,[createuser]) ' +
+        'VALUES (@title, @type, @content, @state, @message_id, @createtime, @createuser);' +
+        "UPDATE tb_sys_config SET [value] = @issue_id WHERE [id] = @issue_key;";
+    var objParams = obj;
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("title", sql.NVarChar)
+        .input('type', sql.Int)
+        .input('content', sql.NVarChar)
+        .input('state', sql.Int)
+        .input('message_id', sql.NVarChar)
+        .input('createtime', sql.DateTime)
+        .input('createuser', sql.NVarChar)
+        .input("issue_id", sql.Int)
+        .input("issue_key", sql.VarChar)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function updateMessage (obj, callback) {
+    var sql_stmt = 'UPDATE tb_so_message SET [title] = @title, [content] = @content, [message_id] = @message_id WHERE [id] = @id;';
+    var objParams = obj;
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input('id', sql.Int)
+        .input("title", sql.NVarChar)
+        .input('content', sql.NVarChar)
+        .input('message_id', sql.NVarChar)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function getMessageList (uid, callback) {
+    var sql_stmt = "select * from tb_so_message where createuser = @uid order by createtime desc;";
+    var params = {'uid': uid};
+    console.log(sql_stmt);
+
+    var ps = dbpool.preparedStatement()
+        .input('uid', sql.VarChar)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, []);
+            }
+
+            ps.execute(params, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+
+function deleteMessage(ids, callback) {
+    var objParams = {};
+    var sql_stmt = "DELETE FROM tb_so_message WHERE id in (%ids%);";
+
+    sql_stmt = sql_stmt.replace("%ids%",  ids);
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, false);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
                 });
             });
         });

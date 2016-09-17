@@ -196,104 +196,202 @@ module.exports = {
         '<p>' +
         '<br/>' +
         '</p>',
-        sendmessage: '',
-        recvmessage: '<style type="text/css">' +
-        '.Tab { border-collapse:collapse; width:650px; height:300px;}' +
-        '.Tab td{ border:solid 2px #000000}' +
-        '</style>' +
+        sendmessage: '<style type="text/css">.Tab { border-collapse:collapse; width:800px; height:300px;}' +
+        '.Tab td{ border:solid 2px #000000}</style>' +
         '<table cellspacing="0" class="Tab">' +
-        '    <colgroup>' +
-        '        <col width="72" span="6" style="width:54pt"/>' +
-        '    </colgroup>' +
         '    <tbody>' +
-        '        <tr style="height:14.25pt" class="firstRow">' +
-        '            <td colspan="6" width="324" style="text-align: center;">' +
-        '                <strong>广安市网络舆情中心收文处理笺</strong>' +
+        '        <tr class="firstRow">' +
+        '            <td valign="top" rowspan="1" colspan="6" style="word-break: break-all;">' +
+        '                广安市网络舆情中心定稿纸' +
         '            </td>' +
         '        </tr>' +
-        '        <tr style="height:14.25pt">' +
-        '            <td rowspan="2" style="border-top: none;">' +
-        '                <strong>文件标题</strong>' +
+        '        <tr>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                文件标题' +
         '            </td>' +
-        '            <td colspan="5" rowspan="2">%title%</td>' +
+        '            <td valign="top" rowspan="1" colspan="5"></td>' +
         '        </tr>' +
-        '        <tr style="height:14.25pt"></tr>' +
-        '        <tr style="height:14.25pt">' +
-        '            <td rowspan="4" style="border-top: none;">' +
-        '                <strong>领导批示</strong>' +
+        '        <tr>' +
+        '            <td valign="top" style="word-break: break-all;" rowspan="1" colspan="2">' +
+        '                <p>' +
+        '                    签发' +
+        '                </p>' +
+        '                <p>' +
+        '                    <br/>' +
+        '                </p>' +
+        '                <p>' +
+        '                    <br/>' +
+        '                </p>' +
         '            </td>' +
-        '            <td colspan="5" rowspan="4">%comment%</td>' +
+        '            <td valign="top" style="word-break: break-all;" rowspan="1" colspan="4">' +
+        '                会签' +
+        '            </td>' +
         '        </tr>' +
-        '        <tr style="height:14.25pt"></tr>' +
-        '        <tr style="height:14.25pt"></tr>' +
-        '        <tr style="height:14.25pt"></tr>' +
-        '        <tr style="height:14.25pt">' +
-        '            <td style="border-top: none;">' +
-        '                <strong>收文日期</strong>' +
+        '        <tr>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                主送机关' +
         '            </td>' +
-        '            <td style="border-top:none;border-left:none">%recv_date%</td>' +
-        '            <td style="border-top:none;border-left:none">' +
-        '                <strong>收文编号</strong>' +
+        '            <td width="119" valign="top" style="word-break: break-all;"></td>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                抄送机关' +
         '            </td>' +
-        '            <td colspan="3" width="162" style="border-left: none;">%message_id%</td>' +
+        '            <td valign="top" rowspan="1" colspan="3"></td>' +
         '        </tr>' +
-        '        <tr style="height:14.25pt">' +
-        '            <td style="border-top: none;">' +
-        '                <strong>来文单位</strong>' +
+        '        <tr>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                发文字号' +
         '            </td>' +
-        '            <td style="border-top:none;border-left:none">%origin_department%</td>' +
-        '            <td style="border-top:none;border-left:none">' +
-        '                <strong>原文字号</strong>' +
+        '            <td width="130" valign="top" style="word-break: break-all;">' +
+        '                %message_id%' +
         '            </td>' +
-        '            <td colspan="3" width="162" style="border-left: none;">%origin_id%</td>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                秘密等级' +
+        '            </td>' +
+        '            <td width="119" valign="top"></td>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                紧急程度' +
+        '            </td>' +
+        '            <td width="119" valign="top"></td>' +
         '        </tr>' +
-        '        <tr style="height:14.25pt">' +
-        '            <td style="border-top: none;">' +
-        '                <strong>秘密等级</strong>' +
+        '        <tr>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                核 &nbsp; 稿' +
         '            </td>' +
-        '            <td style="border-top:none;border-left:none">%secret_level%</td>' +
-        '            <td style="border-top:none;border-left:none">' +
-        '                <strong>批示领导</strong>' +
+        '            <td width="119" valign="top"></td>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                份 &nbsp; 数' +
         '            </td>' +
-        '            <td style="border-top:none;border-left:none">%approved_user%</td>' +
-        '            <td style="border-top:none;border-left:none">' +
-        '                <strong>从何领取</strong>' +
+        '            <td width="119" valign="top"></td>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                拟稿人' +
         '            </td>' +
-        '            <td style="border-top:none;border-left:none">%from_department%</td>' +
+        '            <td width="119" valign="top"></td>' +
         '        </tr>' +
-        '        <tr style="height:14.25pt">' +
-        '            <td style="border-top: none;">' +
-        '                <strong>原文日期</strong>' +
+        '        <tr>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                <p>' +
+        '                    拟办意见' +
+        '                </p>' +
         '            </td>' +
-        '            <td style="border-top:none;border-left:none">%origin_date%</td>' +
-        '            <td style="border-top:none;border-left:none">' +
-        '                <strong>份数</strong>' +
+        '            <td valign="top" rowspan="1" colspan="5" style="word-break: break-all;">' +
+        '                请严主任审签。<br/>' +
         '            </td>' +
-        '            <td style="border-top:none;border-left:none">%copies%</td>' +
-        '            <td style="border-top:none;border-left:none">' +
-        '                <strong>领取人</strong>' +
-        '            </td>' +
-        '            <td style="border-top:none;border-left:none">%from_user%</td>' +
         '        </tr>' +
-        '        <tr style="height:14.25pt">' +
-        '            <td rowspan="3" style="border-top: none;">' +
-        '                <strong>拟办意见</strong>' +
+        '        <tr>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                主题词' +
         '            </td>' +
-        '            <td colspan="5" rowspan="3">%content%</td>' +
+        '            <td valign="top" rowspan="1" colspan="5"></td>' +
         '        </tr>' +
-        '        <tr style="height:14.25pt"></tr>' +
-        '        <tr style="height:14.25pt"></tr>' +
-        '        <tr style="height:14.25pt">' +
-        '            <td rowspan="3" style="border-top: none;">' +
-        '                <strong>办理结果</strong>' +
+        '        <tr>' +
+        '            <td valign="top" rowspan="1" colspan="6" style="word-break: break-all;">' +
+        '                注:请承办人员速办并记录后交档案室处理。' +
         '            </td>' +
-        '            <td colspan="5" rowspan="3">%result%</td>' +
         '        </tr>' +
-        '        <tr style="height:14.25pt"></tr>' +
-        '        <tr style="height:14.25pt"></tr>' +
-        '        <tr style="height:14.25pt">' +
-        '            <td colspan="6">' +
-        '                <strong>注:请承办人员速办并记录后交档案室处理。</strong>' +
+        '    </tbody>' +
+        '</table>',
+        recvmessage: '<style type="text/css">.Tab { border-collapse:collapse; width:800px; height:300px;}' +
+        '.Tab td{ border:solid 2px #000000}</style>' +
+        '<table cellspacing="0" class="Tab">' +
+        '    <tbody>' +
+        '        <tr class="firstRow">' +
+        '            <td valign="top" rowspan="1" colspan="6" style="word-break: break-all;">' +
+        '                <p>' +
+        '                    <strong><span style="font-size: 20px;">广安市网络舆情中心收文处理笺</span></strong>' +
+        '                </p>' +
+        '            </td>' +
+        '        </tr>' +
+        '        <tr>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                文件标题' +
+        '            </td>' +
+        '            <td valign="top" rowspan="1" colspan="5" style="word-break: break-all;"></td>' +
+        '        </tr>' +
+        '        <tr>' +
+        '            <td width="119" valign="top" style="word-break: break-all;" rowspan="3" colspan="1">' +
+        '                领导批示' +
+        '            </td>' +
+        '            <td valign="top" rowspan="3" colspan="5" style="word-break: break-all;">' +
+        '                <p>' +
+        '                    <br/>' +
+        '                </p>' +
+        '                <p>' +
+        '                    <br/>' +
+        '                </p>' +
+        '            </td>' +
+        '        </tr>' +
+        '        <tr></tr>' +
+        '        <tr></tr>' +
+        '        <tr>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                收文日期' +
+        '            </td>' +
+        '            <td width="120" valign="top"></td>' +
+        '            <td width="118" valign="top" style="word-break: break-all;">' +
+        '                收文编号' +
+        '            </td>' +
+        '            <td valign="top" rowspan="1" colspan="3">%message_id%</td>' +
+        '        </tr>' +
+        '        <tr>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                来文单位' +
+        '            </td>' +
+        '            <td width="120" valign="top"></td>' +
+        '            <td width="118" valign="top" style="word-break: break-all;">' +
+        '                原文字号' +
+        '            </td>' +
+        '            <td valign="top" rowspan="1" colspan="3"></td>' +
+        '        </tr>' +
+        '        <tr>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                秘密等级' +
+        '            </td>' +
+        '            <td width="120" valign="top"></td>' +
+        '            <td width="118" valign="top" style="word-break: break-all;">' +
+        '                批示领导' +
+        '            </td>' +
+        '            <td width="119" valign="top"></td>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                从而领取' +
+        '            </td>' +
+        '            <td width="119" valign="top"></td>' +
+        '        </tr>' +
+        '        <tr>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                原文日期' +
+        '            </td>' +
+        '            <td width="120" valign="top"></td>' +
+        '            <td width="118" valign="top" style="word-break: break-all;">' +
+        '                份数' +
+        '            </td>' +
+        '            <td width="119" valign="top"></td>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                领取人' +
+        '            </td>' +
+        '            <td width="119" valign="top"></td>' +
+        '        </tr>' +
+        '        <tr>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                <p>' +
+        '                    拟办意见' +
+        '                </p>' +
+        '                <p>' +
+        '                    <br/>' +
+        '                </p>' +
+        '            </td>' +
+        '            <td valign="top" style="word-break: break-all;" rowspan="1" colspan="5"></td>' +
+        '        </tr>' +
+        '        <tr>' +
+        '            <td valign="top" colspan="1" rowspan="1" style="word-break: break-all;">' +
+        '                <p>' +
+        '                    办理结果' +
+        '                </p>' +
+        '            </td>' +
+        '            <td valign="top" colspan="5" rowspan="1" style="word-break: break-all;"></td>' +
+        '        </tr>' +
+        '        <tr>' +
+        '            <td valign="top" colspan="6" rowspan="1" style="word-break: break-all;">' +
+        '                注:请承办人员速办并记录后交档案室处理。' +
         '            </td>' +
         '        </tr>' +
         '    </tbody>' +

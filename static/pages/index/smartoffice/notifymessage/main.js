@@ -12,7 +12,7 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
         $(this.el).empty().append(jqtmpl($, {data: {}}).join(''));
 
         this.initDependencies();
-        this.dataTable = this._createTable('#tableWrapper', '/smartoffice/sendmsg/list', [
+        this.dataTable = this._createTable('#tableWrapper', '/smartoffice/message/list', [
             {field: 'checkbox', checkbox: true},
             {title: '文件标题', field: 'title', alwaysDisplay: true},
             {
@@ -25,20 +25,12 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
                     }
                 }
             },
+            {title: '文件编号', field: 'message_id'},
             {title: '发布人', field: 'createuser'},
             {
                 title: '发布时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
                     return moment(val).format('YYYY年MM月DD日');
-                }
-            },
-            {
-                title: '状态', field: 'state',
-                formatter: function (val) {
-                    switch (val) {
-                        case 0: return '未发布';
-                        case 1: return '已发布';
-                    }
                 }
             },
             {
@@ -48,11 +40,12 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
                     var args = arguments[1].state;
                     switch(args) {
                         case 0 :  return [
-                                    '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-eye-open"></i></a>',
+                                    '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
+                                    '<a href="javascript:" title="提交审批"><i class="glyphicon glyphicon-check"></i></a>',
                                     '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
                                     ].join('&nbsp;&nbsp;');
                         case 1 :
-                        case 2 : return ['<a href="javascript:" title="查看"><i class="glyphicon glyphicon-eye-open"></i></a>',
+                        case 2 : return ['<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
                                         '<a></a>'
                                     ].join('&nbsp;&nbsp;');
                     }
@@ -77,15 +70,15 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
         'click #dataModal .btn-primary': 'saveMessage'
     },
     showNotifyModal: function () {
-        var msg = {'type': 3};
+        var msg = {'type': 3, 'id': null};
         this.showDataModal(msg);
     },
     showSendModal: function () {
-        var msg = {'type': 2};
+        var msg = {'type': 2, 'id': null};
         this.showDataModal(msg);
     },
     showRecvModal: function () {
-        var msg = {'type': 1};
+        var msg = {'type': 1, 'id': null};
         this.showDataModal(msg);
     },
     showDataModal: function (msg) {
@@ -95,6 +88,7 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
 
         if (msg.id) {
             this._setFormControlValues(jqform, msg);
+            this.editor.setContent(msg.content);
         } else {
             this._buildMsg(msg);
         }
@@ -130,9 +124,9 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
         var no = parseInt(rs.smartoffice_recvmessage_id) + 1;
         var prefix = "广舆中心收[" + moment(new Date()).format('YYYY') + "] " + no + "号";
         var template = rs.template.recvmessage;
-        template = template.replace('%message_id%');
+        template = template.replace('%message_id%', prefix);
 
-        this._setFormControlValues(jqform, {'type': 1, "issue_id":no});
+        this._setFormControlValues(jqform, {'type': 1, "issue_id":no, "message_id": prefix});
         editor.ready(function () {
             editor.setContent(template || '');
         });
@@ -143,9 +137,12 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
         var editor = this.editor;
         var no = parseInt(rs.smartoffice_sendmessage_id) + 1;
         var prefix = "广市举[" + moment(new Date()).format('YYYY') + "] " + no + "号";
-        this._setFormControlValues(jqform, {'type': 2, "issue_id":no});
+        var template = rs.template.sendmessage;
+        template = template.replace('%message_id%', prefix);
+
+        this._setFormControlValues(jqform, {'type': 2, "issue_id":no, "message_id": prefix});
         editor.ready(function () {
-            editor.setContent(rs.template.sendmessage || '');
+            editor.setContent(template || '');
         });
     },
     _buildNotifyMsg: function (rs) {
@@ -155,13 +152,15 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
         });
     },
     saveMessage: function () {
+        var self = this;
         var dataTable = this.dataTable;
 
         this._sendRequest({
             type: 'post',
-            url: '/smartoffice/sendmsg/save',
+            url: '/smartoffice/message/save',
             validator: $.proxy(this._validator, this),
             done: function () {
+                self.closeDataModal();
                 dataTable.expand().refresh();
             }
         });
@@ -170,6 +169,7 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
     _validator: function () {
         var jqform = $('#dataModal form');
         var values = this._getFormControlValues(jqform);
+        values['content'] = this.editor.getContent();
 
         return values;
     },
@@ -202,7 +202,7 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
     },
     _ajaxDelete: function(id, done) {
         this._sendRequest({
-            type: 'delete', url: '/smartoffice/sendmsg/delete',
+            type: 'delete', url: '/smartoffice/message/delete',
             data: {id: id},
             done: done
         });
