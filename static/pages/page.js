@@ -272,7 +272,7 @@ var LHSBasicPage = {
 
                 return values;
             },
-            getWholeSelected: function () {
+            getOriginalSelected: function () {
                 var selected = dataTable.bootstrapTable('getSelections');
                 var values = [];
 

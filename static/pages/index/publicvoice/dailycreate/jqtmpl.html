@@ -3,7 +3,7 @@
     <div class="row func-btns">
         <div class="col-md-12">
             <div class="pull-right">
-                <button id="btnAdd" class="btn btn-default">生成日报</button>
+                <button id="btnCreate" class="btn btn-default">生成日报</button>
             </div>
         </div>
     </div>
@@ -15,7 +15,7 @@
                     <h4 class="modal-title">日报详情</h4>
                 </div>
                 <div class="modal-body">
-                    <label>注意：如果日报期数与实际不相符，请通知管理员修改后，重新创建日报！</label>
+                    <label class="hide">注意：如果日报期数与实际不相符，请通知管理员修改后，重新创建日报！</label>
                     <form class="form-horizontal">
                         <input type="hidden" name="id" class="form-control">
                         <input type="hidden" name="issue_id" class="form-control">
@@ -27,7 +27,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default">关闭</button>
-                    <button type="button" class="btn btn-primary">保存</button>
+                    <button type="button" class="btn btn-primary hide">保存</button>
                 </div>
             </div>
         </div>

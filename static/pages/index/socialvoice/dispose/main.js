@@ -66,7 +66,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
 
     showReportModal: function () {
         var dataTable = this.dataTable;
-        var ids = dataTable.getWholeSelected();
+        var ids = dataTable.getOriginalSelected();
         ids.length ?
             this._showReportModal(ids):
             bootbox.alert('请先选择要报送的社情！');

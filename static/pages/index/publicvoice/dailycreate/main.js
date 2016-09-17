@@ -32,17 +32,28 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
                 title: '状态', field: 'state',
                 formatter: function (val) {
                     switch (val) {
-                        case 0: return '未提交';
-                        case 1: return '待审核';
-                        case 2: return '审核通过';
-                        case 3: return '审核不通过';
-                        case 4: return '已入报';
-                        case 5: return '待批示';
-                        case 6: return '已批示';
-                        case 7: return '待回复';
-                        case 8: return '已回复';
-                        case 9: return '回复待采用';
-                        case 10: return '回复已采用';
+                        case 0:
+                            return '未提交';
+                        case 1:
+                            return '待审核';
+                        case 2:
+                            return '审核通过';
+                        case 3:
+                            return '审核不通过';
+                        case 4:
+                            return '已入报';
+                        case 5:
+                            return '待批示';
+                        case 6:
+                            return '已批示';
+                        case 7:
+                            return '待回复';
+                        case 8:
+                            return '已回复';
+                        case 9:
+                            return '回复待采用';
+                        case 10:
+                            return '回复已采用';
                     }
                 }
             },
@@ -50,9 +61,12 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
                 title: '回复类型', field: 'feedback_type',
                 formatter: function (val) {
                     switch (val) {
-                        case 0: return '书面回复';
-                        case 1: return '网上回复';
-                        default: return '-';
+                        case 0:
+                            return '书面回复';
+                        case 1:
+                            return '网上回复';
+                        default:
+                            return '-';
                     }
                 }
             },
@@ -63,7 +77,7 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
                 },
                 events: {
                     'click a:first': function () {
-                        self.showDetailModal(arguments[2]);
+                        self._showDetailModal(arguments[2], true);
                     }
                 }
             }
@@ -71,135 +85,25 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
         this.editor = this._createEditor('#editorWrapper');
     },
     events: {
-        'click #btnAdd': 'showDataModal',
+        'click #btnCreate': 'showDataModal',
         'click #dataModal .btn-default': 'closeDataModal',
         'click #dataModal .btn-primary': 'saveDataModal'
     },
-    
+
+    showDataModal: function () {
+        var selected = this.dataTable.getOriginalSelected();
+        var self = this;
+
+        selected.length ?
+            self._genDaily(selected) :
+            bootbox.alert('请先选择要编报的舆情');
+        return this;
+    },
     closeDataModal: function () {
         var modal = $('#dataModal');
 
         this._clearFormControlValues(modal.find('form'))
             ._closeModal(modal, this.dataTable);
-    },
-    showDataModal: function () {
-        var selected = this.dataTable.getWholeSelected();
-        var self = this;
-
-        selected.length ?
-            self.genDaily(selected) :
-            bootbox.alert('请先选择要编报的舆情');
-        return this;
-    },
-    genDaily: function (pubvoices) {
-        var self = this;
-        this._sendRequest({
-            type: 'get',
-            url: '/daily/template',
-            done: function (rs) {
-                var template = rs.template;
-                var total_id = 0,
-                    issue_id = 0;
-                if (rs.issue) {
-                    total_id = parseInt(rs.issue.daily_id) + 1;
-                    issue_id = parseInt(rs.issue.daily_issue_id) + 1;
-                }
-                var daily = self.buildDaily(template, total_id, issue_id, pubvoices);
-                self.editor.setContent(daily);
-                self.editor.setEnabled();
-                var pvids = [];
-                for(var idx in pubvoices) {
-                    pvids.push(pubvoices[idx].id);
-                }
-                self._setFormControlValues('#dataModal form', {'id':total_id, 'issue_id':issue_id, 'pvids':pvids.join()});
-                self._showModal($('#dataModal'), self.dataTable);
-            }
-        });
-        return this;
-    },
-    buildDaily: function (template, total_id, issue_id, pubvoices) {
-        var daily = template;
-        daily = daily.replace('%issue_id%', issue_id);
-        daily = daily.replace('%id%', total_id);
-        daily = daily.replace('%date%', moment(new Date()).format('YYYY年MM月DD日'));
-        var zmyq_title = '', zmyq_content = '',
-            fmyq_title = '', fmyq_content = '',
-            yqzz_title = '', yqzz_content = '',
-            rdht_title = '', rdht_content = '';
-        for(var idx in pubvoices) {
-            var pv = pubvoices[idx];
-            var title = '<p><span style="font-size:20px;font-family:仿宋_GB2312">※ ' + pv.title + '</span></p>';
-            var content = pv.content;
-
-            /*处理回复信息*/
-            if (pv.feedback_type == 0 || pv.feedback_type == 1) {
-                pv.item = '舆情追踪';
-                content = pv.feedback_content;
-            }
-
-            if (pv.item == '正面舆情') {
-                zmyq_title += title;
-                zmyq_content += this.buildZMYQContent(pv);
-            } else if (pv.item == '负面舆情') {
-                fmyq_title += title;
-                fmyq_content += this.buildFMYQContent(pv);
-            } else if (pv.item == '舆情追踪') {
-                yqzz_title += title;
-                yqzz_content += this.buildYQZZContent(pv);
-            } else if (pv.item == '热点话题') {
-                rdht_title += title;
-                rdht_content += this.buildRDHTContent(pv);
-            }
-        }
-        daily = daily.replace('%zmyq_title%', zmyq_title);
-        daily = daily.replace('%fmyq_title%', fmyq_title);
-        daily = daily.replace('%yqzz_title%', yqzz_title);
-        daily = daily.replace('%rdht_title%', rdht_title);
-        daily = daily.replace('%zmyq_content%', zmyq_content);
-        daily = daily.replace('%fmyq_content%', fmyq_content);
-        daily = daily.replace('%yqzz_content%', yqzz_content);
-        daily = daily.replace('%rdht_content%', rdht_content);
-        return daily;
-    },
-    buildZMYQContent: function (pv) {
-        return '<p><span style="font-size: 20px;font-family: 黑体">■ ' + pv.title
-            + '</span> <span style="font-size:20px;font-family:仿宋_GB2312">'
-            + pv.content + '</span></p><p style="text-align: right; text-indent: 40px; line-height: 33px;"><span style="font-size:20px;font-family:仿宋_GB2312">——'
-            + pv.from_website + '</span></p>';
-
-    },
-    buildFMYQContent: function (pv) {
-        return '<p style="text-align:center;line-height:33px"><span style="font-size:24px;font-family:方正小标宋简体">' +
-            pv.title +
-            '</span></p><p style="text-align:center;line-height:33px"><span style="font-size:20px;font-family:仿宋_GB2312">' +
-            pv.from_website +
-            '</span></p><p style="text-align:center;line-height:33px"><span style="font-size:20px;font-family:仿宋_GB2312">浏览人数：' +
-            pv.review_count +
-            '&nbsp; &nbsp; </span><span style="font-size:20px;font-family:仿宋_GB2312">跟帖数：' +
-            pv.fellow_count +
-            '</span></p><p><br/></p><p><span style="font-size:20px;font-family:仿宋_GB2312"> &nbsp; &nbsp;' +
-            pv.content +
-            '</span></p><p><br/></p>';
-    },
-    buildYQZZContent: function (pv) {
-        return '<p><span style="font-size: 20px;font-family: 黑体">■' +
-            pv.title +
-            '</span></p><p style="text-indent: 40px; line-height: 33px;">' +
-            pv.content +
-            '</p>';
-    },
-    buildRDHTContent: function (pv) {
-        return '<p><span style="font-size: 20px;font-family: 黑体">■' +
-            pv.title +
-            '</span></p><p style="text-indent: 40px; line-height: 33px;">' +
-            pv.content +
-            '</p>';
-    },
-    showDetailModal: function (pubvoice) {
-        this.editor.setContent(pubvoice.content == null ? '' : pubvoice.content);
-        this.editor.setDisabled();
-        this._showModal($('#dataModal'), this.dataTable);
-        return this;
     },
     saveDataModal: function () {
         var dataTable = this.dataTable;
@@ -212,6 +116,131 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
                 dataTable.expand().refresh();
             }
         });
+    },
+
+    _showDetailModal: function (pubvoice, readonly) {
+        var editor = this.editor;
+        var modal = $('#dataModal');
+        var classHandler = readonly ? 'addClass' : 'removeClass';
+
+        editor.ready(function () {
+            editor.setContent(pubvoice.content == null ? '' : pubvoice.content);
+            editor[readonly ? 'setDisabled' : 'setEnabled']();
+        });
+
+        modal.find('.modal-body > label')[classHandler]('hide');
+        modal.find('.modal-footer > .btn-primary')[classHandler]('hide');
+
+        return this._showModal(modal, this.dataTable);
+    },
+
+    _genDaily: function (pubvoices) {
+        var self = this;
+        this._sendRequest({
+            type: 'get',
+            url: '/daily/template',
+            done: function (rs) {
+                var template = rs.template;
+                var total_id = 0, issue_id = 0;
+                var daily = self._buildDaily(template, total_id, issue_id, pubvoices);
+                var pvids = [];
+
+                if (rs.issue) {
+                    total_id = parseInt(rs.issue.daily_id) + 1;
+                    issue_id = parseInt(rs.issue.daily_issue_id) + 1;
+                }
+
+                for (var idx in pubvoices) {
+                    pvids.push(pubvoices[idx].id);
+                }
+
+                self._showDetailModal({
+                    id: total_id,
+                    issue_id: issue_id,
+                    pvids: pvids.join(),
+                    content: daily
+                }, false);
+            }
+        });
+        return this;
+    },
+    _buildDaily: function (template, total_id, issue_id, pubvoices) {
+        var daily = template;
+        daily = daily.replace('%issue_id%', issue_id);
+        daily = daily.replace('%id%', total_id);
+        daily = daily.replace('%date%', moment(new Date()).format('YYYY年MM月DD日'));
+        var zmyq_title = '', zmyq_content = '',
+            fmyq_title = '', fmyq_content = '',
+            yqzz_title = '', yqzz_content = '',
+            rdht_title = '', rdht_content = '';
+        for (var idx in pubvoices) {
+            var pv = pubvoices[idx];
+            var title = '<p><span style="font-size:20px;font-family:仿宋_GB2312">※ ' + pv.title + '</span></p>';
+            var content = pv.content;
+
+            /*处理回复信息*/
+            if (pv.feedback_type == 0 || pv.feedback_type == 1) {
+                pv.item = '舆情追踪';
+                content = pv.feedback_content;
+            }
+
+            if (pv.item == '正面舆情') {
+                zmyq_title += title;
+                zmyq_content += this._buildZMYQContent(pv);
+            } else if (pv.item == '负面舆情') {
+                fmyq_title += title;
+                fmyq_content += this._buildFMYQContent(pv);
+            } else if (pv.item == '舆情追踪') {
+                yqzz_title += title;
+                yqzz_content += this._buildYQZZContent(pv);
+            } else if (pv.item == '热点话题') {
+                rdht_title += title;
+                rdht_content += this._buildRDHTContent(pv);
+            }
+        }
+        daily = daily.replace('%zmyq_title%', zmyq_title);
+        daily = daily.replace('%fmyq_title%', fmyq_title);
+        daily = daily.replace('%yqzz_title%', yqzz_title);
+        daily = daily.replace('%rdht_title%', rdht_title);
+        daily = daily.replace('%zmyq_content%', zmyq_content);
+        daily = daily.replace('%fmyq_content%', fmyq_content);
+        daily = daily.replace('%yqzz_content%', yqzz_content);
+        daily = daily.replace('%rdht_content%', rdht_content);
+        return daily;
+    },
+    _buildZMYQContent: function (pv) {
+        return '<p><span style="font-size: 20px;font-family: 黑体">■ ' + pv.title
+            + '</span> <span style="font-size:20px;font-family:仿宋_GB2312">'
+            + pv.content + '</span></p><p style="text-align: right; text-indent: 40px; line-height: 33px;"><span style="font-size:20px;font-family:仿宋_GB2312">——'
+            + pv.from_website + '</span></p>';
+
+    },
+    _buildFMYQContent: function (pv) {
+        return '<p style="text-align:center;line-height:33px"><span style="font-size:24px;font-family:方正小标宋简体">' +
+            pv.title +
+            '</span></p><p style="text-align:center;line-height:33px"><span style="font-size:20px;font-family:仿宋_GB2312">' +
+            pv.from_website +
+            '</span></p><p style="text-align:center;line-height:33px"><span style="font-size:20px;font-family:仿宋_GB2312">浏览人数：' +
+            pv.review_count +
+            '&nbsp; &nbsp; </span><span style="font-size:20px;font-family:仿宋_GB2312">跟帖数：' +
+            pv.fellow_count +
+            '</span></p><p><br/></p><p><span style="font-size:20px;font-family:仿宋_GB2312"> &nbsp; &nbsp;' +
+            pv.content +
+            '</span></p><p><br/></p>';
+    },
+    _buildYQZZContent: function (pv) {
+        return '<p><span style="font-size: 20px;font-family: 黑体">■' +
+            pv.title +
+            '</span></p><p style="text-indent: 40px; line-height: 33px;">' +
+            pv.content +
+            '</p>';
+    },
+    _buildRDHTContent: function (pv) {
+        return '<p><span style="font-size: 20px;font-family: 黑体">■' +
+            pv.title +
+            '</span></p><p style="text-indent: 40px; line-height: 33px;">' +
+            pv.content +
+            '</p>';
     },
 
     _validator: function () {
