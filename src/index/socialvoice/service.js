@@ -28,6 +28,7 @@ function getSocialVoices (uid, priority, callback) {
         params['uid'] = uid;
     }
 
+    sql_stmt += " order by createtime desc;";
     console.log(sql_stmt);
 
     ps = dbpool.preparedStatement()
@@ -155,7 +156,7 @@ function saveSVReport (report, callback) {
 
 function getSVReport(callback) {
     var params = {};
-    var sql_stmt = "select * from tb_sv_report;";
+    var sql_stmt = "select * from tb_sv_report order by createtime desc;";
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {

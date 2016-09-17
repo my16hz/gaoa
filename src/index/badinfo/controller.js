@@ -127,7 +127,7 @@ function deleteRTX (req, res) {
 
 
 function listRTXReport (req, res) {
-    service.listRTXReport("createtime", "asc", function (err, rs) {
+    service.listRTXReport("createtime", "desc", function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

@@ -322,9 +322,10 @@ var LHSBasicPage = {
 
         return this;
     },
-    _createTimepicker: function (input, format, defVal) {
+    _createTimepicker: function (input, format, current) {
         var picker = $(input).datetimepicker({
-            format: format || 'YYYY-MM-DD'
+            format: format || 'YYYY-MM-DD',
+            useCurrent: current || true
         });
         var self = this;
 

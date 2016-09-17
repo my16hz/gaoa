@@ -13,7 +13,7 @@ var LHSRTXReportPage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
 
-        this.dataTable = this._createTable('#tableWrapper', '/rtx/directive/list', [
+        this.dataTable = this._createTable('#tableWrapper', '/rtx/report/list', [
             {field: 'checkbox', checkbox: true},
             {title: '网站名称', field: 'website', alwaysDisplay: true},
             {title: '网址', field: 'url'},
