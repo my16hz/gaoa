@@ -41,7 +41,7 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
                             editor.setDisabled();
                         });
 
-                        modal.find('a.link-export').attr('href', '/daily/export/' + report.id);
+                        modal.find('a.btn-primary').attr('href', '/daily/export/' + report.id);
 
                         self._showModal(modal, self.dataTable);
                     }
@@ -51,7 +51,6 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
         this.editor = this._createEditor('#editorWrapper');
     },
     events: {
-        'click #dataModal .btn-primary': 'exportDaily',
         'click #dataModal .btn-default': 'closeDataModal'
     },
 
