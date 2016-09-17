@@ -114,7 +114,7 @@ function getSVReport (req, res) {
 function exportSocialReport (req, res) {
     var id = req.params.id;
 
-    service.findSocialVoiceDetail(id, function (err, voice) {
+    service.getSVReportDetail(id, function (err, report) {
         if (err) {
             errhandler.internalException(res, err)
         } else {
@@ -122,8 +122,8 @@ function exportSocialReport (req, res) {
                 res
                     .set({
                         'content-type': 'application/msword',
-                        'content-disposition': 'attachment;filename="' + encodeURIComponent('网络舆情日报第' + id + '期') + '.doc"'
-                    }).send(HtmlDocx.asBlob(voice[0].report_content));
+                        'content-disposition': 'attachment;filename="' + encodeURIComponent('社会舆情日报第' + id + '期') + '.doc"'
+                    }).send(HtmlDocx.asBlob(report[0].content));
             } catch (e) {
                 errhandler.internalException(res, e);
             }

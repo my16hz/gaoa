@@ -11,12 +11,12 @@ var dbpool = require('../../utilities/dbpool');
 
 module.exports = {
     getSocialVoices: getSocialVoices,
-    findSocialVoiceDetail: findSocialVoiceDetail,
     saveSocialVoice: saveSocialVoice,
     updateSocialVoice: updateSocialVoice,
     acceptSocialVoice: acceptSocialVoice,
     saveSVReport: saveSVReport,
-    getSVReport: getSVReport
+    getSVReport: getSVReport,
+    getSVReportDetail: getSVReportDetail
 };
 
 function getSocialVoices (uid, priority, callback) {
@@ -40,25 +40,6 @@ function getSocialVoices (uid, priority, callback) {
 
             ps.execute(params, function (err, rs) {
                 callback(err, rs);
-
-                ps.unprepare(function (err) {
-                    err && console.error(err);
-                });
-            });
-        });
-}
-
-function findSocialVoiceDetail (voice_id, callback) {
-    var sql_stmt = "SELECT * FROM tb_socialvoice where [id] = " + voice_id;
-    var objParams = {};
-    var ps = dbpool.preparedStatement()
-        .prepare(sql_stmt, function (err) {
-            if (err) {
-                return callback(err, null);
-            }
-
-            ps.execute(objParams, function (err, recordset) {
-                callback(err, recordset);
 
                 ps.unprepare(function (err) {
                     err && console.error(err);
@@ -193,3 +174,21 @@ function getSVReport (callback) {
         });
 }
 
+function getSVReportDetail (voice_id, callback) {
+    var sql_stmt = "SELECT * FROM tb_sv_report where [id] = " + voice_id;
+    var objParams = {};
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
