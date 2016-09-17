@@ -195,6 +195,109 @@ module.exports = {
         '</p>' +
         '<p>' +
         '<br/>' +
-        '</p>'
+        '</p>',
+        sendmessage: '',
+        recvmessage: '<style type="text/css">' +
+        '.Tab { border-collapse:collapse; width:650px; height:300px;}' +
+        '.Tab td{ border:solid 2px #000000}' +
+        '</style>' +
+        '<table cellspacing="0" class="Tab">' +
+        '    <colgroup>' +
+        '        <col width="72" span="6" style="width:54pt"/>' +
+        '    </colgroup>' +
+        '    <tbody>' +
+        '        <tr style="height:14.25pt" class="firstRow">' +
+        '            <td colspan="6" width="324" style="text-align: center;">' +
+        '                <strong>广安市网络舆情中心收文处理笺</strong>' +
+        '            </td>' +
+        '        </tr>' +
+        '        <tr style="height:14.25pt">' +
+        '            <td rowspan="2" style="border-top: none;">' +
+        '                <strong>文件标题</strong>' +
+        '            </td>' +
+        '            <td colspan="5" rowspan="2">%title%</td>' +
+        '        </tr>' +
+        '        <tr style="height:14.25pt"></tr>' +
+        '        <tr style="height:14.25pt">' +
+        '            <td rowspan="4" style="border-top: none;">' +
+        '                <strong>领导批示</strong>' +
+        '            </td>' +
+        '            <td colspan="5" rowspan="4">%comment%</td>' +
+        '        </tr>' +
+        '        <tr style="height:14.25pt"></tr>' +
+        '        <tr style="height:14.25pt"></tr>' +
+        '        <tr style="height:14.25pt"></tr>' +
+        '        <tr style="height:14.25pt">' +
+        '            <td style="border-top: none;">' +
+        '                <strong>收文日期</strong>' +
+        '            </td>' +
+        '            <td style="border-top:none;border-left:none">%recv_date%</td>' +
+        '            <td style="border-top:none;border-left:none">' +
+        '                <strong>收文编号</strong>' +
+        '            </td>' +
+        '            <td colspan="3" width="162" style="border-left: none;">%message_id%</td>' +
+        '        </tr>' +
+        '        <tr style="height:14.25pt">' +
+        '            <td style="border-top: none;">' +
+        '                <strong>来文单位</strong>' +
+        '            </td>' +
+        '            <td style="border-top:none;border-left:none">%origin_department%</td>' +
+        '            <td style="border-top:none;border-left:none">' +
+        '                <strong>原文字号</strong>' +
+        '            </td>' +
+        '            <td colspan="3" width="162" style="border-left: none;">%origin_id%</td>' +
+        '        </tr>' +
+        '        <tr style="height:14.25pt">' +
+        '            <td style="border-top: none;">' +
+        '                <strong>秘密等级</strong>' +
+        '            </td>' +
+        '            <td style="border-top:none;border-left:none">%secret_level%</td>' +
+        '            <td style="border-top:none;border-left:none">' +
+        '                <strong>批示领导</strong>' +
+        '            </td>' +
+        '            <td style="border-top:none;border-left:none">%approved_user%</td>' +
+        '            <td style="border-top:none;border-left:none">' +
+        '                <strong>从何领取</strong>' +
+        '            </td>' +
+        '            <td style="border-top:none;border-left:none">%from_department%</td>' +
+        '        </tr>' +
+        '        <tr style="height:14.25pt">' +
+        '            <td style="border-top: none;">' +
+        '                <strong>原文日期</strong>' +
+        '            </td>' +
+        '            <td style="border-top:none;border-left:none">%origin_date%</td>' +
+        '            <td style="border-top:none;border-left:none">' +
+        '                <strong>份数</strong>' +
+        '            </td>' +
+        '            <td style="border-top:none;border-left:none">%copies%</td>' +
+        '            <td style="border-top:none;border-left:none">' +
+        '                <strong>领取人</strong>' +
+        '            </td>' +
+        '            <td style="border-top:none;border-left:none">%from_user%</td>' +
+        '        </tr>' +
+        '        <tr style="height:14.25pt">' +
+        '            <td rowspan="3" style="border-top: none;">' +
+        '                <strong>拟办意见</strong>' +
+        '            </td>' +
+        '            <td colspan="5" rowspan="3">%content%</td>' +
+        '        </tr>' +
+        '        <tr style="height:14.25pt"></tr>' +
+        '        <tr style="height:14.25pt"></tr>' +
+        '        <tr style="height:14.25pt">' +
+        '            <td rowspan="3" style="border-top: none;">' +
+        '                <strong>办理结果</strong>' +
+        '            </td>' +
+        '            <td colspan="5" rowspan="3">%result%</td>' +
+        '        </tr>' +
+        '        <tr style="height:14.25pt"></tr>' +
+        '        <tr style="height:14.25pt"></tr>' +
+        '        <tr style="height:14.25pt">' +
+        '            <td colspan="6">' +
+        '                <strong>注:请承办人员速办并记录后交档案室处理。</strong>' +
+        '            </td>' +
+        '        </tr>' +
+        '    </tbody>' +
+        '</table>',
+        notify: ''
     }
 };
