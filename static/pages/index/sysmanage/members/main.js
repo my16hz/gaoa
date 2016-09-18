@@ -195,7 +195,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
             $('.form-group-password')[data.id ? 'hide' : 'show']().find('input').prop('disabled', !!data.id);
 
             if (data.id) {
-                !$.isArray(data.role) && (data.role = data.role.split(','));
+                data.role && !$.isArray(data.role) && (data.role = data.role.split(','));
                 self._setFormControlValues(jqform, data);
             }
 
