@@ -192,6 +192,8 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
         function _fillFormValuesAndOpenModal () {
             $('input[name="id"]', jqform).prop('readonly', !!data.id);
 
+            $('.form-group-password')[data.id ? 'hide' : 'show']().find('input').prop('disabled', !!data.id);
+
             if (data.id) {
                 !$.isArray(data.role) && (data.role = data.role.split(','));
                 self._setFormControlValues(jqform, data);
@@ -261,11 +263,11 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
             name: function (name) {
                 return !!name.length;
             },
-            password: function (pwd) {
-                return !!pwd.length;
+            password: function (pwd, values) {
+                return values.isNew || !!pwd.length;
             },
             repassword: function (repwd, values) {
-                return !!repwd.length && values.password == repwd;
+                return values.isNew || (!!repwd.length && values.password == repwd);
             }
         }, function (name, check) {
             if (!check(values[name], values)) {
