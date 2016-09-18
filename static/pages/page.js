@@ -45,7 +45,7 @@ var LHSBasicPage = {
         });
 
         $.each(this.__timepickersCaches__, function () {
-            this.data("DateTimePicker").destroy();
+            //this.data("DateTimePicker").destroy();
         });
 
         this.__tableCaches__.length = 0;

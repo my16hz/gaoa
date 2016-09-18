@@ -80,7 +80,8 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         var svids = [];
         for (var idx in ids) {
             var id = parseInt(idx) + 1;
-            content += '<p style="font-size:21px;font-family: 黑体;font-weight:normal">'+ id + '. ' + ids[idx].title + '</p>';
+            content += '<p style="font-size:21px;font-family: 黑体;font-weight:normal">'+ id + '. ' + ids[idx].title + '  '
+                + (ids[idx].report_content ? ids[idx].report_content : ids[idx].origin_content) + '</p>';
             svids.push(ids[idx].id);
         }
         editor.ready(function () {
