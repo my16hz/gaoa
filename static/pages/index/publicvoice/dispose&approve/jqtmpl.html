@@ -10,20 +10,8 @@
                 <div class="modal-body">
                     <form class="form-horizontal">
                         <input type="hidden" name="id" class="form-control">
-                        <div class="form-group form-group-sm">
-                            <label class="col-xs-2 control-label">审批结果：</label>
-                            <div class="col-xs-2">
-                                <select name="type" class="form-control">
-                                    <option value="3" selected="selected">转</option>
-                                    <option value="4">转发</option>
-                                    <option value="5">阅存</option>
-                                </select>
-                            </div>
-                            <label class="col-xs-2 control-label">审批意见：</label>
-                            <div class="col-xs-6">
-                                <input type="text" name="content" class="form-control" value="请处置。">
-                            </div>
-                        </div>
+                        <input type="hidden" name="type" class="form-control">
+                        <input type="hidden" name="content" class="form-control">
                         <div class="form-group form-group-sm">
                             <label class="col-xs-2 control-label">批示详情：</label>
                             <div id="editorWrapper" class="col-xs-10"></div>
@@ -31,8 +19,10 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default">关闭</button>
-                    <button type="button" class="btn btn-primary">保存</button>
+                    <button id="btnOK" type="button" class="btn btn-default">转</button>
+                    <button id="btnDeny" type="button" class="btn btn-default">转发</button>
+                    <button id="btnDelay" type="button" class="btn btn-default">阅存</button>
+                    <button type="button" class="btn btn-primary">取消</button>
                 </div>
             </div>
         </div>

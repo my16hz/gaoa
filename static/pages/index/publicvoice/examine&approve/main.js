@@ -66,8 +66,10 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
         this.editor = this._createEditor('#editorWrapper');
     },
     events: {
-        'click #dataModal .btn-default': 'closeDataModal',
-        'click #dataModal .btn-primary': 'apply'
+        'click #dataModal .btn-primary': 'closeDataModal',
+        'click #btnOK': 'applyOK',
+        'click #btnDeny': 'applyDeny',
+        'click #btnDelay': 'applyDelay'
     },
 
     closeDataModal: function () {
@@ -76,9 +78,19 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
         this._clearFormControlValues(modal.find('form'))
             ._closeModal(modal, this.dataTable);
     },
-    apply: function () {
+    applyOK: function () {
+        this._apply(0, "同意");
+    },
+    applyDeny: function () {
+        this._apply(1, "不同意");
+    },
+    applyDelay: function () {
+        this._apply(2, "暂缓通过");
+    },
+    _apply: function (result, content) {
         var dataTable = this.dataTable;
-
+        var modal = $('#dataModal');
+        this._setFormControlValues(modal.find('form'), {"approveResult":result, "approveContent": content});
         this._sendRequest({
             type: 'post',
             url: '/application/save',
@@ -88,13 +100,9 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
             }
         });
     },
-
     _validator: function () {
         var jqform = $('#dataModal form');
         var values = this._getFormControlValues(jqform);
-
-        values['content'] = this.editor.getContent();
-
         return values;
     }
 });

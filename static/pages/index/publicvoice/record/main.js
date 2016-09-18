@@ -29,7 +29,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 }
             },
             {
-                title: '状态', field: 'state',
+                title: '状态', field: 'state', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
                         case 0:

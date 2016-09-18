@@ -15,6 +15,8 @@ module.exports = {
     findDailyDetail: findDailyDetail,
     /* 创建日报 */
     createDaily: createDaily,
+    /* 更新日报 */
+    updateDaily: updateDaily,
     /* 获取日报当前期数 */
     getCurrentDailyID: getCurrentDailyID,
     /* 查询日报中舆情列表 */
@@ -101,9 +103,7 @@ function createDaily (uid, daily, callback) {
         "UPDATE tb_sys_config SET daily_id = @id, daily_issue_id = @issue_id;";*/
     var sql_stmt =
         "IF NOT EXISTS (SELECT * FROM tb_daily WHERE id = @id) " +
-        "BEGIN " +
         "    INSERT INTO tb_daily ([id],[issue_id],[content],[createuser],[createtime],[pvids]) VALUES (@id, @issue_id, @content, @createuser, @createtime, @pvids); " +
-        "END " +
         "ELSE " +
         "    UPDATE tb_daily SET [issue_id] = @issue_id, [content] = @content, [createuser] = @createuser, [pvids] = @pvids WHERE [id] = @id; " +
         "UPDATE tb_sys_config SET [value] = @id WHERE [id] = 'daily_id';" +
@@ -148,6 +148,10 @@ function createDaily (uid, daily, callback) {
         });
 }
 
+function updateDaily (daily, callback) {
+
+}
+
 /**
  * 获取日报当前期号
  * @param callback {Function}  回调函数(err, {issue_id:{Number}舆情期数, id:总期数})
@@ -181,6 +185,7 @@ function getDailyPVList (did, callback) {
         " LEFT JOIN tb_pv_comment " +
         " ON tb_publicvoice.id = tb_pv_comment.id " +
         " WHERE tb_daily_pv.pvid = tb_publicvoice.id AND tb_daily_pv.did = @did;";
+    console.log(sql_stmt);
     var objParams = {'did': did};
     var ps = dbpool.preparedStatement()
         .input('did', sql.Int)
