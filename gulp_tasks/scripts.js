@@ -84,6 +84,7 @@ module.exports = function (gulp, plugins, isdebug) {
 
     Object.keys(SUB_PAGES).forEach(function (module, name) {
         var dependencies = [
+            DIR_SRC.coreJs + 'es5-shim-4.5.9.js',
             DIR_SRC.coreJs + 'jquery-1.12.4.js',
             DIR_SRC.coreJs + 'bootstrap-3.3.5.js',
             DIR_SRC.coreJs + 'moment-2.14.1.js',
