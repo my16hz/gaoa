@@ -155,9 +155,6 @@ module.exports = {
         '<p>' +
         '    %rdht_title%' +
         '</p>' +
-        '<p style="margin-top:40px;margin-right:0;margin-bottom:16px;margin-left:0;text-align:center">' +
-        '    <span style="font-size:29px;font-family:方正小标宋简体">≡本期详情≡</span>' +
-        '</p>' +
         '<p>' +
         '    <br/>' +
         '</p>' +

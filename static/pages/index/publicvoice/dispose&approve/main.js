@@ -64,8 +64,10 @@ var LHSDisposeAndApprovePage = $.extend({}, LHSBasicPage, {
         this.editor = this._createEditor('#editorWrapper');
     },
     events: {
-        'click #dataModal .btn-default': 'closeDataModal',
-        'click #dataModal .btn-primary': 'apply'
+        'click #dataModal .btn-primary': 'closeDataModal',
+        'click #btnOK': 'applyOK',
+        'click #btnDeny': 'applyDeny',
+        'click #btnDelay': 'applyDelay'
     },
 
     closeDataModal: function () {
@@ -74,9 +76,19 @@ var LHSDisposeAndApprovePage = $.extend({}, LHSBasicPage, {
         this._clearFormControlValues(modal.find('form'))
             ._closeModal(modal, this.dataTable);
     },
-    apply: function () {
+    applyOK: function () {
+        this._apply(3, "转");
+    },
+    applyDeny: function () {
+        this._apply(4, "转发");
+    },
+    applyDelay: function () {
+        this._apply(5, "阅存");
+    },
+    _apply: function (type, content) {
         var dataTable = this.dataTable;
-
+        var modal = $('#dataModal');
+        this._setFormControlValues(modal.find('form'), {"type":type, "content": content});
         this._sendRequest({
             type: 'post',
             url: '/dispose/comment/approve',

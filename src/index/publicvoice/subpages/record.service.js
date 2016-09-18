@@ -227,11 +227,13 @@ function importPubVoices (uid, gid, path, callback) {
 
 function removePubVoices (pvids, callback) {
     var objParams = {};
-    var sql_stmt = "DELETE FROM tb_publicvoice WHERE id in (%pvids%);";
+    var sql_stmt = "DELETE FROM tb_pv_approved WHERE pvid in (%pvids%);DELETE FROM tb_publicvoice WHERE id in (%ids%);";
     var ps = null;
 
     sql_stmt = sql_stmt.replace("%pvids%", "\'" + pvids.join("\',\'") + "\'");
+    sql_stmt = sql_stmt.replace("%ids%", "\'" + pvids.join("\',\'") + "\'");
 
+    console.log(sql_stmt);
     ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
             if (err) {

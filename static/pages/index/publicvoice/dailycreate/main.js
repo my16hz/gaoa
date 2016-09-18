@@ -121,8 +121,10 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
     _showDetailModal: function (pubvoice, readonly) {
         var editor = this.editor;
         var modal = $('#dataModal');
+        var jqform = modal.find('form');
         var classHandler = readonly ? 'addClass' : 'removeClass';
 
+        this._setFormControlValues(jqform, pubvoice);
         editor.ready(function () {
             editor.setContent(pubvoice.content == null ? '' : pubvoice.content);
             editor[readonly ? 'setDisabled' : 'setEnabled']();
@@ -142,13 +144,12 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
             done: function (rs) {
                 var template = rs.template;
                 var total_id = 0, issue_id = 0;
-                var daily = self._buildDaily(template, total_id, issue_id, pubvoices);
-                var pvids = [];
-
                 if (rs.issue) {
                     total_id = parseInt(rs.issue.daily_id) + 1;
                     issue_id = parseInt(rs.issue.daily_issue_id) + 1;
                 }
+                var daily = self._buildDaily(template, total_id, issue_id, pubvoices);
+                var pvids = [];
 
                 for (var idx in pubvoices) {
                     pvids.push(pubvoices[idx].id);
@@ -184,8 +185,15 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
                 content = pv.feedback_content;
             }
 
+            if (pv.content.indexOf('<p>') == 0) {
+                pv.content = pv.content.substring(3, content.length - 4);
+            }
+
             if (pv.item == '正面舆情') {
-                zmyq_title += title;
+                if (pv.content) {
+                    zmyq_title += title;
+                }
+
                 zmyq_content += this._buildZMYQContent(pv);
             } else if (pv.item == '负面舆情') {
                 fmyq_title += title;
@@ -210,12 +218,16 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
     },
     _buildZMYQContent: function (pv) {
         return '<p><span style="font-size: 20px;font-family: 黑体">■ ' + pv.title
-            + '</span> <span style="font-size:20px;font-family:仿宋_GB2312">'
+            + '</span> <span style="font-size:20px;font-family:仿宋_GB2312">&nbsp;'
             + pv.content + '</span></p><p style="text-align: right; text-indent: 40px; line-height: 33px;"><span style="font-size:20px;font-family:仿宋_GB2312">——'
             + pv.from_website + '</span></p>';
 
     },
     _buildFMYQContent: function (pv) {
+        var content = pv.content;
+        if (content.indexOf('<p>') == 0) {
+            content = content.substring(3, content.length - 4);
+        }
         return '<p style="text-align:center;line-height:33px"><span style="font-size:24px;font-family:方正小标宋简体">' +
             pv.title +
             '</span></p><p style="text-align:center;line-height:33px"><span style="font-size:20px;font-family:仿宋_GB2312">' +
@@ -224,21 +236,21 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
             pv.review_count +
             '&nbsp; &nbsp; </span><span style="font-size:20px;font-family:仿宋_GB2312">跟帖数：' +
             pv.fellow_count +
-            '</span></p><p><br/></p><p><span style="font-size:20px;font-family:仿宋_GB2312"> &nbsp; &nbsp;' +
+            '</span></p><p><br/></p><p><span style="font-size:20px;font-family:仿宋_GB2312"> &nbsp;' +
             pv.content +
             '</span></p><p><br/></p>';
     },
     _buildYQZZContent: function (pv) {
         return '<p><span style="font-size: 20px;font-family: 黑体">■' +
             pv.title +
-            '</span></p><p style="text-indent: 40px; line-height: 33px;">' +
+            '</span></p><p style="text-indent: 40px; line-height: 33px;">&nbsp;' +
             pv.content +
             '</p>';
     },
     _buildRDHTContent: function (pv) {
         return '<p><span style="font-size: 20px;font-family: 黑体">■' +
             pv.title +
-            '</span></p><p style="text-indent: 40px; line-height: 33px;">' +
+            '</span></p><p style="text-indent: 40px; line-height: 33px;">&nbsp;' +
             pv.content +
             '</p>';
     },

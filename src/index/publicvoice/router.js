@@ -51,6 +51,7 @@ module.exports = function () {
         .get('/dispose/comment/list', controller.getUnapprovedComment)
 
         // noitfy page
+        /* 查询指定ID对应的通报舆情列表 */
         .get('/notify/list', controller.getNotifyPVByUid)
         .post('/notify/save', controller.saveNotify)
 
