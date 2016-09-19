@@ -23,10 +23,10 @@ var LHSRecvMessagePage = $.extend({}, LHSBasicPage, {
             },
             {title: '收文编号', field: 'message_id', sortable: true, order: 'desc'},
             {title: '来文单位', field: 'origin_department', sortable: true, order: 'desc'},
-            {title: '从何领取', field: 'from_department', sortable: true, order: 'desc'},
             {title: '秘密等级', field: 'secret_level', sortable: true, order: 'desc'},
             {title: '批示领导', field: 'approved_user', sortable: true, order: 'desc'},
             {title: '领取人', field: 'from_user', sortable: true, order: 'desc'},
+            {title: '从何领取', field: 'from_department', sortable: true, order: 'desc'},
             {
                 title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
