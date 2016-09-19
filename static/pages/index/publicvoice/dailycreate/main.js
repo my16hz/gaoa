@@ -228,9 +228,9 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
         if (content.indexOf('<p>') == 0) {
             content = content.substring(3, content.length - 4);
         }
-        return '<p style="text-align:center;line-height:33px"><span style="font-size:24px;font-family:方正小标宋简体">' +
+        return '<p style="text-align:center;line-height:33px"><strong><span style="font-size:24px;font-family:方正小标宋简体">' +
             pv.title +
-            '</span></p><p style="text-align:center;line-height:33px"><span style="font-size:20px;font-family:仿宋_GB2312">' +
+            '</span></strong></p><p style="text-align:center;line-height:33px"><span style="font-size:20px;font-family:仿宋_GB2312">' +
             pv.from_website +
             '</span></p><p style="text-align:center;line-height:33px"><span style="font-size:20px;font-family:仿宋_GB2312">浏览人数：' +
             pv.review_count +
@@ -241,16 +241,16 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
             '</span></p><p><br/></p>';
     },
     _buildYQZZContent: function (pv) {
-        return '<p><span style="font-size: 20px;font-family: 黑体">■' +
+        return '<p><strong><span style="font-size: 20px;font-family: 黑体">■' +
             pv.title +
-            '</span></p><p style="text-indent: 40px; line-height: 33px;">&nbsp;' +
+            '</span></strong></p><p style="text-indent: 40px; line-height: 33px;">&nbsp;' +
             pv.content +
             '</p>';
     },
     _buildRDHTContent: function (pv) {
-        return '<p><span style="font-size: 20px;font-family: 黑体">■' +
+        return '<p><strong><span style="font-size: 20px;font-family: 黑体">■' +
             pv.title +
-            '</span></p><p style="text-indent: 40px; line-height: 33px;">&nbsp;' +
+            '</span></strong></p><p style="text-indent: 40px; line-height: 33px;">&nbsp;' +
             pv.content +
             '</p>';
     },

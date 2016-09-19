@@ -14,6 +14,12 @@ module.exports = {
     removeSendMsg: removeSendMsg,
     commitSendMsg: commitSendMsg,
 
+    getRecvMsg: getRecvMsg,
+    saveRecvMsg: saveRecvMsg,
+    updateRecvMsg: updateRecvMsg,
+    removeRecvMsg: removeRecvMsg,
+    commitRecvMsg: commitRecvMsg,
+
     getTemplate: getTemplate,
     getNotifyList: getNotifyList,
     saveMessage: saveMessage,
@@ -24,7 +30,29 @@ module.exports = {
 
 function getSendMsg (callback) {
     var params = {};
-    var sql_stmt = "select * from tb_so_sendmessage order by createtime desc;";
+    var sql_stmt = "SELECT TOP 1000 * FROM tb_so_sendmessage ORDER BY createtime desc;";
+
+    console.log(sql_stmt);
+
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, []);
+            }
+
+            ps.execute(params, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function getRecvMsg (callback) {
+    var params = {};
+    var sql_stmt = "SELECT TOP 1000 * FROM tb_so_recvmessage ORDER BY createtime desc;";
 
     console.log(sql_stmt);
 
@@ -85,6 +113,46 @@ function saveSendMsg(obj, callback) {
         });
 }
 
+function saveRecvMsg(obj, callback) {
+    var sql_stmt = 'INSERT INTO tb_so_recvmessage ([title], [recv_date], [message_id], [origin_department], [origin_id], [secret_level], [approved_user], [from_department], [origin_date], [copies], [from_user], [content], [comment], [result], [state], [createuser], [createtime]) ' +
+        'VALUES (@title, @recv_date, @message_id, @origin_department, @origin_id, @secret_level, @approved_user, @from_department, @origin_date, @copies, @from_user, @content, @comment, @result, @state, @createuser, @createtime);' +
+        "UPDATE tb_sys_config SET [value] = @smartoffice_recvmessage_id WHERE [id] = 'smartoffice_recvmessage_id';";
+    var objParams = obj;
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input('title', sql.NVarChar)
+        .input('recv_date', sql.Date)
+        .input('message_id', sql.NVarChar)
+        .input('origin_department', sql.NVarChar)
+        .input('origin_id', sql.NVarChar)
+        .input('secret_level', sql.NVarChar)
+        .input('approved_user', sql.NVarChar)
+        .input('from_department', sql.NVarChar)
+        .input('origin_date', sql.Date)
+        .input('copies', sql.Int)
+        .input('from_user', sql.NVarChar)
+        .input('content', sql.NVarChar)
+        .input('comment', sql.NVarChar)
+        .input('result', sql.NVarChar)
+        .input('state', sql.Int)
+        .input("createuser", sql.VarChar)
+        .input("createtime", sql.DateTime2)
+        .input("smartoffice_recvmessage_id", sql.VarChar)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
 function updateSendMsg(obj, callback) {
     var sql_stmt = "UPDATE tb_so_sendmessage SET [sign] = @sign, [countersign] = @countersign, [state] = 2 " +
                     "WHERE id = @id; ";
@@ -94,9 +162,40 @@ function updateSendMsg(obj, callback) {
     }
 }
 
+function updateRecvMsg(obj, callback) {
+    var sql_stmt = "UPDATE tb_so_sendmessage SET [sign] = @sign, [countersign] = @countersign, [state] = 2 " +
+        "WHERE id = @id; ";
+    var objParams = {
+        "sign" : obj["sign"]
+
+    }
+}
+
 function removeSendMsg(ids, callback) {
     var objParams = {};
     var sql_stmt = "DELETE FROM tb_so_sendmessage WHERE id in (%ids%);";
+
+    sql_stmt = sql_stmt.replace("%ids%",  ids);
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, false);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function removeRecvMsg(ids, callback) {
+    var objParams = {};
+    var sql_stmt = "DELETE FROM tb_so_recvmessage WHERE id in (%ids%);";
 
     sql_stmt = sql_stmt.replace("%ids%",  ids);
     console.log(sql_stmt);
@@ -137,8 +236,29 @@ function commitSendMsg(ids, callback) {
         });
 }
 
+function commitRecvMsg(ids, callback) {
+    var objParams = {};
+    var sql_stmt = "UPDATE tb_so_recvmessage SET [state] = 1 WHERE id in ( %ids% ); ";
+    sql_stmt = sql_stmt.replace("%ids%",  ids);
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, false);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
 function getTemplate(callback) {
-    var sql_stmt = "SELECT * FROM tb_sys_config WHERE id in ('smartoffice_sendmessage_id', 'smartoffice_recvmessage_id', 'smartoffice_notify_id');";
+    var sql_stmt = "SELECT * FROM tb_sys_config WHERE id IN ('smartoffice_sendmessage_id', 'smartoffice_recvmessage_id', 'smartoffice_notify_id');";
     var objParams = {};
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {

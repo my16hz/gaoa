@@ -12,6 +12,8 @@
                     return LHSDisposePage.run();
                 case 'report':
                     return LHSReportPage.run();
+                case 'statistics':
+                    return LHSStatisticsPage.run();
             }
         });
 
