@@ -122,7 +122,7 @@ function exportSocialReport (req, res) {
                 res
                     .set({
                         'content-type': 'application/msword',
-                        'content-disposition': 'attachment;filename="' + encodeURIComponent('社会舆情日报第' + id + '期') + '.doc"'
+                        'content-disposition': 'attachment;filename="' + encodeURIComponent(report.title) + '.doc"'
                     }).send(HtmlDocx.asBlob(report[0].content));
             } catch (e) {
                 errhandler.internalException(res, e);

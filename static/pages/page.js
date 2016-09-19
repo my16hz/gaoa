@@ -44,13 +44,8 @@ var LHSBasicPage = {
             this.id && this.destroy();
         });
 
-        $.each(this.__timepickersCaches__, function () {
-            this.data("DateTimePicker").destroy();
-        });
-
         this.__tableCaches__.length = 0;
         this.__editorCaches__.length = 0;
-        this.__timepickersCaches__.length = 0;
 
         return this;
     },
@@ -331,19 +326,18 @@ var LHSBasicPage = {
     _createTimepicker: function (input, format, defval) {
         var picker = $(input).datetimepicker({
             format: format || 'YYYY-MM-DD',
-            useCurrent: defval || true
+            useCurrent: defval || true,
+            locale: 'zh_CN'
         });
 
         defval && picker.val(defval);
-
-        this.__timepickersCaches__.push(picker);
 
         return {
             value: function () {
                 return picker.val();
             },
             getTime: function () {
-                return moment(picker.val, format).getTime();
+                return moment(picker.val(), format).getTime();
             },
             onChange: function (cb) {
                 picker.on('dp.change', $.proxy(cb, self));
