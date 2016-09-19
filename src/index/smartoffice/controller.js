@@ -10,10 +10,17 @@ var service = require('./service');
 
 module.exports = {
     pageSmartOffice: pageSmartOffice,
+
     getSendMsg: getSendMsg,
     saveSendMsg: saveSendMsg,
     deleteSendMsg: deleteSendMsg,
     commitSendMsg: commitSendMsg,
+
+    getRecvMsg: getRecvMsg,
+    saveRecvMsg: saveRecvMsg,
+    deleteRecvMsg: deleteRecvMsg,
+    commitRecvMsg: commitRecvMsg,
+
     getTemplate: getTemplate,
     getNotifyList: getNotifyList,
     saveMessage: saveMessage,
@@ -29,6 +36,17 @@ function pageSmartOffice (req, res) {
 
 function getSendMsg (req, res) {
     service.getSendMsg(function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function getRecvMsg (req, res) {
+    service.getRecvMsg(function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -71,6 +89,41 @@ function saveSendMsg (req, res) {
     });
 }
 
+
+function saveRecvMsg (req, res) {
+    var uid = req.session[userkey].id;
+    var obj = req.body;
+    var msg = {
+        'id': obj['id'],
+        'title' : obj['title'],
+        'recv_date' : obj['recv_date'],
+        'message_id' : obj['message_id'],
+        'origin_department' : obj['origin_department'],
+        'origin_id' : obj['origin_id'],
+        'secret_level' : obj['secret_level'],
+        'approved_user' : obj['approved_user'],
+        'from_department' : obj['from_department'],
+        'origin_date' : obj['origin_date'],
+        'copies' : obj['copies'],
+        'from_user' : obj['from_user'],
+        'content' : obj['content'],
+        'comment' : obj['comment'],
+        'result' : obj['result'],
+        'state' : 0,
+        'createuser' : uid,
+        'createtime' : new Date(),
+        'smartoffice_recvmessage_id' : obj['smartoffice_recvmessage_id']
+    }
+
+    service.saveRecvMsg(msg, function (err) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
+}
+
 function deleteSendMsg(req, res) {
     var id = req.body.id;
 
@@ -83,10 +136,46 @@ function deleteSendMsg(req, res) {
     });
 }
 
+function deleteRecvMsg(req, res) {
+    var id = req.body.id;
+
+    service.removeRecvMsg(id, function (err) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
+}
+
+function deleteRecvMsg(req, res) {
+    var id = req.body.id;
+
+    service.removeRecvMsg(id, function (err) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
+}
+
 function commitSendMsg(req, res) {
     var ids = req.body.ids;
 
     service.commitSendMsg(ids, function (err) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
+}
+
+function commitRecvMsg(req, res) {
+    var ids = req.body.ids;
+
+    service.commitRecvMsg(ids, function (err) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

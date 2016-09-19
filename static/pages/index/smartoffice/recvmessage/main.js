@@ -15,29 +15,30 @@ var LHSRecvMessagePage = $.extend({}, LHSBasicPage, {
         this.dataTable = this._createTable('#tableWrapper', '/smartoffice/recvmsg/list', [
             {field: 'checkbox', checkbox: true},
             {title: '文件标题', field: 'title', alwaysDisplay: true},
-            {title: '主送机关', field: 'major_department'},
-            {title: '抄送机关', field: 'cc_department'},
-            {title: '发文字号', field: 'message_id'},
-            {title: '秘密等级', field: 'secret_level'},
-            {title: '紧急程度', field: 'urgent_level'},
-            {title: '拟稿人', field: 'draft_user'},
+            {
+                title: '收文时间', field: 'recv_date', sortable: true, order: 'desc',
+                formatter: function (val) {
+                    return moment(val).format('YYYY年MM月DD日');
+                }
+            },
+            {title: '收文编号', field: 'message_id', sortable: true, order: 'desc'},
+            {title: '来文单位', field: 'origin_department', sortable: true, order: 'desc'},
+            {title: '从何领取', field: 'from_department', sortable: true, order: 'desc'},
+            {title: '秘密等级', field: 'secret_level', sortable: true, order: 'desc'},
+            {title: '批示领导', field: 'approved_user', sortable: true, order: 'desc'},
+            {title: '领取人', field: 'from_user', sortable: true, order: 'desc'},
             {
                 title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
                     return moment(val).format('YYYY年MM月DD日');
                 }
             },
-            {   title: '状态', field: 'state',
+            {   title: '状态', field: 'state', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
-                        case 0:
-                            return '未提交';
-                        case 1:
-                            return '待审核';
-                        case 2:
-                            return '审核通过';
-                        case 3:
-                            return '审核不通过';
+                        case 0: return '未提交';
+                        case 1: return '待签发';
+                        case 2: return '已签发';
                     }
                 }
             },
@@ -114,7 +115,7 @@ var LHSRecvMessagePage = $.extend({}, LHSBasicPage, {
 
         this._sendRequest({
             type: 'post',
-            url: '/smartoffice/sendmsg/save',
+            url: '/smartoffice/recvmsg/save',
             validator: $.proxy(this._validator, this),
             done: function () {
                 dataTable.expand().refresh();
@@ -136,7 +137,7 @@ var LHSRecvMessagePage = $.extend({}, LHSBasicPage, {
         pids.length ?
             bootbox.confirm('确定提交审批？', function (rs) {
                 rs && self._sendRequest({
-                    type: 'post', url: '/smartoffice/sendmsg/commit',
+                    type: 'post', url: '/smartoffice/recvmsg/commit',
                     data: {ids: pids.join()},
                     done: function () {
                         dataTable.refresh();
@@ -157,7 +158,7 @@ var LHSRecvMessagePage = $.extend({}, LHSBasicPage, {
     },
     _ajaxDelete: function(id, done) {
         this._sendRequest({
-            type: 'delete', url: '/smartoffice/sendmsg/delete',
+            type: 'delete', url: '/smartoffice/recvmsg/delete',
             data: {id: id},
             done: done
         });
