@@ -15,10 +15,10 @@ module.exports = {
         timeout: 3600000 // 1hour,
     },
     db: {
-        server: '182.150.22.119',
-        port: 20492,
-        //server: '172.16.12.204',
-        //port: 9200,
+        //server: '182.150.22.119',
+        //port: 20492,
+        server: '172.16.12.204',
+        port: 9200,
         database: 'gaoa',
         user: 'gaoa',
         password: '1qazXSW@'
@@ -158,27 +158,19 @@ module.exports = {
         '<p>' +
         '    <br/>' +
         '</p>' +
-        '<p style="white-space: normal; line-height: 32px;">' +
-        '    <strong><span style="font-size: 20px; font-family: 楷体_GB2312;">【正面舆情】</span></strong>' +
-        '</p>' +
+        '<p><img src="/editor/template/zmyq.jpg" /></p>' +
         '<p style="white-space: normal;">' +
         '    %zmyq_content%' +
         '</p>' +
-        '<p style="white-space: normal; line-height: 32px;">' +
-        '    <strong><span style="font-size: 20px; font-family: 楷体_GB2312;">【负面舆情】</span></strong>' +
-        '</p>' +
+        '<p><img src="/editor/template/fmyq.jpg" /></p>' +
         '<p style="white-space: normal;">' +
         '    %fmyq_content%' +
         '</p>' +
-        '<p style="white-space: normal; line-height: 32px;">' +
-        '    <strong><span style="font-size: 20px; font-family: 楷体_GB2312;">【舆情追踪】</span></strong>' +
-        '</p>' +
+        '<p><img src="/editor/template/yqzz.jpg" /></p>' +
         '<p style="white-space: normal;">' +
         '    %yqzz_content%' +
         '</p>' +
-        '<p style="white-space: normal; line-height: 32px;">' +
-        '    <strong><span style="font-size: 20px; font-family: 楷体_GB2312;">【热点话题】</span></strong>' +
-        '</p>' +
+        '<p><img src="/editor/template/rdht.jpg" /></p>' +
         '<p>' +
         '    %rdht_content%' +
         '</p>' +
@@ -193,7 +185,8 @@ module.exports = {
         '<p>' +
         '<br/>' +
         '</p>',
-        sendmessage: '<style type="text/css">.Tab { border-collapse:collapse; width:800px; height:300px;}' +
+        sendmessage: '' +
+        '<style type="text/css">.Tab { border-collapse:collapse; width:800px; height:300px;}' +
         '.Tab td{ border:solid 2px #000000}</style>' +
         '<table cellspacing="0" class="Tab">' +
         '    <tbody>' +
