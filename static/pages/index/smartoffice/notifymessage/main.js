@@ -14,9 +14,9 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
         this.initDependencies();
         this.dataTable = this._createTable('#tableWrapper', '/smartoffice/message/list', [
             {field: 'checkbox', checkbox: true},
-            {title: '文件标题', field: 'title', alwaysDisplay: true},
+            {title: '文件标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc'},
             {
-                title: '文件类型', field: 'type',
+                title: '文件类型', field: 'type', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
                         case 1: return '收文签';
@@ -25,12 +25,20 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
                     }
                 }
             },
-            {title: '文件编号', field: 'message_id'},
-            {title: '发布人', field: 'createuser'},
+            {title: '发布人', field: 'createuser', sortable: true, order: 'desc'},
             {
                 title: '发布时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
                     return moment(val).format('YYYY年MM月DD日');
+                }
+            },
+            {
+                title: '状态', field: 'state', sortable: true, order: 'desc',
+                formatter: function (val) {
+                    switch (val) {
+                        case 0: return '未通知';
+                        case 3: return '已通知';
+                    }
                 }
             },
             {
@@ -41,18 +49,16 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
                     switch(args) {
                         case 0 :  return [
                                     '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
-                                    '<a href="javascript:" title="提交审批"><i class="glyphicon glyphicon-check"></i></a>',
                                     '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
                                     ].join('&nbsp;&nbsp;');
-                        case 1 :
-                        case 2 : return ['<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
+                        default: return ['<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
                                         '<a></a>'
                                     ].join('&nbsp;&nbsp;');
                     }
                 },
                 events: {
                     'click a:first': function () {
-                        self.showDataModal(arguments[2]);
+                        self._showDataModal(arguments[2]);
                     },
                     'click a:last': function () {
                         self.removeMsg(arguments[2])
@@ -63,35 +69,24 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
         this.editor = this._createEditor('#editorWrapper');
     },
     events: {
-        'click #btnNotify': 'showNotifyModal',
-        'click #btnSendFile': 'showSendModal',
-        'click #btnRecvFile': 'showRecvModal',
+        'click #btnNotify': 'showDataModal',
+        'click #btnSend': 'showNotifyModal',
         'click #dataModal .btn-default': 'closeDataModal',
-        'click #dataModal .btn-primary': 'saveMessage'
+        'click #dataModal .btn-primary': 'saveMessage',
+        'click #notifyModal .btn-default': 'closeNotifyModal',
+        'click #notifyModal .btn-primary': 'sendNotify'
     },
-    showNotifyModal: function () {
-        var msg = {'type': 3, 'id': null};
-        this.showDataModal(msg);
+    showDataModal: function () {
+        var msg = {'type': 3, 'id': null, 'content':''};
+        this._showDataModal(msg);
     },
-    showSendModal: function () {
-        var msg = {'type': 2, 'id': null};
-        this.showDataModal(msg);
-    },
-    showRecvModal: function () {
-        var msg = {'type': 1, 'id': null};
-        this.showDataModal(msg);
-    },
-    showDataModal: function (msg) {
+    _showDataModal: function (msg) {
         var modal = $('#dataModal');
         var jqform = modal.find('form');
         var self = this;
+        this._setFormControlValues(jqform, msg);
+        this.editor.setContent(msg.content);
 
-        if (msg.id) {
-            this._setFormControlValues(jqform, msg);
-            this.editor.setContent(msg.content);
-        } else {
-            this._buildMsg(msg);
-        }
         this._showModal(modal, self.dataTable);
         return this;
     },
@@ -101,55 +96,71 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
         this._clearFormControlValues(modal.find('form'))
             ._closeModal(modal, this.dataTable);
     },
-    _buildMsg: function(msg){
+    showNotifyModal: function () {
+        var dataTable = this.dataTable;
+        var ids = dataTable.getSelected();
+        var modal = $('#notifyModal');
+        var jqform = modal.find('form');
         var self = this;
+
+        if (!ids.length) {
+            return bootbox.alert('请先选择要发送的通知！');
+        }
+
+        this._setFormControlValues(jqform, {mids: ids.join()});
         this._sendRequest({
             type: 'get',
-            url: '/smartoffice/template',
+            url: '/sysmanage/members',
             done: function (rs) {
-                if (msg.type == 1) {
-                    self._buildRecvMsg(rs);
-                } else if (msg.type == 2) {
-                    self._buildSendMsg(rs);
-                } else {
-                    self._buildNotifyMsg(rs);
-                }
+                _initMultipleSelect(rs);
+                self._showModal(modal, self.dataTable);
             }
         });
-    },
-    _buildRecvMsg: function (rs) {
-        var modal = $('#dataModal');
-        var jqform = modal.find('form');
-        var editor = this.editor;
-        var no = parseInt(rs.smartoffice_recvmessage_id) + 1;
-        var prefix = "广舆中心收[" + moment(new Date()).format('YYYY') + "] " + no + "号";
-        var template = rs.template.recvmessage;
-        template = template.replace('%message_id%', prefix);
 
-        this._setFormControlValues(jqform, {'type': 1, "issue_id":no, "message_id": prefix});
-        editor.ready(function () {
-            editor.setContent(template || '');
-        });
-    },
-    _buildSendMsg: function (rs) {
-        var modal = $('#dataModal');
-        var jqform = modal.find('form');
-        var editor = this.editor;
-        var no = parseInt(rs.smartoffice_sendmessage_id) + 1;
-        var prefix = "广市举[" + moment(new Date()).format('YYYY') + "] " + no + "号";
-        var template = rs.template.sendmessage;
-        template = template.replace('%message_id%', prefix);
+        function _initMultipleSelect (members) {
+            var jqSelect = $('select[name="uids"]', jqform);
+            var options = [$('<optgroup label="未分组"></optgroup>')];
+            var index = {nogroup: 0};
 
-        this._setFormControlValues(jqform, {'type': 2, "issue_id":no, "message_id": prefix});
-        editor.ready(function () {
-            editor.setContent(template || '');
-        });
+            $.each(members, function (gpid, user) {
+                gpid = user.groupid;
+
+                if (!gpid) {
+                    options[index.nogroup].append(
+                        $('<option></option>')
+                            .attr('value', user.id)
+                            .text(user.name)
+                    );
+                } else {
+                    if (!index[gpid]) {
+                        options.push(
+                            $('<optgroup></optgroup>')
+                                .attr('label', user.groupname)
+                                .append(
+                                    $('<option></option>')
+                                        .attr('value', user.id)
+                                        .text(user.name)
+                                )
+                        );
+                    } else {
+                        options[index[gpid]].append(
+                            $('<option></option>')
+                                .attr('value', user.id)
+                                .text(user.name)
+                        );
+                    }
+                }
+            });
+
+            self._createSelect2(jqSelect.append(options))
+                .clear();
+        }
     },
-    _buildNotifyMsg: function (rs) {
-        var editor = this.editor;
-        editor.ready(function () {
-            editor.setContent(rs.template.notify || '');
-        });
+    closeNotifyModal: function () {
+        var modal = $('#notifyModal');
+
+        this._clearFormControlValues(modal.find('form'))
+            ._closeModal(modal, this.dataTable);
     },
     saveMessage: function () {
         var self = this;
@@ -165,7 +176,6 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
             }
         });
     },
-
     _validator: function () {
         var jqform = $('#dataModal form');
         var values = this._getFormControlValues(jqform);
@@ -173,24 +183,24 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
 
         return values;
     },
-    commitMessage: function() {
+    sendNotify: function () {
         var self = this;
-        var dataTable = this.dataTable;
-        var pids = dataTable.getSelected();
-
-        pids.length ?
-            bootbox.confirm('确定提交审批？', function (rs) {
-                rs && self._sendRequest({
-                    type: 'post', url: '/smartoffice/sendmsg/commit',
-                    data: {ids: pids.join()},
-                    done: function () {
-                        dataTable.refresh();
-                    }
-                });
-            }) :
-            bootbox.alert('请先选择要提交的舆情');
+        this._sendRequest({
+            type: 'post', url: '/smartoffice/notify/send',
+            validator: $.proxy(this._notifyValidator, this),
+            done: function () {
+                self._closeModal($('#notfiyModal'), self.dataTable);
+                self.dataTable.refresh();
+            }
+        });
 
         return this;
+    },
+    _notifyValidator: function () {
+        var jqform = $('#notifyModal form');
+        var values = this._getFormControlValues(jqform);
+
+        return values;
     },
     removeMsg: function (msg) {
         var self = this;

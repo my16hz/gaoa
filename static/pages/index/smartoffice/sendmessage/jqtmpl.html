@@ -76,15 +76,47 @@
                         </div>
                         <div class="form-group form-group-sm">
                             <label class="col-xs-2 control-label">拟办意见：</label>
-                            <div class="col-xs-10">
+                            <div class="col-xs-4">
                                 <input type="text" name="content" class="form-control" value="请严主任审签。">
                             </div>
+                            <label class="col-xs-2 control-label">核稿：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="dispose_user" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">签发：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="sign" class="form-control">
+                            </div>
+                            <label class="col-xs-2 control-label">会签：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="countersign" class="form-control">
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">保存</button>
+                    <button type="button" class="btn btn-default">取消</button>
+                </div>
+            </div>
+            <div id="detailModal" class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">文件详情</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">文件详情：</label>
+                            <div id="editorWrapper" class="col-xs-10"></div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">导出</button>
                     <button type="button" class="btn btn-default">取消</button>
-                    <button type="button" class="btn btn-primary">保存</button>
                 </div>
             </div>
         </div>

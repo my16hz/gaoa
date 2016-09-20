@@ -15,10 +15,10 @@ module.exports = {
         timeout: 3600000 // 1hour,
     },
     db: {
-        //server: '182.150.22.119',
-        //port: 20492,
-        server: '172.16.12.204',
-        port: 9200,
+        server: '182.150.22.119',
+        port: 20492,
+        //server: '172.16.12.204',
+        //port: 9200,
         database: 'gaoa',
         user: 'gaoa',
         password: '1qazXSW@'
@@ -199,7 +199,9 @@ module.exports = {
         '            <td width="119" valign="top" style="word-break: break-all;">' +
         '                文件标题' +
         '            </td>' +
-        '            <td valign="top" rowspan="1" colspan="5"></td>' +
+        '            <td valign="top" rowspan="1" colspan="5">' +
+        '                %title%' +
+        '            </td>' +
         '        </tr>' +
         '        <tr>' +
         '            <td valign="top" style="word-break: break-all;" rowspan="1" colspan="2">' +
@@ -207,25 +209,34 @@ module.exports = {
         '                    签发' +
         '                </p>' +
         '                <p>' +
-        '                    <br/>' +
+        '                    %sign%' +
         '                </p>' +
         '                <p>' +
         '                    <br/>' +
         '                </p>' +
         '            </td>' +
         '            <td valign="top" style="word-break: break-all;" rowspan="1" colspan="4">' +
-        '                会签' +
+        '                <p>' +
+        '                    会签' +
+        '                </p>' +
+        '                <p>' +
+        '                    %countersign%' +
+        '                </p>' +
         '            </td>' +
         '        </tr>' +
         '        <tr>' +
         '            <td width="119" valign="top" style="word-break: break-all;">' +
         '                主送机关' +
         '            </td>' +
-        '            <td width="119" valign="top" style="word-break: break-all;"></td>' +
+        '            <td width="119" valign="top" style="word-break: break-all;">' +
+        '                %major_department%' +
+        '            </td>' +
         '            <td width="119" valign="top" style="word-break: break-all;">' +
         '                抄送机关' +
         '            </td>' +
-        '            <td valign="top" rowspan="1" colspan="3"></td>' +
+        '            <td valign="top" rowspan="1" colspan="3">' +
+        '                %cc_department%' +
+        '            </td>' +
         '        </tr>' +
         '        <tr>' +
         '            <td width="119" valign="top" style="word-break: break-all;">' +
@@ -237,25 +248,35 @@ module.exports = {
         '            <td width="119" valign="top" style="word-break: break-all;">' +
         '                秘密等级' +
         '            </td>' +
-        '            <td width="119" valign="top"></td>' +
+        '            <td width="119" valign="top">' +
+        '                %secret_level%' +
+        '            </td>' +
         '            <td width="119" valign="top" style="word-break: break-all;">' +
         '                紧急程度' +
         '            </td>' +
-        '            <td width="119" valign="top"></td>' +
+        '            <td width="119" valign="top">' +
+        '                %urgent_level%' +
+        '            </td>' +
         '        </tr>' +
         '        <tr>' +
         '            <td width="119" valign="top" style="word-break: break-all;">' +
         '                核 &nbsp; 稿' +
         '            </td>' +
-        '            <td width="119" valign="top"></td>' +
+        '            <td width="119" valign="top">' +
+        '                %dispose_user%' +
+        '            </td>' +
         '            <td width="119" valign="top" style="word-break: break-all;">' +
         '                份 &nbsp; 数' +
         '            </td>' +
-        '            <td width="119" valign="top"></td>' +
+        '            <td width="119" valign="top">' +
+        '                %copies%' +
+        '            </td>' +
         '            <td width="119" valign="top" style="word-break: break-all;">' +
         '                拟稿人' +
         '            </td>' +
-        '            <td width="119" valign="top"></td>' +
+        '            <td width="119" valign="top">' +
+        '                %draft_user%' +
+        '            </td>' +
         '        </tr>' +
         '        <tr>' +
         '            <td width="119" valign="top" style="word-break: break-all;">' +
@@ -264,14 +285,16 @@ module.exports = {
         '                </p>' +
         '            </td>' +
         '            <td valign="top" rowspan="1" colspan="5" style="word-break: break-all;">' +
-        '                请严主任审签。<br/>' +
+        '                %content%<br/>' +
         '            </td>' +
         '        </tr>' +
         '        <tr>' +
         '            <td width="119" valign="top" style="word-break: break-all;">' +
         '                主题词' +
         '            </td>' +
-        '            <td valign="top" rowspan="1" colspan="5"></td>' +
+        '            <td valign="top" rowspan="1" colspan="5">' +
+        '                %keyword%' +
+        '            </td>' +
         '        </tr>' +
         '        <tr>' +
         '            <td valign="top" rowspan="1" colspan="6" style="word-break: break-all;">' +
@@ -280,7 +303,8 @@ module.exports = {
         '        </tr>' +
         '    </tbody>' +
         '</table>',
-        recvmessage: '<style type="text/css">.Tab { border-collapse:collapse; width:800px; height:300px;}' +
+        recvmessage:
+        '<style type="text/css">.Tab { border-collapse:collapse; width:800px; height:300px;}' +
         '.Tab td{ border:solid 2px #000000}</style>' +
         '<table cellspacing="0" class="Tab">' +
         '    <tbody>' +
@@ -295,7 +319,9 @@ module.exports = {
         '            <td width="119" valign="top" style="word-break: break-all;">' +
         '                文件标题' +
         '            </td>' +
-        '            <td valign="top" rowspan="1" colspan="5" style="word-break: break-all;"></td>' +
+        '            <td valign="top" rowspan="1" colspan="5" style="word-break: break-all;">' +
+        '                %title%' +
+        '            </td>' +
         '        </tr>' +
         '        <tr>' +
         '            <td width="119" valign="top" style="word-break: break-all;" rowspan="3" colspan="1">' +
@@ -303,7 +329,7 @@ module.exports = {
         '            </td>' +
         '            <td valign="top" rowspan="3" colspan="5" style="word-break: break-all;">' +
         '                <p>' +
-        '                    <br/>' +
+        '                    %comment%' +
         '                </p>' +
         '                <p>' +
         '                    <br/>' +
@@ -316,49 +342,69 @@ module.exports = {
         '            <td width="119" valign="top" style="word-break: break-all;">' +
         '                收文日期' +
         '            </td>' +
-        '            <td width="120" valign="top"></td>' +
+        '            <td width="120" valign="top">' +
+        '                %recv_date%' +
+        '            </td>' +
         '            <td width="118" valign="top" style="word-break: break-all;">' +
         '                收文编号' +
         '            </td>' +
-        '            <td valign="top" rowspan="1" colspan="3">%message_id%</td>' +
+        '            <td valign="top" rowspan="1" colspan="3">' +
+        '                %message_id%' +
+        '            </td>' +
         '        </tr>' +
         '        <tr>' +
         '            <td width="119" valign="top" style="word-break: break-all;">' +
         '                来文单位' +
         '            </td>' +
-        '            <td width="120" valign="top"></td>' +
+        '            <td width="120" valign="top">' +
+        '                %origin_department%' +
+        '            </td>' +
         '            <td width="118" valign="top" style="word-break: break-all;">' +
         '                原文字号' +
         '            </td>' +
-        '            <td valign="top" rowspan="1" colspan="3"></td>' +
+        '            <td valign="top" rowspan="1" colspan="3">' +
+        '                %origin_id%' +
+        '            </td>' +
         '        </tr>' +
         '        <tr>' +
         '            <td width="119" valign="top" style="word-break: break-all;">' +
         '                秘密等级' +
         '            </td>' +
-        '            <td width="120" valign="top"></td>' +
+        '            <td width="120" valign="top">' +
+        '                %secret_level%' +
+        '            </td>' +
         '            <td width="118" valign="top" style="word-break: break-all;">' +
         '                批示领导' +
         '            </td>' +
-        '            <td width="119" valign="top"></td>' +
+        '            <td width="119" valign="top">' +
+        '                %approved_user%' +
+        '            </td>' +
         '            <td width="119" valign="top" style="word-break: break-all;">' +
         '                从而领取' +
         '            </td>' +
-        '            <td width="119" valign="top"></td>' +
+        '            <td width="119" valign="top">' +
+        '                %from_department%' +
+        '            </td>' +
         '        </tr>' +
         '        <tr>' +
         '            <td width="119" valign="top" style="word-break: break-all;">' +
         '                原文日期' +
         '            </td>' +
-        '            <td width="120" valign="top"></td>' +
+        '            <td width="120" valign="top">' +
+        '                %origin_date%' +
+        '            </td>' +
         '            <td width="118" valign="top" style="word-break: break-all;">' +
         '                份数' +
         '            </td>' +
-        '            <td width="119" valign="top"></td>' +
+        '            <td width="119" valign="top">' +
+        '                %copies%' +
+        '            </td>' +
         '            <td width="119" valign="top" style="word-break: break-all;">' +
         '                领取人' +
         '            </td>' +
-        '            <td width="119" valign="top"></td>' +
+        '            <td width="119" valign="top">' +
+        '                %from_user%' +
+        '            </td>' +
         '        </tr>' +
         '        <tr>' +
         '            <td width="119" valign="top" style="word-break: break-all;">' +
@@ -369,7 +415,9 @@ module.exports = {
         '                    <br/>' +
         '                </p>' +
         '            </td>' +
-        '            <td valign="top" style="word-break: break-all;" rowspan="1" colspan="5"></td>' +
+        '            <td valign="top" style="word-break: break-all;" rowspan="1" colspan="5">' +
+        '                %content%' +
+        '            </td>' +
         '        </tr>' +
         '        <tr>' +
         '            <td valign="top" colspan="1" rowspan="1" style="word-break: break-all;">' +
@@ -377,7 +425,9 @@ module.exports = {
         '                    办理结果' +
         '                </p>' +
         '            </td>' +
-        '            <td valign="top" colspan="5" rowspan="1" style="word-break: break-all;"></td>' +
+        '            <td valign="top" colspan="5" rowspan="1" style="word-break: break-all;">' +
+        '                %result%' +
+        '            </td>' +
         '        </tr>' +
         '        <tr>' +
         '            <td valign="top" colspan="6" rowspan="1" style="word-break: break-all;">' +
