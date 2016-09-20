@@ -20,6 +20,8 @@ module.exports = function () {
         .delete('/smartoffice/recvmsg/delete', controller.deleteRecvMsg)
         .post('/smartoffice/recvmsg/commit', controller.commitRecvMsg)
 
+        .post('/smartoffice/notify/send', controller.sendNotify)
+
         .get('/smartoffice/template', controller.getTemplate)
         .get('/smartoffice/notify/list', controller.getNotifyList)
         .get('/smartoffice/message/list', controller.getMessageList)

@@ -21,6 +21,8 @@ module.exports = {
     deleteRecvMsg: deleteRecvMsg,
     commitRecvMsg: commitRecvMsg,
 
+    sendNotify: sendNotify,
+
     getTemplate: getTemplate,
     getNotifyList: getNotifyList,
     saveMessage: saveMessage,
@@ -80,7 +82,7 @@ function saveSendMsg (req, res) {
         'smartoffice_sendmessage_id' : obj['smartoffice_sendmessage_id']
     }
 
-    service.saveSendMsg(msg, function (err) {
+    service[obj['id'] ? 'updateSendMsg' : 'saveSendMsg'](msg, function (err) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -219,15 +221,8 @@ function saveMessage (req, res) {
         'state' : 0,
         'createuser' : uid,
         'createtime' : new Date(),
-        'issue_id' : obj['issue_id']
+
     };
-    if (obj['type'] == 1) {
-        msg['issue_key'] = 'smartoffice_recvmessage_id';
-    } else if (obj['type'] == 2) {
-        msg['issue_key'] = 'smartoffice_sendmessage_id';
-    } else {
-        msg['issue_key'] = 'smartoffice_notify_id';
-    }
 
     service[obj.id ? 'updateMessage' : 'saveMessage'](msg, function (err) {
         err ?
@@ -258,6 +253,23 @@ function deleteMessage (req, res) {
             errhandler.internalException(res, err) :
             res.send({
                 success: true
+            });
+    });
+}
+
+function sendNotify (req, res) {
+    var uid = req.session[userkey].id;
+    var userids = req.body.uids;
+    var mids = req.body.mids.split(',');
+
+    if (!Array.isArray(userids)) {
+        userids = [userids];
+    }
+    service.sendNotify(uid, userids, mids, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
             });
     });
 }

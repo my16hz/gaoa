@@ -49,33 +49,43 @@ var LHSRecvMessagePage = $.extend({}, LHSBasicPage, {
                     var args = arguments[1].state;
                     switch(args) {
                         case 0 :  return [
-                            '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-eye-open"></i></a>',
+                            '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
+                            '<a href="javascript:" title="导出"><i class="glyphicon glyphicon-export"></i></a>',
                             '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
                         ].join('&nbsp;&nbsp;');
                         case 1 :
-                        case 2 : return ['<a href="javascript:" title="查看"><i class="glyphicon glyphicon-eye-open"></i></a>',
+                        case 2 : return [
+                            '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
+                            '<a href="javascript:" title="导出"><i class="glyphicon glyphicon-export"></i></a>',
                             '<a></a>'
                         ].join('&nbsp;&nbsp;');
                     }
                 },
                 events: {
-                    'click a:first': function () {
+                    'click a:eq(0)': function () {
                         self.showDataModal(arguments[2]);
                     },
-                    'click a:last': function () {
-                        self.removeMsg(arguments[2])
+                    'click a:eq(1)': function () {
+                        self.showExportModal(arguments[2]);
+                    },
+                    'click a:eq(2)': function () {
+                        self.removeMsg(arguments[2]);
                     }
                 }
             }
         ]);
+        this.editor = this._createEditor('#editorWrapper');
         this._createTimepicker('#recv_date');
         this._createTimepicker('#origin_date');
+
     },
     events: {
         'click #btnAdd': 'showDataModal',
         'click #btnCommit': 'commitMessage',
         'click #dataModal .btn-default': 'closeDataModal',
-        'click #dataModal .btn-primary': 'saveMessage'
+        'click #dataModal .btn-primary': 'saveMessage',
+        'click #detailModal .btn-default': 'closeExportModal',
+        'click #detailModal .btn-primary': 'exportMessage'
     },
     showDataModal: function (msg) {
         var modal = $('#dataModal');
@@ -128,6 +138,42 @@ var LHSRecvMessagePage = $.extend({}, LHSBasicPage, {
         var values = this._getFormControlValues(jqform);
 
         return values;
+    },
+    showExportModal: function (msg) {
+        var self = this;
+        var editor = this.editor;
+        this._sendRequest({
+            type: 'get',
+            url: '/smartoffice/template',
+            done: function (rs) {
+                var modal = $('#detailModal');
+                var template = rs.template.recvmessage;
+                template = template.replace('%title%', msg['title'] || '');
+                template = template.replace('%comment%', msg['comment'] || '');
+                template = template.replace('%recv_date%', msg['recv_date'] || '');
+                template = template.replace('%message_id%', msg['message_id'] || '');
+                template = template.replace('%origin_department%', msg['origin_department'] || '');
+                template = template.replace('%origin_id%', msg['origin_id'] || '');
+                template = template.replace('%secret_level%', msg['secret_level'] || '');
+                template = template.replace('%origin_date%', msg['origin_date'] || '');
+                template = template.replace('%from_department%', msg['from_department'] || '');
+                template = template.replace('%from_user%', msg['from_user'] || '');
+                template = template.replace('%approved_user%', msg['approved_user'] || '');
+                template = template.replace('%copies%', msg['copies'] || '');
+                template = template.replace('%content%', msg['content'] || '');
+                template = template.replace('%result%', msg['result'] || '');
+                editor.ready(function () {
+                    editor.setContent(template || '');
+                });
+                self._showModal(modal, self.dataTable);
+            }
+        });
+    },
+    closeExportModal: function () {
+        var modal = $('#detailModal');
+
+        this._clearFormControlValues(modal.find('form'))
+            ._closeModal(modal, this.dataTable);
     },
     commitMessage: function() {
         var self = this;

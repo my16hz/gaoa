@@ -20,6 +20,8 @@ module.exports = {
     removeRecvMsg: removeRecvMsg,
     commitRecvMsg: commitRecvMsg,
 
+    sendNotify: sendNotify,
+
     getTemplate: getTemplate,
     getNotifyList: getNotifyList,
     saveMessage: saveMessage,
@@ -73,12 +75,12 @@ function getRecvMsg (callback) {
 }
 
 function saveSendMsg(obj, callback) {
-    var sql_stmt = 'INSERT INTO tb_so_sendmessage ([title],[major_department],[cc_department],[message_id],' +
-                    '[secret_level],[urgent_level],[dispose_user],[draft_user],[copies],' +
-                    '[content],[keyword],[state],[createuser],[createtime]) ' +
-                    'VALUES (@title, @major_department, @cc_department, @message_id, ' +
-                    '@secret_level, @urgent_level, @dispose_user, @draft_user, @copies,' +
-                    '@content, @keyword, @state, @createuser, @createtime);' +
+    var sql_stmt = 'INSERT INTO tb_so_sendmessage ([title], [major_department], [cc_department],' +
+                    ' [message_id], [secret_level], [urgent_level], [dispose_user], [draft_user], ' +
+                    ' [copies], [content], [keyword], [sign], [countersign], [state], [createuser],' +
+                    ' [createtime]) VALUES (@title, @major_department, @cc_department, @message_id, ' +
+                    ' @secret_level, @urgent_level, @dispose_user, @draft_user, @copies, @content,' +
+                    ' @keyword, @sign, @countersign, @state, @createuser, @createtime);' +
                     "UPDATE tb_sys_config SET [value] = @smartoffice_sendmessage_id WHERE [id] = 'smartoffice_sendmessage_id';";
     var objParams = obj;
     console.log(sql_stmt);
@@ -94,6 +96,8 @@ function saveSendMsg(obj, callback) {
         .input("copies", sql.Int)
         .input("content", sql.NVarChar)
         .input("keyword", sql.NVarChar)
+        .input("sign", sql.NVarChar)
+        .input("countersign", sql.NVarChar)
         .input("state", sql.Int)
         .input("createuser", sql.VarChar)
         .input("createtime", sql.DateTime2)
@@ -154,12 +158,41 @@ function saveRecvMsg(obj, callback) {
 }
 
 function updateSendMsg(obj, callback) {
-    var sql_stmt = "UPDATE tb_so_sendmessage SET [sign] = @sign, [countersign] = @countersign, [state] = 2 " +
+    var sql_stmt = "UPDATE tb_so_sendmessage SET [title] = @title, [major_department] = @major_department, " +
+                    "[cc_department] = @cc_department, [message_id] = @message_id, [secret_level] = @secret_level, " +
+                    "[urgent_level] = @urgent_level, [dispose_user] = @dispose_user, [copies] = @copies, " +
+                    "[content] = @content, [keyword] = @keyword, [sign] = @sign, [countersign] = @countersign, [draft_user] = @draft_user " +
                     "WHERE id = @id; ";
-    var objParams = {
-        "sign" : obj["sign"]
+    var objParams = obj;
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("id", sql.Int)
+        .input("title", sql.NVarChar)
+        .input("major_department", sql.NVarChar)
+        .input("cc_department", sql.NVarChar)
+        .input("message_id", sql.NVarChar)
+        .input("secret_level", sql.NVarChar)
+        .input("urgent_level", sql.NVarChar)
+        .input("dispose_user", sql.NVarChar)
+        .input("draft_user", sql.NVarChar)
+        .input("copies", sql.Int)
+        .input("content", sql.NVarChar)
+        .input("keyword", sql.NVarChar)
+        .input("sign", sql.NVarChar)
+        .input("countersign", sql.NVarChar)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
 
-    }
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
 }
 
 function updateRecvMsg(obj, callback) {
@@ -285,12 +318,14 @@ function getTemplate(callback) {
 }
 
 function getNotifyList (uid, callback) {
-    var params = {};
-    var sql_stmt = "select * from tb_so_message where type = 2 and order by createtime desc;";
-
+    var sql_stmt = "SELECT TOP 1000 tb_so_message.* FROM tb_so_message, tb_so_message_notify " +
+        " WHERE tb_so_message.id = tb_so_message_notify.mid AND tb_so_message_notify.uid = @uid " +
+        " ORDER BY createtime desc;";
+    var params = {uid : uid};
     console.log(sql_stmt);
 
     var ps = dbpool.preparedStatement()
+        .input('uid', sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, []);
@@ -307,9 +342,8 @@ function getNotifyList (uid, callback) {
 }
 
 function saveMessage (obj, callback) {
-    var sql_stmt = 'INSERT INTO tb_so_message ([title] ,[type] ,[content] ,[state] ,[message_id] ,[createtime] ,[createuser]) ' +
-        'VALUES (@title, @type, @content, @state, @message_id, @createtime, @createuser);' +
-        "UPDATE tb_sys_config SET [value] = @issue_id WHERE [id] = @issue_key;";
+    var sql_stmt = 'INSERT INTO tb_so_message ([title] ,[type] ,[content] ,[state] , [createtime] ,[createuser]) ' +
+        'VALUES (@title, @type, @content, @state, @createtime, @createuser);';
     var objParams = obj;
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
@@ -338,14 +372,13 @@ function saveMessage (obj, callback) {
 }
 
 function updateMessage (obj, callback) {
-    var sql_stmt = 'UPDATE tb_so_message SET [title] = @title, [content] = @content, [message_id] = @message_id WHERE [id] = @id;';
+    var sql_stmt = 'UPDATE tb_so_message SET [title] = @title, [content] = @content WHERE [id] = @id;';
     var objParams = obj;
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .input('id', sql.Int)
         .input("title", sql.NVarChar)
         .input('content', sql.NVarChar)
-        .input('message_id', sql.NVarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
@@ -362,7 +395,7 @@ function updateMessage (obj, callback) {
 }
 
 function getMessageList (uid, callback) {
-    var sql_stmt = "select * from tb_so_message where createuser = @uid order by createtime desc;";
+    var sql_stmt = "select top 1000 * from tb_so_message where createuser = @uid order by createtime desc;";
     var params = {'uid': uid};
     console.log(sql_stmt);
 
@@ -401,6 +434,33 @@ function deleteMessage(ids, callback) {
 
                 ps.unprepare(function (err) {
                     err && console.error(err);
+                });
+            });
+        });
+}
+
+function sendNotify (uid, userids, mids, callback) {
+    var sql_stmt = "";
+    userids.forEach(function (user) {
+        mids.forEach(function (mid) {
+            sql_stmt += "IF NOT EXISTS (SELECT * FROM tb_so_message_notify WHERE uid = '" + user + "' AND mid = '" + mid + "') " +
+                "BEGIN " +
+                "INSERT INTO tb_so_message_notify ([uid],[mid],[createuser]) VALUES ('" + user + "','" + mid + "','" + uid + "'); " +
+                "UPDATE tb_so_message SET state = 3 WHERE id = " + mid + ";" +
+                "END ";
+        })
+    });
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute({}, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
                 });
             });
         });
