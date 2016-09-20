@@ -53,10 +53,65 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
             }
         ]);
         this.editor = this._createEditor('#editorWrapper');
+        this.__collapsepanels__ = $('.guid-panel');
     },
     events: {
+        'click .func-btns > a:eq(0)': 'addGuidPanel',
+        'click .func-btns > a:eq(1)': 'expandGuidPanels',
+        'click .func-btns > a:eq(2)': 'collapseGuidPanels',
+        'click #dataModal .panel-heading a:first': 'toggleGuidPanel',
+        'click #dataModal .panel-heading a:last': 'removeGuidPanel',
+        'keyup #dataModal .panel-body input[name="guide_name"]': 'checkPanelTitle',
         'click #dataModal .btn-default': 'closeDataModal',
         'click #dataModal .btn-primary': 'saveGuide'
+    },
+    addGuidPanel: function () {
+        var jqPanel = $('.guid-panel:first');
+        var newPanel = jqPanel.clone().insertAfter(jqPanel);
+        var self = this;
+
+        newPanel.find('.panel-heading a:first').bind('click', function () {
+            self.toggleGuidPanel($(this));
+        });
+        newPanel.find('.panel-heading a:last').bind('click', function () {
+            self.removeGuidPanel($(this));
+        });
+        newPanel.find('.panel-body input[name="guide_name"]').bind('keyup', function () {
+            self.checkPanelTitle($(this));
+        });
+
+        this._checkGuidPanelCount();
+    },
+    expandGuidPanels: function () {
+        $.each(this.__collapsepanels__, function () {
+            $(this).find('.panel-body')
+                .collapse('show');
+        });
+    },
+    collapseGuidPanels: function () {
+        $.each(this.__collapsepanels__, function () {
+            $(this).find('.panel-body')
+                .collapse('hide');
+        });
+    },
+    toggleGuidPanel: function (jqTitle) {
+        jqTitle.parent()
+            .next('.panel-body')
+            .collapse('toggle');
+    },
+    removeGuidPanel: function (jqDel) {
+        jqDel.parents('.guid-panel').remove();
+        this._checkGuidPanelCount();
+    },
+    checkPanelTitle: function (jqinput) {
+        var name = $.trim(jqinput.val());
+
+        jqinput.parents('.guid-panel')
+            .find('.panel-heading > a:first')
+            .text(!name ?
+                '未完善引导信息' : (
+                '引导信息(引导员：' + name + ')'
+            ));
     },
     showDataModal: function (pubvoice) {
         var modal = $('#dataModal');
@@ -74,7 +129,7 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
                     _fillFormValues(rs[0]);
                 }
                 else {
-                    rs = { id: pubvoice.id};
+                    rs = {id: pubvoice.id};
                     _fillFormValues(rs);
                 }
 
@@ -111,6 +166,20 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
         });
     },
 
+    _checkGuidPanelCount: function () {
+        var panels = [];
+
+        this.__collapsepanels__ = $('.guid-panel');
+        panels = this.__collapsepanels__;
+
+        if (1 == panels.length) {
+            $(panels[0]).find('.panel-heading > a:last').addClass('hide');
+        } else {
+            $.each(panels, function () {
+                $(this).find('.panel-heading > a:last').removeClass('hide');
+            });
+        }
+    },
     _validator: function () {
         var jqform = $('#dataModal form');
         var values = this._getFormControlValues(jqform);
