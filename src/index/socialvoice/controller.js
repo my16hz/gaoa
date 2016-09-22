@@ -17,7 +17,10 @@ module.exports = {
     acceptSocialVoice: acceptSocialVoice,
     saveSVReport: saveSVReport,
     getSVReport: getSVReport,
-    exportSocialReport: exportSocialReport
+    exportSocialReport: exportSocialReport,
+
+    statisticUser: statisticUser,
+    statisticGroup: statisticGroup
 };
 
 function pageSocialVoice (req, res) {
@@ -130,3 +133,34 @@ function exportSocialReport (req, res) {
         }
     })
 }
+
+function statisticUser (req, res) {
+    var now = new Date();
+    var start = req.query.sTime || new Date(now.getTime() - 3600000 * 24 * 30);
+    var end = req.query.eTime || now;
+
+    service.statisticUser(start, end, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function statisticGroup (req, res) {
+    var now = new Date();
+    var start = req.query.sTime || new Date(now.getTime() - 3600000 * 24 * 30);
+    var end = req.query.eTime || now;
+
+    service.statisticGroup(start, end, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+

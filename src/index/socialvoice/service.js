@@ -16,7 +16,11 @@ module.exports = {
     acceptSocialVoice: acceptSocialVoice,
     saveSVReport: saveSVReport,
     getSVReport: getSVReport,
-    getSVReportDetail: getSVReportDetail
+    getSVReportDetail: getSVReportDetail,
+
+
+    statisticUser: statisticUser,
+    statisticGroup: statisticGroup
 };
 
 function getSocialVoices (uid, priority, callback) {
@@ -189,6 +193,63 @@ function getSVReportDetail (voice_id, callback) {
 
                 ps.unprepare(function (err) {
                     err && console.error(err);
+                });
+            });
+        });
+}
+
+function statisticUser (start, end, callback) {
+    var sql_stmt = "SELECT TOP 100 tb_user.name, COUNT(*) AS count " +
+        "FROM tb_socialvoice, tb_user " +
+        "WHERE tb_socialvoice.createuser = tb_user.id AND tb_socialvoice.createtime > @start AND tb_socialvoice.createtime < @end " +
+        "GROUP BY tb_user.name;";
+    var objParams = {
+        "start": start,
+        "end": end
+    };
+
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+function statisticGroup (start, end, callback) {
+    var sql_stmt = "SELECT TOP 100 tb_group.name, COUNT(*) AS count " +
+        " FROM tb_socialvoice,tb_user,tb_group " +
+        " WHERE tb_socialvoice.createuser = tb_user.id AND tb_user.groupid = tb_group.id " +
+        "       AND tb_socialvoice.createtime > @start AND tb_socialvoice.createtime < @end " +
+        " GROUP BY tb_group.name;";
+    var objParams = {
+        "start": start,
+        "end": end
+    };
+
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
                 });
             });
         });
