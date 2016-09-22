@@ -28,6 +28,8 @@
                     return LHSAnalyzePage.run();
                 case 'alert':
                     return LHSAlertPage.run();
+                case 'search':
+                    return LHSSearchPage.run();
             }
         });
 
