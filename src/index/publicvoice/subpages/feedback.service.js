@@ -98,7 +98,7 @@ function updatePVFeedback (uid, obj, callback) {
  * @param callback
  */
 function getPVFeedback (pvid, type, callback) {
-    var sql_stmt = "SELECT * FROM tb_pv_feedback WHERE id = @id ";
+    var sql_stmt = "SELECT TOP 1000 * FROM tb_pv_feedback WHERE id = @id ";
     if (type != null) {
         sql_stmt += " AND type = @type";
     }

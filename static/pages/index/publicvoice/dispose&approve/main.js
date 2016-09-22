@@ -15,17 +15,17 @@ var LHSDisposeAndApprovePage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/dispose/comment/list', [
             {title: '日报期数', field: 'daily_id'},
-            {title: '标题', field: 'title', alwaysDisplay: true},
-            {title: '载体', field: 'from_website'},
-            {title: '批示内容', field: 'comment'},
+            {title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc'},
+            {title: '批示领导', field: 'comment_user', sortable: true, order: 'desc'},
+            {title: '批示内容', field: 'comment', sortable: true, order: 'desc'},
             {
-                title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
+                title: '批示时间', field: 'comment_date', sortable: true, order: 'desc',
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
+                    return moment(val).format('YYYY年MM月DD日');
                 }
             },
             {
-                title: '状态', field: 'dispose_stat',
+                title: '状态', field: 'dispose_stat', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
                         case 0: return "未批示";

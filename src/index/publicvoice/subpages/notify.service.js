@@ -117,7 +117,7 @@ function getWaitNotifyPVList (callback) {
 }
 
 function getNotifyPVByUid (uid, callback) {
-    var sql_stmt = "SELECT tb_publicvoice.*, tb_daily_pv.did AS daily_id " +
+    var sql_stmt = "SELECT TOP 1000 tb_publicvoice.*, tb_daily_pv.did AS daily_id " +
                     "FROM tb_publicvoice, tb_daily_pv " +
                     "WHERE tb_publicvoice.id = tb_daily_pv.pvid  " +
                     "AND  tb_publicvoice.id IN (SELECT pvid FROM tb_pv_notify WHERE uid = @uid) " +
