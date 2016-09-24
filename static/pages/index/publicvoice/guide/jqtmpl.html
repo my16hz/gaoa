@@ -13,47 +13,47 @@
                         <a href="javascript:"><i class="glyphicon glyphicon-folder-open"></i>展开</a>
                         <a href="javascript:"><i class="glyphicon glyphicon-folder-close"></i>折叠</a>
                     </div>
-                    <div class="panel panel-default guid-panel">
-                        <div class="panel-heading">
-                            <a href="javascript:">未完善引导信息</a>
-                            <a href="javascript:" class="close hide">[删除]</a>
-                        </div>
-                        <div class="panel-body collapse in">
-                            <form class="form-horizontal">
-                                <input type="hidden" name="id" class="form-control">
-                                <div class="form-group form-group-sm">
-                                    <label class="col-xs-2 control-label">网评员：</label>
-                                    <div class="col-xs-4">
-                                        <input type="text" name="guide_name" class="form-control">
-                                    </div>
-                                    <label class="col-xs-2 control-label">引导方式：</label>
-                                    <div class="col-xs-4">
-                                        <input type="text" name="guide_type" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label class="col-xs-2 control-label">引导效果：</label>
-                                    <div class="col-xs-4">
-                                        <input type="text" name="guide_result" class="form-control">
-                                    </div>
-                                    <label class="col-xs-2 control-label">引导次数：</label>
-                                    <div class="col-xs-4">
-                                        <input type="text" name="guide_count" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <label class="col-xs-2 control-label">引导内容：</label>
-                                    <div id="editorWrapper" class="col-xs-10"></div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default">关闭</button>
                     <button type="button" class="btn btn-primary">保存</button>
                 </div>
             </div>
+        </div>
+    </div>
+    <div id="guidPanelTmpl" class="panel panel-default lhs-guid-panel hide">
+        <div class="panel-heading">
+            <a href="javascript:">未完善引导信息</a>
+            <a href="javascript:" class="close hide">[删除]</a>
+        </div>
+        <div class="panel-body collapse in">
+            <form class="form-horizontal">
+                <input type="hidden" name="id" class="form-control">
+                <div class="form-group form-group-sm">
+                    <label class="col-xs-2 control-label">网评员：</label>
+                    <div class="col-xs-4">
+                        <input type="text" name="guide_name" class="form-control">
+                    </div>
+                    <label class="col-xs-2 control-label">引导方式：</label>
+                    <div class="col-xs-4">
+                        <input type="text" name="guide_type" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-xs-2 control-label">引导效果：</label>
+                    <div class="col-xs-4">
+                        <input type="text" name="guide_result" class="form-control">
+                    </div>
+                    <label class="col-xs-2 control-label">引导次数：</label>
+                    <div class="col-xs-4">
+                        <input type="text" name="guide_count" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label class="col-xs-2 control-label">引导内容：</label>
+                    <div class="col-xs-10 editor-wrapper"></div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
