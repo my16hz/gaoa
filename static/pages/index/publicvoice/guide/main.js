@@ -4,6 +4,7 @@
  * Author: lhs
  */
 var LHSGuidePage = $.extend({}, LHSBasicPage, {
+    __collapsepanels__: [],
     run: function () {
         var self = this;
         /*inject:jqtmpl:html*/
@@ -52,24 +53,23 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
                 }
             }
         ]);
-        this.editor = this._createEditor('#editorWrapper');
-        this.__collapsepanels__ = $('.guid-panel');
     },
     events: {
         'click .func-btns > a:eq(0)': 'addGuidPanel',
         'click .func-btns > a:eq(1)': 'expandGuidPanels',
         'click .func-btns > a:eq(2)': 'collapseGuidPanels',
-        'click #dataModal .panel-heading a:first': 'toggleGuidPanel',
-        'click #dataModal .panel-heading a:last': 'removeGuidPanel',
-        'keyup #dataModal .panel-body input[name="guide_name"]': 'checkPanelTitle',
         'click #dataModal .btn-default': 'closeDataModal',
         'click #dataModal .btn-primary': 'saveGuide'
     },
-    addGuidPanel: function () {
-        var jqPanel = $('.guid-panel:first');
-        var newPanel = jqPanel.clone().insertAfter(jqPanel);
-        var self = this;
+    addGuidPanel: function (guid) {
+        var newPanel = $('#guidPanelTmpl')
+            .clone().removeAttr('id').removeClass('hide')
+            .appendTo($('#dataModal .modal-body'));
+        var self = this, newEditor;
 
+        this._checkGuidPanelCount();
+
+        newPanel.data('editor', newEditor = this._createEditor($('.editor-wrapper', newPanel)));
         newPanel.find('.panel-heading a:first').bind('click', function () {
             self.toggleGuidPanel($(this));
         });
@@ -80,18 +80,16 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
             self.checkPanelTitle($(this));
         });
 
-        this._checkGuidPanelCount();
+        this._setGuidFormValues(newPanel.find('form'), newEditor, guid);
     },
     expandGuidPanels: function () {
         $.each(this.__collapsepanels__, function () {
-            $(this).find('.panel-body')
-                .collapse('show');
+            $(this).find('.panel-body').collapse('show');
         });
     },
     collapseGuidPanels: function () {
         $.each(this.__collapsepanels__, function () {
-            $(this).find('.panel-body')
-                .collapse('hide');
+            $(this).find('.panel-body').collapse('hide');
         });
     },
     toggleGuidPanel: function (jqTitle) {
@@ -100,7 +98,11 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
             .collapse('toggle');
     },
     removeGuidPanel: function (jqDel) {
-        jqDel.parents('.guid-panel').remove();
+        var jqPanel = jqDel.parents('.lhs-guid-panel');
+
+        jqPanel.data('editor').destroy();
+        jqPanel.remove();
+
         this._checkGuidPanelCount();
     },
     checkPanelTitle: function (jqinput) {
@@ -115,8 +117,6 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
     },
     showDataModal: function (pubvoice) {
         var modal = $('#dataModal');
-        var jqform = modal.find('form');
-        var editor = this.editor;
         var self = this;
 
         this._sendRequest({
@@ -124,34 +124,27 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
             url: '/guide/detail',
             data: {id: pubvoice.id},
             done: function (rs) {
-                if (rs.length != 0) {
-                    rs[0]['id'] = pubvoice.id;
-                    _fillFormValues(rs[0]);
-                }
-                else {
-                    rs = {id: pubvoice.id};
-                    _fillFormValues(rs);
-                }
+                rs.length ?
+                    $.each(rs, function (guid) {
+                        self.addGuidPanel($.extend(guid, {id: pubvoice.id}));
+                    }) :
+                    self.addGuidPanel({id: pubvoice.id});
 
                 self._showModal(modal, self.dataTable);
             }
         });
-
-        function _fillFormValues (rs) {
-            self._setFormControlValues(jqform, rs);
-
-            editor.ready(function () {
-                editor.setContent(rs.content || '');
-            });
-        }
 
         return this;
     },
     closeDataModal: function () {
         var modal = $('#dataModal');
 
-        this._clearFormControlValues(modal.find('form'))
-            ._closeModal(modal, this.dataTable);
+        modal.find('.lhs-guid-panel').each(function () {
+            $(this).data('editor').destroy();
+            $(this).remove();
+        });
+
+        this._closeModal(modal, this.dataTable);
     },
     saveGuide: function () {
         var dataTable = this.dataTable;
@@ -180,11 +173,25 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
             });
         }
     },
-    _validator: function () {
-        var jqform = $('#dataModal form');
-        var values = this._getFormControlValues(jqform);
+    _setGuidFormValues: function (jqform, editor, guid) {
+        this._setFormControlValues(jqform, guid);
 
-        values['content'] = this.editor.getContent();
+        editor.ready(function () {
+            editor.setContent(guid.content || '');
+        });
+
+        this.checkPanelTitle(jqform.find('input[name="guide_name"]'));
+    },
+    _validator: function () {
+        var values = [];
+        var self = this;
+
+        $.each($('#dataModal .lhs-guid-panel'), function (jqpanel) {
+            jqpanel = $(this);
+            values.push($.extend(self._getFormControlValues(jqpanel.find('form')), {
+                content: jqpanel.data('editor')
+            }))
+        });
 
         return values;
     }

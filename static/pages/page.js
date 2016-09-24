@@ -325,9 +325,9 @@ var LHSBasicPage = {
     },
     _createTimepicker: function (input, format, defval) {
         var picker = $(input).datetimepicker({
-            format: format || 'YYYY-MM-DD',
-            useCurrent: defval || true/*,
-            locale: 'zh_CN'*/
+            format: format || 'LL',
+            useCurrent: defval || true,
+            locale: 'zh_CN'
         });
 
         defval && picker.val(defval);
