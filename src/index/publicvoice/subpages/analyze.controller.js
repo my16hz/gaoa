@@ -7,17 +7,21 @@ var userkey = require('config').session.userkey;
 
 var errhandler = require('../../../utilities/errhandler');
 var service = require('./../service');
+var defaut_interval = 3600000 * 24 * 7;
 module.exports = {
     getPVItemAnalyze: getPVItemAnalyze,
     getPVTypeAnalyze: getPVTypeAnalyze,
     getPVDutyAnalyze: getPVDutyAnalyze,
     getPVReviewAnalyze: getPVReviewAnalyze,
-    getPVFellowAnalyze: getPVFellowAnalyze
+    getPVFellowAnalyze: getPVFellowAnalyze,
+
+    getPVMissReportAnalyze: getPVMissReportAnalyze,
+    getGroupMissAnalyze: getGroupMissAnalyze
 
 };
 function getPVItemAnalyze (req, res) {
     var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - 3600000 * 24 * 30);
+    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
     var end = req.query.eTime || now;
 
     service.getPVItemAnalyze(start, end, function (err, rs) {
@@ -32,7 +36,7 @@ function getPVItemAnalyze (req, res) {
 
 function getPVTypeAnalyze (req, res) {
     var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - 3600000 * 24 * 30);
+    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
     var end = req.query.eTime || now;
 
     service.getPVTypeAnalyze(start, end, function (err, rs) {
@@ -47,7 +51,7 @@ function getPVTypeAnalyze (req, res) {
 
 function getPVDutyAnalyze (req, res) {
     var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - 3600000 * 24 * 30);
+    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
     var end = req.query.eTime || now;
 
     service.getPVDutyAnalyze(start, end, function (err, rs) {
@@ -63,7 +67,7 @@ function getPVDutyAnalyze (req, res) {
 
 function getPVReviewAnalyze (req, res) {
     var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - 3600000 * 24 * 30);
+    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
     var end = req.query.eTime || now;
 
     service.getPVReviewAnalyze(start, end, function (err, rs) {
@@ -79,10 +83,40 @@ function getPVReviewAnalyze (req, res) {
 
 function getPVFellowAnalyze (req, res) {
     var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - 3600000 * 24 * 30);
+    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
     var end = req.query.eTime || now;
 
     service.getPVFellowAnalyze(start, end, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function getPVMissReportAnalyze (req, res) {
+    var now = new Date();
+    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
+    var end = req.query.eTime || now;
+
+    service.getPVMissReportAnalyze(start, end, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function getGroupMissAnalyze (req, res) {
+    var now = new Date();
+    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
+    var end = req.query.eTime || now;
+
+    service.getGroupMissAnalyze(start, end, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

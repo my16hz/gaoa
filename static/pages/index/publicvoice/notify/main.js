@@ -106,7 +106,7 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
             return bootbox.alert('请先选择要通报的记录！');
         }
 
-        this._setFormControlValues(jqform, {pvids: ids});
+        this._setFormControlValues(jqform, {pvids: ids.join()});
         this._sendRequest({
             type: 'get',
             url: '/sysmanage/members',

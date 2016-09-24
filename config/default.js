@@ -21,7 +21,8 @@ module.exports = {
         //port: 9200,
         database: 'gaoa',
         user: 'gaoa',
-        password: '1qazXSW@'
+        password: '1qazXSW@',
+        requestTimeout: 60000
     },
     datafile: {
         field: 'datafile',

@@ -15,7 +15,7 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/pubvoice/list', [
             {field: 'checkbox', checkbox: true},
-            {title: '期数', field: 'daily_id', sortable: true, order: 'desc'},
+            {title: '舆情ID', field: 'id', sortable: true, order: 'desc'},
             {title: '标题', field: 'title', alwaysDisplay: true},
             {title: '载体', field: 'from_website'},
             {title: '所属栏目', field: 'item', sortable: true, order: 'desc'},
@@ -26,7 +26,7 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
             {
                 title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
+                    return moment(val).format('YYYY年MM月DD日');
                 }
             },
             {
