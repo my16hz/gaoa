@@ -12,10 +12,10 @@ var LHSAnalyzePage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
         this.sTime = this._createTimepicker('#starttime');
-        this.eTime = this._createTimepicker('#endtime', null, false);
+        this.eTime = this._createTimepicker('#endtime');
         this.sTime.onChange(function (e) {
-                $('#endtime').data("DateTimePicker").minDate(e.date);
-            });
+            $('#endtime').data("DateTimePicker").minDate(e.date);
+        });
         this.eTime.onChange(function (e) {
             $('#starttime').data("DateTimePicker").maxDate(e.date);
         });
