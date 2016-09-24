@@ -55,8 +55,8 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
                             type: 'get', url: '/guide/detail', data: {id: pvid},
                             done: function (rs) {
                                 rs.length ?
-                                    $.each(rs, function (guide) {
-                                        self.addGuidePanel($.extend(guide, {id: pvid}));
+                                    $.each(rs, function () {
+                                        self.addGuidePanel($.extend(this, {id: pvid}));
                                     }) :
                                     self.addGuidePanel({id: pvid});
 

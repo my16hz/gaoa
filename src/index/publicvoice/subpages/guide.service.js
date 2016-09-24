@@ -27,19 +27,19 @@ function addPVGuide (uid, obj, callback) {
         "UPDATE tb_publicvoice SET guide_state = 1 WHERE id = @id;";
     var pvid = "";
     obj.forEach(function (val) {
-        var sql = "INSERT INTO tb_pv_guide ([id], [guide_name], [guide_type], [guide_result], [guide_count], [content], [createuser], [createtime]) ";
+        var sql = "INSERT INTO tb_pv_guide ([id], [guide_name], [guide_type], [guide_result], [guide_count], [content], [createuser]) ";
 
         val = JSON.parse(val);
-        sql += "VAULES ('" + val['id'] + "','"
+        sql += "VALUES ('" + val['id'] + "','"
             + val['guide_name'] + "','"
             + val['guide_type'] + "','"
             + val['guide_result'] + "','"
             + val['guide_count'] + "','"
             + val['content'] + "','"
-            + uid + "','"
-            + new Date() + "');";
+            + uid + "');";
 
         pvid = val['id'];
+        sql_stmt += sql;
     });
     var objParams = {
         "id": pvid
