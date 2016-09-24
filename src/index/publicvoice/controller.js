@@ -23,7 +23,8 @@ extend(
     require('./subpages/feedback.controller'),
     require('./subpages/guide.controller'),
     require('./subpages/notify.controller'),
-    require('./subpages/record.controller')
+    require('./subpages/record.controller'),
+    require('./subpages/search.controller')
 );
 
 function pagePubVoice (req, res) {

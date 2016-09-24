@@ -152,26 +152,39 @@ function addPVComment (uid, obj, callback) {
     var sql_stmt =
         'IF NOT EXISTS (SELECT * FROM tb_pv_comment WHERE [id] = @id) ' +
         'BEGIN ' +
-        '   INSERT INTO tb_pv_comment ([id],[comment],[attachment],[createuser],[createtime],[state]) VALUES (@id, @comment, @attachment, @createuser, @createtime, @state); ' +
+        '   INSERT INTO tb_pv_comment ([id], [comment_user], [comment], [attachment], [state], [comment_date], [recv_date], [message_id], [from_user], [from_department], [createuser], [createtime]) ' +
+        '   VALUES (@id, @comment_user, @comment, @attachment, @state, @comment_date, @recv_date, @message_id, @from_user, @from_department, @createuser, @createtime); ' +
         '   UPDATE tb_publicvoice SET [dispose_stat] = 1, [feedback_state] = 1 WHERE [id] = @id; ' +
         'END ' +
         'ELSE ' +
         '   UPDATE tb_pv_comment SET [comment] = @comment, [attachment] = @attachment WHERE [id] = @id;';
 
     var objParams = {
-        "id": obj["id"],
-        "state": obj["state"],
-        "comment": obj["comment"],
-        "attachment": obj["attachment"],
+        'id' : obj['id'],
+        'comment_user' : obj['comment_user'],
+        'comment' : obj['comment'],
+        'attachment' : obj['attachment'],
+        'state' : obj['state'],
+        'comment_date' : obj['comment_date'],
+        'recv_date' : obj['recv_date'],
+        'message_id' : obj['message_id'],
+        'from_user' : obj['from_user'],
+        'from_department' : obj['from_department'],
         "createuser": uid,
         "createtime": new Date()
     };
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
-        .input("id", sql.Int)
-        .input("state", sql.Int)
-        .input("comment", sql.NVarChar)
-        .input("attachment", sql.NVarChar)
+        .input('id', sql.Int)
+        .input('comment_user', sql.NVarChar)
+        .input('comment', sql.NVarChar)
+        .input('attachment', sql.NVarChar)
+        .input('state', sql.Int)
+        .input('comment_date', sql.Date)
+        .input('recv_date', sql.Date)
+        .input('message_id', sql.NVarChar)
+        .input('from_user', sql.NVarChar)
+        .input('from_department', sql.NVarChar)
         .input("createuser", sql.VarChar)
         .input("createtime", sql.DateTime2)
         .prepare(sql_stmt, function (err) {
@@ -235,9 +248,9 @@ function approveComment (obj, callback) {
 }
 
 function getUnapprovedComment (callback) {
-    var sql_stmt = "SELECT tb_publicvoice.id, tb_publicvoice.title, tb_publicvoice.from_website, " +
+    var sql_stmt = "SELECT TOP 1000 tb_publicvoice.id, tb_publicvoice.title, tb_publicvoice.from_website, " +
         " tb_publicvoice.url, tb_publicvoice.createtime, tb_publicvoice.content AS pv_content, " +
-        " tb_pv_comment.comment, tb_pv_comment.attachment, tb_publicvoice.dispose_stat, tb_daily_pv.did AS daily_id " +
+        " tb_pv_comment.comment, tb_pv_comment.comment_user, tb_pv_comment.comment_date, tb_pv_comment.attachment, tb_publicvoice.dispose_stat, tb_daily_pv.did AS daily_id " +
         " FROM tb_publicvoice, tb_pv_comment, tb_daily_pv " +
         " WHERE tb_publicvoice.id = tb_pv_comment.id AND tb_daily_pv.pvid = tb_publicvoice.id AND tb_publicvoice.dispose_stat = 2;";
     var objParams = {};

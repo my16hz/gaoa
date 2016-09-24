@@ -13,41 +13,14 @@ var LHSStatisticsPage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
 
-        this.dataTable = this._createTable('#tableWrapper', '/socialvoice/report/list', [
-            {title: "组名", field: 'id'},
-            {title: '标题', field: 'title'},
-            {title: '作者', field: 'createuser'},
-            {title: '社情ID', field: 'svids'},
-            {
-                title: '上报时间', field: 'createtime', sortable: true, order: 'desc',
-                formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日');
-                }
-            },
-            {
-                title: '操作', field: 'action',
-                formatter: function () {
-                    return '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-eye-open"></i></a>';
-                },
-                events: {
-                    'click a:first': function () {
-                        var modal = $('#dataModal');
-                        var report = arguments[2];
-                        var editor = self.editor;
-
-                        editor.ready(function () {
-                            editor.setContent(report.content || '');
-                            editor.setDisabled();
-                        });
-
-                        modal.find('a.btn-primary').attr('href', '/socialvoice/export/' + report.id);
-
-                        self._showModal(modal, self.dataTable);
-                    }
-                }
-            }
+        this.userTable = this._createTable('#userTableWrapper', '/socialvoice/statistics/user', [
+            {title: '用户名', field: 'name'},
+            {title: '提交社情个数', field: 'count', sortable: true, order: 'desc'}
         ]);
-        this.editor = this._createEditor('#editorWrapper');
+        this.groupTable = this._createTable('#userTableWrapper', '/socialvoice/statistics/group', [
+            {title: '区县', field: 'name'},
+            {title: '提交社情个数', field: 'count', sortable: true, order: 'desc'}
+        ]);
     },
     events: {
         'click #dataModal .btn-default': 'closeDataModal'

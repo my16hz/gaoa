@@ -16,14 +16,14 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/notify/list', [
             {field: 'checkbox', checkbox: true},
-            {title: '舆情编号', field: 'id'},
-            {title: '舆情标题', field: 'title', alwaysDisplay: true},
-            {title: '舆情载体', field: 'from_website'},
-            {title: '所属栏目', field: 'item'},
-            {title: '舆情类别', field: 'type'},
-            {title: '回帖人数', field: 'fellow_count'},
-            {title: '关注人数', field: 'review_count'},
-            {title: '涉及部门', field: 'relate_department'},
+            {title: '日报期数', field: 'daily_id', sortable: true, order: 'desc'},
+            {title: '舆情标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc'},
+            {title: '舆情载体', field: 'from_website', sortable: true, order: 'desc'},
+            {title: '所属栏目', field: 'item', sortable: true, order: 'desc'},
+            {title: '舆情类别', field: 'type', sortable: true, order: 'desc'},
+            {title: '回帖人数', field: 'fellow_count', sortable: true, order: 'desc'},
+            {title: '关注人数', field: 'review_count', sortable: true, order: 'desc'},
+            {title: '涉及部门', field: 'relate_department', sortable: true, order: 'desc'},
             {
                 title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
@@ -31,7 +31,7 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
                 }
             },
             {
-                title: '状态', field: 'guide_state',
+                title: '状态', field: 'guide_state', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
                         case 0:

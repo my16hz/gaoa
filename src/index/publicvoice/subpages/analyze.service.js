@@ -14,7 +14,7 @@ module.exports = {
 };
 
 function getPVItemAnalyze (start, end, callback) {
-    var sql_stmt = "SELECT item, COUNT(*) AS count FROM tb_publicvoice " +
+    var sql_stmt = "SELECT TOP 100 item, COUNT(*) AS count FROM tb_publicvoice " +
         "WHERE createtime > @start AND createtime < @end " +
         "GROUP BY item;";
     var objParams = {
@@ -41,7 +41,7 @@ function getPVItemAnalyze (start, end, callback) {
 }
 
 function getPVTypeAnalyze (start, end, callback) {
-    var sql_stmt = "SELECT type, COUNT(*) AS count FROM tb_publicvoice " +
+    var sql_stmt = "SELECT TOP 100 type, COUNT(*) AS count FROM tb_publicvoice " +
         "WHERE createtime > @start AND createtime < @end " +
         "GROUP BY type;";
     var objParams = {
@@ -69,7 +69,7 @@ function getPVTypeAnalyze (start, end, callback) {
 
 
 function getPVDutyAnalyze (start, end, callback) {
-    var sql_stmt = "SELECT tb_group.name,COUNT(tb_publicvoice.duty_department) AS count " +
+    var sql_stmt = "SELECT TOP 100 tb_group.name,COUNT(tb_publicvoice.duty_department) AS count " +
     " FROM tb_group,tb_publicvoice " +
     " WHERE tb_publicvoice.duty_department=tb_group.id " +
     "   AND tb_publicvoice.createtime > @start " +

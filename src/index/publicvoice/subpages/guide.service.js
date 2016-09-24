@@ -78,7 +78,7 @@ function updatePVGuide (uid, obj, callback) {
  * @param callback
  */
 function getPVGuide (pvid, callback) {
-    var sql_stmt = "SELECT * FROM tb_pv_guide WHERE id = @id;";
+    var sql_stmt = "SELECT TOP 1000 * FROM tb_pv_guide WHERE id = @id;";
     var objParams = {
         "id": pvid
     };

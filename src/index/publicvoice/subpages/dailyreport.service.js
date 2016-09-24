@@ -35,7 +35,7 @@ module.exports = {
  * @param callback {Function}  回调函数(err, 日报数组[])
  */
 function findDailyList (field, order, callback) {
-    var sql_stmt = "SELECT * FROM tb_daily ";
+    var sql_stmt = "SELECT TOP 1000 * FROM tb_daily ";
     if (field != null && field != "") {
         sql_stmt += " order by " + field + " " + order;
     }
@@ -63,7 +63,7 @@ function findDailyList (field, order, callback) {
  * @param callback {Function}  回调函数(err, object)
  */
 function findDailyDetail (daily_ids, callback) {
-    var sql_stmt = "SELECT * FROM tb_daily where id = " + daily_ids;
+    var sql_stmt = "SELECT TOP 1000 * FROM tb_daily where id = " + daily_ids;
     var objParams = {};
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
@@ -180,7 +180,7 @@ function getCurrentDailyID (callback) {
 }
 
 function getDailyPVList (did, callback) {
-    var sql_stmt = "SELECT tb_publicvoice.*, tb_daily_pv.did AS daily_id, tb_pv_comment.comment, tb_pv_comment.attachment " +
+    var sql_stmt = "SELECT TOP 1000 tb_publicvoice.*, tb_daily_pv.did AS daily_id, tb_pv_comment.comment, tb_pv_comment.attachment " +
         " FROM tb_daily_pv, tb_publicvoice " +
         " LEFT JOIN tb_pv_comment " +
         " ON tb_publicvoice.id = tb_pv_comment.id " +
@@ -204,7 +204,7 @@ function getDailyPVList (did, callback) {
 }
 
 function getLatestDailyPVList (callback) {
-    var sql_stmt = "SELECT tb_publicvoice.*, tb_daily_pv.did AS daily_id, tb_pv_comment.comment, tb_pv_comment.attachment " +
+    var sql_stmt = "SELECT TOP 1000 tb_publicvoice.*, tb_daily_pv.did AS daily_id, tb_pv_comment.comment, tb_pv_comment.attachment " +
         " FROM tb_daily_pv, tb_publicvoice " +
         " LEFT JOIN tb_pv_comment " +
         " ON tb_publicvoice.id = tb_pv_comment.id " +
@@ -226,7 +226,7 @@ function getLatestDailyPVList (callback) {
 }
 
 function getUnappliedPubVoices (callback) {
-    var sql_stmt = " SELECT tb_publicvoice.*, tb_pv_feedback.type AS feedback_type, tb_pv_feedback.content AS feedback_content " +
+    var sql_stmt = " SELECT TOP 1000 tb_publicvoice.*, tb_pv_feedback.type AS feedback_type, tb_pv_feedback.content AS feedback_content " +
         " FROM tb_publicvoice " +
         " LEFT JOIN tb_pv_feedback " +
         " ON tb_publicvoice.id = tb_pv_feedback.id  " +

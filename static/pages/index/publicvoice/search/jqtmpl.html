@@ -1,0 +1,101 @@
+<script type="text/html">
+<div class="pubvoice-search-page">
+    <form class="form-horizontal">
+        <div class="form-group form-group-sm">
+            <div class="row func-btns">
+                <div class="col-xs-12">
+                    <label class="col-xs-1 control-label">开始时间：</label>
+                    <div class="col-xs-2">
+                        <input id="starttime" type="text" name="starttime" placeholder="开始时间" class="form-control">
+                    </div>
+                    <label class="col-xs-1 control-label">结束时间：</label>
+                    <div class="col-xs-2">
+                        <input id="endtime" type="text" name="endtime" placeholder="结束时间" class="form-control">
+                    </div>
+                    <label class="col-xs-1 control-label">舆情状态：</label>
+                    <div class="col-xs-2">
+                        <select name="state" class="form-control">
+                            <option value="2"> 审核通过 </option>
+                            <option value="4"> 已入报 </option>
+                            <option value="6"> 已批示 </option>
+                            <option value="8"> 已回复 </option>
+                            <option value="9"> 回复已入报 </option>
+                            <option value="10"> 已采用 </option>
+                        </select>
+                    </div>
+                    <label class="col-xs-1 control-label">舆情类别：</label>
+                    <div class="col-xs-2">
+                        <select name="type" class="form-control">
+                            <option value="作风效能">作风效能</option>
+                            <optgroup label="行业管理">
+                                <option value="行业管理-劳动人事">劳动人事</option>
+                                <option value="行业管理-公共安全">公共安全</option>
+                                <option value="行业管理-医卫食安">医卫食安</option>
+                                <option value="行业管理-教育">教育</option>
+                                <option value="行业管理-环保">环保</option>
+                                <option value="行业管理-交通">交通</option>
+                                <option value="行业管理-城建">城建</option>
+                                <option value="行业管理-房产">房产</option>
+                                <option value="行业管理-征地">征地</option>
+                                <option value="行业管理-其他">其他</option>
+                            </optgroup>
+                            <option value="其他类">其他类</option>
+                        </select>
+                    </div>
+                    <div >
+                        <button id="btnSearch" class="btn btn-default">查询</button>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <label class="col-xs-1 control-label">标题关键字：</label>
+                    <div class="col-xs-2">
+                        <input type="text" name="keyword" placeholder="标题关键字" class="form-control">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+    <div class="row data-wrapper">
+        <div id="tableWrapper" class="col-md-12"></div>
+        <div class="col-xs-10 no-padding-left hide">
+            <div id="dataModal" class="modal-content hide">
+                <div class="modal-header">
+                    <h4 class="modal-title">舆情详情</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group form-group-sm">
+                            <div id="editorWrapper" class="col-xs-10"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default">关闭</button>
+                </div>
+            </div>
+            <div id="notifyModal" class="modal-content hide">
+                <div class="modal-header">
+                    <h4 class="modal-title">舆情通报</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <input type="hidden" name="pvids" class="form-control"/>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">通报对象：</label>
+                            <div class="col-xs-10">
+                                <select name="uids" multiple="multiple" placeholder="点击选择通报对象"
+                                        class="form-control" style="width:100%;"></select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default">关闭</button>
+                    <button type="button" class="btn btn-primary">通报</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</script>

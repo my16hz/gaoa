@@ -23,7 +23,7 @@ module.exports = {
  * @param callback {Function}  回调函数(err, 舆情数组[])
  */
 function findWaitApprovalPV (field, order, callback) {
-    var sql_stmt = "SELECT * FROM tb_publicvoice WHERE state = 1 ";
+    var sql_stmt = "SELECT TOP 1000 * FROM tb_publicvoice WHERE state = 1 ";
     if (field != null && field != "") {
         sql_stmt += " order by " + field + " " + order;
     }

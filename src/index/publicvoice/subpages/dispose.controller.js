@@ -85,12 +85,18 @@ function savePVComment (req, res) {
     var uid = req.session[userkey].id;
     var obj = req.body;
     var comment = {
-        "id": obj["id"],
-        "createtime": new Date(),
-        "state": "1",
-        "comment": obj["comment"],
-        "attachment": obj["attachment"],
-        "createuser": uid
+        'id' : obj['id'],
+        'comment_user' : obj['comment_user'],
+        'comment' : obj['comment'],
+        'attachment' : obj['attachment'],
+        'state' : "1",
+        'comment_date' : obj['comment_date'],
+        'recv_date' : obj['recv_date'],
+        'message_id' : obj['message_id'],
+        'from_user' : obj['from_user'],
+        'from_department' : obj['from_department'],
+        "createuser": uid,
+        "createtime": new Date()
     };
 
     service.addPVComment(uid, comment, function (err, rs) {

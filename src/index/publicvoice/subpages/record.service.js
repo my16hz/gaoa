@@ -66,7 +66,7 @@ function findPubVoiceList (uid, priority, field, order, callback) {
     var ps = null;
     var endTime = new Date();
     var startTime = new Date();
-    startTime.setDate(startTime.getDay() - 2);
+    startTime.setDate(startTime.getDate() - 2);
     var params = {
         'startTime' : startTime,
         'endTime' : endTime
@@ -108,7 +108,7 @@ function findPubVoiceList (uid, priority, field, order, callback) {
  */
 function findPubVoicesByState(state, callback) {
     var params = {};
-    var sql_stmt = "select * from tb_publicvoice where state in (" + state.join() + ")";
+    var sql_stmt = "select TOP 1000  * from tb_publicvoice where state in (" + state.join() + ")";
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
             if (err) {
