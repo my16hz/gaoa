@@ -88,6 +88,7 @@ module.exports = function (gulp, plugins, isdebug) {
             DIR_SRC.coreJs + 'jquery-1.12.4.js',
             DIR_SRC.coreJs + 'bootstrap-3.3.5.js',
             DIR_SRC.coreJs + 'moment-2.14.1.js',
+            DIR_SRC.coreJs + 'moment-zh-CN-2.14.1.js',
             DIR_SRC.coreJs + 'bootstrap-table-1.11.0.js',
             DIR_SRC.coreJs + 'bootstrap-table-zh-CN-1.11.0.js',
             DIR_SRC.coreJs + 'bootbox-4.4.0.js'
@@ -98,20 +99,15 @@ module.exports = function (gulp, plugins, isdebug) {
             dependencies.push(DIR_SRC.coreJs + 'jshashes-1.0.5.js');
         } else {
             dependencies.push(
+                DIR_SRC.coreJs + 'jquery.ajaxfileupload.js',
+                DIR_SRC.coreJs + 'jquery.template-1.4.4.js',
+                DIR_SRC.coreJs + 'select2-2 4.0.3.js',
+                DIR_SRC.coreJs + 'select2-zh-CN-2.4.3.js',
+                DIR_SRC.coreJs + 'bootstrap-datetimepicker-4.17.42.js',
                 DIR_SRC.editor + 'config.js',
                 DIR_SRC.editor + 'main.js',
                 DIR_SRC.editor + 'lang/zh-cn.js'
             );
-
-            //if ('publicvoice' == module) {
-                dependencies.push(
-                    DIR_SRC.coreJs + 'jquery.ajaxfileupload.js',
-                    DIR_SRC.coreJs + 'jquery.template-1.4.4.js',
-                    DIR_SRC.coreJs + 'select2-2 4.0.3.js',
-                    DIR_SRC.coreJs + 'select2-zh-CN-2.4.3.js',
-                    DIR_SRC.coreJs + 'bootstrap-datetimepicker-4.17.42.js'
-                );
-            //}
         }
 
         dependencies.push(
