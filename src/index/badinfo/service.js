@@ -19,7 +19,12 @@ module.exports = {
     saveRTXReport: saveRTXReport,
     deleteRTXReport: deleteRTXReport,
 
-    aggregateWebsite: aggregateWebsite
+    aggregateWebsite: aggregateWebsite,
+    aggregateReporter: aggregateReporter,
+    aggregateDepartment: aggregateDepartment,
+    aggregateZone: aggregateZone,
+    aggregateType: aggregateType,
+    aggregateCreater: aggregateCreater
 };
 
 function listBadInfo (uid, priority, field, order, callback) {
@@ -311,6 +316,142 @@ function aggregateWebsite (start, end, callback) {
     var sql_stmt = "SELECT TOP 100 website, COUNT(*) AS count FROM tb_badinfo " +
         "WHERE createtime > @start AND createtime < @end " +
         "GROUP BY website;";
+    var objParams = {
+        "start": start,
+        "end": end
+    };
+
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+
+function aggregateReporter (start, end, callback) {
+    var sql_stmt = "SELECT TOP 100 username, COUNT(*) AS count FROM tb_badinfo " +
+        "WHERE createtime > @start AND createtime < @end " +
+        "GROUP BY username;";
+    var objParams = {
+        "start": start,
+        "end": end
+    };
+
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+function aggregateDepartment (start, end, callback) {
+    var sql_stmt = "SELECT TOP 100 department, COUNT(*) AS count FROM tb_badinfo " +
+        "WHERE createtime > @start AND createtime < @end " +
+        "GROUP BY department;";
+    var objParams = {
+        "start": start,
+        "end": end
+    };
+
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+function aggregateZone (start, end, callback) {
+    var sql_stmt = "SELECT TOP 100 duty_zone, COUNT(*) AS count FROM tb_badinfo " +
+        "WHERE createtime > @start AND createtime < @end " +
+        "GROUP BY duty_zone;";
+    var objParams = {
+        "start": start,
+        "end": end
+    };
+
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+function aggregateType (start, end, callback) {
+    var sql_stmt = "SELECT TOP 100 type, COUNT(*) AS count FROM tb_badinfo " +
+        "WHERE createtime > @start AND createtime < @end " +
+        "GROUP BY type;";
+    var objParams = {
+        "start": start,
+        "end": end
+    };
+
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+function aggregateCreater (start, end, callback) {
+    var sql_stmt = "SELECT TOP 100 createuser, COUNT(*) AS count FROM tb_badinfo " +
+        "WHERE createtime > @start AND createtime < @end " +
+        "GROUP BY createuser;";
     var objParams = {
         "start": start,
         "end": end

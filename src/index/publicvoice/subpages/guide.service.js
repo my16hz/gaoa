@@ -25,17 +25,19 @@ module.exports = {
 function addPVGuide (uid, obj, callback) {
     var sql_stmt = "DELETE FROM tb_pv_guide WHERE id = @id;" +
         "UPDATE tb_publicvoice SET guide_state = 1 WHERE id = @id;";
-    var pvid = ""
+    var pvid = "";
     obj.forEach(function (val) {
         var sql = "INSERT INTO tb_pv_guide ([id], [guide_name], [guide_type], [guide_result], [guide_count], [content], [createuser], [createtime]) ";
+
+        val = JSON.parse(val);
         sql += "VAULES ('" + val['id'] + "','"
             + val['guide_name'] + "','"
             + val['guide_type'] + "','"
             + val['guide_result'] + "','"
             + val['guide_count'] + "','"
             + val['content'] + "','"
-            + val['createuser'] + "','"
-            + val['createtime'] + "');";
+            + uid + "','"
+            + new Date() + "');";
 
         pvid = val['id'];
     });

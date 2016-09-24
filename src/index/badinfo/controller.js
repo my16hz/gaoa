@@ -21,7 +21,12 @@ module.exports = {
     saveRTXReport: saveRTXReport,
     deleteRTXReport: deleteRTXReport,
 
-    aggregateWebsite: aggregateWebsite
+    aggregateWebsite: aggregateWebsite,
+    aggregateReporter: aggregateReporter,
+    aggregateDepartment: aggregateDepartment,
+    aggregateZone: aggregateZone,
+    aggregateType: aggregateType,
+    aggregateCreater: aggregateCreater
 };
 
 function pageBadInfo (req, res) {
@@ -187,3 +192,79 @@ function aggregateWebsite (req, res) {
             });
     });
 }
+
+function aggregateReporter (req, res) {
+    var now = new Date();
+    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
+    var end = req.query.eTime || now;
+
+    service.aggregateReporter(start, end, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function aggregateDepartment (req, res) {
+    var now = new Date();
+    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
+    var end = req.query.eTime || now;
+
+    service.aggregateDepartment(start, end, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function aggregateZone (req, res) {
+    var now = new Date();
+    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
+    var end = req.query.eTime || now;
+
+    service.aggregateZone(start, end, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function aggregateType (req, res) {
+    var now = new Date();
+    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
+    var end = req.query.eTime || now;
+
+    service.aggregateType(start, end, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function aggregateCreater (req, res) {
+    var now = new Date();
+    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
+    var end = req.query.eTime || now;
+
+    service.aggregateCreater(start, end, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+

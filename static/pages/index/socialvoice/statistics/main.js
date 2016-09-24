@@ -17,7 +17,7 @@ var LHSStatisticsPage = $.extend({}, LHSBasicPage, {
             {title: '用户名', field: 'name'},
             {title: '提交社情个数', field: 'count', sortable: true, order: 'desc'}
         ]);
-        this.groupTable = this._createTable('#userTableWrapper', '/socialvoice/statistics/group', [
+        this.groupTable = this._createTable('#groupTableWrapper', '/socialvoice/statistics/group', [
             {title: '区县', field: 'name'},
             {title: '提交社情个数', field: 'count', sortable: true, order: 'desc'}
         ]);

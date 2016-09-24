@@ -22,4 +22,9 @@ module.exports = function () {
         .delete('/rtx/report/delete', controller.deleteRTXReport)
 
         .get('/badinfo/aggregate/website', controller.aggregateWebsite)
+        .get('/badinfo/aggregate/reporter', controller.aggregateReporter)
+        .get('/badinfo/aggregate/department', controller.aggregateDepartment)
+        .get('/badinfo/aggregate/zone', controller.aggregateZone)
+        .get('/badinfo/aggregate/type', controller.aggregateType)
+        .get('/badinfo/aggregate/creater', controller.aggregateCreater)
 };
