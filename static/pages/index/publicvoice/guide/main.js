@@ -111,14 +111,16 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
         });
     },
     closeDataModal: function () {
-        var modal = $('#dataModal');
-
-        modal.find('.lhs-guide-panel').each(function () {
-            $(this).data('editor').destroy();
+        $.each(this.__collapsepanels__, function (editor) {
+            editor = $(this).data('editor');
+            editor.ready(function () {
+                editor.destroy();
+            });
             $(this).remove();
         });
 
-        this._closeModal(modal, this.dataTable);
+        this.__collapsepanels__.length = 0;
+        this._closeModal($('#dataModal'), this.dataTable);
     },
     saveGuide: function () {
         var dataTable = this.dataTable;
