@@ -3,6 +3,7 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
+var extend = require('extend');
 var userkey = require('config').session.userkey;
 
 var errhandler = require('../../../utilities/errhandler');
@@ -24,21 +25,10 @@ function getGuideDetail (req, res) {
     });
 }
 
-function saveGuide (req, res) {
-    var uid = req.session[userkey].id;
-    var obj = req.body;
-    var guide = {
-        "id": obj["id"],
-        "createtime": new Date(),
-        "createuser": uid,
-        "content": obj["content"],
-        "guide_name": obj['guide_name'],
-        "guide_type": obj['guide_type'],
-        "guide_result": obj['guide_result'],
-        "guide_count": obj['guide_count']
-    };
+function saveGuide(req, res) {
+    var guides = req.body.guides;
 
-    service.addPVGuide(uid, guide, function (err, rs) {
+    service.addPVGuide(req.session[userkey].id, guides, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
