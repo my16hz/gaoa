@@ -20,4 +20,6 @@ module.exports = function () {
         .get('/rtx/report/list', controller.listRTXReport)
         .post('/rtx/report/save', controller.saveRTXReport)
         .delete('/rtx/report/delete', controller.deleteRTXReport)
+
+        .get('/badinfo/aggregate/website', controller.aggregateWebsite)
 };

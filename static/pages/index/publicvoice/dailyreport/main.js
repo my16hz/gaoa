@@ -14,11 +14,11 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/daily/list', [
             {field: 'checkbox', checkbox: true},
-            {title: '总期数', field: 'id', alwaysDisplay: true},
-            {title: '当季期数', field: 'issue_id'},
+            {title: '总期数', field: 'id', sortable: true, alwaysDisplay: true},
+            {title: '当季期数', field: 'issue_id', sortable: true},
             {title: '创建用户', field: 'createuser'},
             {
-                title: '创建时间', field: 'createtime', sortable: true, order: 'desc',
+                title: '创建时间', field: 'createtime', sortable: true,
                 formatter: function (val) {
                     return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
                 }

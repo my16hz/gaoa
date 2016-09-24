@@ -221,7 +221,8 @@ var LHSBasicPage = {
                 self._showXHRMessage('请求失败:' + xhr.responseText, 'danger');
             },
             columns: columns,
-            pagination: true
+            pagination: true,
+            sortOrder: 'desc'
         });
 
         this.__tableCaches__.push(dataTable);
@@ -325,7 +326,7 @@ var LHSBasicPage = {
     },
     _createTimepicker: function (input, format, defval) {
         var picker = $(input).datetimepicker({
-            format: format || 'LL',
+            format: format || 'yyyy-MM-dd',
             useCurrent: defval || true,
             locale: 'zh_CN'
         });

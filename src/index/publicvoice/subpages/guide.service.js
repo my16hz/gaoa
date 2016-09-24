@@ -23,29 +23,28 @@ module.exports = {
  * @param callback
  */
 function addPVGuide (uid, obj, callback) {
-    var sql_stmt = "DELETE FROM tb_pv_guide WHERE id = @id; INSERT INTO tb_pv_guide ([id], [guide_name], [guide_type], [guide_result], [guide_count], [content], [createuser], [createtime])  " +
-        "VALUES (@id, @guide_name, @guide_type, @guide_result, @guide_count, @content, @createuser, @createtime);" +
-        "UPDATE tb_publicvoice SET guide_state = 1 WHERE id = @id";
+    var sql_stmt = "DELETE FROM tb_pv_guide WHERE id = @id;" +
+        "UPDATE tb_publicvoice SET guide_state = 1 WHERE id = @id;";
+    var pvid = ""
+    obj.forEach(function (val) {
+        var sql = "INSERT INTO tb_pv_guide ([id], [guide_name], [guide_type], [guide_result], [guide_count], [content], [createuser], [createtime]) ";
+        sql += "VAULES ('" + val['id'] + "','"
+            + val['guide_name'] + "','"
+            + val['guide_type'] + "','"
+            + val['guide_result'] + "','"
+            + val['guide_count'] + "','"
+            + val['content'] + "','"
+            + val['createuser'] + "','"
+            + val['createtime'] + "');";
+
+        pvid = val['id'];
+    });
     var objParams = {
-        "id": obj["id"],
-        "guide_name": obj["guide_name"],
-        "guide_type": obj["guide_type"],
-        "guide_result": obj["guide_result"],
-        "guide_count": obj["guide_count"],
-        "content": obj["content"],
-        "createuser": uid,
-        "createtime": new Date()
+        "id": pvid
     };
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .input("id", sql.Int)
-        .input("guide_name", sql.NVarChar)
-        .input("guide_type", sql.NVarChar)
-        .input("guide_result", sql.NVarChar)
-        .input("guide_count", sql.Int)
-        .input("content", sql.NVarChar)
-        .input("createuser", sql.VarChar)
-        .input("createtime", sql.DateTime2)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);

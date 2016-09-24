@@ -13,9 +13,12 @@ var LHSAggregatePage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
 
-        this.dataTable = this._createTable('#tableWrapper', '/badinfo/list', [
+        this.websiteTable = this._createTable('#websiteTableWrapper', '/badinfo/aggregate/website', [
+            {title: '举报网站', field: 'website', sortable: true, order: 'desc'},
+            {title: '举报次数', field: 'count', sortable: true, order: 'desc'}
         ]);
-        //this.editor = this._createEditor('#editorWrapper');
+        this.sTime = this._createTimepicker('#starttime');
+        this.eTime = this._createTimepicker('#endtime');
     },
     events: {
     }

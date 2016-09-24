@@ -17,7 +17,9 @@ module.exports = {
 
     listRTXReport: listRTXReport,
     saveRTXReport: saveRTXReport,
-    deleteRTXReport: deleteRTXReport
+    deleteRTXReport: deleteRTXReport,
+
+    aggregateWebsite: aggregateWebsite
 };
 
 function listBadInfo (uid, priority, field, order, callback) {
@@ -300,6 +302,33 @@ function deleteRTXReport (dbids, callback) {
 
                 ps.unprepare(function (err) {
                     err && console.error(err);
+                });
+            });
+        });
+}
+
+function aggregateWebsite (start, end, callback) {
+    var sql_stmt = "SELECT TOP 100 website, COUNT(*) AS count FROM tb_badinfo " +
+        "WHERE createtime > @start AND createtime < @end " +
+        "GROUP BY website;";
+    var objParams = {
+        "start": start,
+        "end": end
+    };
+
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
                 });
             });
         });

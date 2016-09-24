@@ -6,7 +6,7 @@
 var sesskeys = require('config').session;
 var errhandler = require('../../utilities/errhandler');
 var service = require('./service');
-
+var defaut_interval = 3600000 * 24 * 7;
 module.exports = {
     pageBadInfo: pageBadInfo,
     listBadInfo: listBadInfo,
@@ -19,7 +19,9 @@ module.exports = {
 
     listRTXReport: listRTXReport,
     saveRTXReport: saveRTXReport,
-    deleteRTXReport: deleteRTXReport
+    deleteRTXReport: deleteRTXReport,
+
+    aggregateWebsite: aggregateWebsite
 };
 
 function pageBadInfo (req, res) {
@@ -167,6 +169,21 @@ function deleteRTXReport (req, res) {
             errhandler.internalException(res, err) :
             res.send({
                 success: true
+            });
+    });
+}
+
+function aggregateWebsite (req, res) {
+    var now = new Date();
+    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
+    var end = req.query.eTime || now;
+
+    service.aggregateWebsite(start, end, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
             });
     });
 }
