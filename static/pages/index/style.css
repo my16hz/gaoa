@@ -30,16 +30,20 @@
 }
 
 .index-page .header .nav li a {
-    margin-top: 22px;
+; margin-top: 22px;
     padding: 10px 20px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
 }
 
-.index-page .header .btn-logout {
+.index-page .header .btn-logout, .index-page .header .lhs-loading {
     float: right;
     margin-top: 31px;
-    margin-right: 20px;
+    margin-right: 24px;
+}
+
+.index-page .header .lhs-loading {
+    margin-top: 37px
 }
 
 .index-page .content .aside-menu {

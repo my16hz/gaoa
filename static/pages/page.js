@@ -87,11 +87,11 @@ var LHSBasicPage = {
     },
 
     _showLoading: function () {
-
+        $('<img src="css/imgs/ico_loading.gif" class="lhs-loading"/>').appendTo('.header');
         return this;
     },
     _removeLoading: function () {
-
+        $('.header img.lhs-loading').remove();
         return this;
     },
     _showXHRMessage: function (msg, type) {
@@ -185,10 +185,7 @@ var LHSBasicPage = {
         $(panel).append(
             $('<script type="text/plain"></script>')
                 .attr('id', ueid)
-                .css({
-                    width: '100%',
-                    height: 300
-                })
+                .css({width: '100%', height: 300})
         ).width(function () {
             return $(this).parent().width;
         });
