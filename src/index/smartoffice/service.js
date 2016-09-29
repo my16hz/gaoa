@@ -27,7 +27,12 @@ module.exports = {
     saveMessage: saveMessage,
     updateMessage: updateMessage,
     getMessageList: getMessageList,
-    deleteMessage: deleteMessage
+    deleteMessage: deleteMessage,
+
+    getUnapprovedSendMsg: getUnapprovedSendMsg,
+    getUnapprovedRecvMsg: getUnapprovedRecvMsg,
+    commentSendMsg: commentSendMsg,
+    commentRecvMsg: commentRecvMsg
 };
 
 function getSendMsg (callback) {
@@ -461,6 +466,95 @@ function sendNotify (uid, userids, mids, callback) {
                 ps.unprepare(function (err) {
                     if (err)
                         console.log(err);
+                });
+            });
+        });
+}
+
+function getUnapprovedSendMsg (callback) {
+    var params = {};
+    var sql_stmt = "SELECT TOP 1000 * FROM tb_so_sendmessage WHERE state = 1 ORDER BY createtime desc;";
+
+    console.log(sql_stmt);
+
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, []);
+            }
+
+            ps.execute(params, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function getUnapprovedRecvMsg (callback) {
+    var params = {};
+    var sql_stmt = "SELECT TOP 1000 * FROM tb_so_recvmessage WHERE state = 1 ORDER BY createtime desc;";
+
+    console.log(sql_stmt);
+
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, []);
+            }
+
+            ps.execute(params, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function commentSendMsg (msg, callback) {
+    var sql_stmt = "UPDATE tb_so_sendmessage SET  [sign] = @sign, [countersign] = @countersign, [state] = 2 WHERE id = @id; ";
+    var objParams = msg;
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("id", sql.Int)
+        .input("sign", sql.NVarChar)
+        .input("countersign", sql.NVarChar)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function commentRecvMsg (msg, callback) {
+    var sql_stmt = "UPDATE tb_so_recvmessage SET  [comment] = @comment, [state] = 2 WHERE id = @id; ";
+    var objParams = msg;
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("id", sql.Int)
+        .input("comment", sql.NVarChar)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
                 });
             });
         });

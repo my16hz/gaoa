@@ -14,7 +14,7 @@ var LHSSendMessagePage = $.extend({}, LHSBasicPage, {
         this.initDependencies();
         this.dataTable = this._createTable('#tableWrapper', '/smartoffice/sendmsg/list', [
             {field: 'checkbox', checkbox: true},
-            {title: '文件标题', field: 'title', alwaysDisplay: true},
+            {title: '文件标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc'},
             {title: '主送机关', field: 'major_department', sortable: true, order: 'desc'},
             {title: '抄送机关', field: 'cc_department', sortable: true, order: 'desc'},
             {title: '发文字号', field: 'message_id', sortable: true, order: 'desc'},

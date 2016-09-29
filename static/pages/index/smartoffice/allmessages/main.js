@@ -67,9 +67,10 @@ var LHSAllMessagesPage = $.extend({}, LHSBasicPage, {
         this._setFormControlValues(jqform, msg);
         editor.ready(function () {
             editor.setContent(msg.content || '');
+            editor.setDisabled();
         });
-        editor.setDisabled();
-        this._showModal(modal, self.dataTable);
+
+        this._showModal(modal, this.dataTable);
         return this;
     },
     closeDataModal: function () {

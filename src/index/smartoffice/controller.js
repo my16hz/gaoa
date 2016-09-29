@@ -27,7 +27,13 @@ module.exports = {
     getNotifyList: getNotifyList,
     saveMessage: saveMessage,
     getMessageList: getMessageList,
-    deleteMessage: deleteMessage
+    deleteMessage: deleteMessage,
+
+    getUnapprovedSendMsg: getUnapprovedSendMsg,
+    getUnapprovedRecvMsg: getUnapprovedRecvMsg,
+    commentSendMsg: commentSendMsg,
+    commentRecvMsg: commentRecvMsg
+
 };
 
 function pageSmartOffice (req, res) {
@@ -270,6 +276,61 @@ function sendNotify (req, res) {
             errhandler.internalException(res, err) :
             res.send({
                 success: true,
+            });
+    });
+}
+
+function getUnapprovedSendMsg (req, res) {
+    service.getUnapprovedSendMsg(function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function getUnapprovedRecvMsg (req, res) {
+    service.getUnapprovedRecvMsg(function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function commentSendMsg (req, res) {
+    var obj = req.body;
+    var msg = {
+        'id': obj['id'],
+        'sign' : obj['sign'],
+        'countersign' : obj['countersign']
+    };
+
+    service.commentSendMsg(msg, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+            });
+    });
+}
+
+function commentRecvMsg (req, res) {
+    var obj = req.body;
+    var msg = {
+        'id': obj['id'],
+        'comment' : obj['comment']
+    };
+
+    service.commentRecvMsg(msg, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
             });
     });
 }

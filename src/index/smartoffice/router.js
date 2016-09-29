@@ -27,4 +27,9 @@ module.exports = function () {
         .get('/smartoffice/message/list', controller.getMessageList)
         .post('/smartoffice/message/save', controller.saveMessage)
         .delete('/smartoffice/message/delete', controller.deleteMessage)
+
+        .get('/smartoffice/sendmsg/unapproved', controller.getUnapprovedSendMsg)
+        .get('/smartoffice/recvmsg/unapproved', controller.getUnapprovedRecvMsg)
+        .post('/smartoffice/sendmsg/comment', controller.commentSendMsg)
+        .post('/smartoffice/recvmsg/comment', controller.commentRecvMsg)
 };
