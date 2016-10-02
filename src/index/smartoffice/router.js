@@ -14,11 +14,13 @@ module.exports = function () {
         .post('/smartoffice/sendmsg/save', controller.saveSendMsg)
         .delete('/smartoffice/sendmsg/delete', controller.deleteSendMsg)
         .post('/smartoffice/sendmsg/commit', controller.commitSendMsg)
+        .post('/smartoffice/sendmsg/export', controller.exportSendMsg)
 
         .get('/smartoffice/recvmsg/list', controller.getRecvMsg)
         .post('/smartoffice/recvmsg/save', controller.saveRecvMsg)
         .delete('/smartoffice/recvmsg/delete', controller.deleteRecvMsg)
         .post('/smartoffice/recvmsg/commit', controller.commitRecvMsg)
+        .post('/smartoffice/recvmsg/export', controller.exportRecvMsg)
 
         .post('/smartoffice/notify/send', controller.sendNotify)
 

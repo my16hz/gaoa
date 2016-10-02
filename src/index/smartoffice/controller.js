@@ -5,6 +5,7 @@
  */
 var menukey = require('config').session.menukey;
 var userkey = require('config').session.userkey;
+var HtmlDocx = require('html-docx-js');
 var errhandler = require('../../utilities/errhandler');
 var service = require('./service');
 
@@ -15,11 +16,13 @@ module.exports = {
     saveSendMsg: saveSendMsg,
     deleteSendMsg: deleteSendMsg,
     commitSendMsg: commitSendMsg,
+    exportSendMsg: exportSendMsg,
 
     getRecvMsg: getRecvMsg,
     saveRecvMsg: saveRecvMsg,
     deleteRecvMsg: deleteRecvMsg,
     commitRecvMsg: commitRecvMsg,
+    exportRecvMsg: exportRecvMsg,
 
     sendNotify: sendNotify,
 
@@ -69,23 +72,23 @@ function saveSendMsg (req, res) {
     var obj = req.body;
     var msg = {
         'id': obj['id'],
-        'title' : obj['title'],
-        'major_department' : obj['major_department'],
-        'cc_department' : obj['cc_department'],
-        'message_id' : obj['message_id'],
-        'secret_level' : obj['secret_level'],
-        'urgent_level' : obj['urgent_level'],
-        'dispose_user' : obj['dispose_user'],
-        'draft_user' : obj['draft_user'],
-        'copies' : obj['copies'],
-        'content' : obj['content'],
-        'keyword' : obj['keyword'],
-        'sign' : obj['sign'],
-        'countersign' : obj['countersign'],
-        'state' : 0,
-        'createuser' : uid,
-        'createtime' : new Date(),
-        'smartoffice_sendmessage_id' : obj['smartoffice_sendmessage_id']
+        'title': obj['title'],
+        'major_department': obj['major_department'],
+        'cc_department': obj['cc_department'],
+        'message_id': obj['message_id'],
+        'secret_level': obj['secret_level'],
+        'urgent_level': obj['urgent_level'],
+        'dispose_user': obj['dispose_user'],
+        'draft_user': obj['draft_user'],
+        'copies': obj['copies'],
+        'content': obj['content'],
+        'keyword': obj['keyword'],
+        'sign': obj['sign'],
+        'countersign': obj['countersign'],
+        'state': 0,
+        'createuser': uid,
+        'createtime': new Date(),
+        'smartoffice_sendmessage_id': obj['smartoffice_sendmessage_id']
     }
 
     service[obj['id'] ? 'updateSendMsg' : 'saveSendMsg'](msg, function (err) {
@@ -103,24 +106,24 @@ function saveRecvMsg (req, res) {
     var obj = req.body;
     var msg = {
         'id': obj['id'],
-        'title' : obj['title'],
-        'recv_date' : obj['recv_date'],
-        'message_id' : obj['message_id'],
-        'origin_department' : obj['origin_department'],
-        'origin_id' : obj['origin_id'],
-        'secret_level' : obj['secret_level'],
-        'approved_user' : obj['approved_user'],
-        'from_department' : obj['from_department'],
-        'origin_date' : obj['origin_date'],
-        'copies' : obj['copies'],
-        'from_user' : obj['from_user'],
-        'content' : obj['content'],
-        'comment' : obj['comment'],
-        'result' : obj['result'],
-        'state' : 0,
-        'createuser' : uid,
-        'createtime' : new Date(),
-        'smartoffice_recvmessage_id' : obj['smartoffice_recvmessage_id']
+        'title': obj['title'],
+        'recv_date': obj['recv_date'],
+        'message_id': obj['message_id'],
+        'origin_department': obj['origin_department'],
+        'origin_id': obj['origin_id'],
+        'secret_level': obj['secret_level'],
+        'approved_user': obj['approved_user'],
+        'from_department': obj['from_department'],
+        'origin_date': obj['origin_date'],
+        'copies': obj['copies'],
+        'from_user': obj['from_user'],
+        'content': obj['content'],
+        'comment': obj['comment'],
+        'result': obj['result'],
+        'state': 0,
+        'createuser': uid,
+        'createtime': new Date(),
+        'smartoffice_recvmessage_id': obj['smartoffice_recvmessage_id']
     }
 
     service.saveRecvMsg(msg, function (err) {
@@ -132,7 +135,7 @@ function saveRecvMsg (req, res) {
     });
 }
 
-function deleteSendMsg(req, res) {
+function deleteSendMsg (req, res) {
     var id = req.body.id;
 
     service.removeSendMsg(id, function (err) {
@@ -144,7 +147,7 @@ function deleteSendMsg(req, res) {
     });
 }
 
-function deleteRecvMsg(req, res) {
+function deleteRecvMsg (req, res) {
     var id = req.body.id;
 
     service.removeRecvMsg(id, function (err) {
@@ -156,7 +159,7 @@ function deleteRecvMsg(req, res) {
     });
 }
 
-function deleteRecvMsg(req, res) {
+function deleteRecvMsg (req, res) {
     var id = req.body.id;
 
     service.removeRecvMsg(id, function (err) {
@@ -168,7 +171,7 @@ function deleteRecvMsg(req, res) {
     });
 }
 
-function commitSendMsg(req, res) {
+function commitSendMsg (req, res) {
     var ids = req.body.ids;
 
     service.commitSendMsg(ids, function (err) {
@@ -180,7 +183,21 @@ function commitSendMsg(req, res) {
     });
 }
 
-function commitRecvMsg(req, res) {
+function exportSendMsg (req, res) {
+    var content = req.body.content;
+    var filename = encodeURIComponent('广安市网络舆情中心定稿纸');
+
+    try {
+        res.set({
+            'content-type': 'application/msword',
+            'content-disposition': 'attachment;filename="' + filename + '.doc"'
+        }).send(HtmlDocx.asBlob(content));
+    } catch (e) {
+        errhandler.internalException(res, e);
+    }
+}
+
+function commitRecvMsg (req, res) {
     var ids = req.body.ids;
 
     service.commitRecvMsg(ids, function (err) {
@@ -192,7 +209,21 @@ function commitRecvMsg(req, res) {
     });
 }
 
-function getTemplate(req, res) {
+function exportRecvMsg (req, res) {
+    var content = req.body.content;
+    var filename = encodeURIComponent('广安市网络舆情中心收文处理笺');
+
+    try {
+        res.set({
+            'content-type': 'application/msword',
+            'content-disposition': 'attachment;filename="' + filename + '.doc"'
+        }).send(HtmlDocx.asBlob(content));
+    } catch (e) {
+        errhandler.internalException(res, e);
+    }
+}
+
+function getTemplate (req, res) {
     service.getTemplate(function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
@@ -220,13 +251,13 @@ function saveMessage (req, res) {
     var obj = req.body;
     var msg = {
         'id': obj['id'],
-        'title' : obj['title'],
-        'message_id' : obj['message_id'],
-        'type' : obj['type'],
-        'content' : obj['content'],
-        'state' : 0,
-        'createuser' : uid,
-        'createtime' : new Date(),
+        'title': obj['title'],
+        'message_id': obj['message_id'],
+        'type': obj['type'],
+        'content': obj['content'],
+        'state': 0,
+        'createuser': uid,
+        'createtime': new Date(),
 
     };
 
@@ -306,8 +337,8 @@ function commentSendMsg (req, res) {
     var obj = req.body;
     var msg = {
         'id': obj['id'],
-        'sign' : obj['sign'],
-        'countersign' : obj['countersign']
+        'sign': obj['sign'],
+        'countersign': obj['countersign']
     };
 
     service.commentSendMsg(msg, function (err, rs) {
@@ -323,7 +354,7 @@ function commentRecvMsg (req, res) {
     var obj = req.body;
     var msg = {
         'id': obj['id'],
-        'comment' : obj['comment']
+        'comment': obj['comment']
     };
 
     service.commentRecvMsg(msg, function (err, rs) {

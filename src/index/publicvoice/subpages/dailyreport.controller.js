@@ -119,20 +119,20 @@ function saveDailyReport (req, res) {
 
 function exportDailyReport (req, res) {
     var id = req.params.id;
+    var filename = encodeURIComponent('网络舆情日报第' + id + '期');
 
     service.findDailyDetail(id, function (err, daily) {
         if (err) {
             errhandler.internalException(res, err)
         } else {
             try {
-                res
-                    .set({
-                        'content-type': 'application/msword',
-                        'content-disposition': 'attachment;filename="' + encodeURIComponent('网络舆情日报第' + id + '期') + '.doc"'
-                    }).send(HtmlDocx.asBlob(daily[0].content));
+                res.set({
+                    'content-type': 'application/msword',
+                    'content-disposition': 'attachment;filename="' + filename + '.doc"'
+                }).send(HtmlDocx.asBlob(daily[0].content));
             } catch (e) {
                 errhandler.internalException(res, e);
             }
         }
-    })
+    });
 }

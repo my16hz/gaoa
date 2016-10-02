@@ -94,7 +94,6 @@
                                 <input type="text" name="countersign" class="form-control">
                             </div>
                         </div>
-
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -107,10 +106,10 @@
                     <h4 class="modal-title">文件详情</h4>
                 </div>
                 <div class="modal-body">
-                    <form class="form-horizontal">
+                    <form class="form-horizontal" action="/smartoffice/sendmsg/export" method="POST" target="_blank">
+                        <input type="hidden" name="content">
                         <div class="form-group form-group-sm">
-                            <label class="col-xs-2 control-label">文件详情：</label>
-                            <div id="editorWrapper" class="col-xs-10"></div>
+                            <div id="editorWrapper" class="col-xs-12"></div>
                         </div>
                     </form>
                 </div>

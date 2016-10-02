@@ -295,31 +295,27 @@ function commitRecvMsg(ids, callback) {
         });
 }
 
-function getTemplate(callback) {
-    var sql_stmt = "SELECT * FROM tb_sys_config WHERE id IN ('smartoffice_sendmessage_id', 'smartoffice_recvmessage_id', 'smartoffice_notify_id');";
-    var objParams = {};
-    var ps = dbpool.preparedStatement()
-        .prepare(sql_stmt, function (err) {
-            if (err) {
-                return callback(err, null);
-            }
-            ps.execute(objParams, function (err, recordset) {
-                var rs = {};
-                recordset.forEach(function (val) {
-                    rs[val.id] = val.value;
-                });
-                rs['template'] = {
-                    'sendmessage' : config.template.sendmessage,
-                    'recvmessage' : config.template.recvmessage,
-                    'notify' : config.template.notify
-                };
-                callback(err, rs);
-                ps.unprepare(function (err) {
-                    if (err)
-                        console.log(err);
-                });
+function getTemplate (callback) {
+    dbpool.execPreparedStatement(
+        "SELECT * FROM tb_sys_config WHERE id IN ('smartoffice_sendmessage_id', 'smartoffice_recvmessage_id', 'smartoffice_notify_id');",
+        function (err, recordset) {
+            var rs = {};
+
+            if (err) return callback(err);
+
+            recordset.forEach(function (val) {
+                rs[val.id] = val.value;
             });
-        });
+
+            rs['template'] = {
+                'sendmessage' : config.template.sendmessage,
+                'recvmessage' : config.template.recvmessage,
+                'notify' : config.template.notify
+            };
+
+            callback(null, rs);
+        }
+    );
 }
 
 function getNotifyList (uid, callback) {
