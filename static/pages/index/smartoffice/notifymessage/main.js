@@ -19,9 +19,12 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
                 title: '文件类型', field: 'type', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
-                        case 1: return '收文签';
-                        case 2: return '发文签';
-                        case 3: return '通知';
+                        case 1:
+                            return '收文签';
+                        case 2:
+                            return '发文签';
+                        case 3:
+                            return '通知';
                     }
                 }
             },
@@ -36,8 +39,10 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
                 title: '状态', field: 'state', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
-                        case 0: return '未通知';
-                        case 3: return '已通知';
+                        case 0:
+                            return '未通知';
+                        case 3:
+                            return '已通知';
                     }
                 }
             },
@@ -46,14 +51,16 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
                 field: 'action',
                 formatter: function () {
                     var args = arguments[1].state;
-                    switch(args) {
-                        case 0 :  return [
-                                    '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
-                                    '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
-                                    ].join('&nbsp;&nbsp;');
-                        default: return ['<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
-                                        '<a></a>'
-                                    ].join('&nbsp;&nbsp;');
+                    switch (args) {
+                        case 0 :
+                            return [
+                                '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
+                                '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
+                            ].join('&nbsp;&nbsp;');
+                        default:
+                            return ['<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
+                                '<a></a>'
+                            ].join('&nbsp;&nbsp;');
                     }
                 },
                 events: {
@@ -61,7 +68,17 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
                         self._showDataModal(arguments[2]);
                     },
                     'click a:last': function () {
-                        self.removeMsg(arguments[2])
+                        var msgid = arguments[2].id;
+
+                        bootbox.confirm('确定删除？', function (rs) {
+                            rs && self._sendRequest({
+                                type: 'delete', url: '/smartoffice/message/delete',
+                                data: {id: msgid},
+                                done: function () {
+                                    self.dataTable.refresh();
+                                }
+                            });
+                        })
                     }
                 }
             }
@@ -73,28 +90,12 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
         'click #btnSend': 'showNotifyModal',
         'click #dataModal .btn-default': 'closeDataModal',
         'click #dataModal .btn-primary': 'saveMessage',
+        'click #dataModal #addAttach': 'addAttachInput',
         'click #notifyModal .btn-default': 'closeNotifyModal',
         'click #notifyModal .btn-primary': 'sendNotify'
     },
     showDataModal: function () {
-        var msg = {'type': 3, 'id': null, 'content':''};
-        this._showDataModal(msg);
-    },
-    _showDataModal: function (msg) {
-        var modal = $('#dataModal');
-        var jqform = modal.find('form');
-        var self = this;
-        this._setFormControlValues(jqform, msg);
-        this.editor.setContent(msg.content);
-
-        this._showModal(modal, self.dataTable);
-        return this;
-    },
-    closeDataModal: function () {
-        var modal = $('#dataModal');
-
-        this._clearFormControlValues(modal.find('form'))
-            ._closeModal(modal, this.dataTable);
+        this._showDataModal({type: 3, id: null, content: ''});
     },
     showNotifyModal: function () {
         var dataTable = this.dataTable;
@@ -103,9 +104,7 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
         var jqform = modal.find('form');
         var self = this;
 
-        if (!ids.length) {
-            return bootbox.alert('请先选择要发送的通知！');
-        }
+        if (!ids.length) return bootbox.alert('请先选择要发送的通知！');
 
         this._setFormControlValues(jqform, {mids: ids.join()});
         this._sendRequest({
@@ -113,7 +112,7 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
             url: '/sysmanage/members',
             done: function (rs) {
                 _initMultipleSelect(rs);
-                self._showModal(modal, self.dataTable);
+                self._showModal(modal, dataTable);
             }
         });
 
@@ -156,15 +155,16 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
                 .clear();
         }
     },
-    closeNotifyModal: function () {
-        var modal = $('#notifyModal');
+    closeDataModal: function () {
+        var modal = $('#dataModal');
+
+        modal.find('input[name="msgfile"]:gt(0)').remove();
 
         this._clearFormControlValues(modal.find('form'))
             ._closeModal(modal, this.dataTable);
     },
     saveMessage: function () {
         var self = this;
-        var dataTable = this.dataTable;
 
         this._sendRequest({
             type: 'post',
@@ -172,9 +172,60 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
             validator: $.proxy(this._validator, this),
             done: function () {
                 self.closeDataModal();
-                dataTable.expand().refresh();
+                self.dataTable.expand().refresh();
             }
         });
+    },
+    closeNotifyModal: function () {
+        var modal = $('#notifyModal');
+
+        this._clearFormControlValues(modal.find('form'))
+            ._closeModal(modal, this.dataTable);
+    },
+    sendNotify: function () {
+        var self = this;
+
+        this._sendRequest({
+            type: 'post',
+            url: '/smartoffice/notify/send',
+            validator: $.proxy(this._notifyValidator, this),
+            done: function () {
+                self._closeModal($('#notfiyModal'), self.dataTable);
+                self.dataTable.refresh();
+            }
+        });
+    },
+
+    _showDataModal: function (msg) {
+        var modal = $('#dataModal');
+        var jqinput = modal.find('input[name="msgfile"]');
+        var editor = this.editor;
+        var self = this;
+
+        this._setFormControlValues(modal.find('form'), msg);
+        this._createUploader(jqinput, '/msgfile/' + uuid.v4(), function (res) {
+                if ('SUCCESS' != res.state) {
+                    self._showXHRMessage(res.state, 'danger');
+                } else {
+                    _addAttachment(res);
+                }
+            }
+        );
+        editor.ready(function () {
+            editor.setContent(msg.content);
+        });
+        this._showModal(modal, this.dataTable);
+
+        return this;
+
+        function _addAttachment (res) {
+            jqinput.after($('<p></p>').append(
+                res.name + ' (' + res.size + ' bytes)',
+                $('<a href="javascript:">[删除]</a>').bind('click', function () {
+                    var jqp = $(this).parent().remove();
+                })
+            ));
+        }
     },
     _validator: function () {
         var jqform = $('#dataModal form');
@@ -183,40 +234,10 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
 
         return values;
     },
-    sendNotify: function () {
-        var self = this;
-        this._sendRequest({
-            type: 'post', url: '/smartoffice/notify/send',
-            validator: $.proxy(this._notifyValidator, this),
-            done: function () {
-                self._closeModal($('#notfiyModal'), self.dataTable);
-                self.dataTable.refresh();
-            }
-        });
-
-        return this;
-    },
     _notifyValidator: function () {
         var jqform = $('#notifyModal form');
         var values = this._getFormControlValues(jqform);
 
         return values;
-    },
-    removeMsg: function (msg) {
-        var self = this;
-        bootbox.confirm('确定删除？', function (rs) {
-            rs && self._ajaxDelete(msg.id, function () {
-                self.dataTable.refresh();
-            });
-        })
-    },
-    _ajaxDelete: function(id, done) {
-        this._sendRequest({
-            type: 'delete', url: '/smartoffice/message/delete',
-            data: {id: id},
-            done: done
-        });
-
-        return this;
     }
 });

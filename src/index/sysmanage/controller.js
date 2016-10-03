@@ -5,7 +5,7 @@
  */
 var config = require('config');
 
-var errhandler = require('../../utilities/errhandler');
+var errhandler = require('../../utils/errhandler');
 var memberService = require('./member.service');
 var groupService = require('./group.service');
 var configService = require('./configure.service');

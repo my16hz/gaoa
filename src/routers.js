@@ -18,7 +18,7 @@ module.exports = function (app) {
     app.use(require('./index/smartoffice/router')());
     app.use(require('./index/sysmanage/router')());
 
-    app.use(require('./utilities/router')());
+    app.use(require('./utils/router')());
     app.use(require('./error/router')());
 
     app.use(errorController.errorHandler);

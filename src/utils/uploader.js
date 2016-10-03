@@ -54,9 +54,31 @@ var uehandler = multer({
     }
 }).single(uecfg.field);
 
+var mfcfg = config.msgfile;
+var mfhandler = multer({
+    storage: multer.diskStorage({
+        destination: function (req, file, cb) {
+            file.dirName = req.params.uuid;
+            _createDirectory(mfcfg.uploadDir + file.dirName, function (err, path) {
+                cb(err, path);
+            });
+        },
+        filename: function (req, file, cb) {
+            cb(null, file.originalname);
+        }
+    }),
+    limits: {
+        fileSize: mfcfg.fileSize
+    },
+    fileFilter: function (req, file, cb) {
+        return cb(null, !!~mfcfg.fileType.indexOf(_getExtention(file)));
+    }
+}).single(mfcfg.field);
+
 module.exports = {
     datafile: datafile,
-    ueditor: ueditor
+    ueditor: ueditor,
+    msgfile: msgfile
 };
 
 function datafile (req, res) {
@@ -101,6 +123,23 @@ function ueditor (req, res) {
     });
 }
 
+function msgfile (req, res) {
+    mfhandler(req, res, function (err) {
+        var file = req.file;
+
+        res.send(JSON.stringify(
+            !file || err ? {
+                state: '文件类型错误或大于10MB。'
+            } : {
+                name: file.filename,
+                url: file.dirName + '/' + file.filename,
+                size: file.size,
+                state: 'SUCCESS'
+            }
+        ));
+        err && console.error(err);
+    });
+}
 
 function _getExtention (file) {
     return file.originalname.split('.').pop();

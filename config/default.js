@@ -39,6 +39,12 @@ module.exports = {
         fileSize: 5 * 1024 * 1024, //bytes
         fileType: ['gif', 'png', 'jpg', 'jpeg', 'bmp']
     },
+    msgfile: {
+        field: 'msgfile',
+        uploadDir: filePath + 'msgfile/', // a new dir very day: Msgfile20160809
+        fileSize: 10 * 1024 * 1024, //bytes
+        fileType: ['doc']
+    },
     template: {
         dispose: '' +
         '<p style="text-align: center;">' +

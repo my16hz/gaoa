@@ -9,5 +9,6 @@ var uploader = require('./uploader');
 module.exports = function () {
     return express.Router()
         .post('/ueditor', uploader.ueditor)
-        .post('/datafile', uploader.datafile);
+        .post('/datafile', uploader.datafile)
+        .post('/msgfile/:uuid', uploader.msgfile);
 };

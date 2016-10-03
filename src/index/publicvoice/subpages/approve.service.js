@@ -5,7 +5,7 @@
  */
 
 var sql = require('mssql');
-var dbpool = require('../../../utilities/dbpool');
+var dbpool = require('../../../utils/dbpool');
 var pubvoice = require('./record.service');
 
 module.exports = {

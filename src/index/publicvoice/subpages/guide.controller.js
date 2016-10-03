@@ -6,7 +6,7 @@
 var extend = require('extend');
 var userkey = require('config').session.userkey;
 
-var errhandler = require('../../../utilities/errhandler');
+var errhandler = require('../../../utils/errhandler');
 var service = require('./../service');
 module.exports = {
     getGuideDetail: getGuideDetail,

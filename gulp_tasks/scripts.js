@@ -104,6 +104,7 @@ module.exports = function (gulp, plugins, isdebug) {
                 DIR_SRC.coreJs + 'select2-2 4.0.3.js',
                 DIR_SRC.coreJs + 'select2-zh-CN-2.4.3.js',
                 DIR_SRC.coreJs + 'bootstrap-datetimepicker-4.17.42.js',
+                DIR_SRC.coreJs + 'uuid-1.4.7.js',
                 DIR_SRC.editor + 'config.js',
                 DIR_SRC.editor + 'main.js',
                 DIR_SRC.editor + 'lang/zh-cn.js'

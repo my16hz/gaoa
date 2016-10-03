@@ -6,7 +6,7 @@
 var config = require('config');
 var express = require('express');
 
-var dbpool = require('./src/utilities/dbpool');
+var dbpool = require('./src/utils/dbpool');
 
 var app = new express();
 

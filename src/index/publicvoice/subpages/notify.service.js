@@ -4,7 +4,7 @@
  * Author: lhs
  */
 var sql = require('mssql');
-var dbpool = require('../../../utilities/dbpool');
+var dbpool = require('../../../utils/dbpool');
 
 module.exports = {
     /*---------- 舆情通报页面 ----------*/

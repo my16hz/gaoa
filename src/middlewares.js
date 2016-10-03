@@ -20,6 +20,7 @@ module.exports = function (app) {
     // static source
     app.use(express.static(PATH_ROOT + '/public'));
     app.use('/editor', express.static(PATH_ROOT + '/upload/ueditor'));
+    app.use('/msgfile', express.static(PATH_ROOT + '/upload/msgfile'));
     app.use('/sample', express.static(PATH_ROOT + '/sample'));
 
     // view engine setup

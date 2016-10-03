@@ -312,10 +312,9 @@ var LHSBasicPage = {
             onCancel: function () {
                 self._removeLoading();
             },
-            onComplete: function () {
+            onComplete: function (res) {
                 self._removeLoading();
-                $.isFunction(complete) && complete.call(self);
-                self._showXHRMessage('上传成功。', 'info');
+                $.isFunction(complete) && complete.call(self, res);
             }
         });
 

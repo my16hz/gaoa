@@ -7,7 +7,7 @@ var sql = require('mssql');
 var xlsx = require('xlsx');
 
 
-var dbpool = require('../../utilities/dbpool');
+var dbpool = require('../../utils/dbpool');
 
 module.exports = {
     getSocialVoices: getSocialVoices,

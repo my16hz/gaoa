@@ -8,7 +8,7 @@ var HtmlDocx = require('html-docx-js');
 var userkey = require('config').session.userkey;
 var uuid = require('node-uuid');
 
-var errhandler = require('../../../utilities/errhandler');
+var errhandler = require('../../../utils/errhandler');
 var service = require('./../service');
 
 module.exports = {

@@ -5,7 +5,7 @@
  */
 var config = require('config').session;
 
-var errhandler = require('../utilities/errhandler');
+var errhandler = require('../utils/errhandler');
 var service = require('./service');
 
 module.exports = {

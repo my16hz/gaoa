@@ -4,7 +4,7 @@
  * Author: lhs
  */
 var sesskeys = require('config').session;
-var errhandler = require('../../utilities/errhandler');
+var errhandler = require('../../utils/errhandler');
 var service = require('./service');
 var defaut_interval = 3600000 * 24 * 7;
 module.exports = {
