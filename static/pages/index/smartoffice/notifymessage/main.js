@@ -158,7 +158,7 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
     closeDataModal: function () {
         var modal = $('#dataModal');
 
-        modal.find('input[name="msgfile"]:gt(0)').remove();
+        modal.find('input[name="msgfile"]').val('').next('p').remove();
 
         this._clearFormControlValues(modal.find('form'))
             ._closeModal(modal, this.dataTable);
@@ -198,7 +198,7 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
 
     _showDataModal: function (msg) {
         var modal = $('#dataModal');
-        var jqinput = modal.find('input[name="msgfile"]');
+        var jqinput = modal.find('input[name="msgfile"]').val(msg.attachment || '');
         var editor = this.editor;
         var self = this;
 
@@ -219,7 +219,8 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
         return this;
 
         function _addAttachment (res) {
-            jqinput.after($('<p></p>').append(
+            modal.find('input[name="attachment"]').val(res.url);
+            jqinput.after($('<p></p>').html(
                 res.name + ' (' + res.size + ' bytes)',
                 $('<a href="javascript:">[删除]</a>').bind('click', function () {
                     var jqp = $(this).parent().remove();
