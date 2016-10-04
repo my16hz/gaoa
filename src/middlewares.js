@@ -28,7 +28,7 @@ module.exports = function (app) {
     app.set('view engine', 'ejs');
 
     // json request body parser
-    app.use(bodyParser.json());
+    app.use(bodyParser.json({limit: '20mb'}));
     app.use(bodyParser.urlencoded({extended: true}));
 
     // cookie parser
