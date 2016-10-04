@@ -72,6 +72,9 @@ module.exports = function () {
         .get('/analyze/pvfellow', controller.getPVFellowAnalyze)
         .get('/analyze/pvmiss', controller.getPVMissReportAnalyze)
         .get('/analyze/groupmiss', controller.getGroupMissAnalyze)
+        .get('/analyze/pvfeedbacktype', controller.getFeedbackTypeAnalyze)
+        .get('/analyze/pvcomment', controller.getCommentAnalyze)
+
         // alert page
         .get('/alert/list', controller.getAlertList)
         .post('/alert/save', controller.saveAlert)

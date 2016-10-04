@@ -13,7 +13,10 @@ module.exports = {
     getPVFellowAnalyze: getPVFellowAnalyze,
 
     getPVMissReportAnalyze: getPVMissReportAnalyze,
-    getGroupMissAnalyze: getGroupMissAnalyze
+    getGroupMissAnalyze: getGroupMissAnalyze,
+
+    getFeedbackTypeAnalyze: getFeedbackTypeAnalyze,
+    getCommentAnalyze: getCommentAnalyze
 };
 
 function getPVItemAnalyze (start, end, callback) {
@@ -195,6 +198,62 @@ function getGroupMissAnalyze (start, end, callback) {
         'AND tb_user.id = tb_pv_notify.uid ' +
         'AND tb_publicvoice.createtime > @start AND tb_publicvoice.createtime < @end ' +
         'GROUP BY tb_user.name ';
+    var objParams = {
+        "start": start,
+        "end": end
+    };
+
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+function getFeedbackTypeAnalyze (start, end, callback) {
+    var sql_stmt = "SELECT type, COUNT(*) AS count FROM tb_pv_feedback " +
+        "WHERE createtime > @start AND createtime < @end " +
+        "GROUP BY type;";
+    var objParams = {
+        "start": start,
+        "end": end
+    };
+
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+
+
+function getCommentAnalyze (start, end, callback) {
+    var sql_stmt = "SELECT dispose_stat, COUNT(*) AS count FROM tb_publicvoice " +
+        "WHERE createtime > @start AND createtime < @end " +
+        "GROUP BY dispose_stat;";
     var objParams = {
         "start": start,
         "end": end

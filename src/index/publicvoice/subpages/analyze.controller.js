@@ -16,7 +16,10 @@ module.exports = {
     getPVFellowAnalyze: getPVFellowAnalyze,
 
     getPVMissReportAnalyze: getPVMissReportAnalyze,
-    getGroupMissAnalyze: getGroupMissAnalyze
+    getGroupMissAnalyze: getGroupMissAnalyze,
+
+    getFeedbackTypeAnalyze: getFeedbackTypeAnalyze,
+    getCommentAnalyze: getCommentAnalyze
 
 };
 function getPVItemAnalyze (req, res) {
@@ -117,6 +120,37 @@ function getGroupMissAnalyze (req, res) {
     var end = req.query.eTime || now;
 
     service.getGroupMissAnalyze(start, end, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function getFeedbackTypeAnalyze (req, res) {
+    var now = new Date();
+    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
+    var end = req.query.eTime || now;
+
+    service.getFeedbackTypeAnalyze(start, end, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+
+function getCommentAnalyze (req, res) {
+    var now = new Date();
+    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
+    var end = req.query.eTime || now;
+
+    service.getCommentAnalyze(start, end, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

@@ -15,18 +15,18 @@ var LHSRTXDirectivePage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/rtx/directive/list', [
             {field: 'checkbox', checkbox: true},
-            {title: '指令部门', field: 'department', alwaysDisplay: true},
-            {title: '指令方式', field: 'type'},
-            {title: '责任人', field: 'duty_user'},
+            {title: '指令部门', field: 'department', alwaysDisplay: true, sortable: true, order: 'desc'},
+            {title: '指令方式', field: 'type', sortable: true, order: 'desc'},
+            {title: '责任人', field: 'duty_user', sortable: true, order: 'desc'},
             {
-                title: '指令时间', field: 'rtx_time',
+                title: '指令时间', field: 'rtx_time', sortable: true, order: 'desc',
                 formatter: function (val) {
                     return moment(val).format('YYYY年MM月DD日');
                 }
             },
-            {title: '填报者', field: 'createuser'},
-            {title: '指令内容', field: 'content'},
-            {title: '完成情况', field: 'result'},
+            {title: '填报者', field: 'createuser', sortable: true, order: 'desc'},
+            {title: '指令内容', field: 'content', sortable: true, order: 'desc'},
+            {title: '完成情况', field: 'result', sortable: true, order: 'desc'},
             {
                 title: '操作', field: 'action',
                 formatter: function () {

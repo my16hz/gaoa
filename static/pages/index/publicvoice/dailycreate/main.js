@@ -15,13 +15,13 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/daily/unapplied', [
             {field: 'checkbox', checkbox: true},
-            {title: '标题', field: 'title', alwaysDisplay: true},
-            {title: '载体', field: 'from_website'},
-            {title: '所属栏目', field: 'item'},
-            {title: '舆情类别', field: 'type'},
-            {title: '回帖人数', field: 'fellow_count'},
-            {title: '关注人数', field: 'review_count'},
-            {title: '涉及部门', field: 'relate_department'},
+            {title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc'},
+            {title: '载体', field: 'from_website', sortable: true, order: 'desc'},
+            {title: '所属栏目', field: 'item', sortable: true, order: 'desc'},
+            {title: '舆情类别', field: 'type', sortable: true, order: 'desc'},
+            {title: '回帖人数', field: 'fellow_count', sortable: true, order: 'desc'},
+            {title: '关注人数', field: 'review_count', sortable: true, order: 'desc'},
+            {title: '涉及部门', field: 'relate_department', sortable: true, order: 'desc'},
             {
                 title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
@@ -29,7 +29,7 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
                 }
             },
             {
-                title: '状态', field: 'state',
+                title: '状态', field: 'state', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
                         case 0:
@@ -58,7 +58,7 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
                 }
             },
             {
-                title: '回复类型', field: 'feedback_type',
+                title: '回复类型', field: 'feedback_type', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
                         case 0:
@@ -243,16 +243,16 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
     _buildYQZZContent: function (pv) {
         return '<p><strong><span style="font-size: 20px;font-family: 黑体">■' +
             pv.title +
-            '</span></strong></p><p style="text-indent: 40px; line-height: 33px;">&nbsp;' +
+            '</span></strong></p><p style="text-indent: 40px; line-height: 33px;"><span style="font-size:20px;font-family:仿宋_GB2312">&nbsp;' +
             pv.content +
-            '</p>';
+            '</span></p>';
     },
     _buildRDHTContent: function (pv) {
         return '<p><strong><span style="font-size: 20px;font-family: 黑体">■' +
             pv.title +
-            '</span></strong></p><p style="text-indent: 40px; line-height: 33px;">&nbsp;' +
+            '</span></strong></p><p style="text-indent: 40px; line-height: 33px;"><span style="font-size:20px;font-family:仿宋_GB2312">&nbsp;' +
             pv.content +
-            '</p>';
+            '</span></p>';
     },
 
     _validator: function () {

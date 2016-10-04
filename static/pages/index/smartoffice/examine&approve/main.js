@@ -16,7 +16,6 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
             {field: 'checkbox', checkbox: true},
             {title: '文件标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc'},
             {title: '主送机关', field: 'major_department', sortable: true, order: 'desc'},
-            {title: '抄送机关', field: 'cc_department', sortable: true, order: 'desc'},
             {title: '发文字号', field: 'message_id', sortable: true, order: 'desc'},
             {title: '秘密等级', field: 'secret_level', sortable: true, order: 'desc'},
             {title: '紧急程度', field: 'urgent_level', sortable: true, order: 'desc'},
@@ -49,7 +48,6 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
             {title: '收文编号', field: 'message_id', sortable: true, order: 'desc'},
             {title: '来文单位', field: 'origin_department', sortable: true, order: 'desc'},
             {title: '秘密等级', field: 'secret_level', sortable: true, order: 'desc'},
-            {title: '领取人', field: 'from_user', sortable: true, order: 'desc'},
             {
                 title: '收文时间', field: 'recv_date', sortable: true, order: 'desc',
                 formatter: function (val) {
