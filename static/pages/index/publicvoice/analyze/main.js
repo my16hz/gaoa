@@ -55,6 +55,35 @@ var LHSAnalyzePage = $.extend({}, LHSBasicPage, {
             {title: '标题', field: 'title'},
             {title: '评论数', field: 'count', sortable: true, order: 'desc'}
         ]);
+        this.pvFeedbackTypeTable = this._createTable('#pvFeedbackTypeTableWrapper', '/analyze/pvfeedbacktype', [
+            {
+                title: '回复类型', field: 'type',
+                formatter: function (val) {
+                    switch (val) {
+                        case 0:
+                            return '书面反馈';
+                        default:
+                            return '网络反馈';
+                    }
+                }
+            },
+            {title: '数量', field: 'count', sortable: true, order: 'desc'}
+        ]);
+        this.pvCommentCountTable = this._createTable('#pvCommentAndFeedbackTableWrapper', '/analyze/pvcomment', [
+            {title: '处置状态', field: 'dispose_stat',
+                formatter: function (val) {
+                    switch (val) {
+                        case 0 : return '未批示';
+                        case 1 : return '已批示';
+                        case 2 : return '待审批';
+                        case 3 : return '转';
+                        case 4 : return '转发';
+                        case 5 : return '阅存';
+                    }
+                }
+            },
+            {title: '数量', field: 'count', sortable: true, order: 'desc'}
+        ]);
     },
     events: {
         'click #btnSearch': 'search'

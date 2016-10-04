@@ -65,7 +65,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                                 '<a href="javascript:" title="批示处置"><i class="glyphicon glyphicon-retweet"></i></a>'
                             ].join('&nbsp;&nbsp;');
                         case 0 :
-                        default: return ['<a href="javascript:" title="添加批示"><i class="glyphicon glyphicon-comment"></i></a>',
+                        default: return ['<a href="javascript:" title="批示登记"><i class="glyphicon glyphicon-comment"></i></a>',
                             '<a></a>'
                         ].join('&nbsp;&nbsp;');
                     }
