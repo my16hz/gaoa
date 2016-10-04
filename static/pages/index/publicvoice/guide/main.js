@@ -95,10 +95,9 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
             self._checkPanelTitle($(this));
         });
 
-        this._setGuideFormValues(newPanel.find('form'), newEditor, guide || {
-                id: modal.data('pvid')
-            }
-        );
+        this._setGuideFormValues(newPanel.find('form'), newEditor, guide.id ? guide : {
+            id: modal.data('pvid')
+        });
     },
     expandGuidePanels: function () {
         $.each(this.__collapsepanels__, function () {
