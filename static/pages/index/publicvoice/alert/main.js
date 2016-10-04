@@ -15,11 +15,11 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/alert/list', [
             {field: 'checkbox', checkbox: true},
-            {title: '预警标题', field: 'title', alwaysDisplay: true},
-            {title: '预警方式', field: 'type'},
-            {title: '涉舆部门', field: 'department'},
-            {title: '预警人', field: 'sender'},
-            {title: '接警人', field: 'receiver'},
+            {title: '预警标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc'},
+            {title: '预警方式', field: 'type', sortable: true, order: 'desc'},
+            {title: '涉舆部门', field: 'department', sortable: true, order: 'desc'},
+            {title: '预警人', field: 'sender', sortable: true, order: 'desc'},
+            {title: '接警人', field: 'receiver', sortable: true, order: 'desc'},
             {
                 title: '预警开始时间', field: 'starttime', sortable: true, order: 'desc',
                 formatter: function (val) {
@@ -33,7 +33,7 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
                 }
             },
             {
-                title: '状态', field: 'state',
+                title: '状态', field: 'state', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
                         case 0:

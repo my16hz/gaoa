@@ -15,16 +15,16 @@ var LHSRTXReportPage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/rtx/report/list', [
             {field: 'checkbox', checkbox: true},
-            {title: '网站名称', field: 'website', alwaysDisplay: true},
-            {title: '网址', field: 'url'},
-            {title: '上报人', field: 'report_user'},
+            {title: '网站名称', field: 'website', alwaysDisplay: true, sortable: true, order: 'desc'},
+            {title: '网址', field: 'url', sortable: true, order: 'desc'},
+            {title: '上报人', field: 'report_user', sortable: true, order: 'desc'},
             {
-                title: '上报时间', field: 'report_time',
+                title: '上报时间', field: 'report_time', sortable: true, order: 'desc',
                 formatter: function (val) {
                     return moment(val).format('YYYY年MM月DD日');
                 }
             },
-            {title: '填报者', field: 'createuser'},
+            {title: '填报者', field: 'createuser', sortable: true, order: 'desc'},
             {
                 title: '操作', field: 'action',
                 formatter: function () {
