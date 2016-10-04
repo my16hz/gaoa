@@ -1,0 +1,13 @@
+.pubvoice-search-page .func-btns .input-group-addon {
+    background: none;
+    border: none;
+}
+
+.pubvoice-search-page .func-btns .form-control {
+    border-radius: 4px;
+}
+
+.pubvoice-search-page #btnSearch {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
