@@ -383,9 +383,40 @@ var LHSBasicPage = {
         return this;
     },
     _closeModal: function (jqmodal, table) {
-        $(jqmodal).addClass('hide');
+        $.each($(jqmodal).addClass('hide').find('form').data('errElems'), function (elem) {
+            this.tooltip('destroy').parent().removeClass('has-error');
+        });
         table.expand();
 
         return this;
+    },
+
+    _validator: function (jqform, rules) {
+        var values = this._getFormControlValues(jqform);
+        var error = null, elem;
+        var errElems = [];
+
+        $.each(rules, function (name, check) {
+            if (error = check(values[name], values)) {
+                elem = $('[name="' + name + '"]', jqform);
+
+                elem.tooltip({title: error}).tooltip('show')
+                    .unbind('focus')
+                    .bind('focus', function () {
+                        $(this).tooltip('destroy')
+                            .parent().removeClass('has-error');
+                    })
+                    .parent().addClass('has-error');
+
+                errElems.push(elem);
+            }
+        });
+
+
+        if (error) {
+            jqform.data('errElems', errElems);
+        } else {
+            return values;
+        }
     }
 };

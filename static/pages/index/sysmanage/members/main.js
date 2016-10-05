@@ -191,6 +191,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
 
         function _fillFormValuesAndOpenModal () {
             $('input[name="id"]', jqform).prop('readonly', !!data.id);
+            $('input[name="isNew"]').val(data.id ? '' : 'true');
 
             $('.form-group-password')[data.id ? 'hide' : 'show']().find('input').prop('disabled', !!data.id);
 
@@ -251,41 +252,31 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
         return this;
     },
     _memberValidator: function () {
-        var jqform = $('#memberModal form');
-        var values = this._getFormControlValues(jqform);
         var sha1 = new Hashes.SHA1();
-        var hasErr = false;
-
-        $.each({
+        var values = this._validator($('#memberModal form'), {
             id: function (id) {
-                return !!id.length;
+                if (!id.length) return 'ID 不能为空。';
             },
             name: function (name) {
-                return !!name.length;
+                if (!name.length) return '用户名不能为空。';
             },
             password: function (pwd, values) {
-                return values.isNew || !!pwd.length;
+                if (values.isNew && !pwd.length) return '密码不能为空。';
             },
             repassword: function (repwd, values) {
-                return values.isNew || (!!repwd.length && values.password == repwd);
-            }
-        }, function (name, check) {
-            if (!check(values[name], values)) {
-                $('[name="' + name + '"]', jqform)
-                    .parent().addClass('has-error').end()
-                    .unbind('focus')
-                    .bind('focus', function () {
-                        $(this).parent().removeClass('has-error');
-                    });
-
-                hasErr = true;
+                if (values.isNew) {
+                    if (!repwd.length) return '确认密码不能为空。';
+                    if (values.password != repwd) return '两次密码输入不一致。';
+                }
             }
         });
 
-        !hasErr && (values.password = sha1.hex(values.password));
-        !values.groupid && (delete values.groupid);
+        if (values) {
+            values.password = sha1.hex(values.password);
+            !values.groupid && (delete values.groupid);
+        }
 
-        return hasErr ? false : values;
+        return values || false;
     },
     _groupValidator: function () {
         var jqform = $('#groupModal form');
