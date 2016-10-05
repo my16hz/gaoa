@@ -87,7 +87,9 @@ var LHSBasicPage = {
     },
 
     _showLoading: function () {
-        $('<img src="css/imgs/ico_loading.gif" class="lhs-loading"/>').appendTo('.header');
+        if (!$('.header .lhs-loading').length)
+            $('<img src="css/imgs/ico_loading.gif" class="lhs-loading"/>').appendTo('.header');
+
         return this;
     },
     _removeLoading: function () {

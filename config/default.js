@@ -165,19 +165,19 @@ module.exports = {
         '<p>' +
         '    <br/>' +
         '</p>' +
-        '<p><img src="/editor/template/zmyq.jpg" /></p>' +
+        '<p><img src="/sample/template/zmyq.jpg" /></p>' +
         '<p style="white-space: normal;">' +
         '    %zmyq_content%' +
         '</p>' +
-        '<p><img src="/editor/template/fmyq.jpg" /></p>' +
+        '<p><img src="/sample/template/fmyq.jpg" /></p>' +
         '<p style="white-space: normal;">' +
         '    %fmyq_content%' +
         '</p>' +
-        '<p><img src="/editor/template/yqzz.jpg" /></p>' +
+        '<p><img src="/sample/template/yqzz.jpg" /></p>' +
         '<p style="white-space: normal;">' +
         '    %yqzz_content%' +
         '</p>' +
-        '<p><img src="/editor/template/rdht.jpg" /></p>' +
+        '<p><img src="/sample/template/rdht.jpg" /></p>' +
         '<p>' +
         '    %rdht_content%' +
         '</p>' +
