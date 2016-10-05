@@ -326,6 +326,7 @@ var LHSBasicPage = {
             useCurrent: defval || true,
             locale: 'zh_CN'
         });
+        var self = this;
 
         defval && picker.val(defval);
 
@@ -334,10 +335,26 @@ var LHSBasicPage = {
                 return picker.val();
             },
             getTime: function () {
-                return moment(picker.val(), format).getTime();
+                var val = picker.val();
+
+                return val ?
+                    moment(picker.val(), format).toDate().getTime() :
+                    null;
             },
             onChange: function (cb) {
                 picker.on('dp.change', $.proxy(cb, self));
+
+                return this;
+            },
+            maxDate: function (date) {
+                picker.data("DateTimePicker").maxDate(date);
+
+                return this;
+            },
+            minDate: function (date) {
+                picker.data("DateTimePicker").minDate(date);
+
+                return this;
             }
         };
     },
