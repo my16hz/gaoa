@@ -55,7 +55,9 @@ function authChecker (req, res, next) {
     var reqPath = req.path;
 
     if (!/^\/((login|auth|error(\/400)?)\/?)?$/.test(reqPath) && !user) {
-        return res.redirect('/login')
+        return req.xhr ?
+            res.status(401).end() :
+            res.redirect('/login')
     }
 
     next();

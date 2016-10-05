@@ -78,7 +78,11 @@ var LHSBasicPage = {
                 self._showXHRMessage(rs.message, 'danger');
             }
         }).fail(function (xhr) {
-            self._showXHRMessage('请求失败:' + xhr.responseText, 'danger');
+            if(401 == xhr.status) {
+                location.href = '/login'
+            } else {
+                self._showXHRMessage('请求失败:' + xhr.responseText, 'danger');
+            }
         }).always(function () {
             self._removeLoading();
         });

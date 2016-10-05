@@ -17,24 +17,13 @@ module.exports = {
  * @returns object {uid, gid, role:[], priority,}
  */
 function auth (username, password, done) {
-    var sql_stmt = "select [id],[name],[description],[role],[priority],[createtime],[groupid] from tb_user where id = @username and password = @password;";
-    var objParams = {"username": username, "password": password};
-
-    var ps = dbpool
-        .preparedStatement()
-        .input("username", sql.VarChar)
-        .input("password", sql.VarChar)
-        .prepare(sql_stmt, function (err) {
-            if (err) {
-                return done(err, null);
-            }
-
-            ps.execute(objParams, function (err, rs) {
-                done(err, err ? null : rs[0]);
-
-                ps.unprepare(function (err) {
-                    err && console.error(err);
-                });
-            });
-        });
+    dbpool.execPreparedStatement(
+        "SELECT [id],[name],[description],[role],[priority],[createtime],[groupid] " +
+        "FROM tb_user WHERE id = @username AND password = @password;",
+        [sql.VarChar, sql.VarChar],
+        [username, password],
+        function (err, rs) {
+            done(err, err ? null : rs[0]);
+        }
+    );
 }
