@@ -7,60 +7,26 @@ var userkey = require('config').session.userkey;
 
 var errhandler = require('../../../utils/errhandler');
 var service = require('./../service');
+var defaut_interval = 3600000 * 24 * 7;
 module.exports = {
-    getAlertList: getAlertList,
-    saveAlert: saveAlert,
-    clearAlert: clearAlert
+    searchPubVoices: searchPubVoices
 };
 
-function getAlertList (req, res) {
-    var flag = req.query.flag;
-    service.getAlertList(flag, function (err, rs) {
+function searchPubVoices (req, res) {
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
+    var state = req.query.state;
+    var type = req.query.type;
+    var title = req.query.title;
+    var feedback = req.query.feedback;
+    var dispose = req.query.dispose;
+    service.searchPubVoices(start, end, state, type, feedback, dispose, title, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
                 success: true,
                 data: rs
-            });
-    });
-}
-
-function saveAlert (req, res) {
-    var uid = req.session[userkey].id;
-    var obj = req.body;
-    var alert = {
-        "id": obj["id"],
-        "title": obj["title"],
-        "starttime": obj["starttime"],
-        "department": obj["department"],
-        "sender": obj["sender"],
-        "receiver": obj["receiver"],
-        "type": obj["type"],
-        "content": obj["content"],
-        "endtime": obj["endtime"],
-        "state": 0,
-        "createuser": uid,
-        "createtime": new Date()
-    };
-
-    service.addAlert(alert, function (err, rs) {
-        err ?
-            errhandler.internalException(res, err) :
-            res.send({
-                success: true
-            });
-    });
-}
-
-function clearAlert (req, res) {
-    var obj = req.body;
-    var ids = obj['ids'];
-
-    service.updateAlertState(ids, 1, function (err, rs) {
-        err ?
-            errhandler.internalException(res, err) :
-            res.send({
-                success: true
             });
     });
 }

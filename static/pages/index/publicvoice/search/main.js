@@ -13,7 +13,7 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
 
-        this.dataTable = this._createTable('#tableWrapper', '/pubvoice/list', [
+        this.dataTable = this._createTable('#tableWrapper', '/pubvoice/search', [
             {field: 'checkbox', checkbox: true},
             {title: '舆情ID', field: 'id', sortable: true, order: 'desc'},
             {title: '标题', field: 'title', alwaysDisplay: true},
@@ -93,11 +93,13 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
 
         this.dataTable.refresh({
             query: {
-                state: funcCtrls.find('select:first').val(),
-                type: funcCtrls.find('select:last').val(),
+                state: funcCtrls.find('select:eq(0)').val(),
+                dispose: funcCtrls.find('select:eq(1)').val(),
+                feedback: funcCtrls.find('select:eq(2)').val(),
+                type: funcCtrls.find('select:eq(3)').val(),
                 title: funcCtrls.find('input:first').val(),
-                sTime: funcCtrls.find('#starttime').val(),
-                eTime: funcCtrls.find('#endtime').val()
+                sTime: this.sTime.getTime(),
+                eTime: this.eTime.getTime()
             }
         });
     },

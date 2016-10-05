@@ -18,7 +18,8 @@ extend(
     require('./subpages/feedback.service'),
     require('./subpages/guide.service'),
     require('./subpages/notify.service'),
-    require('./subpages/record.service')
+    require('./subpages/record.service'),
+    require('./subpages/search.service')
 );
 
 

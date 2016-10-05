@@ -3,24 +3,47 @@
     <div class="row">
         <div class="col-xs-11">
             <div class="row func-btns">
-                <div class="col-xs-4">
+                <div class="col-xs-3">
                     <div class="input-group">
                         <span class="input-group-addon">舆情状态：</span>
                         <select name="state" class="form-control">
+                            <option value="">所有状态</option>
                             <option value="2">审核通过</option>
                             <option value="4">已入报</option>
-                            <option value="6">已批示</option>
-                            <option value="8">已回复</option>
-                            <option value="9">回复已入报</option>
-                            <option value="10">已采用</option>
                         </select>
                     </div>
                 </div>
-                <div class="col-xs-4">
+                <div class="col-xs-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">处置情况：</span>
+                        <select name="dispose" class="form-control">
+                            <option value="">所有状态</option>
+                            <option value="0">未批示</option>
+                            <option value="1">已批示</option>
+                            <option value="2">待审批</option>
+                            <option value="3">转</option>
+                            <option value="4">转发</option>
+                            <option value="5">阅存</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-xs-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">回复情况：</span>
+                        <select name="feedback" class="form-control">
+                            <option value="">所有状态</option>
+                            <option value="0">已回复</option>
+                            <option value="1">必须回复</option>
+                            <option value="2">建议回复</option>
+                            <option value="3">可以回复</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-xs-3">
                     <div class="input-group">
                         <span class="input-group-addon">舆情类别：</span>
                         <select name="type" class="form-control">
-                            <option value="0" selected="selected">所有类别</option>
+                            <option value="" selected="selected">所有类别</option>
                             <option value="作风效能">作风效能</option>
                             <optgroup label="行业管理">
                                 <option value="行业管理-劳动人事">劳动人事</option>
@@ -38,24 +61,24 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-xs-4">
-                    <div class="input-group">
-                        <span class="input-group-addon">标题：</span>
-                        <input type="text" name="keyword" placeholder="请输入标题关键字" class="form-control">
-                    </div>
-                </div>
             </div>
             <div class="row func-btns">
-                <div class="col-xs-6">
+                <div class="col-xs-4">
                     <div class="input-group">
                         <span class="input-group-addon">开始时间：</span>
                         <input id="starttime" type="text" name="starttime" placeholder="开始时间" class="form-control">
                     </div>
                 </div>
-                <div class="col-xs-6">
+                <div class="col-xs-4">
                     <div class="input-group">
                         <span class="input-group-addon">结束时间：</span>
                         <input id="endtime" type="text" name="endtime" placeholder="结束时间" class="form-control">
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="input-group">
+                        <span class="input-group-addon">标题：</span>
+                        <input type="text" name="keyword" placeholder="请输入标题关键字" class="form-control">
                     </div>
                 </div>
             </div>

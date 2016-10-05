@@ -43,7 +43,7 @@ module.exports = {
         field: 'msgfile',
         uploadDir: filePath + 'msgfile/', // a new dir very day: Msgfile20160809
         fileSize: 10 * 1024 * 1024, //bytes
-        fileType: ['doc']
+        fileType: ['doc', 'docx']
     },
     template: {
         dispose: '' +

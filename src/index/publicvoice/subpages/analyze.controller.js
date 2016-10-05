@@ -23,9 +23,9 @@ module.exports = {
 
 };
 function getPVItemAnalyze (req, res) {
-    var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
-    var end = req.query.eTime || now;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
 
     service.getPVItemAnalyze(start, end, function (err, rs) {
         err ?
@@ -38,9 +38,9 @@ function getPVItemAnalyze (req, res) {
 }
 
 function getPVTypeAnalyze (req, res) {
-    var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
-    var end = req.query.eTime || now;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
 
     service.getPVTypeAnalyze(start, end, function (err, rs) {
         err ?
@@ -53,9 +53,9 @@ function getPVTypeAnalyze (req, res) {
 }
 
 function getPVDutyAnalyze (req, res) {
-    var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
-    var end = req.query.eTime || now;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
 
     service.getPVDutyAnalyze(start, end, function (err, rs) {
         err ?
@@ -67,11 +67,10 @@ function getPVDutyAnalyze (req, res) {
     });
 }
 
-
 function getPVReviewAnalyze (req, res) {
-    var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
-    var end = req.query.eTime || now;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
 
     service.getPVReviewAnalyze(start, end, function (err, rs) {
         err ?
@@ -85,9 +84,9 @@ function getPVReviewAnalyze (req, res) {
 
 
 function getPVFellowAnalyze (req, res) {
-    var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
-    var end = req.query.eTime || now;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
 
     service.getPVFellowAnalyze(start, end, function (err, rs) {
         err ?
@@ -100,9 +99,9 @@ function getPVFellowAnalyze (req, res) {
 }
 
 function getPVMissReportAnalyze (req, res) {
-    var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
-    var end = req.query.eTime || now;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
 
     service.getPVMissReportAnalyze(start, end, function (err, rs) {
         err ?
@@ -115,9 +114,9 @@ function getPVMissReportAnalyze (req, res) {
 }
 
 function getGroupMissAnalyze (req, res) {
-    var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
-    var end = req.query.eTime || now;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
 
     service.getGroupMissAnalyze(start, end, function (err, rs) {
         err ?
@@ -130,9 +129,9 @@ function getGroupMissAnalyze (req, res) {
 }
 
 function getFeedbackTypeAnalyze (req, res) {
-    var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
-    var end = req.query.eTime || now;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
 
     service.getFeedbackTypeAnalyze(start, end, function (err, rs) {
         err ?
@@ -144,11 +143,10 @@ function getFeedbackTypeAnalyze (req, res) {
     });
 }
 
-
 function getCommentAnalyze (req, res) {
-    var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
-    var end = req.query.eTime || now;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
 
     service.getCommentAnalyze(start, end, function (err, rs) {
         err ?
