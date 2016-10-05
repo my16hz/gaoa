@@ -12,7 +12,7 @@ module.exports = {
 };
 
 function searchPubVoices (start, end, state, type, feedback, dispose, title, callback) {
-    var sql_stmt = "SELECT * FROM tb_publicvoice " +
+    var sql_stmt = "SELECT TOP 1000 * FROM tb_publicvoice " +
         "WHERE createtime > @start AND createtime < @end ";
     var objParams = {
         "start": start,
@@ -27,7 +27,7 @@ function searchPubVoices (start, end, state, type, feedback, dispose, title, cal
         objParams["type"] = type;
     }
     if (feedback) {
-        sql_stmt += " AND feedback = @feedback ";
+        sql_stmt += " AND feedback_state = @feedback ";
         objParams["feedback"] = feedback;
     }
     if (dispose) {
@@ -44,6 +44,8 @@ function searchPubVoices (start, end, state, type, feedback, dispose, title, cal
         .input("start", sql.DateTime)
         .input("end", sql.DateTime)
         .input("state", sql.Int)
+        .input("feedback", sql.Int)
+        .input("dispose", sql.Int)
         .input("type", sql.NVarChar)
         .input("title", sql.NVarChar)
         .prepare(sql_stmt, function (err) {
