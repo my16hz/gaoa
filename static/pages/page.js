@@ -383,15 +383,20 @@ var LHSBasicPage = {
         return this;
     },
     _closeModal: function (jqmodal, table) {
-        $.each($(jqmodal).addClass('hide').find('form').data('errElems'), function (elem) {
+        var jqform = $(jqmodal).addClass('hide').find('form');
+
+        $.each(jqform.data('errElems'), function () {
             this.tooltip('destroy').parent().removeClass('has-error');
         });
+
+        jqform.removeData('errElems');
+
         table.expand();
 
         return this;
     },
 
-    _validator: function (jqform, rules) {
+    _validate: function (jqform, rules) {
         var values = this._getFormControlValues(jqform);
         var error = null, elem;
         var errElems = [];
@@ -413,7 +418,7 @@ var LHSBasicPage = {
         });
 
 
-        if (error) {
+        if (errElems.length) {
             jqform.data('errElems', errElems);
         } else {
             return values;

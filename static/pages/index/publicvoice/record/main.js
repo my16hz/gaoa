@@ -251,7 +251,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         return this;
     },
     _pvValidator: function () {
-        var values = this._validator($('#dataModal form'), {
+        var values = this._validate($('#dataModal form'), {
             review_count: function (val) {
                 if (!(/^\d+$/.test(val))) return '必须为数字。';
             },

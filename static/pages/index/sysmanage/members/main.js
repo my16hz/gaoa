@@ -253,7 +253,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
     },
     _memberValidator: function () {
         var sha1 = new Hashes.SHA1();
-        var values = this._validator($('#memberModal form'), {
+        var values = this._validate($('#memberModal form'), {
             id: function (id) {
                 if (!id.length) return 'ID 不能为空。';
             },
