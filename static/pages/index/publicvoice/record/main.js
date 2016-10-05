@@ -260,8 +260,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             }
         });
 
-        if (values)
-            values['content'] = this.editor.getContent();
+        if (values) values['content'] = this.editor.getContent();
 
         return values || false;
     }
