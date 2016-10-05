@@ -205,7 +205,7 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
         this._setFormControlValues(modal.find('form'), msg);
         this._createUploader(jqinput, '/msgfile/' + uuid.v4(), function (res) {
                 if ('SUCCESS' != res.state) {
-                    self._showXHRMessage(res.state, 'danger');
+                    self._showXHRMessage(res.state, 'error');
                 } else {
                     _addAttachment(res);
                 }

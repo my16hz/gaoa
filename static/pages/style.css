@@ -5,3 +5,11 @@
 textarea {
     resize: none;
 }
+
+.lhs-alert-panel {
+    position: absolute;
+    margin-top: -20px;
+    margin-left: -15px;
+    max-width: 60%;
+    z-index: 999;
+}

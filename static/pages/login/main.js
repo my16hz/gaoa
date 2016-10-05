@@ -25,44 +25,42 @@ var LHSLoginPage = $.extend({}, LHSBasicPage, {
         evt.keyCode == 13 && this.clickBtnSubmit();
     },
     _validator: function () {
-        var values = {};
         var sha1 = new Hashes.SHA1();
-        var hasErr = false;
-
-        $.each({
+        var values = this._validate($('.login-modal form'), {
             username: function (name) {
-                return !!name.length;
+                if (!name.length) return '用户名不能为空。';
             },
             password: function (pwd) {
-                return !!pwd.length;
-            }
-        }, function (id, checker) {
-            var jqInput = $('#' + id);
-            var value = $.trim(jqInput.val());
-
-            if (!checker(value)) {
-                jqInput
-                    .parent('.form-group').addClass('has-error')
-                    .unbind('focus')
-                    .bind('focus', function () {
-                        $(this).removeClass('has-error');
-                    });
-                hasErr = true;
-            } else {
-                values[id] = value;
+                if (!pwd.length) return '密码不能为空。';
             }
         });
 
-        !hasErr && (values.password = sha1.hex(values.password));
+        if (values)  values.password = sha1.hex(values.password);
 
-        return hasErr ? false : values;
-
+        return values || false;
     },
     _showLoading: function () {
         this.$('#btnSubmit').button('loading');
     },
     _removeLoading: function () {
         this.$('#btnSubmit').button('reset');
+    },
+    _showXHRMessage: function (msg) {
+        var panel = $('<div class="alert alert-warning lhs-alert-panel">' +
+            '<strong>登录失败：</strong>' +
+            '</div>');
+        var timer;
+
+        $('.lhs-alert-panel').remove();
+
+        panel.append($('<span></span>').text(msg)).appendTo('.login-modal .modal-body');
+
+        timer = setTimeout(function () {
+            panel.remove();
+            clearTimeout(timer);
+        }, 5000);
+
+        return this;
     }
 });
 

@@ -34,7 +34,7 @@ var LHSConfigurePage = $.extend({}, LHSBasicPage, {
                     }
                 },
                 onLoadError: function (xhr) {
-                    self._showXHRError('请求失败:' + xhr.responseText);
+                    self._showXHRError(xhr.responseText);
                 },
                 columns: [{
                     title: '配置项',

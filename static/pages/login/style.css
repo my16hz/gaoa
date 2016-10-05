@@ -45,6 +45,12 @@
     margin: 0px;
 }
 
+.login-page .content .wrapper .login-modal .lhs-alert-panel {
+    position: static;
+    margin: 0;
+    max-width: 100%;
+}
+
 .login-page .footer {
     width: 100%;
     height: 36px;

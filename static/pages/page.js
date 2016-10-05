@@ -75,13 +75,13 @@ var LHSBasicPage = {
             if (rs.success) {
                 options.done(rs.data);
             } else {
-                self._showXHRMessage(rs.message, 'danger');
+                self._showXHRMessage(rs.message, 'error');
             }
         }).fail(function (xhr) {
-            if(401 == xhr.status) {
+            if (401 == xhr.status) {
                 location.href = '/login'
             } else {
-                self._showXHRMessage('请求失败:' + xhr.responseText, 'danger');
+                self._showXHRMessage(xhr.responseText, 'error');
             }
         }).always(function () {
             self._removeLoading();
@@ -101,21 +101,24 @@ var LHSBasicPage = {
         return this;
     },
     _showXHRMessage: function (msg, type) {
-        var pid = 'lhs' + type + 'panel';
-        var panel = $('#' + pid);
+        var panel = $('<div class="alert lhs-alert-panel"><strong>错误信息：</strong></div>');
+        var timer;
 
-        if (!panel.length) {
-            panel = $('<div id="' + pid + '" class="alert alert-' + type + '" data-dismiss="alert">' +
-                '<button type="button" class="close">' +
-                '<span>&times;</span>' +
-                '</button></div>').prependTo(this.$el);
-            panel.alert();
-            panel.on('closed.bs.alert', function () {
-                panel.remove();
-            });
-        }
+        $('.lhs-alert-panel').remove();
 
-        panel.append($('<span></span>').text(msg));
+        panel.addClass('info' == type ? 'alert-success' : 'alert-warning')
+            .append($('<span></span>').text(msg))
+            .appendTo('#main_panel');
+
+        panel.alert();
+        panel.on('closed.bs.alert', function () {
+            panel.remove();
+        });
+
+        timer = setTimeout(function () {
+            panel.remove();
+            clearTimeout(timer);
+        }, 5000);
 
         return this;
     },
@@ -221,7 +224,7 @@ var LHSBasicPage = {
                 }
             },
             onLoadError: function (xhr) {
-                self._showXHRMessage('请求失败:' + xhr.responseText, 'danger');
+                self._showXHRMessage(xhr.responseText, 'error');
             },
             columns: columns,
             pagination: true,
