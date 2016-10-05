@@ -74,26 +74,31 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
                 }
             }
         ]);
-        this.sTime = this._createTimepicker('#starttime');
-        this.eTime = this._createTimepicker('#endtime');
+        this.sTime = this._createTimepicker('#starttime').onChange(function (e) {
+            this.eTime.minDate(e.date)
+        });
+        this.eTime = this._createTimepicker('#endtime').onChange(function (e) {
+            this.sTime.maxDate(e.date);
+        });
     },
     events: {
-        'keydown #inputSearch': 'autoSearch',
         'click #btnSearch': 'doSearch',
         'click #btnNotify': 'showNotifyModal',
         'click #dataModal .btn-default': 'closeDataModal',
         'click #notifyModal .btn-default': 'closeNotifyModal',
         'click #notifyModal .btn-primary': 'saveNotify'
     },
-    autoSearch: function (jqinput, evt) {
-        13 == evt.keyCode && this.dataTable.refresh({
-            query: {id: jqinput.val()}
-        });
-    },
-    doSearch: function (jqbtn) {
-        var daily_id = $.trim(jqbtn.prev('input').val());
+    doSearch: function () {
+        var funcCtrls = $('.func-btns');
+
         this.dataTable.refresh({
-            query: {id: daily_id}
+            query: {
+                state: funcCtrls.find('select:first').val(),
+                type: funcCtrls.find('select:last').val(),
+                title: funcCtrls.find('input:first').val(),
+                sTime: funcCtrls.find('#starttime').val(),
+                eTime: funcCtrls.find('#endtime').val()
+            }
         });
     },
     showNotifyModal: function () {
@@ -117,7 +122,7 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
             }
         });
 
-        function _initMultipleSelect (members) {
+        function _initMultipleSelect(members) {
             var jqSelect = $('select[name="uids"]', jqform);
             var options = [$('<optgroup label="未分组"></optgroup>')];
             var index = {nogroup: 0};
