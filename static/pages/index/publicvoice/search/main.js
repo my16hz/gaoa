@@ -83,11 +83,7 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
         });
     },
     events: {
-        'click #btnSearch': 'doSearch',
-        'click #btnNotify': 'showNotifyModal',
-        'click #dataModal .btn-default': 'closeDataModal',
-        'click #notifyModal .btn-default': 'closeNotifyModal',
-        'click #notifyModal .btn-primary': 'saveNotify'
+        'click #btnSearch': 'doSearch'
     },
     doSearch: function () {
         var funcCtrls = $('.func-btns');
@@ -103,97 +99,5 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
                 eTime: this.eTime.getTime()
             }
         });
-    },
-    showNotifyModal: function () {
-        var dataTable = this.dataTable;
-        var ids = dataTable.getSelected();
-        var modal = $('#notifyModal');
-        var jqform = modal.find('form');
-        var self = this;
-
-        if (!ids.length) {
-            return bootbox.alert('请先选择要通报的记录！');
-        }
-
-        this._setFormControlValues(jqform, {pvids: ids});
-        this._sendRequest({
-            type: 'get',
-            url: '/sysmanage/members',
-            done: function (rs) {
-                _initMultipleSelect(rs);
-                self._showModal(modal, self.dataTable);
-            }
-        });
-
-        function _initMultipleSelect(members) {
-            var jqSelect = $('select[name="uids"]', jqform);
-            var options = [$('<optgroup label="未分组"></optgroup>')];
-            var index = {nogroup: 0};
-
-            $.each(members, function (gpid, user) {
-                gpid = user.groupid;
-
-                if (!gpid) {
-                    options[index.nogroup].append(
-                        $('<option></option>')
-                            .attr('value', user.id)
-                            .text(user.name)
-                    );
-                } else {
-                    if (!index[gpid]) {
-                        options.push(
-                            $('<optgroup></optgroup>')
-                                .attr('label', user.groupname)
-                                .append(
-                                    $('<option></option>')
-                                        .attr('value', user.id)
-                                        .text(user.name)
-                                )
-                        );
-                    } else {
-                        options[index[gpid]].append(
-                            $('<option></option>')
-                                .attr('value', user.id)
-                                .text(user.name)
-                        );
-                    }
-                }
-            });
-
-            self._createSelect2(jqSelect.append(options))
-                .clear();
-        }
-    },
-    closeDataModal: function () {
-        var modal = $('#dataModal');
-
-        this._clearFormControlValues(modal.find('form'))
-            ._closeModal(modal, this.dataTable);
-    },
-    closeNotifyModal: function () {
-        var modal = $('#notifyModal');
-
-        this._clearFormControlValues(modal.find('form'))
-            ._closeModal(modal, this.dataTable);
-    },
-    saveNotify: function () {
-        var self = this;
-        this._sendRequest({
-            type: 'post', url: '/notify/save',
-            validator: $.proxy(this._validator, this),
-            done: function () {
-                self._closeModal($('#notfiyModal'), self.dataTable);
-                self.dataTable.refresh();
-            }
-        });
-
-        return this;
-    },
-
-    _validator: function () {
-        var jqform = $('#notifyModal form');
-        var values = this._getFormControlValues(jqform);
-
-        return values;
     }
 });

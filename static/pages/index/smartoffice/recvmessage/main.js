@@ -198,9 +198,12 @@ var LHSRecvMessagePage = $.extend({}, LHSBasicPage, {
     },
 
     _validator: function () {
-        var jqform = $('#dataModal form');
-        var values = this._getFormControlValues(jqform);
+        var values = this._validate($('#dataModal form'), {
+            copies: function (val) {
+                if (!(/^\d+$/.test(val))) return '必须为数字。';
+            }
+        });
 
-        return values;
+        return values || false;
     }
 });
