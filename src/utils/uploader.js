@@ -10,7 +10,9 @@ var path = require('path');
 var uuid = require('node-uuid');
 
 var errhandler = require('./errhandler');
-var service = require('./../index/publicvoice/service');
+var pvSvc = require('./../index/publicvoice/service');
+var svSvc = require('./../index/socialvoice/service')
+
 
 var userkey = config.session.userkey;
 
@@ -82,16 +84,18 @@ module.exports = {
 };
 
 function datafile (req, res) {
-    var type = req.query.type;
+    var filehandler = 'pv' == req.query.type ?
+        pvSvc.importPubVoices:
+        svSvc.importSocialVoice;
 
-    dfhandler(req, res, function (err) {
+        dfhandler(req, res, function (err) {
         var file = req.file;
         var user = req.session[userkey];
 
         if (err || !file) {
             errhandler.customError(res, '文件上传失败。');
         } else {
-            service['pv' == type ? 'importPubVoices' : 'importSocialVoices'](user.id, user.groupid, path.normalize(
+            filehandler(user, path.normalize(
                 dfcfg.uploadDir + file.dirName + '/' + file.filename
             ), function (err) {
                 if (err) {
