@@ -1,34 +1,77 @@
 <script type="text/html">
     <div class="pubvoice-analyze-page">
         <div class="row func-btns">
-            <div class="col-md-12">
-                <div class="col-xs-2">
-                    <input id="starttime" type="text" name="starttime" placeholder="开始时间" class="form-control">
+            <div class="col-xs-4">
+                <input id="starttime" type="text" name="starttime" placeholder="开始时间" class="form-control">
+            </div>
+            <div class="col-xs-4">
+                <input id="endtime" type="text" name="endtime" placeholder="结束时间" class="form-control">
+            </div>
+            <div >
+                <button id="btnSearch" class="btn btn-default">查询</button>
+            </div>
+        </div>
+        <div class="row data-wrapper">
+            <div class="col-xs-8 ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Description fot Table</div>
+                    <div id="pvMissReportTableWrapper" class="panel-body"></div>
                 </div>
-                <div class="col-xs-2">
-                    <input id="endtime" type="text" name="endtime" placeholder="结束时间" class="form-control">
-                </div>
-                <div >
-                    <button id="btnSearch" class="btn btn-default">查询</button>
+            </div>
+            <div class="col-xs-4 ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Description fot Table</div>
+                    <div id="pvGroupMissTableWrapper" class="panel-body"></div>
                 </div>
             </div>
         </div>
         <div class="row data-wrapper">
-            <div id="pvMissReportTableWrapper" class="col-xs-8 "></div>
-            <div id="pvGroupMissTableWrapper" class="col-xs-4 "></div>
+            <div class="col-xs-4 ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Description fot Table</div>
+                    <div id="pvItemTableWrapper" class="panel-body"></div>
+                </div>
+            </div>
+            <div class="col-xs-4 ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Description fot Table</div>
+                    <div id="pvTypeTableWrapper" class="panel-body"></div>
+                </div>
+            </div>
+            <div class="col-xs-4 ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Description fot Table</div>
+                    <div id="pvDutyTableWrapper" class="panel-body"></div>
+                </div>
+            </div>
         </div>
         <div class="row data-wrapper">
-            <div id="pvItemTableWrapper" class="col-xs-4 "></div>
-            <div id="pvTypeTableWrapper" class="col-xs-4 "></div>
-            <div id="pvDutyTableWrapper" class="col-xs-4 "></div>
+            <div class="col-xs-6 ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Description fot Table</div>
+                    <div id="pvFeedbackTypeTableWrapper" class="panel-body"></div>
+                </div>
+            </div>
+            <div class="col-xs-6 ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Description fot Table</div>
+                    <div id="pvCommentAndFeedbackTableWrapper" class="panel-body"></div>
+                </div>
+            </div>
         </div>
         <div class="row data-wrapper">
-            <div id="pvFeedbackTypeTableWrapper" class="col-xs-6 "></div>
-            <div id="pvCommentAndFeedbackTableWrapper" class="col-xs-6 "></div>
-        </div>
-        <div class="row data-wrapper">
-            <div id="pvReviewTableWrapper" class="col-xs-6 "></div>
-            <div id="pvFellowTableWrapper" class="col-xs-6 "></div>
+            <div class="col-xs-6 ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Description fot Table</div>
+                    <div id="pvReviewTableWrapper" class="panel-body"></div>
+                </div>
+            </div>
+            <div class="col-xs-6 ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Description fot Table</div>
+                    <div id="pvFellowTableWrapper" class="panel-body"></div>
+                </div>
+            </div>
         </div>
     </div>
 </script>
