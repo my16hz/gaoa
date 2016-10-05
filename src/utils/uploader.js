@@ -82,6 +82,8 @@ module.exports = {
 };
 
 function datafile (req, res) {
+    var type = req.query.type;
+
     dfhandler(req, res, function (err) {
         var file = req.file;
         var user = req.session[userkey];
@@ -89,7 +91,7 @@ function datafile (req, res) {
         if (err || !file) {
             errhandler.customError(res, '文件上传失败。');
         } else {
-            service.importPubVoices(user.id, user.groupid, path.normalize(
+            service['pv' == type ? 'importPubVoices' : 'importSocialVoices'](user.id, user.groupid, path.normalize(
                 dfcfg.uploadDir + file.dirName + '/' + file.filename
             ), function (err) {
                 if (err) {

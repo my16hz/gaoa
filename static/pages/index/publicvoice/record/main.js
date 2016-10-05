@@ -152,7 +152,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     showImportModal: function () {
         var modal = $('#importModal');
 
-        this._createUploader(modal.find('input[type="file"]'), '/datafile', function () {
+        this._createUploader(modal.find('input[type="file"]'), '/datafile?type=pv', function () {
             this.closeImportModal();
         });
 
