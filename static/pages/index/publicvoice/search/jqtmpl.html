@@ -19,7 +19,7 @@
                         <select name="dispose" class="form-control">
                             <option value="">所有状态</option>
                             <option value="0">未批示</option>
-                            <option value="1">已批示</option>
+                            <option value="1">已批示未处置</option>
                             <option value="2">待审批</option>
                             <option value="3">转</option>
                             <option value="4">转发</option>
@@ -65,6 +65,12 @@
             <div class="row func-btns">
                 <div class="col-xs-4">
                     <div class="input-group">
+                        <span class="input-group-addon">标题：</span>
+                        <input type="text" name="keyword" placeholder="请输入标题关键字" class="form-control">
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="input-group">
                         <span class="input-group-addon">开始时间：</span>
                         <input id="starttime" type="text" name="starttime" placeholder="开始时间" class="form-control">
                     </div>
@@ -73,12 +79,6 @@
                     <div class="input-group">
                         <span class="input-group-addon">结束时间：</span>
                         <input id="endtime" type="text" name="endtime" placeholder="结束时间" class="form-control">
-                    </div>
-                </div>
-                <div class="col-xs-4">
-                    <div class="input-group">
-                        <span class="input-group-addon">标题：</span>
-                        <input type="text" name="keyword" placeholder="请输入标题关键字" class="form-control">
                     </div>
                 </div>
             </div>
