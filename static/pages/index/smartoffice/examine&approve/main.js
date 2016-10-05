@@ -12,6 +12,8 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
         $(this.el).empty().append(jqtmpl($, {data: {}}).join(''));
 
         this.initDependencies();
+
+        this.isShown = 'recv';
         this.sendTable = this._createTable('#sendTableWrapper', '/smartoffice/sendmsg/unapproved', [
             {field: 'checkbox', checkbox: true},
             {title: '文件标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc'},
@@ -19,12 +21,16 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
             {title: '发文字号', field: 'message_id', sortable: true, order: 'desc'},
             {title: '秘密等级', field: 'secret_level', sortable: true, order: 'desc'},
             {title: '紧急程度', field: 'urgent_level', sortable: true, order: 'desc'},
-            {   title: '状态', field: 'state', sortable: true, order: 'desc',
+            {
+                title: '状态', field: 'state', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
-                        case 0: return '未提交';
-                        case 1: return '待签发';
-                        case 2: return '已签发';
+                        case 0:
+                            return '未提交';
+                        case 1:
+                            return '待签发';
+                        case 2:
+                            return '已签发';
                     }
                 }
             },
@@ -36,7 +42,7 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
                 },
                 events: {
                     'click a:eq(0)': function () {
-                        self.showSendModal(arguments[2]);
+                        self._showDataModal(arguments[2]);
                     }
                 }
             }
@@ -54,12 +60,16 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
                     return moment(val).format('YYYY年MM月DD日');
                 }
             },
-            {   title: '状态', field: 'state', sortable: true, order: 'desc',
+            {
+                title: '状态', field: 'state', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
-                        case 0: return '未提交';
-                        case 1: return '待签发';
-                        case 2: return '已签发';
+                        case 0:
+                            return '未提交';
+                        case 1:
+                            return '待签发';
+                        case 2:
+                            return '已签发';
                     }
                 }
             },
@@ -71,77 +81,58 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
                 },
                 events: {
                     'click a:eq(0)': function () {
-                        self.showRecvModal(arguments[2]);
+                        self._showDataModal(arguments[2]);
                     }
                 }
             }
         ]);
     },
     events: {
-        'click #sendModal .btn-default': 'closeSendModal',
-        'click #sendModal .btn-primary': 'commentSendModal',
-        'click #recvModal .btn-default': 'closeRecvModal',
-        'click #recvModal .btn-primary': 'commentRecvModal'
+        'click #content-switch > .btn': 'changePageContent',
+        'click #sendModal .btn-default': 'closeDataModal',
+        'click #sendModal .btn-primary': 'saveData',
+        'click #recvModal .btn-default': 'closeDataModal',
+        'click #recvModal .btn-primary': 'saveData'
     },
-    showSendModal: function (msg) {
-        var modal = $('#sendModal');
-        var jqform = modal.find('form');
+    changePageContent: function (jqBtn) {
+        if (jqBtn.hasClass('btn-primary')) return;
+
+        'recv' == (this.isShown = jqBtn.attr('data-type')) ?
+            this.recvTable.showDataWrapper() :
+            this.sendTable.showDataWrapper();
+
+        jqBtn.addClass('btn-primary')
+            .removeClass('btn-default')
+            .siblings()
+            .removeClass('btn-primary')
+            .addClass('btn-default');
+    },
+    closeDataModal: function () {
+        var displyed = this._getDisplayed();
+
+        this._clearFormControlValues(displyed.modal.find('form'))
+            ._closeModal(displyed.modal, displyed.dataTable);
+    },
+    saveData: function () {
         var self = this;
-
-        this._setFormControlValues(jqform, msg);
-        this._showModal(modal, this.sendTable);
-        this._showModal($('#recvModal'), this.recvTable);
-    },
-
-    showRecvModal: function (msg) {
-        var modal = $('#recvModal');
-        var jqform = modal.find('form');
-        var self = this;
-
-        this._setFormControlValues(jqform, msg);
-        this._showModal(modal, self.recvTable);
-        this._showModal($('#sendModal'), this.sendTable);
-    },
-
-    closeSendModal: function () {
-        var modal = $('#sendModal');
-
-        this._clearFormControlValues(modal.find('form'))
-            ._closeModal(modal, this.sendTable);
-
-        this._closeModal($('#recvModal'), this.recvTable);
-    },
-    closeRecvModal: function () {
-        var modal = $('#recvModal');
-
-        this._clearFormControlValues(modal.find('form'))
-            ._closeModal(modal, this.recvTable);
-
-        this._closeModal($('#sendModal'), this.sendTable);
-    },
-    commentSendModal: function () {
-        var dataTable = this.sendTable;
+        var displayed = this._getDisplayed();
 
         this._sendRequest({
             type: 'post',
-            url: '/smartoffice/sendmsg/comment',
-            validator: $.proxy(this._sendValidator, this),
+            url: displayed.saveUrl,
+            validator: displayed.validator,
             done: function () {
-                dataTable.expand().refresh();
+                displayed.dataTable.refresh();
+                self.closeDataModal();
             }
         });
     },
-    commentRecvModal: function () {
-        var dataTable = this.recvTable;
 
-        this._sendRequest({
-            type: 'post',
-            url: '/smartoffice/recvmsg/comment',
-            validator: $.proxy(this._recvValidator, this),
-            done: function () {
-                dataTable.expand().refresh();
-            }
-        });
+    _showDataModal: function (msg) {
+        var displyed = this._getDisplayed();
+
+        this._setFormControlValues(displyed.modal.find('form'), msg)
+            ._showModal(displyed.modal, displyed.dataTable);
     },
     _recvValidator: function () {
         var jqform = $('#recvModal form');
@@ -154,5 +145,18 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
         var values = this._getFormControlValues(jqform);
 
         return values;
+    },
+    _getDisplayed: function () {
+        return 'recv' == this.isShown ? {
+            dataTable: this.recvTable,
+            modal: $('#recvModal'),
+            saveUrl: '/smartoffice/recvmsg/comment',
+            validator: $.proxy(this._recvValidator, this)
+        } : {
+            dataTable: this.sendTable,
+            modal: $('#sendModal'),
+            saveUrl: '/smartoffice/sendmsg/comment',
+            validator: $.proxy(this._sendValidator, this)
+        };
     }
 });
