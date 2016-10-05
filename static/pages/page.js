@@ -110,11 +110,6 @@ var LHSBasicPage = {
             .append($('<span></span>').text(msg))
             .appendTo('#main_panel');
 
-        panel.alert();
-        panel.on('closed.bs.alert', function () {
-            panel.remove();
-        });
-
         timer = setTimeout(function () {
             panel.remove();
             clearTimeout(timer);

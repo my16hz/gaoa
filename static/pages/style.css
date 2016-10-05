@@ -8,8 +8,8 @@ textarea {
 
 .lhs-alert-panel {
     position: absolute;
-    margin-top: -20px;
-    margin-left: -15px;
+    top: 62px;
+    left: 180px;
     max-width: 60%;
     z-index: 999;
 }

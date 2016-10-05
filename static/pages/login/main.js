@@ -10,7 +10,7 @@ var LHSLoginPage = $.extend({}, LHSBasicPage, {
     },
     events: {
         'click #btnSubmit': 'clickBtnSubmit',
-        'keydown #password': 'onKeyDown'
+        'keydown input:password': 'onKeyDown'
     },
     clickBtnSubmit: function () {
         this._sendRequest({

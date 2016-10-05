@@ -198,7 +198,8 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
 
     _showDataModal: function (msg) {
         var modal = $('#dataModal');
-        var jqinput = modal.find('input[name="msgfile"]').val(msg.attachment || '');
+        var jqinput = modal.find('input[name="msgfile"]');
+        var hdinput = modal.find('input[name="attachment"]');
         var editor = this.editor;
         var self = this;
 
@@ -214,18 +215,42 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
         editor.ready(function () {
             editor.setContent(msg.content);
         });
+        _showAttachment(msg.attachment);
         this._showModal(modal, this.dataTable);
 
         return this;
 
         function _addAttachment (res) {
-            modal.find('input[name="attachment"]').val(res.url);
-            jqinput.after($('<p></p>').html(
+            var jqp = jqinput.next('p');
+
+            hdinput.val(res.url);
+
+            !jqp.length && (jqp = $('<p></p>').insertAfter(jqinput));
+
+            jqp.empty().append(
                 res.name + ' (' + res.size + ' bytes)',
                 $('<a href="javascript:">[删除]</a>').bind('click', function () {
-                    var jqp = $(this).parent().remove();
+                    $(this).parent().remove();
+                    hdinput.val('');
                 })
-            ));
+            );
+        }
+
+        function _showAttachment (attachment) {
+            if (!attachment) return;
+
+            $('<p></p>').append(
+                $('<a></a>')
+                    .text(attachment.substring(attachment.lastIndexOf('/') + 1))
+                    .attr('href', '/msgfile/' + attachment),
+                '&nbsp;',
+                $('<a href="javascript:">[删除]</a>')
+                    .bind('click', function () {
+                        $(this).parent().remove();
+                        hdinput.val('');
+                    })
+            )
+                .insertAfter(jqinput);
         }
     },
     _validator: function () {
