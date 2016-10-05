@@ -138,8 +138,9 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 !$.isArray(pubvoice.url) && (pubvoice.url = pubvoice.url.split(','));
                 !$.isArray(pubvoice.from_website) && (pubvoice.from_website = pubvoice.from_website.split(','));
 
-                self._appendInfoSrcRow(jqInput.parents('div.form-group'))
-                    ._setFormControlValues(jqform, pubvoice);
+/*                self._appendInfoSrcRow(jqInput.parents('div.form-group'))
+                    ._setFormControlValues(jqform, pubvoice);*/
+                self._setFormControlValues(jqform, pubvoice);
             }
 
             editor.ready(function () {
@@ -191,7 +192,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         this._sendRequest({
             type: 'post',
             url: '/pubvoice/save',
-            validator: $.proxy(this._validator, this),
+            validator: $.proxy(this._pvValidator, this),
             done: function () {
                 self.closeDataModal();
                 self.dataTable.refresh();
@@ -249,12 +250,19 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
 
         return this;
     },
-    _validator: function () {
-        var jqform = $('#dataModal form');
-        var values = this._getFormControlValues(jqform);
+    _pvValidator: function () {
+        var values = this._validator($('#dataModal form'), {
+            review_count: function (val) {
+                if (!(/^\d+$/.test(val))) return '必须为数字。';
+            },
+            fellow_count: function (val) {
+                if (!(/^\d+$/.test(val))) return '必须为数字。';
+            }
+        });
 
-        values['content'] = this.editor.getContent();
+        if (values)
+            values['content'] = this.editor.getContent();
 
-        return values;
+        return values || false;
     }
 });
