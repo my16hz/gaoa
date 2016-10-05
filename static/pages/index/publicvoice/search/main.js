@@ -74,6 +74,7 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
                 }
             }
         ]);
+        this.editor = this._createEditor('#editorWrapper');
         this.sTime = this._createTimepicker('#starttime').onChange(function (e) {
             this.eTime.minDate(e.date)
         });
