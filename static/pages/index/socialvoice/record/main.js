@@ -106,6 +106,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         this._showModal(modal, this.dataTable);
     },
     delSelected: function () {
+        var self = this;
         var dataTable = this.dataTable;
         var ids = dataTable.getSelected();
 
@@ -136,6 +137,12 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     },
 
     _ajaxDelete: function (ids, done) {
+        this._sendRequest({
+            type: 'delete', url: '/socialvoice/delete',
+            data: {ids: ids},
+            done: done
+        });
 
+        return this;
     }
 });

@@ -198,7 +198,7 @@ function addPubVoices (uid, obj, callback) {
         });
 }
 
-function importPubVoices (uid, gid, path, callback) {
+function importPubVoices (user, path, callback) {
     var workbook = xlsx.readFile(path); //当前excel名字
     var worksheet = workbook.Sheets["Sheet1"];
     var pubvoices = xlsx.utils.sheet_to_json(worksheet, {});
@@ -211,7 +211,7 @@ function importPubVoices (uid, gid, path, callback) {
         obj["title"] = pv["标题"];
         obj["type"] = pv["舆情类别"];
         obj["relate_department"] = pv["涉及部门"];
-        obj["duty_department"] = gid;
+        obj["duty_department"] = user.groupid;
         obj["fellow_count"] = pv["回帖数量"];
         obj["review_count"] = pv["关注人数"];
         obj["content"] = xss(pv["帖文内容"]);
@@ -222,7 +222,7 @@ function importPubVoices (uid, gid, path, callback) {
         obj["dispose_stat"] = 0;
         obj["feedback_state"] = 3;
         obj["createtime"] = new Date();
-        obj["createuser"] = uid;
+        obj["createuser"] = user.id;
 
         pvList.push(obj);
     });

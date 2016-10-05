@@ -12,6 +12,8 @@ module.exports = function () {
         .get('/socialvoice/list', controller.getSocialVoices)
         .post('/socialvoice/save', controller.saveSocialVoice)
         .post('/socialvoice/accept', controller.acceptSocialVoice)
+        .post('/socialvoice/import', controller.importSocialVoice)
+        .delete('/socialvoice/delete', controller.deleteSocialVoice)
         .post('/socialvoice/report/save', controller.saveSVReport)
         .get('/socialvoice/report/list', controller.getSVReport)
         .get('/socialvoice/export/:id', controller.exportSocialReport)

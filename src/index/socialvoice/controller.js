@@ -15,6 +15,9 @@ module.exports = {
     getSocialVoices: getSocialVoices,
     saveSocialVoice: saveSocialVoice,
     acceptSocialVoice: acceptSocialVoice,
+    importSocialVoice: importSocialVoice,
+    deleteSocialVoice: deleteSocialVoice,
+
     saveSVReport: saveSVReport,
     getSVReport: getSVReport,
     exportSocialReport: exportSocialReport,
@@ -164,3 +167,18 @@ function statisticGroup (req, res) {
     });
 }
 
+function importSocialVoice(req, res) {
+    
+}
+
+function deleteSocialVoice(req, res) {
+    var ids = req.body.ids;
+
+    service.deleteSocialVoice(ids.split(','), function (err) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
+}

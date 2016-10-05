@@ -6,7 +6,6 @@
 var sql = require('mssql');
 var xlsx = require('xlsx');
 
-
 var dbpool = require('../../utils/dbpool');
 
 module.exports = {
@@ -14,6 +13,9 @@ module.exports = {
     saveSocialVoice: saveSocialVoice,
     updateSocialVoice: updateSocialVoice,
     acceptSocialVoice: acceptSocialVoice,
+    importSocialVoice: importSocialVoice,
+    deleteSocialVoice: deleteSocialVoice,
+
     saveSVReport: saveSVReport,
     getSVReport: getSVReport,
     getSVReportDetail: getSVReportDetail,
@@ -250,6 +252,81 @@ function statisticGroup (start, end, callback) {
                 ps.unprepare(function (err) {
                     if (err)
                         console.log(err);
+                });
+            });
+        });
+}
+
+function importSocialVoice (user, path, callback) {
+        var workbook = xlsx.readFile(path); //当前excel名字
+        var worksheet = workbook.Sheets["Sheet1"];
+        var socvoices = xlsx.utils.sheet_to_json(worksheet, {});
+        var svList = [];
+
+        socvoices.forEach(function (pv) {
+            var obj = {};
+            obj["title"] = pv["社情标题"];
+            obj["origin_content"] = pv["社情内容"];
+            obj['report_content'] = '';
+            obj["reportuser"] = user.name;
+            obj['department'] = user.groupid;
+            obj['state'] = 0;
+            obj['createuser'] = user.id;
+            obj['createtime'] = new Date();
+
+            svList.push(obj);
+        });
+
+        _addBulkSocialVoices(svList, callback);
+    }
+
+function _addBulkSocialVoices (objs, callback) {
+    var table = dbpool.table('tb_socialvoice');
+
+    table.columns.add("title", sql.NVarChar, {nullable: true});
+    table.columns.add("origin_content", sql.NVarChar, {nullable: true});
+    table.columns.add("report_content", sql.NVarChar, {nullable: true});
+    table.columns.add("reportuser", sql.NVarChar, {nullable: true});
+    table.columns.add("department", sql.NVarChar, {nullable: true});
+    table.columns.add("state", sql.Int, {nullable: true});
+    table.columns.add("createuser", sql.VarChar, {nullable: true});
+    table.columns.add("createtime", sql.DateTime, {nullable: true});
+    objs.forEach(function (value) {
+        table.rows.add(value["title"],
+            value["origin_content"],
+            value["report_content"],
+            value["reportuser"],
+            value["department"],
+            value["state"],
+            value["createuser"],
+            value["createtime"])
+    });
+
+    dbpool.createRequest()
+        .bulk(table, function (err, count) {
+            callback(err, err ? false : count);
+        });
+}
+
+function deleteSocialVoice(ids, callback) {
+    var objParams = {};
+    var sql_stmt = "DELETE FROM tb_socialvoice WHERE id in (%ids%);";
+    var ps = null;
+
+    sql_stmt = sql_stmt.replace("%ids%", "\'" + ids.join("\',\'") + "\'");
+
+    console.log(sql_stmt);
+    ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, false);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
                 });
             });
         });
