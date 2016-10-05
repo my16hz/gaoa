@@ -33,7 +33,7 @@
 .login-page .content .wrapper .poster {
     width: 520px;
     height: 400px;
-    background: #9acfea;
+    background: url("./imgs/home.jpg");
 }
 
 .login-page .content .wrapper .login-modal {
