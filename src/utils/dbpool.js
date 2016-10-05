@@ -34,7 +34,10 @@ function table (tbname) {
 }
 
 function execPreparedStatement (sql, inputs, values, done) {
-    var params, ps;
+    var ps = preparedStatement();
+    var params = [];
+    var objvals = {};
+    var regexp = /@(\w+)/g, match;
 
     if (2 == arguments.length) {
         done = inputs;
@@ -42,10 +45,11 @@ function execPreparedStatement (sql, inputs, values, done) {
         values = undefined;
     }
 
-    ps = preparedStatement();
-    params = sql.match(/@\w+/g);
+    while (match = regexp.exec(sql)) {
+        params.push(match[1]);
+    }
 
-    if (params) {
+    if (params.length) {
         if (!inputs || params.length !== inputs.length)
             done(new Error('Invalid SQL parameters types length.'));
 
@@ -53,14 +57,15 @@ function execPreparedStatement (sql, inputs, values, done) {
             done(new Error('Invalid SQL parameters values length.'));
 
         params.forEach(function (field, index) {
-            ps.input(inputs[index]);
+            ps.input(field, inputs[index]);
+            objvals[field] = values[index];
         });
     }
 
     ps.prepare(sql, function (err) {
         if (err)  return done(err);
 
-        ps.execute(values, function (err, rs) {
+        ps.execute(objvals, function (err, rs) {
             done(err, rs);
 
             ps.unprepare(function (err) {
