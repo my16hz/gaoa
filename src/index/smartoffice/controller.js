@@ -256,6 +256,7 @@ function saveMessage (req, res) {
         'type': obj['type'],
         'content': obj['content'],
         'state': 0,
+        'attachment': obj['attachment'],
         'createuser': uid,
         'createtime': new Date(),
 

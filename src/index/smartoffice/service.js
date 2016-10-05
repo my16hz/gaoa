@@ -343,8 +343,8 @@ function getNotifyList (uid, callback) {
 }
 
 function saveMessage (obj, callback) {
-    var sql_stmt = 'INSERT INTO tb_so_message ([title] ,[type] ,[content] ,[state] , [createtime] ,[createuser]) ' +
-        'VALUES (@title, @type, @content, @state, @createtime, @createuser);';
+    var sql_stmt = 'INSERT INTO tb_so_message ([title] ,[type] ,[content] , [state] , [attachment], [createtime] ,[createuser]) ' +
+        'VALUES (@title, @type, @content, @state, @attachment, @createtime, @createuser);';
     var objParams = obj;
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
@@ -352,11 +352,9 @@ function saveMessage (obj, callback) {
         .input('type', sql.Int)
         .input('content', sql.NVarChar)
         .input('state', sql.Int)
-        .input('message_id', sql.NVarChar)
+        .input('attachment', sql.NVarChar)
         .input('createtime', sql.DateTime)
         .input('createuser', sql.NVarChar)
-        .input("issue_id", sql.Int)
-        .input("issue_key", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
@@ -373,13 +371,14 @@ function saveMessage (obj, callback) {
 }
 
 function updateMessage (obj, callback) {
-    var sql_stmt = 'UPDATE tb_so_message SET [title] = @title, [content] = @content WHERE [id] = @id;';
+    var sql_stmt = 'UPDATE tb_so_message SET [title] = @title, [content] = @content, [attachment] = @attachment WHERE [id] = @id;';
     var objParams = obj;
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .input('id', sql.Int)
         .input("title", sql.NVarChar)
         .input('content', sql.NVarChar)
+        .input('attachment', sql.NVarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
