@@ -135,16 +135,22 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
             ._showModal(displyed.modal, displyed.dataTable);
     },
     _recvValidator: function () {
-        var jqform = $('#recvModal form');
-        var values = this._getFormControlValues(jqform);
+        var values = this._validate($('#recvModal form'), {
+            copies: function (val) {
+                if (!(/^\d+$/.test(val))) return '必须为数字。';
+            }
+        });
 
-        return values;
+        return values || false;
     },
     _sendValidator: function () {
-        var jqform = $('#recvModal form');
-        var values = this._getFormControlValues(jqform);
+        var values = this._validate($('#sendModal form'), {
+            copies: function (val) {
+                if (!(/^\d+$/.test(val))) return '必须为数字。';
+            }
+        });
 
-        return values;
+        return values || false;
     },
     _getDisplayed: function () {
         return 'recv' == this.isShown ? {
