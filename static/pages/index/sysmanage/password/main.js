@@ -9,7 +9,7 @@ var LHSPasswordPage = $.extend({}, LHSBasicPage, {
         /*endinject*/
 
         $(this.el).empty().append(jqtmpl($, {data: {}}).join(''));
-        
+
         this.initDependencies();
     },
     events: {
@@ -31,33 +31,25 @@ var LHSPasswordPage = $.extend({}, LHSBasicPage, {
     },
 
     _validator: function () {
-        var jqform = $('form');
-        var values = this._getFormControlValues(jqform);
-        var hasErr = false;
-
-        $.each({
+        var sha1 = new Hashes.SHA1();
+        var values = this._validate($('form'), {
             oldpwd: function (oldpwd) {
-                return !!oldpwd.length;
+                if (!oldpwd.length) return '旧密码不能为空。';
             },
             newpwd: function (newpwd) {
-                return !!newpwd.length;
+                if (!newpwd.length) return '新密码不能为空。';
             },
             repwd: function (repwd, values) {
-                return !!repwd.length && values.newpwd == repwd;
-            }
-        }, function (name, check) {
-            if (!check(values[name], values)) {
-                $('[name="' + name + '"]', jqform)
-                    .parent().addClass('has-error').end()
-                    .unbind('focus')
-                    .bind('focus', function () {
-                        $(this).parent().removeClass('has-error');
-                    });
-
-                hasErr = true;
+                if (!repwd.length) return '确认密码不能为空。';
+                if (values.newpwd != repwd) return '两次密码输入不一致。';
             }
         });
 
-        return hasErr ? false : values;
+        if (values) {
+            values.oldpwd = sha1.hex(values.oldpwd);
+            values.newpwd = sha1.hex(values.newpwd);
+        }
+
+        return values || false;
     }
 });

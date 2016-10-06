@@ -37,14 +37,25 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                 formatter: function () {
                     return [
                         '<a href="javascript:" title="编辑"><i class="glyphicon glyphicon-edit"></i></a>',
+                        '<a href="javascript:" title="密码重置"><i class="glyphicon glyphicon-exclamation-sign"></i></a>',
                         '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
                     ].join('&nbsp;&nbsp;');
                 },
                 events: {
-                    'click a:first': function () {
+                    'click a:eq(0)': function () {
                         self.showDataModal(arguments[2]);
                     },
-                    'click a:last': function () {
+                    'click a:eq(1)': function () {
+                        var uid = arguments[2].id;
+                        var name = arguments[2].name;
+
+                        bootbox.confirm('确认重置 ' + name + ' 的密码为123456？', function (rs) {
+                            rs && self._ajaxResetPwd(uid, function () {
+                                self.memberTable.refresh();
+                            });
+                        });
+                    },
+                    'click a:eq(2)': function () {
                         var uid = arguments[2].id;
 
                         bootbox.confirm('确认删除？', function (rs) {
@@ -246,6 +257,16 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
         this._sendRequest({
             type: 'delete', url: this._getDisplayed().delUrl,
             data: {ids: ids},
+            done: done
+        });
+
+        return this;
+    },
+    _ajaxResetPwd: function (uid, done) {
+        var pwd = new Hashes.SHA1().hex('123456');
+        this._sendRequest({
+            type: 'put', url: "/sysmanage/members/resetpwd",
+            data: {uid: uid, pwd: pwd},
             done: done
         });
 
