@@ -45,11 +45,34 @@ var LHSAllMessagesPage = $.extend({}, LHSBasicPage, {
                 title: '操作',
                 field: 'action',
                 formatter: function () {
-                    return '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>';
+                    return '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-eye-open"></i></a>';
                 },
                 events: {
                     'click a:first': function () {
-                        self.showDataModal(arguments[2]);
+                        var msg = arguments[2];
+                        var modal = $('#dataModal');
+                        var editor = self.editor;
+
+                        self._setFormControlValues(modal.find('form'), msg);
+                        editor.ready(function () {
+                            editor.setContent(msg.content || '');
+                            editor.setDisabled();
+                        });
+                        _showAttachment(msg.attachment);
+                        self._showModal(modal, self.dataTable);
+
+                        function _showAttachment(attachment) {
+                            if (!attachment) return $('.attach-wrapper').text('无');
+
+                            $('<a></a>')
+                                .css({display: 'inline-block', paddingTop: 6})
+                                .text(attachment.substring(attachment.lastIndexOf('/') + 1))
+                                .attr({
+                                    href: '/msgfile/' + attachment,
+                                    target: '_blank'
+                                })
+                                .appendTo($('.attach-wrapper'));
+                        }
                     }
                 }
             }
@@ -59,24 +82,12 @@ var LHSAllMessagesPage = $.extend({}, LHSBasicPage, {
     events: {
         'click #dataModal .btn-default': 'closeDataModal'
     },
-    showDataModal: function (msg) {
-        var editor = this.editor;
-        var modal = $('#dataModal');
-        var jqform = modal.find('form');
-
-        this._setFormControlValues(jqform, msg);
-        editor.ready(function () {
-            editor.setContent(msg.content || '');
-            editor.setDisabled();
-        });
-
-        this._showModal(modal, this.dataTable);
-        return this;
-    },
     closeDataModal: function () {
         var modal = $('#dataModal');
 
         this._clearFormControlValues(modal.find('form'))
             ._closeModal(modal, this.dataTable);
+
+        $('.attach-wrapper').empty();
     }
 });

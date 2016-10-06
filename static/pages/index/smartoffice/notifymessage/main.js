@@ -205,13 +205,12 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
 
         this._setFormControlValues(modal.find('form'), msg);
         this._createUploader(jqinput, '/msgfile/' + uuid.v4(), function (res) {
-                if ('SUCCESS' != res.state) {
-                    self._showXHRMessage(res.state, 'error');
-                } else {
-                    _addAttachment(res);
-                }
+            if ('SUCCESS' != res.state) {
+                self._showXHRMessage(res.state, 'error');
+            } else {
+                _addAttachment(res);
             }
-        );
+        });
         editor.ready(function () {
             editor.setContent(msg.content);
         });
@@ -225,7 +224,7 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
 
             hdinput.val(res.url);
 
-            !jqp.length && (jqp = $('<p></p>').insertAfter(jqinput));
+            !jqp.length && (jqp = $('<p></p>').css('margin-top', 12).insertAfter(jqinput));
 
             jqp.empty().append(
                 res.name + ' (' + res.size + ' bytes)',
@@ -239,17 +238,22 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
         function _showAttachment (attachment) {
             if (!attachment) return;
 
-            $('<p></p>').append(
-                $('<a></a>')
-                    .text(attachment.substring(attachment.lastIndexOf('/') + 1))
-                    .attr('href', '/msgfile/' + attachment),
-                '&nbsp;',
-                $('<a href="javascript:">[删除]</a>')
-                    .bind('click', function () {
-                        $(this).parent().remove();
-                        hdinput.val('');
-                    })
-            )
+            $('<p></p>')
+                .css('margin-top', 12)
+                .append(
+                    $('<a></a>')
+                        .text(attachment.substring(attachment.lastIndexOf('/') + 1))
+                        .attr({
+                            href: '/msgfile/' + attachment,
+                            target: '_blank'
+                        }),
+                    '&nbsp;',
+                    $('<a href="javascript:">[删除]</a>')
+                        .bind('click', function () {
+                            $(this).parent().remove();
+                            hdinput.val('');
+                        })
+                )
                 .insertAfter(jqinput);
         }
     },
