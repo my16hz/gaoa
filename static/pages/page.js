@@ -218,8 +218,17 @@ var LHSBasicPage = {
                     self._removeLoading();
                 }
             },
-            onLoadError: function (xhr) {
-                self._showXHRMessage(xhr.responseText, 'error');
+            onLoadError: function (status) {
+                switch (status) {
+                    case 400:
+                        self._showXHRMessage('无效的请求参数。', 'error');
+                        break;
+                    case 401 :
+                        location.href = '/login';
+                        break;
+                    case 500:
+                        self._showXHRMessage('服务器异常，数据抓取失败。', 'error');
+                }
             },
             columns: columns,
             pagination: true,
