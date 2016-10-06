@@ -7,7 +7,7 @@ var gulp = require('gulp');
 var plugins = require('gulp-load-plugins')();
 
 // set it as false before publishing.
-var IS_DEBUG = true;
+var IS_DEBUG = false;
 var tasks = [
     'buildCss',
     'buildLoginJs', 'buildModulsJs',
