@@ -16,7 +16,15 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
         this.dataTable = this._createTable('#tableWrapper', '/alert/list', [
             {field: 'checkbox', checkbox: true},
             {title: '预警标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc'},
-            {title: '预警方式', field: 'type', sortable: true, order: 'desc'},
+            {title: '预警方式', field: 'type', sortable: true, order: 'desc',
+                formatter: function (val) {
+                    switch (val) {
+                        case 0: return '电话';
+                        case 1: return '网络(QQ等)';
+                        default: return '其他';
+                    }
+                }
+            },
             {title: '涉舆部门', field: 'department', sortable: true, order: 'desc'},
             {title: '预警人', field: 'sender', sortable: true, order: 'desc'},
             {title: '接警人', field: 'receiver', sortable: true, order: 'desc'},

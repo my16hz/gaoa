@@ -17,6 +17,7 @@ module.exports = {
     saveUser: saveUser,
     removeUsers: removeUsers,
     updateUserPassword: updateUserPassword,
+    resetUserPassword: resetUserPassword,
 
     getGroups: getGroups,
     saveGroup: saveGroup,
@@ -78,6 +79,21 @@ function updateUserPassword (req, res) {
             errhandler.internalException(res, err);
         } else {
             req.session[userkey] = null;
+            res.send({
+                success: true
+            });
+        }
+    })
+}
+
+function resetUserPassword (req, res) {
+    var newpwd = req.body.pwd;
+    var uid = req.body.uid;
+
+    memberService.resetUserPassword(uid, newpwd, function (err) {
+        if (err) {
+            errhandler.internalException(res, err);
+        } else {
             res.send({
                 success: true
             });

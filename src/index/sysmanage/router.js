@@ -14,6 +14,7 @@ module.exports = function () {
         .post('/sysmanage/members/save', controller.saveUser)
         .delete('/sysmanage/members/delete', controller.removeUsers)
         .put('/sysmanage/members/modifypwd', controller.updateUserPassword)
+        .put('/sysmanage/members/resetpwd', controller.resetUserPassword)
 
         .get('/sysmanage/groups', controller.getGroups)
         .post('/sysmanage/groups/save', controller.saveGroup)
