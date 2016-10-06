@@ -54,7 +54,7 @@ module.exports = {
         '    <a></a>' +
         '</p>' +
         '<p style="text-align: center;">' +
-        '    <a><span style="font-size:56px;font-family:方正小标宋简体;color:red">广安市网络舆情中心</span> </a>' +
+        '    <span style="font-size:56px;font-family:方正小标宋简体;color:red">广安市网络舆情中心</span>' +
         '</p>' +
         '<hr/>' +
         '<p style="text-align:right;line-height:31px">' +
