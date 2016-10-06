@@ -12,6 +12,12 @@ var LHSAggregatePage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
 
+        this.sTime = this._createTimepicker('#starttime').onChange(function (e) {
+            this.eTime.minDate(e.date)
+        });
+        this.eTime = this._createTimepicker('#endtime').onChange(function (e) {
+            this.sTime.maxDate(e.date);
+        });
         this.dataTables = [
             this._createTable('#websiteTableWrapper', '/badinfo/aggregate/website', [
                 {title: '举报网站', field: 'website', sortable: true, order: 'desc'},
@@ -38,8 +44,6 @@ var LHSAggregatePage = $.extend({}, LHSBasicPage, {
                 {title: '填报次数', field: 'count', sortable: true, order: 'desc'}
             ])
         ];
-        this.sTime = this._createTimepicker('#starttime');
-        this.eTime = this._createTimepicker('#endtime');
     },
     events: {
         'click #btnSearch': 'doSearch'

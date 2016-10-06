@@ -12,6 +12,12 @@ var LHSStatisticsPage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
 
+        this.sTime = this._createTimepicker('#starttime').onChange(function (e) {
+            this.eTime.minDate(e.date)
+        });
+        this.eTime = this._createTimepicker('#endtime').onChange(function (e) {
+            this.sTime.maxDate(e.date);
+        });
         this.dataTables = [
             this._createTable('#userTableWrapper', '/socialvoice/statistics/user', [
                 {title: '用户名', field: 'name'},
@@ -22,7 +28,6 @@ var LHSStatisticsPage = $.extend({}, LHSBasicPage, {
                 {title: '提交社情个数', field: 'count', sortable: true, order: 'desc'}
             ])
         ];
-
     },
     events: {
         'click #btnSearch': 'doSearch'

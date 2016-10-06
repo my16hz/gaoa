@@ -11,6 +11,7 @@ var LHSAnalyzePage = $.extend({}, LHSBasicPage, {
         $(this.el).empty().append(jqtmpl($, {data: {}}).join(''));
 
         this.initDependencies();
+
         this.sTime = this._createTimepicker('#starttime').onChange(function (e) {
             this.eTime.minDate(e.date)
         });
