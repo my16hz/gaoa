@@ -9,7 +9,7 @@ var userkey = require('config').session.userkey;
 
 var errhandler = require('../../utils/errhandler');
 var service = require('./service');
-
+var defaut_interval = 3600000 * 24 * 7;
 module.exports = {
     pageSocialVoice: pageSocialVoice,
     getSocialVoices: getSocialVoices,
@@ -138,9 +138,9 @@ function exportSocialReport (req, res) {
 }
 
 function statisticUser (req, res) {
-    var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - 3600000 * 24 * 30);
-    var end = req.query.eTime || now;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
 
     service.statisticUser(start, end, function (err, rs) {
         err ?
@@ -153,9 +153,9 @@ function statisticUser (req, res) {
 }
 
 function statisticGroup (req, res) {
-    var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - 3600000 * 24 * 30);
-    var end = req.query.eTime || now;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
 
     service.statisticGroup(start, end, function (err, rs) {
         err ?

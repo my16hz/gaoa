@@ -179,9 +179,9 @@ function deleteRTXReport (req, res) {
 }
 
 function aggregateWebsite (req, res) {
-    var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
-    var end = req.query.eTime || now;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
 
     service.aggregateWebsite(start, end, function (err, rs) {
         err ?
@@ -194,9 +194,9 @@ function aggregateWebsite (req, res) {
 }
 
 function aggregateReporter (req, res) {
-    var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
-    var end = req.query.eTime || now;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
 
     service.aggregateReporter(start, end, function (err, rs) {
         err ?
@@ -209,9 +209,9 @@ function aggregateReporter (req, res) {
 }
 
 function aggregateDepartment (req, res) {
-    var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
-    var end = req.query.eTime || now;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
 
     service.aggregateDepartment(start, end, function (err, rs) {
         err ?
@@ -224,9 +224,9 @@ function aggregateDepartment (req, res) {
 }
 
 function aggregateZone (req, res) {
-    var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
-    var end = req.query.eTime || now;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
 
     service.aggregateZone(start, end, function (err, rs) {
         err ?
@@ -239,9 +239,9 @@ function aggregateZone (req, res) {
 }
 
 function aggregateType (req, res) {
-    var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
-    var end = req.query.eTime || now;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
 
     service.aggregateType(start, end, function (err, rs) {
         err ?
@@ -254,9 +254,9 @@ function aggregateType (req, res) {
 }
 
 function aggregateCreater (req, res) {
-    var now = new Date();
-    var start = req.query.sTime || new Date(now.getTime() - defaut_interval);
-    var end = req.query.eTime || now;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
 
     service.aggregateCreater(start, end, function (err, rs) {
         err ?
