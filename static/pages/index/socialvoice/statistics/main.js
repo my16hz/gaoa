@@ -5,7 +5,6 @@
  */
 var LHSStatisticsPage = $.extend({}, LHSBasicPage, {
     run: function () {
-        var self = this;
         /*inject:jqtmpl:html*/
         /*endinject*/
 
@@ -13,23 +12,31 @@ var LHSStatisticsPage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
 
-        this.userTable = this._createTable('#userTableWrapper', '/socialvoice/statistics/user', [
-            {title: '用户名', field: 'name'},
-            {title: '提交社情个数', field: 'count', sortable: true, order: 'desc'}
-        ]);
-        this.groupTable = this._createTable('#groupTableWrapper', '/socialvoice/statistics/group', [
-            {title: '部门', field: 'name'},
-            {title: '提交社情个数', field: 'count', sortable: true, order: 'desc'}
-        ]);
+        this.dataTables = [
+            this._createTable('#userTableWrapper', '/socialvoice/statistics/user', [
+                {title: '用户名', field: 'name'},
+                {title: '提交社情个数', field: 'count', sortable: true, order: 'desc'}
+            ]),
+            this._createTable('#groupTableWrapper', '/socialvoice/statistics/group', [
+                {title: '部门', field: 'name'},
+                {title: '提交社情个数', field: 'count', sortable: true, order: 'desc'}
+            ])
+        ];
+
     },
     events: {
-        'click #dataModal .btn-default': 'closeDataModal'
+        'click #btnSearch': 'doSearch'
     },
+    doSearch: function () {
+        var self = this;
 
-    closeDataModal: function () {
-        var modal = $('#dataModal');
-
-        this._clearFormControlValues(modal.find('form'))
-            ._closeModal(modal, this.dataTable);
+        $.each(this.dataTables, function () {
+            this.refresh({
+                query: {
+                    sTime: self.sTime.getTime(),
+                    eTime: self.eTime.getTime()
+                }
+            });
+        });
     }
 });

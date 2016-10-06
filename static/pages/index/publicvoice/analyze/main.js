@@ -104,7 +104,6 @@ var LHSAnalyzePage = $.extend({}, LHSBasicPage, {
                     eTime: self.eTime.getTime()
                 }
             });
-        })
-
+        });
     }
 });

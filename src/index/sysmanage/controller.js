@@ -74,14 +74,19 @@ function updateUserPassword (req, res) {
     var newpwd = req.body.newpwd;
     var uid = req.session[userkey].id;
 
-    memberService.updateUserPassword(uid, oldpwd, newpwd, function (err) {
+    memberService.updateUserPassword(uid, oldpwd, newpwd, function (err, rs) {
+        var body = {success: rs};
+
         if (err) {
             errhandler.internalException(res, err);
         } else {
-            req.session[userkey] = null;
-            res.send({
-                success: true
-            });
+            if(rs) {
+                req.session[userkey] = null;
+            } else {
+                body.message = '原密码不正确。';
+            }
+
+            res.send(body);
         }
     })
 }
