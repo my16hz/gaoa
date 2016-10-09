@@ -14,7 +14,12 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
         this.initDependencies();
 
         this.dataTable = this._createTable('#tableWrapper', '/application/list', [
-            {title: '标题', field: 'title', alwaysDisplay: true},
+            {
+                title: '标题', field: 'title', alwaysDisplay: true,
+                formatter: function (val, rowdata) {
+                    return '<a href="' + (rowdata.url || 'javascript:') + '" target="_blank">' + val + '</a>';
+                }
+            },
             {title: '载体', field: 'from_website'},
             {title: '所属栏目', field: 'item'},
             {title: '舆情类别', field: 'type'},
@@ -90,7 +95,7 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
     _apply: function (result, content) {
         var dataTable = this.dataTable;
         var modal = $('#dataModal');
-        this._setFormControlValues(modal.find('form'), {"approveResult":result, "approveContent": content});
+        this._setFormControlValues(modal.find('form'), {"approveResult": result, "approveContent": content});
         this._sendRequest({
             type: 'post',
             url: '/application/save',
