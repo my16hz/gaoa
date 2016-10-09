@@ -178,7 +178,7 @@ function addPVComment (uid, obj, callback) {
         .input('id', sql.Int)
         .input('comment_user', sql.NVarChar)
         .input('comment', sql.NVarChar)
-        .input('attachment', sql.NVarChar)
+        .input('attachment', sql.NVarChar(sql.MAX))
         .input('state', sql.Int)
         .input('comment_date', sql.Date)
         .input('recv_date', sql.Date)

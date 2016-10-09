@@ -63,8 +63,8 @@ function saveSocialVoice (objParams, callback) {
     var ps = dbpool.preparedStatement()
         .input("state", sql.Int)
         .input("title", sql.NVarChar)
-        .input("origin_content", sql.NVarChar)
-        .input("report_content", sql.NVarChar)
+        .input("origin_content", sql.NVarChar(sql.MAX))
+        .input("report_content", sql.NVarChar(sql.MAX))
         .input("reportuser", sql.NVarChar)
         .input("department", sql.NVarChar)
         .input("createuser", sql.VarChar)
@@ -90,8 +90,8 @@ function updateSocialVoice (obj, callback) {
     var ps = dbpool.preparedStatement()
         .input("id", sql.Int)
         .input("title", sql.NVarChar)
-        .input("origin_content", sql.NVarChar)
-        .input("report_content", sql.NVarChar)
+        .input("origin_content", sql.NVarChar(sql.MAX))
+        .input("report_content", sql.NVarChar(sql.MAX))
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
