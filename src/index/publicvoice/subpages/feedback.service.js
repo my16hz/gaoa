@@ -41,7 +41,7 @@ function addPVFeedback (uid, obj, callback) {
         .preparedStatement()
         .input("id", sql.Int)
         .input("type", sql.Int)
-        .input("content", sql.NVarChar)
+        .input("content", sql.NVarChar(sql.MAX))
         .input("createuser", sql.VarChar)
         .input("createtime", sql.DateTime2)
         .prepare(sql_stmt, function (err) {
@@ -76,7 +76,7 @@ function updatePVFeedback (uid, obj, callback) {
     var ps = dbpool.preparedStatement()
         .input("id", sql.Int)
         .input("type", sql.Int)
-        .input("content", sql.NVarChar)
+        .input("content", sql.NVarChar(sql.MAX))
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);

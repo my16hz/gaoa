@@ -129,7 +129,7 @@ function createDaily (uid, daily, callback) {
         .preparedStatement()
         .input("id", sql.Int)
         .input("issue_id", sql.Int)
-        .input("content", sql.NVarChar)
+        .input("content", sql.NVarChar(sql.MAX))
         .input("createuser", sql.VarChar)
         .input("createtime", sql.DateTime2)
         .input("pvids", sql.VarChar)

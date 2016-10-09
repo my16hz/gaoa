@@ -175,7 +175,7 @@ function addPubVoices (uid, obj, callback) {
         .input("duty_department", sql.NVarChar)
         .input("fellow_count", sql.Int)
         .input("review_count", sql.Int)
-        .input("content", sql.NVarChar)
+        .input("content", sql.NVarChar(sql.MAX))
         .input("from_website", sql.NVarChar)
         .input("url", sql.NVarChar)
         .input("state", sql.Int)
@@ -282,7 +282,7 @@ function _addBulkPubVoices (objs, callback) {
     table.columns.add("duty_department", sql.NVarChar, {nullable: true});
     table.columns.add("fellow_count", sql.Int, {nullable: true});
     table.columns.add("review_count", sql.Int, {nullable: true});
-    table.columns.add("content", sql.NVarChar, {nullable: true});
+    table.columns.add("content", sql.NVarChar(sql.MAX), {nullable: true});
     table.columns.add("from_website", sql.NVarChar, {nullable: true});
     table.columns.add("url", sql.NVarChar, {nullable: true});
     table.columns.add("state", sql.Int, {nullable: true});

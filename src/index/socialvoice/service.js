@@ -142,7 +142,7 @@ function saveSVReport (report, callback) {
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .input("title", sql.NVarChar)
-        .input("content", sql.NVarChar)
+        .input("content", sql.NVarChar(sql.MAX))
         .input("svids", sql.VarChar)
         .input("createuser", sql.VarChar)
         .input("createtime", sql.DateTime2)
@@ -269,7 +269,7 @@ function importSocialVoice (user, path, callback) {
             obj["origin_content"] = pv["社情内容"];
             obj['report_content'] = '';
             obj["reportuser"] = user.name;
-            obj['department'] = user.groupid;
+            obj['department'] = pv["单位"];
             obj['state'] = 0;
             obj['createuser'] = user.id;
             obj['createtime'] = new Date();
@@ -284,7 +284,7 @@ function _addBulkSocialVoices (objs, callback) {
     var table = dbpool.table('tb_socialvoice');
 
     table.columns.add("title", sql.NVarChar, {nullable: true});
-    table.columns.add("origin_content", sql.NVarChar, {nullable: true});
+    table.columns.add("origin_content", sql.NVarChar(sql.MAX), {nullable: true});
     table.columns.add("report_content", sql.NVarChar, {nullable: true});
     table.columns.add("reportuser", sql.NVarChar, {nullable: true});
     table.columns.add("department", sql.NVarChar, {nullable: true});

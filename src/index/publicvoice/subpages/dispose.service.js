@@ -87,7 +87,7 @@ function addPVDispose (uid, obj, callback) {
         .preparedStatement()
         .input("id", sql.Int)
         .input("state", sql.Int)
-        .input("content", sql.NVarChar)
+        .input("content", sql.NVarChar(sql.MAX))
         .input("createuser", sql.VarChar)
         .input("createtime", sql.DateTime2)
         .input("dispose_doc_no", sql.Int)

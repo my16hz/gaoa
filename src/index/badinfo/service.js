@@ -91,7 +91,7 @@ function saveBadInfo (obj, callback) {
         .input("duty_zone", sql.NVarChar)
         .input("type", sql.NVarChar)
         .input("sn", sql.NVarChar)
-        .input("remark", sql.NVarChar)
+        .input("remark", sql.NVarChar(sql.MAX))
         .input("createuser", sql.VarChar)
         .input("createtime", sql.DateTime2)
         .prepare(sql_stmt, function (err) {
@@ -274,7 +274,7 @@ function saveRTXReport (obj, callback) {
         .input("website", sql.NVarChar)
         .input("url", sql.NVarChar)
         .input("report_user", sql.NVarChar)
-        .input("remark", sql.NVarChar)
+        .input("remark", sql.NVarChar(sql.MAX))
         .input("createuser", sql.VarChar)
         .input("createtime", sql.DateTime2)
         .prepare(sql_stmt, function (err) {
