@@ -285,7 +285,7 @@ function _addBulkSocialVoices (objs, callback) {
 
     table.columns.add("title", sql.NVarChar, {nullable: true});
     table.columns.add("origin_content", sql.NVarChar(sql.MAX), {nullable: true});
-    table.columns.add("report_content", sql.NVarChar, {nullable: true});
+    table.columns.add("report_content", sql.NVarChar(sql.MAX), {nullable: true});
     table.columns.add("reportuser", sql.NVarChar, {nullable: true});
     table.columns.add("department", sql.NVarChar, {nullable: true});
     table.columns.add("state", sql.Int, {nullable: true});

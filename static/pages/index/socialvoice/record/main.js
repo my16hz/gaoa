@@ -19,7 +19,6 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             {title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc'},
             {title: '作者', field: 'reportuser', sortable: true, order: 'desc'},
             {title: '单位', field: 'department', sortable: true, order: 'desc'},
-            {title: '内容', field: 'origin_content', sortable: true, order: 'desc'},
             {
                 title: '上报时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
