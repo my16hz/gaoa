@@ -21,7 +21,7 @@ function getPubVoices (req, res) {
         priority = req.session[userkey].priority,
         order = req.query["order"];
 
-    service.findPubVoiceList(uid, priority, "createtime", order, function (err, rs) {
+    service.findPubVoiceList(uid, priority, "createtime", "DESC", function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

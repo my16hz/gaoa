@@ -62,7 +62,7 @@ module.exports = {
 };
 
 function findPubVoiceList (uid, priority, field, order, callback) {
-    var sql_stmt = "SELECT TOP 1000 * FROM tb_publicvoice WHERE state in (0, 1, 3) AND createtime < @endTime AND createtime > @startTime ";
+    var sql_stmt = "SELECT * FROM tb_publicvoice WHERE state in (0, 1, 3) AND createtime < @endTime AND createtime > @startTime ";
     var ps = null;
     var endTime = new Date();
     var startTime = new Date();
@@ -72,12 +72,12 @@ function findPubVoiceList (uid, priority, field, order, callback) {
         'endTime' : endTime
     };
     if (priority != 1) {
-        sql_stmt += ' and createuser = @uid ';
+        sql_stmt += ' AND createuser = @uid ';
         params['uid'] = uid;
     }
 
     if (field) {
-        sql_stmt += " order by " + field + " " + order;
+        sql_stmt += " ORDER BY " + field + " " + order;
     }
     console.log(sql_stmt);
     ps = dbpool.preparedStatement()

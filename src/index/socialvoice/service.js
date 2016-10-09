@@ -201,10 +201,10 @@ function getSVReportDetail (voice_id, callback) {
 }
 
 function statisticUser (start, end, callback) {
-    var sql_stmt = "SELECT TOP 100 tb_user.name, COUNT(*) AS count " +
-        "FROM tb_socialvoice, tb_user " +
-        "WHERE tb_socialvoice.createuser = tb_user.id AND tb_socialvoice.createtime > @start AND tb_socialvoice.createtime < @end " +
-        "GROUP BY tb_user.name;";
+    var sql_stmt = "SELECT TOP 100 reportuser AS name, COUNT(*) AS count " +
+        "FROM tb_socialvoice " +
+        "WHERE tb_socialvoice.createtime > @start AND tb_socialvoice.createtime < @end " +
+        "GROUP BY tb_socialvoice.reportuser;";
     var objParams = {
         "start": start,
         "end": end
