@@ -15,17 +15,17 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/application/list', [
             {
-                title: '标题', field: 'title', alwaysDisplay: true,
+                title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc',
                 formatter: function (val, rowdata) {
                     return '<a href="' + (rowdata.url || 'javascript:') + '" target="_blank">' + val + '</a>';
                 }
             },
-            {title: '载体', field: 'from_website'},
-            {title: '所属栏目', field: 'item'},
-            {title: '舆情类别', field: 'type'},
-            {title: '回帖人数', field: 'fellow_count'},
-            {title: '关注人数', field: 'review_count'},
-            {title: '涉及部门', field: 'relate_department'},
+            {title: '载体', field: 'from_website', sortable: true, order: 'desc'},
+            {title: '所属栏目', field: 'item', sortable: true, order: 'desc'},
+            {title: '舆情类别', field: 'type', sortable: true, order: 'desc'},
+            {title: '回帖人数', field: 'fellow_count', sortable: true, order: 'desc'},
+            {title: '关注人数', field: 'review_count', sortable: true, order: 'desc'},
+            {title: '涉及部门', field: 'relate_department', sortable: true, order: 'desc'},
             {
                 title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
@@ -33,15 +33,27 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
                 }
             },
             {
-                title: '状态', field: 'state',
+                title: '状态', field: 'state', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
                         case 0:
                             return '未提交';
                         case 1:
-                            return '待审批';
+                            return '待审核';
                         case 2:
-                            return '审批通过';
+                            return '审核通过';
+                        case 3:
+                            return '审核不通过';
+                        case 4:
+                            return '已入报';
+                        case 5:
+                            return '待批示';
+                        case 6:
+                            return '已批示';
+                        case 7:
+                            return '待回复';
+                        case 8:
+                            return '已回复';
                     }
                 }
             },
@@ -69,12 +81,30 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
             }
         ]);
         this.editor = this._createEditor('#editorWrapper');
+        this.sTime = this._createTimepicker('#starttime').onChange(function (e) {
+            this.eTime.minDate(e.date)
+        });
+        this.eTime = this._createTimepicker('#endtime').onChange(function (e) {
+            this.sTime.maxDate(e.date);
+        });
     },
     events: {
         'click #dataModal .btn-primary': 'closeDataModal',
         'click #btnOK': 'applyOK',
         'click #btnDeny': 'applyDeny',
-        'click #btnDelay': 'applyDelay'
+        'click #btnDelay': 'applyDelay',
+        'click #btnSearch': 'doSearch'
+    },
+    doSearch: function () {
+        var self = this;
+
+        this.dataTable.refresh({
+            query: {
+                sTime: self.sTime.getTime(),
+                eTime: self.eTime.getTime()
+            }
+        });
+
     },
 
     closeDataModal: function () {

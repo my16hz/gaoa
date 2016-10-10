@@ -10,6 +10,7 @@ module.exports = {
     listBadInfo: listBadInfo,
     saveBadInfo: saveBadInfo,
     deleteBadInfo: deleteBadInfo,
+    importBadInfo: importBadInfo,
 
     listRTX: listRTX,
     saveRTX: saveRTX,
@@ -118,12 +119,15 @@ function importBadInfo (user, path, callback) {
 
     socvoices.forEach(function (pv) {
         var obj = {};
-        obj["title"] = pv["社情标题"];
-        obj["origin_content"] = pv["社情内容"];
-        obj['report_content'] = '';
-        obj["reportuser"] = user.name;
-        obj['department'] = pv["单位"];
-        obj['state'] = 0;
+        obj['website'] = pv['网站名称'];
+        obj['url'] = pv['网址'];
+        obj['reportdate'] = pv['时间'];
+        obj['department'] = pv['单位'];
+        obj['username'] = user.name;
+        obj['duty_zone'] = pv['所属区域'];
+        obj['type'] = pv['危害类型'];
+        obj['sn'] = pv['举报查询码'];
+        obj['remark'] = pv['备注'];
         obj['createuser'] = user.id;
         obj['createtime'] = new Date();
 
@@ -134,23 +138,30 @@ function importBadInfo (user, path, callback) {
 }
 
 function _addBulkBadInfo (objs, callback) {
-    var table = dbpool.table('tb_socialvoice');
+    var table = dbpool.table('tb_badinfo');
 
-    table.columns.add("title", sql.NVarChar, {nullable: true});
-    table.columns.add("origin_content", sql.NVarChar(sql.MAX), {nullable: true});
-    table.columns.add("report_content", sql.NVarChar(sql.MAX), {nullable: true});
-    table.columns.add("reportuser", sql.NVarChar, {nullable: true});
+    table.columns.add("website", sql.NVarChar, {nullable: true});
+    table.columns.add("url", sql.NVarChar, {nullable: true});
+    table.columns.add("reportdate", sql.VarChar, {nullable: true});
     table.columns.add("department", sql.NVarChar, {nullable: true});
-    table.columns.add("state", sql.Int, {nullable: true});
+    table.columns.add("username", sql.NVarChar, {nullable: true});
+    table.columns.add("duty_zone", sql.NVarChar, {nullable: true});
+    table.columns.add("type", sql.NVarChar, {nullable: true});
+    table.columns.add("sn", sql.NVarChar, {nullable: true});
+    table.columns.add("remark", sql.NVarChar(sql.MAX), {nullable: true});
     table.columns.add("createuser", sql.VarChar, {nullable: true});
     table.columns.add("createtime", sql.DateTime, {nullable: true});
+
     objs.forEach(function (value) {
-        table.rows.add(value["title"],
-            value["origin_content"],
-            value["report_content"],
-            value["reportuser"],
+        table.rows.add(value["website"],
+            value["url"],
+            value["reportdate"],
             value["department"],
-            value["state"],
+            value["username"],
+            value["duty_zone"],
+            value["type"],
+            value["sn"],
+            value["remark"],
             value["createuser"],
             value["createtime"])
     });
