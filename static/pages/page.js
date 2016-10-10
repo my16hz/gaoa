@@ -379,8 +379,29 @@ var LHSBasicPage = {
             getSelected: function () {
                 return selector.val();
             },
+            addSelected: function (val) {
+                var values = this.getSelected() || [];
+
+                !~values.indexOf(val) && values.push(val);
+                selector.val(values).trigger("change");
+
+                return this;
+            },
+            removeSelected: function (val) {
+                var values = this.getSelected();
+                var regexp = new RegExp(val + ',?');
+
+                if (values) {
+                    values = values.join().replace(regexp, '').split(',');
+                    selector.val(values).trigger("change");
+                }
+
+                return this;
+            },
             clear: function () {
                 selector.val(placeholder || '').trigger("change");
+
+                return this;
             }
         };
     },

@@ -81,6 +81,7 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
         'click #btnSearch': 'doSearch',
         'click #btnNotify': 'showNotifyModal',
         'click #dataModal .btn-default': 'closeDataModal',
+        'click #notifyModal :checkbox:first': 'manipulateSelected',
         'click #notifyModal .btn-default': 'closeNotifyModal',
         'click #notifyModal .btn-primary': 'saveNotify'
     },
@@ -117,46 +118,32 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
         });
 
         function _initMultipleSelect (members) {
-            var jqSelect = $('select[name="uids"]', jqform);
-            var jqCbkColumns = $('.checkbox-groups > .col-xs-4', jqform);
-            var options = [$('<optgroup label="未分组" gpid=""></optgroup>')];
-            var indices = {nogroup: 0};
+            var jqSelect = $('select[name="uids"]', jqform).empty();
+            var jqCbkColumns = $('.checkbox-groups > .col-xs-4:gt(0)', jqform).empty();
+            var options = [], indices = {};
+            var gpname, select2;
 
             $.each(members, function (gpid, user) {
-                gpid = user.groupid;
+                gpid = user.groupid || '';
+                gpname = gpid ? user.groupname : '未分组';
 
-                if (!gpid) {
-                    options[indices.nogroup].append(
-                        $('<option></option>')
-                            .attr('value', user.id)
-                            .text(user.name)
+                if (undefined == indices[gpid]) {
+                    options.push(
+                        $('<optgroup></optgroup>').attr({label: gpname})
+                            .append($('<option></option>')
+                                .attr({value: user.id, gpid: gpid})
+                                .text(user.name))
                     );
-                    jqCbkColumns.eq(0)
-                        .append(_buildCheckBox('', '未分组'));
+                    jqCbkColumns.eq((indices[gpid] = index = options.length - 1) % 2)
+                        .append(_buildCheckBox(gpid, gpname));
                 } else {
-                    if (!indices[gpid]) {
-                        options.push(
-                            $('<optgroup></optgroup>')
-                                .attr({label: user.groupname, gpid: gpid})
-                                .append(
-                                    $('<option></option>')
-                                        .attr('value', user.id)
-                                        .text(user.name)
-                                )
-                        );
-                        jqCbkColumns.eq((indices[gpid] = index = options.length - 1) % 2 + 1)
-                            .append(_buildCheckBox(gpid, user.groupname));
-                    } else {
-                        options[indices[gpid]].append(
-                            $('<option></option>')
-                                .attr('value', user.id)
-                                .text(user.name)
-                        );
-                    }
+                    options[indices[gpid]].append($('<option></option>')
+                        .attr({value: user.id, gpid: gpid})
+                        .text(user.name));
                 }
             });
 
-            self.select2 = self._createSelect2(jqSelect.append(options)).clear();
+            select2 = self._createSelect2(jqSelect.append(options)).clear();
 
             function _buildCheckBox (gpid, gpname) {
                 return $('<div class="checkbox"></div>').append(
@@ -164,16 +151,12 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
                         $('<input type="checkbox">').attr('data-gpid', gpid)
                             .bind('click', function () {
                                 var jqElem = $(this);
-                                var users = [];
+                                var handler = jqElem.prop('checked') ? 'addSelected' : 'removeSelected';
 
-                                if (jqElem.prop('checked')) {
-                                    jqSelect.find('optgroup[gpid="' + jqElem.attr('data-gpid') + '"] > option')
-                                        .each(function () {
-                                            users.push();
-                                        });
-                                } else {
-
-                                }
+                                jqSelect.find('option[gpid="' + jqElem.attr('data-gpid') + '"]')
+                                    .each(function () {
+                                        select2[handler]($(this).attr('value'));
+                                    });
                             }),
                         gpname
                     )
@@ -186,6 +169,13 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
 
         this._clearFormControlValues(modal.find('form'))
             ._closeModal(modal, this.dataTable);
+    },
+    manipulateSelected: function (jqCkb) {
+        var selectAll = jqCkb.prop('checked');
+
+        $('#notifyModal :checkbox:gt(0)').each(function () {
+            $(this).prop('checked', !selectAll).click();
+        });
     },
     closeNotifyModal: function () {
         var modal = $('#notifyModal');
