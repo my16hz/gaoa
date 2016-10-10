@@ -109,6 +109,58 @@ function saveBadInfo (obj, callback) {
         });
 }
 
+
+function importBadInfo (user, path, callback) {
+    var workbook = xlsx.readFile(path); //当前excel名字
+    var worksheet = workbook.Sheets["Sheet1"];
+    var socvoices = xlsx.utils.sheet_to_json(worksheet, {});
+    var svList = [];
+
+    socvoices.forEach(function (pv) {
+        var obj = {};
+        obj["title"] = pv["社情标题"];
+        obj["origin_content"] = pv["社情内容"];
+        obj['report_content'] = '';
+        obj["reportuser"] = user.name;
+        obj['department'] = pv["单位"];
+        obj['state'] = 0;
+        obj['createuser'] = user.id;
+        obj['createtime'] = new Date();
+
+        svList.push(obj);
+    });
+
+    _addBulkBadInfo(svList, callback);
+}
+
+function _addBulkBadInfo (objs, callback) {
+    var table = dbpool.table('tb_socialvoice');
+
+    table.columns.add("title", sql.NVarChar, {nullable: true});
+    table.columns.add("origin_content", sql.NVarChar(sql.MAX), {nullable: true});
+    table.columns.add("report_content", sql.NVarChar(sql.MAX), {nullable: true});
+    table.columns.add("reportuser", sql.NVarChar, {nullable: true});
+    table.columns.add("department", sql.NVarChar, {nullable: true});
+    table.columns.add("state", sql.Int, {nullable: true});
+    table.columns.add("createuser", sql.VarChar, {nullable: true});
+    table.columns.add("createtime", sql.DateTime, {nullable: true});
+    objs.forEach(function (value) {
+        table.rows.add(value["title"],
+            value["origin_content"],
+            value["report_content"],
+            value["reportuser"],
+            value["department"],
+            value["state"],
+            value["createuser"],
+            value["createtime"])
+    });
+
+    dbpool.createRequest()
+        .bulk(table, function (err, count) {
+            callback(err, err ? false : count);
+        });
+}
+
 function deleteBadInfo (dbids, callback) {
     var objParams = {};
     var sql_stmt = "DELETE FROM tb_badinfo WHERE id in (%dbids%);";
