@@ -20,4 +20,6 @@ module.exports = function () {
 
         .get('/socialvoice/statistics/user', controller.statisticUser)
         .get('/socialvoice/statistics/group', controller.statisticGroup)
+        .get('/socialvoice/statistics/acceptuser', controller.statisticAcceptUser)
+        .get('/socialvoice/statistics/acceptgroup', controller.statisticAcceptGroup)
 };

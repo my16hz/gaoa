@@ -22,7 +22,9 @@ module.exports = {
 
 
     statisticUser: statisticUser,
-    statisticGroup: statisticGroup
+    statisticGroup: statisticGroup,
+    statisticAcceptUser: statisticAcceptUser,
+    statisticAcceptGroup: statisticAcceptGroup
 };
 
 function getSocialVoices (uid, priority, callback) {
@@ -233,6 +235,66 @@ function statisticGroup (start, end, callback) {
         " FROM tb_socialvoice,tb_user,tb_group " +
         " WHERE tb_socialvoice.createuser = tb_user.id AND tb_user.groupid = tb_group.id " +
         "       AND tb_socialvoice.createtime > @start AND tb_socialvoice.createtime < @end " +
+        " GROUP BY tb_group.name;";
+    var objParams = {
+        "start": start,
+        "end": end
+    };
+
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+
+function statisticAcceptUser (start, end, callback) {
+    var sql_stmt = "SELECT TOP 100 reportuser AS name, COUNT(*) AS count " +
+        "FROM tb_socialvoice " +
+        "WHERE tb_socialvoice.createtime > @start AND tb_socialvoice.createtime < @end " +
+        "       AND state = 2 " +
+        "GROUP BY tb_socialvoice.reportuser;";
+    var objParams = {
+        "start": start,
+        "end": end
+    };
+
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+            ps.execute(objParams, function (err, recordset) {
+                callback(err, recordset)
+                ps.unprepare(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+        });
+}
+
+function statisticAcceptGroup (start, end, callback) {
+    var sql_stmt = "SELECT TOP 100 tb_group.name, COUNT(*) AS count " +
+        " FROM tb_socialvoice,tb_user,tb_group " +
+        " WHERE tb_socialvoice.createuser = tb_user.id AND tb_user.groupid = tb_group.id " +
+        "       AND tb_socialvoice.createtime > @start AND tb_socialvoice.createtime < @end " +
+        "       AND state = 2 " +
         " GROUP BY tb_group.name;";
     var objParams = {
         "start": start,

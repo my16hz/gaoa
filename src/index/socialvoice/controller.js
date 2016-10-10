@@ -9,21 +9,30 @@ var userkey = require('config').session.userkey;
 
 var errhandler = require('../../utils/errhandler');
 var service = require('./service');
-var defaut_interval = 3600000 * 24 * 7;
+var defaut_interval = 3600000 * 24 * 30;
 module.exports = {
     pageSocialVoice: pageSocialVoice,
     getSocialVoices: getSocialVoices,
     saveSocialVoice: saveSocialVoice,
     acceptSocialVoice: acceptSocialVoice,
-    importSocialVoice: importSocialVoice,
     deleteSocialVoice: deleteSocialVoice,
+    importSocialVoice: importSocialVoice,
 
     saveSVReport: saveSVReport,
     getSVReport: getSVReport,
     exportSocialReport: exportSocialReport,
 
+    /**
+     * 上报的用户和组统计
+     */
     statisticUser: statisticUser,
-    statisticGroup: statisticGroup
+    statisticGroup: statisticGroup,
+
+    /**
+     * 采纳的用户和组统计
+     */
+    statisticAcceptUser: statisticAcceptUser,
+    statisticAcceptGroup: statisticAcceptGroup
 };
 
 function pageSocialVoice (req, res) {
@@ -166,8 +175,34 @@ function statisticGroup (req, res) {
     });
 }
 
-function importSocialVoice (req, res) {
+function statisticAcceptUser (req, res) {
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now);
 
+    service.statisticAcceptUser(start, end, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function statisticAcceptGroup (req, res) {
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now);
+
+    service.statisticAcceptGroup(start, end, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
 }
 
 function deleteSocialVoice (req, res) {
@@ -180,4 +215,8 @@ function deleteSocialVoice (req, res) {
                 success: true
             });
     });
+}
+
+function importSocialVoice (req, res) {
+
 }

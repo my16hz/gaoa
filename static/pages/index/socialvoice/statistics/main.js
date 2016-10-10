@@ -26,6 +26,14 @@ var LHSStatisticsPage = $.extend({}, LHSBasicPage, {
             this._createTable('#groupTableWrapper', '/socialvoice/statistics/group', [
                 {title: '部门', field: 'name'},
                 {title: '提交社情个数', field: 'count', sortable: true, order: 'desc'}
+            ]),
+            this._createTable('#acceptUserTableWrapper', '/socialvoice/statistics/acceptuser', [
+                {title: '用户名', field: 'name'},
+                {title: '采用社情个数', field: 'count', sortable: true, order: 'desc'}
+            ]),
+            this._createTable('#acceptGroupTableWrapper', '/socialvoice/statistics/acceptgroup', [
+                {title: '部门', field: 'name'},
+                {title: '采用社情个数', field: 'count', sortable: true, order: 'desc'}
             ])
         ];
     },

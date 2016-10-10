@@ -4,6 +4,7 @@
  * Author: lhs
  */
 var sql = require('mssql');
+var xlsx = require('xlsx');
 var dbpool = require('../../utils/dbpool');
 
 module.exports = {

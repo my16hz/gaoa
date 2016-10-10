@@ -23,7 +23,7 @@ module.exports = {
  * @param callback {Function}  回调函数(err, 舆情数组[])
  */
 function findWaitApprovalPV (start, end, callback) {
-    var sql_stmt = "SELECT TOP 1000 * FROM tb_publicvoice WHERE state >= 1 AND createtime > @start AND createtime < @end ORDER BY createtime DESC;";
+    var sql_stmt = "SELECT TOP 1000 * FROM tb_publicvoice WHERE state >= 1 AND createtime > @start AND createtime < @end ORDER BY state;";
 
     console.log(sql_stmt);
 
