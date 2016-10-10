@@ -48,7 +48,6 @@ function getSocialVoices (req, res) {
 function saveSocialVoice (req, res) {
     var uid = req.session[userkey].id;
     var user = req.session[userkey].name;
-    var group = req.session[userkey].groupid;
     var obj = req.body;
     var socialvoice = {
         "id": obj["id"],
@@ -58,7 +57,7 @@ function saveSocialVoice (req, res) {
         "createuser": uid,
         "reportuser": user,
         "title": obj['title'],
-        "department": group,
+        "department": obj["department"],
         "state": 0
     };
 

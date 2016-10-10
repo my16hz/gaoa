@@ -83,7 +83,8 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
         });
     },
     events: {
-        'click #btnSearch': 'doSearch'
+        'click #btnSearch': 'doSearch',
+        'click #dataModal .btn-default': 'closeDataModal',
     },
     doSearch: function () {
         var funcCtrls = $('.func-btns');
@@ -99,5 +100,10 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
                 eTime: this.eTime.getTime()
             }
         });
+    },
+    closeDataModal: function () {
+        var modal = $('#dataModal');
+        this._clearFormControlValues(modal.find('form'))
+            ._closeModal(modal, this.dataTable);
     }
 });

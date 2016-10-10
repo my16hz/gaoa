@@ -63,8 +63,8 @@ function saveSocialVoice (objParams, callback) {
     var ps = dbpool.preparedStatement()
         .input("state", sql.Int)
         .input("title", sql.NVarChar)
-        .input("origin_content", sql.NVarChar)
-        .input("report_content", sql.NVarChar)
+        .input("origin_content", sql.NVarChar(sql.MAX))
+        .input("report_content", sql.NVarChar(sql.MAX))
         .input("reportuser", sql.NVarChar)
         .input("department", sql.NVarChar)
         .input("createuser", sql.VarChar)
@@ -90,8 +90,8 @@ function updateSocialVoice (obj, callback) {
     var ps = dbpool.preparedStatement()
         .input("id", sql.Int)
         .input("title", sql.NVarChar)
-        .input("origin_content", sql.NVarChar)
-        .input("report_content", sql.NVarChar)
+        .input("origin_content", sql.NVarChar(sql.MAX))
+        .input("report_content", sql.NVarChar(sql.MAX))
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
@@ -142,7 +142,7 @@ function saveSVReport (report, callback) {
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .input("title", sql.NVarChar)
-        .input("content", sql.NVarChar)
+        .input("content", sql.NVarChar(sql.MAX))
         .input("svids", sql.VarChar)
         .input("createuser", sql.VarChar)
         .input("createtime", sql.DateTime2)
@@ -201,10 +201,10 @@ function getSVReportDetail (voice_id, callback) {
 }
 
 function statisticUser (start, end, callback) {
-    var sql_stmt = "SELECT TOP 100 tb_user.name, COUNT(*) AS count " +
-        "FROM tb_socialvoice, tb_user " +
-        "WHERE tb_socialvoice.createuser = tb_user.id AND tb_socialvoice.createtime > @start AND tb_socialvoice.createtime < @end " +
-        "GROUP BY tb_user.name;";
+    var sql_stmt = "SELECT TOP 100 reportuser AS name, COUNT(*) AS count " +
+        "FROM tb_socialvoice " +
+        "WHERE tb_socialvoice.createtime > @start AND tb_socialvoice.createtime < @end " +
+        "GROUP BY tb_socialvoice.reportuser;";
     var objParams = {
         "start": start,
         "end": end
@@ -269,7 +269,7 @@ function importSocialVoice (user, path, callback) {
             obj["origin_content"] = pv["社情内容"];
             obj['report_content'] = '';
             obj["reportuser"] = user.name;
-            obj['department'] = user.groupid;
+            obj['department'] = pv["单位"];
             obj['state'] = 0;
             obj['createuser'] = user.id;
             obj['createtime'] = new Date();
@@ -284,8 +284,8 @@ function _addBulkSocialVoices (objs, callback) {
     var table = dbpool.table('tb_socialvoice');
 
     table.columns.add("title", sql.NVarChar, {nullable: true});
-    table.columns.add("origin_content", sql.NVarChar, {nullable: true});
-    table.columns.add("report_content", sql.NVarChar, {nullable: true});
+    table.columns.add("origin_content", sql.NVarChar(sql.MAX), {nullable: true});
+    table.columns.add("report_content", sql.NVarChar(sql.MAX), {nullable: true});
     table.columns.add("reportuser", sql.NVarChar, {nullable: true});
     table.columns.add("department", sql.NVarChar, {nullable: true});
     table.columns.add("state", sql.Int, {nullable: true});
