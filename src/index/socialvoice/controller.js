@@ -125,11 +125,11 @@ function exportSocialReport (req, res) {
             errhandler.internalException(res, err)
         } else {
             try {
-                res
-                    .set({
-                        'content-type': 'application/msword',
-                        'content-disposition': 'attachment;filename="' + encodeURIComponent(report.title) + '.doc"'
-                    }).send(HtmlDocx.asBlob(report[0].content));
+                report = report[0];
+                res.set({
+                    'content-type': 'application/msword',
+                    'content-disposition': 'attachment;filename="' + encodeURIComponent(report.title) + '.doc"'
+                }).send(HtmlDocx.asBlob(report.content));
             } catch (e) {
                 errhandler.internalException(res, e);
             }
@@ -140,7 +140,7 @@ function exportSocialReport (req, res) {
 function statisticUser (req, res) {
     var now = new Date().getTime();
     var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
-    var end = new Date((req.query.eTime - 0 ) || now );
+    var end = new Date((req.query.eTime - 0 ) || now);
 
     service.statisticUser(start, end, function (err, rs) {
         err ?
@@ -155,7 +155,7 @@ function statisticUser (req, res) {
 function statisticGroup (req, res) {
     var now = new Date().getTime();
     var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
-    var end = new Date((req.query.eTime - 0 ) || now );
+    var end = new Date((req.query.eTime - 0 ) || now);
 
     service.statisticGroup(start, end, function (err, rs) {
         err ?
@@ -167,11 +167,11 @@ function statisticGroup (req, res) {
     });
 }
 
-function importSocialVoice(req, res) {
-    
+function importSocialVoice (req, res) {
+
 }
 
-function deleteSocialVoice(req, res) {
+function deleteSocialVoice (req, res) {
     var ids = req.body.ids;
 
     service.deleteSocialVoice(ids.split(','), function (err) {
