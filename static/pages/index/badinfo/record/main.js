@@ -45,9 +45,11 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
     },
     events: {
         'click #btnAdd': 'showNewDataModal',
+        'click #btnImport': 'showImportModal',
         'click #btnDel': 'delSelected',
         'click #dataModal .btn-default': 'closeDataModal',
-        'click #dataModal .btn-primary': 'saveInfo'
+        'click #dataModal .btn-primary': 'saveInfo',
+        'click #importModal .btn-default': 'closeImportModal'
     },
     showNewDataModal: function () {
         var editor = this.editor;
@@ -56,6 +58,15 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
         editor.ready(function () {
             editor.setContent('');
         });
+    },
+    showImportModal: function () {
+        var modal = $('#importModal');
+
+        this._createUploader(modal.find('input[type="file"]'), '/datafile?type=bi', function () {
+            this.closeImportModal();
+        });
+
+        this._showModal(modal, this.dataTable);
     },
     showDataModal: function (info) {
         var editor = this.editor;
@@ -100,11 +111,22 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
             }
         });
     },
+    closeImportModal: function () {
+        var modal = $('#importModal');
+        var dataTable = this.dataTable;
+
+        modal.find('input[type="file"]').val('');
+
+        this._closeModal(modal, dataTable);
+
+        dataTable.refresh();
+    },
+
     _badinfoValidator: function () {
         var jqform = $('#dataModal form');
         var values = this._getFormControlValues(jqform);
         values['remark'] = this.editor.getContent();
-        return  values;
+        return values;
     },
     _ajaxDelete: function (ids, done) {
         this._sendRequest({

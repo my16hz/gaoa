@@ -11,7 +11,8 @@ var uuid = require('node-uuid');
 
 var errhandler = require('./errhandler');
 var pvSvc = require('./../index/publicvoice/service');
-var svSvc = require('./../index/socialvoice/service')
+var svSvc = require('./../index/socialvoice/service');
+var biSvc = require('./../index/badinfo/service');
 
 
 var userkey = config.session.userkey;
@@ -84,11 +85,24 @@ module.exports = {
 };
 
 function datafile (req, res) {
-    var filehandler = 'pv' == req.query.type ?
-        pvSvc.importPubVoices:
-        svSvc.importSocialVoice;
+    var filehandler;
 
-        dfhandler(req, res, function (err) {
+    switch (req.query.type) {
+        case 'pv':
+            filehandler = pvSvc.importPubVoice;
+            break;
+        case 'sv':
+            filehandler = pvSvc.importSocialVoice;
+            break;
+        case 'bi':
+            filehandler = biSvc.importBadInfo;
+    }
+
+    if (!filehandler) {
+        return errhandler.invalidParams();
+    }
+
+    dfhandler(req, res, function (err) {
         var file = req.file;
         var user = req.session[userkey];
 
