@@ -22,16 +22,18 @@ module.exports = {
  * @param order {String} - ASC,DESC
  * @param callback {Function}  回调函数(err, 舆情数组[])
  */
-function findWaitApprovalPV (field, order, callback) {
-    var sql_stmt = "SELECT TOP 1000 * FROM tb_publicvoice WHERE state = 1 ";
-    if (field != null && field != "") {
-        sql_stmt += " order by " + field + " " + order;
-    }
-    
+function findWaitApprovalPV (start, end, callback) {
+    var sql_stmt = "SELECT TOP 1000 * FROM tb_publicvoice WHERE state >= 1 AND createtime > @start AND createtime < @end ORDER BY createtime DESC;";
+
     console.log(sql_stmt);
 
-    var objParams = {};
+    var objParams = {
+        "start": start,
+        "end": end
+    };
     var ps = dbpool.preparedStatement()
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
