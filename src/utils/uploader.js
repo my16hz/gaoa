@@ -89,17 +89,17 @@ function datafile (req, res) {
 
     switch (req.query.type) {
         case 'pv':
-            filehandler = pvSvc.importPubVoice;
+            filehandler = pvSvc.importPubVoices;
             break;
         case 'sv':
-            filehandler = pvSvc.importSocialVoice;
+            filehandler = svSvc.importSocialVoice;
             break;
         case 'bi':
             filehandler = biSvc.importBadInfo;
     }
 
     if (!filehandler) {
-        return errhandler.invalidParams();
+        return errhandler.invalidParams(res);
     }
 
     dfhandler(req, res, function (err) {
@@ -107,7 +107,7 @@ function datafile (req, res) {
         var user = req.session[userkey];
 
         if (err || !file) {
-            errhandler.customError(res, '文件上传失败。');
+            errhandler.customError(res, '文件类型错误或大于10MB。');
         } else {
             filehandler(user, path.normalize(
                 dfcfg.uploadDir + file.dirName + '/' + file.filename

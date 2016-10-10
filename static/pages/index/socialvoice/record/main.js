@@ -100,7 +100,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         var modal = $('#importModal');
 
         this._createUploader(modal.find('input[type="file"]'), '/datafile?type=sv', function () {
-            this._removeLoading().closeImportModal();
+            this.closeImportModal();
         });
 
         this._showModal(modal, this.dataTable);

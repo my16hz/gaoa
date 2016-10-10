@@ -327,7 +327,14 @@ var LHSBasicPage = {
             },
             onComplete: function (res) {
                 self._removeLoading();
-                $.isFunction(complete) && complete.call(self, res);
+
+                if (res && res.success) {
+                    bootbox.alert('数据导入成功！', function () {
+                        $.isFunction(complete) && complete.call(self, res);
+                    });
+                } else {
+                    self._showXHRMessage(res, 'error');
+                }
             }
         });
 
