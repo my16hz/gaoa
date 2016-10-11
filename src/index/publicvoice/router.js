@@ -60,6 +60,8 @@ module.exports = function () {
         .get('/feedback/list', controller.getFeedbackList)
         .get('/feedback/detail', controller.getFeedbackDetail)
         .post('/feedback/save', controller.saveFeedback)
+        .post('/feedback/accept', controller.acceptFeedback)
+        .get('/feedback/dailyid', controller.getFeedbackDailyID)
 
         // guide page
         .get('/guide/detail', controller.getGuideDetail)

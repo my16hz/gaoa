@@ -11,17 +11,32 @@
                     <form class="form-horizontal">
                         <input type="hidden" name="id" class="form-control">
                         <div class="form-group form-group-sm">
-                            <label class="col-xs-2 control-label">反馈类型：</label>
-                            <div class="col-xs-2">
-                                <select name="type" class="form-control">
-                                    <option value="0" selected="selected">书面反馈</option>
-                                    <option value="1">网络反馈</option>
-                                </select>
-                            </div>
+                            <label class="col-xs-2 control-label">书面回复：</label>
+                            <div id="docEditorWrapper" class="col-xs-10"></div>
                         </div>
                         <div class="form-group form-group-sm">
-                            <label class="col-xs-2 control-label">反馈内容：</label>
-                            <div id="editorWrapper" class="col-xs-10"></div>
+                            <label class="col-xs-2 control-label">网上回复：</label>
+                            <div id="webEditorWrapper" class="col-xs-10"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default">关闭</button>
+                    <button type="button" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+            <div id="acceptModal" class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">采用回复</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <input type="hidden" name="id" class="form-control">
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">采用回复的日报总期数：</label>
+                            <div class="col-xs-10">
+                                <input type="text" name="daily_id" class="form-control">
+                            </div>
                         </div>
                     </form>
                 </div>

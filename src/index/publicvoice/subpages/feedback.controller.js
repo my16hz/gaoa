@@ -10,7 +10,16 @@ var service = require('./../service');
 module.exports = {
     getFeedbackDetail: getFeedbackDetail,
     saveFeedback: saveFeedback,
-    getFeedbackList: getFeedbackList
+    getFeedbackList: getFeedbackList,
+
+    /**
+     * 舆情回复对应的日报ID
+     */
+    acceptFeedback: acceptFeedback,
+    /**
+     * 获取日报DailyID
+     */
+    getFeedbackDailyID: getFeedbackDailyID
 };
 
 function getFeedbackList (req, res) {
@@ -37,8 +46,8 @@ function saveFeedback (req, res) {
     var feedback = {
         "id": obj["id"],
         "createtime": new Date(),
-        "type": obj['type'],
-        "content": obj["content"],
+        "doc": obj["doc"],
+        "web": obj["web"],
         "createuser": uid
     };
 
@@ -47,6 +56,37 @@ function saveFeedback (req, res) {
             errhandler.internalException(res, err) :
             res.send({
                 success: true
+            });
+    });
+}
+
+function acceptFeedback (req, res) {
+    var uid = req.session[userkey].id;
+    var obj = req.body;
+    var feedback = {
+        "id": obj["id"],
+        "daily_id": obj["daily_id"],
+        "createuser": uid,
+        "createtime": new Date()
+    };
+
+    service.acceptFeedback(feedback, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
+}
+
+function getFeedbackDailyID (req, res) {
+    var pvid = req.query.id;
+    service.getFeedbackDailyID(pvid, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
             });
     });
 }
