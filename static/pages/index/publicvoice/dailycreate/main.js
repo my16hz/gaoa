@@ -58,19 +58,6 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
                 }
             },
             {
-                title: '回复类型', field: 'feedback_type', sortable: true, order: 'desc',
-                formatter: function (val) {
-                    switch (val) {
-                        case 0:
-                            return '书面回复';
-                        case 1:
-                            return '网上回复';
-                        default:
-                            return '-';
-                    }
-                }
-            },
-            {
                 title: '操作', field: 'action',
                 formatter: function () {
                     return '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-eye-open"></i></a>';
