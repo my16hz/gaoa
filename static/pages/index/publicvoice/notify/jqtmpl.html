@@ -37,26 +37,11 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal">
-                        <input type="hidden" name="pvids" class="form-control"/>
+                        <input type="hidden" name="pvids">
+                        <input type="hidden" name="uids">
                         <div class="form-group form-group-sm">
                             <label class="col-xs-2 control-label">通报对象：</label>
-                            <div class="col-xs-10">
-                                <select name="uids" multiple="multiple" placeholder="点击选择通报对象"
-                                        class="form-control" style="width:100%;"></select>
-                            </div>
-                        </div>
-                        <div class="form-group form-group-sm">
-                            <div class="col-xs-10 col-xs-offset-2">
-                                <div class="row checkbox-groups">
-                                    <div class="col-xs-4">
-                                        <div class="checkbox">
-                                            <label><input type="checkbox">全部</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-4"></div>
-                                    <div class="col-xs-4"></div>
-                                </div>
-                            </div>
+                            <div id="treeWrapper" class="col-xs-10"></div>
                         </div>
                     </form>
                 </div>

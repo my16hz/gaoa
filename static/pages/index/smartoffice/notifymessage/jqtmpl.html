@@ -49,13 +49,11 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal">
-                        <input type="hidden" name="mids" class="form-control"/>
+                        <input type="hidden" name="mids"/>
+                        <input type="hidden" name="uids"/>
                         <div class="form-group form-group-sm">
                             <label class="col-xs-2 control-label">通知对象：</label>
-                            <div class="col-xs-10">
-                                <select name="uids" multiple="multiple" placeholder="点击选择通报对象"
-                                        class="form-control" style="width:100%;"></select>
-                            </div>
+                            <div id="treeWrapper" class="col-xs-10"></div>
                         </div>
                     </form>
                 </div>

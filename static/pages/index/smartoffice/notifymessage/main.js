@@ -101,58 +101,40 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
         var dataTable = this.dataTable;
         var ids = dataTable.getSelected();
         var modal = $('#notifyModal');
-        var jqform = modal.find('form');
         var self = this;
 
         if (!ids.length) return bootbox.alert('请先选择要发送的通知！');
 
-        this._setFormControlValues(jqform, {mids: ids.join()});
+        this._setFormControlValues(modal.find('form'), {mids: ids.join()});
         this._sendRequest({
             type: 'get',
             url: '/sysmanage/members',
             done: function (rs) {
-                _initMultipleSelect(rs);
+                _initMemberTree(rs);
                 self._showModal(modal, dataTable);
             }
         });
 
-        function _initMultipleSelect (members) {
-            var jqSelect = $('select[name="uids"]', jqform);
-            var options = [$('<optgroup label="未分组"></optgroup>')];
-            var index = {nogroup: 0};
+        function _initMemberTree (members) {
+            var groups = [{id: '_root_', parent: '#', text: '成员列表', type: 'root', state: {opened: true}}];
+            var isCached = {};
 
             $.each(members, function (gpid, user) {
-                gpid = user.groupid;
+                gpid = '_gpid_' + (user.groupid || '');
 
-                if (!gpid) {
-                    options[index.nogroup].append(
-                        $('<option></option>')
-                            .attr('value', user.id)
-                            .text(user.name)
-                    );
-                } else {
-                    if (!index[gpid]) {
-                        options.push(
-                            $('<optgroup></optgroup>')
-                                .attr('label', user.groupname)
-                                .append(
-                                    $('<option></option>')
-                                        .attr('value', user.id)
-                                        .text(user.name)
-                                )
-                        );
-                    } else {
-                        options[index[gpid]].append(
-                            $('<option></option>')
-                                .attr('value', user.id)
-                                .text(user.name)
-                        );
-                    }
+                if (!isCached[gpid]) {
+                    groups.push({id: gpid, parent: '_root_', text: user.groupname || '未分组', type: 'group'});
+                    isCached[gpid] = true;
                 }
+
+                groups.push({id: user.id, parent: gpid, text: user.name, type: 'member'});
             });
 
-            self._createSelect2(jqSelect.append(options))
-                .clear();
+            self.memberTree = self._createJsTree('#treeWrapper', groups).onChanged(function () {
+                $('input[name="uids"]', modal).val(this.memberTree.getChecked().filter(function (id) {
+                    return '_root_' !== id && !/^_gpid_/.test(id);
+                }).join());
+            });
         }
     },
     closeDataModal: function () {
@@ -190,7 +172,7 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
             url: '/smartoffice/notify/send',
             validator: $.proxy(this._notifyValidator, this),
             done: function () {
-                self._closeModal($('#notfiyModal'), self.dataTable);
+                self.closeNotifyModal();
                 self.dataTable.refresh();
             }
         });
@@ -260,6 +242,7 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
     _validator: function () {
         var jqform = $('#dataModal form');
         var values = this._getFormControlValues(jqform);
+
         values['content'] = this.editor.getContent();
 
         return values;

@@ -81,7 +81,6 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
         'click #btnSearch': 'doSearch',
         'click #btnNotify': 'showNotifyModal',
         'click #dataModal .btn-default': 'closeDataModal',
-        'click #notifyModal :checkbox:first': 'manipulateSelected',
         'click #notifyModal .btn-default': 'closeNotifyModal',
         'click #notifyModal .btn-primary': 'saveNotify'
     },
@@ -100,68 +99,42 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
         var dataTable = this.dataTable;
         var ids = dataTable.getSelected();
         var modal = $('#notifyModal');
-        var jqform = modal.find('form');
         var self = this;
 
         if (!ids.length) {
             return bootbox.alert('请先选择要通报的记录！');
         }
 
-        this._setFormControlValues(jqform, {pvids: ids.join()});
+        this._setFormControlValues(modal.find('form'), {pvids: ids.join()});
         this._sendRequest({
             type: 'get',
             url: '/sysmanage/members',
             done: function (rs) {
-                _initMultipleSelect(rs);
-                self._showModal(modal, self.dataTable);
+                _initMemberTree(rs);
+                self._showModal(modal, dataTable);
             }
         });
 
-        function _initMultipleSelect (members) {
-            var jqSelect = $('select[name="uids"]', jqform).empty();
-            var jqCbkColumns = $('.checkbox-groups > .col-xs-4:gt(0)', jqform).empty();
-            var options = [], indices = {};
-            var gpname, select2;
+        function _initMemberTree (members) {
+            var groups = [{id: '_root_', parent: '#', text: '成员列表', type: 'root', state: {opened: true}}];
+            var isCached = {};
 
             $.each(members, function (gpid, user) {
-                gpid = user.groupid || '';
-                gpname = gpid ? user.groupname : '未分组';
+                gpid = '_gpid_' + (user.groupid || '');
 
-                if (undefined == indices[gpid]) {
-                    options.push(
-                        $('<optgroup></optgroup>').attr({label: gpname})
-                            .append($('<option></option>')
-                                .attr({value: user.id, gpid: gpid})
-                                .text(user.name))
-                    );
-                    jqCbkColumns.eq((indices[gpid] = index = options.length - 1) % 2)
-                        .append(_buildCheckBox(gpid, gpname));
-                } else {
-                    options[indices[gpid]].append($('<option></option>')
-                        .attr({value: user.id, gpid: gpid})
-                        .text(user.name));
+                if (!isCached[gpid]) {
+                    groups.push({id: gpid, parent: '_root_', text: user.groupname || '未分组', type: 'group'});
+                    isCached[gpid] = true;
                 }
+
+                groups.push({id: user.id, parent: gpid, text: user.name, type: 'member'});
             });
 
-            select2 = self._createSelect2(jqSelect.append(options)).clear();
-
-            function _buildCheckBox (gpid, gpname) {
-                return $('<div class="checkbox"></div>').append(
-                    $('<label></label>').append(
-                        $('<input type="checkbox">').attr('data-gpid', gpid)
-                            .bind('click', function () {
-                                var jqElem = $(this);
-                                var handler = jqElem.prop('checked') ? 'addSelected' : 'removeSelected';
-
-                                jqSelect.find('option[gpid="' + jqElem.attr('data-gpid') + '"]')
-                                    .each(function () {
-                                        select2[handler]($(this).attr('value'));
-                                    });
-                            }),
-                        gpname
-                    )
-                );
-            }
+            self.memberTree = self._createJsTree('#treeWrapper', groups).onChanged(function () {
+                $('input[name="uids"]', modal).val(this.memberTree.getChecked().filter(function (id) {
+                    return '_root_' !== id && !/^_gpid_/.test(id);
+                }).join());
+            });
         }
     },
     closeDataModal: function () {
@@ -169,13 +142,6 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
 
         this._clearFormControlValues(modal.find('form'))
             ._closeModal(modal, this.dataTable);
-    },
-    manipulateSelected: function (jqCkb) {
-        var selectAll = jqCkb.prop('checked');
-
-        $('#notifyModal :checkbox:gt(0)').each(function () {
-            $(this).prop('checked', !selectAll).click();
-        });
     },
     closeNotifyModal: function () {
         var modal = $('#notifyModal');
@@ -189,7 +155,7 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
             type: 'post', url: '/notify/save',
             validator: $.proxy(this._validator, this),
             done: function () {
-                self._closeModal($('#notfiyModal'), self.dataTable);
+                self.closeNotifyModal();
                 self.dataTable.refresh();
             }
         });

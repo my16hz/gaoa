@@ -9,7 +9,7 @@ var LHSBasicPage = {
     events: {},
     __tableCaches__: [],
     __editorCaches__: [],
-    __timepickersCaches__: [],
+    __jstreeCaches__: [],
     initDependencies: function () {
         var self = this.reset();
 
@@ -44,8 +44,13 @@ var LHSBasicPage = {
             this.id && this.destroy();
         });
 
+        $.each(this.__jstreeCaches__, function () {
+            this.jstree('destory');
+        });
+
         this.__tableCaches__.length = 0;
         this.__editorCaches__.length = 0;
+        this.__jstreeCaches__.length = 0;
 
         return this;
     },
@@ -378,39 +383,33 @@ var LHSBasicPage = {
             }
         };
     },
-    _createSelect2: function (select) {
-        var placeholder = $(select).attr('placeholder');
-        var selector = $(select).select2();
+    _createJsTree: function (panel, data) {
+        var tree = $(panel).jstree({
+            plugins: ['checkbox', 'types'],
+            core: {data: data},
+            types: {
+                root: {icon: 'glyphicon glyphicon-list-alt'},
+                group: {icon: 'glyphicon glyphicon-tag'},
+                member: {icon: 'glyphicon glyphicon-user'}
+            }
+        });
+        var self = this;
+
+        this.__jstreeCaches__.push(tree);
 
         return {
-            getSelected: function () {
-                return selector.val();
+            getChecked: function () {
+                return tree.jstree('get_checked');
             },
-            addSelected: function (val) {
-                var values = this.getSelected() || [];
-
-                !~values.indexOf(val) && values.push(val);
-                selector.val(values).trigger("change");
-
-                return this;
+            destroy: function () {
+                tree.jstree('destroy');
             },
-            removeSelected: function (val) {
-                var values = this.getSelected();
-                var regexp = new RegExp(val + ',?');
-
-                if (values) {
-                    values = values.join().replace(regexp, '').split(',');
-                    selector.val(values).trigger("change");
-                }
-
-                return this;
-            },
-            clear: function () {
-                selector.val(placeholder || '').trigger("change");
+            onChanged: function (cb) {
+                tree.bind('changed.jstree', $.proxy(cb, self));
 
                 return this;
             }
-        };
+        }
     },
 
     _showModal: function (jqmodal, table) {

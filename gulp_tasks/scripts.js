@@ -101,8 +101,7 @@ module.exports = function (gulp, plugins, isdebug) {
             dependencies.push(
                 DIR_SRC.coreJs + 'jquery.ajaxfileupload.js',
                 DIR_SRC.coreJs + 'jquery.template-1.4.4.js',
-                DIR_SRC.coreJs + 'select2-2 4.0.3.js',
-                DIR_SRC.coreJs + 'select2-zh-CN-2.4.3.js',
+                DIR_SRC.coreJs + 'jstree-3.3.2.js',
                 DIR_SRC.coreJs + 'bootstrap-datetimepicker-4.17.42.js',
                 DIR_SRC.coreJs + 'uuid-1.4.7.js',
                 DIR_SRC.editor + 'config.js',
