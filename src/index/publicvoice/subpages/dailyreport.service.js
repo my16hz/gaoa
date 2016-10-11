@@ -226,11 +226,7 @@ function getLatestDailyPVList (callback) {
 }
 
 function getUnappliedPubVoices (callback) {
-    var sql_stmt = " SELECT TOP 1000 tb_publicvoice.*, tb_pv_feedback.type AS feedback_type, tb_pv_feedback.content AS feedback_content " +
-        " FROM tb_publicvoice " +
-        " LEFT JOIN tb_pv_feedback " +
-        " ON tb_publicvoice.id = tb_pv_feedback.id  " +
-        " WHERE tb_publicvoice.state IN (2, 8); ";
+    var sql_stmt = " SELECT TOP 1000 * FROM tb_publicvoice WHERE state = 2; ";
     var objParams = {};
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {

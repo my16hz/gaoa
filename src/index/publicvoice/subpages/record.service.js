@@ -217,7 +217,7 @@ function importPubVoices (user, path, callback) {
         obj["content"] = xss(pv["帖文内容"]);
         obj["from_website"] = pv["载体1"] ? pv["载体1"] : " " + pv["载体2"] ? pv["载体2"] : " " + pv["载体3"] ? pv["载体3"] : " " + pv["载体4"] ? pv["载体4"] : " ";
         obj["url"] = pv["网址1"] ? pv["网址1"] : " " + pv["网址2"] ? pv["网址2"] : " " + pv["网址3"] ? pv["网址3"] : " " + pv["网址4"] ? pv["网址5"] : " ";
-        obj["state"] = 0;
+        obj["state"] = 1;
         obj["approved_state"] = 0;
         obj["dispose_stat"] = 0;
         obj["feedback_state"] = 3;

@@ -61,10 +61,42 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
                 title: '操作',
                 field: 'action',
                 formatter: function () {
-                    return '<a href="javascript:" title="审批"><i class="glyphicon glyphicon-edit"></i></a>';
+                    return [
+                        '<a href="javascript:" title="同意"><i class="glyphicon glyphicon-ok"></i></a>',
+                        '<a href="javascript:" title="不同意"><i class="glyphicon glyphicon-remove"></i></a>',
+                        '<a href="javascript:" title="暂缓通过"><i class="glyphicon glyphicon-pause"></i></a>',
+                        '<a href="javascript:" title="详情"><i class="glyphicon glyphicon-edit"></i></a>'
+                    ].join('&nbsp;&nbsp;');
                 },
                 events: {
-                    'click a:first': function () {
+                    'click a:eq(0)': function () {
+                        var pvid = arguments[2].id;
+
+                        bootbox.confirm('审批通过所选舆情？', function (rs) {
+                            rs && self._applyDirect(pvid, 0, "同意", function () {
+                                self.dataTable.refresh();
+                            });
+                        });
+                    },
+                    'click a:eq(1)': function () {
+                        var pvid = arguments[2].id;
+
+                        bootbox.confirm('审批不通过所选舆情？', function (rs) {
+                            rs && self._applyDirect(pvid, 1, "不同意", function () {
+                                self.dataTable.refresh();
+                            });
+                        });
+                    },
+                    'click a:eq(2)': function () {
+                        var pvid = arguments[2].id;
+
+                        bootbox.confirm('暂缓通过所选舆情？', function (rs) {
+                            rs && self._applyDirect(pvid, 2, "暂缓通过", function () {
+                                self.dataTable.refresh();
+                            });
+                        });
+                    },
+                    'click a:eq(3)': function () {
                         var editor = self.editor;
                         var modal = $('#dataModal');
                         var pubvoice = arguments[2];
@@ -104,7 +136,6 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
                 eTime: self.eTime.getTime()
             }
         });
-
     },
 
     closeDataModal: function () {
@@ -139,5 +170,13 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
         var jqform = $('#dataModal form');
         var values = this._getFormControlValues(jqform);
         return values;
+    },
+    _applyDirect: function (pvid, result, content, done) {
+        this._sendRequest({
+            type: 'post',
+            url: '/application/save',
+            data: {"id": pvid, "approveResult": result, "approveContent": content},
+            done: done
+        });
     }
 });
