@@ -26,7 +26,7 @@ function getWaitNotifyPVList (req, res) {
 
 function saveNotify (req, res) {
     var uid = req.session[userkey].id;
-    var userids = req.body.uids;
+    var userids = req.body.uids.split(',');
     var pvids = req.body.pvids.split(',');
 
     if (!Array.isArray(userids)) {

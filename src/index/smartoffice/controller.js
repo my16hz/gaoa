@@ -297,7 +297,7 @@ function deleteMessage (req, res) {
 
 function sendNotify (req, res) {
     var uid = req.session[userkey].id;
-    var userids = req.body.uids;
+    var userids = req.body.uids.split(',');
     var mids = req.body.mids.split(',');
 
     if (!Array.isArray(userids)) {
