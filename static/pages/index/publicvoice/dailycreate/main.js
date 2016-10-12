@@ -220,9 +220,9 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
             '</span></strong></p><p style="text-align:center;line-height:33px"><span style="font-size:20px;font-family:仿宋_GB2312">' +
             pv.from_website +
             '</span></p><p style="text-align:center;line-height:33px"><span style="font-size:20px;font-family:仿宋_GB2312">浏览人数：' +
-            pv.review_count +
+            (pv.review_count || "无法统计") +
             '&nbsp; &nbsp; </span><span style="font-size:20px;font-family:仿宋_GB2312">跟帖数：' +
-            pv.fellow_count +
+            (pv.fellow_count || "无法统计") +
             '</span></p><p><br/></p><p><span style="font-size:20px;font-family:仿宋_GB2312"> &nbsp;' +
             pv.content +
             '</span></p><p><br/></p>';
