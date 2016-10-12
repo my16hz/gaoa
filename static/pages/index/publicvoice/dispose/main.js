@@ -100,7 +100,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         'click #commentModal .btn-primary': 'saveComment',
         'click #disposeModal .btn-default': 'closeDisposeModal',
         'click #disposeModal .btn-primary': 'saveDispose',
-        'click #disposeModal .btn-info': 'exportDispose',
+        'click #disposeModal .btn-info': 'exportDispose'
     },
     autoSearch: function (jqinput, evt) {
         13 == evt.keyCode && this.dataTable.refresh({
@@ -220,6 +220,13 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         template = template.replace("%doc_attachment%", pubvoice.attachment);
         template = template.replace("%daily_id%", pubvoice.daily_id);
         template = template.replace('%date%', moment(new Date()).format('YYYY年MM月DD日'));
+
+        template = template.replace("%to_department%", pubvoice.to_department);
+        template = template.replace("%pv_date%", moment(pubvoice.createtime).format('MM月DD日'));
+        template = template.replace("%from_website%", pubvoice.from_website);
+        template = template.replace("%pv_title%", pubvoice.title);
+        template = template.replace("%comment_date%", moment(pubvoice.comment_date).format('MM月DD日'));
+        template = template.replace("%comment_user%", pubvoice.comment_user);
 
         return template;
     },

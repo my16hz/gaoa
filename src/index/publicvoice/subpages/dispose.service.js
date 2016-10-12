@@ -70,7 +70,10 @@ function getPVDispose (pvid, callback) {
 function addPVDispose (uid, obj, callback) {
     var sql_stmt =
         'IF NOT EXISTS (SELECT * FROM tb_pv_dispose WHERE id = @id) ' +
-        '   INSERT INTO tb_pv_dispose ([id],[content],[createuser],[createtime],[state], [dispose_doc_no], [dispose_doc_year]) VALUES (@id, @content, @createuser, @createtime, @state, @dispose_doc_no, @dispose_doc_year); ' +
+        'BEGIN ' +
+        '   INSERT INTO tb_pv_dispose ([id],[content],[createuser],[createtime],[state], [dispose_doc_no], [dispose_doc_year]) VALUES (@id, @content, @createuser, @createtime, @state, @dispose_doc_no, @dispose_doc_year);' +
+        "   UPDATE tb_sys_config SET [value] = @dispose_doc_no WHERE [id] = 'dispose_doc_no';" +
+        "END " +
         'ELSE ' +
         '   UPDATE tb_pv_dispose SET [content] = @content, [state] = @state, [dispose_doc_no] = @dispose_doc_no, [dispose_doc_year] = @dispose_doc_year WHERE [id] = @id;';
     var objParams = {
@@ -152,12 +155,13 @@ function addPVComment (uid, obj, callback) {
     var sql_stmt =
         'IF NOT EXISTS (SELECT * FROM tb_pv_comment WHERE [id] = @id) ' +
         'BEGIN ' +
-        '   INSERT INTO tb_pv_comment ([id], [comment_user], [comment], [attachment], [state], [comment_date], [recv_date], [message_id], [from_user], [from_department], [createuser], [createtime]) ' +
-        '   VALUES (@id, @comment_user, @comment, @attachment, @state, @comment_date, @recv_date, @message_id, @from_user, @from_department, @createuser, @createtime); ' +
+        '   INSERT INTO tb_pv_comment ([id], [comment_user], [comment], [attachment], [state], [comment_date], [recv_date], [message_id], [from_user], [from_department], [createuser], [createtime], [to_department]) ' +
+        '   VALUES (@id, @comment_user, @comment, @attachment, @state, @comment_date, @recv_date, @message_id, @from_user, @from_department, @createuser, @createtime, @to_department); ' +
         '   UPDATE tb_publicvoice SET [dispose_stat] = 1, [feedback_state] = 1 WHERE [id] = @id; ' +
         'END ' +
         'ELSE ' +
-        '   UPDATE tb_pv_comment SET [comment] = @comment, [attachment] = @attachment WHERE [id] = @id;';
+        '   UPDATE tb_pv_comment SET [comment_user] = @comment_user, [comment] = @comment, [attachment] = @attachment, [comment_date] = @comment_date, [recv_date] = @recv_date, [message_id] = @message_id, [from_user] = @from_user, [from_department] = @from_department, [to_department] = @to_department ' +
+        '   WHERE [id] = @id;';
 
     var objParams = {
         'id' : obj['id'],
@@ -170,6 +174,7 @@ function addPVComment (uid, obj, callback) {
         'message_id' : obj['message_id'],
         'from_user' : obj['from_user'],
         'from_department' : obj['from_department'],
+        'to_department': obj['to_department'],
         "createuser": uid,
         "createtime": new Date()
     };
@@ -185,6 +190,7 @@ function addPVComment (uid, obj, callback) {
         .input('message_id', sql.NVarChar)
         .input('from_user', sql.NVarChar)
         .input('from_department', sql.NVarChar)
+        .input('to_department', sql.NVarChar)
         .input("createuser", sql.VarChar)
         .input("createtime", sql.DateTime2)
         .prepare(sql_stmt, function (err) {
@@ -250,7 +256,7 @@ function approveComment (obj, callback) {
 function getUnapprovedComment (callback) {
     var sql_stmt = "SELECT TOP 1000 tb_publicvoice.id, tb_publicvoice.title, tb_publicvoice.from_website, " +
         " tb_publicvoice.url, tb_publicvoice.createtime, tb_publicvoice.content AS pv_content, " +
-        " tb_pv_comment.comment, tb_pv_comment.comment_user, tb_pv_comment.comment_date, tb_pv_comment.attachment, tb_publicvoice.dispose_stat, tb_daily_pv.did AS daily_id " +
+        " tb_pv_comment.comment, tb_pv_comment.comment_user, tb_pv_comment.comment_date, tb_pv_comment.attachment, tb_pv_comment.to_department, tb_publicvoice.dispose_stat, tb_daily_pv.did AS daily_id " +
         " FROM tb_publicvoice, tb_pv_comment, tb_daily_pv " +
         " WHERE tb_publicvoice.id = tb_pv_comment.id AND tb_daily_pv.pvid = tb_publicvoice.id AND tb_publicvoice.dispose_stat = 2;";
     var objParams = {};

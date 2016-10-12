@@ -48,23 +48,27 @@ module.exports = {
     template: {
         dispose: '' +
         '<p style="text-align: center;">' +
-        '    <a></a>' +
-        '</p>' +
-        '<p style="text-align: center;">' +
-        '    <a></a>' +
-        '</p>' +
-        '<p style="text-align: center;">' +
         '    <span style="font-size:56px;font-family:方正小标宋简体;color:red">广安市网络舆情中心</span>' +
         '</p>' +
-        '<hr/>' +
+        '<hr style="height:3px;border:none;border-top:3px double red;"/>' +
+        '<p></p>' +
         '<p style="text-align:right;line-height:31px">' +
         '    <span style="font-size:21px;font-family:仿宋_GB2312">广舆函（%doc_year%） %doc_no%号</span>' +
         '</p>' +
         '<p style="margin-top:16px;text-align:center;line-height:40px">' +
         '    <span style="font-size:29px;font-family:方正小标宋简体">广安市重要网络舆情处置通知书</span>' +
         '</p>' +
+        '<p style="margin: 5px 0">' +
+        '    <span style="font-size: 21px;font-family: 仿宋_GB2312">%to_department%:</span>' +
+        '</p>' +
+        '<p style="margin: 5px 0; line-height: 36px">' +
+        '<span style="font-size: 21px;font-family: 仿宋_GB2312">&nbsp; %pv_date%，一网民在%from_website%发贴，反映%pv_title%问题。%comment_date%，市委常委%comment_user%批示：“<strong>%doc_comment%</strong>”</span>' +
+        '</p>' +
+        '<p style="margin: 5px 0;line-height: 36px">' +
+        '<span>&nbsp;&nbsp;</span><span style="font-size: 21px;font-family: 仿宋_GB2312">根据广委办〔2013〕76号文件精神，为切实做好该舆情应对处置工作，消除负面影响，避免网络炒作，请贵单位在接到此通知书之后，立即组织调查处置，在受理之日起5个工作日内将调查处置结果书面回复至签批领导、抄送市网络舆情中心，并视情况在网上公开调查处置的相关信息（不宜公开的除外）。同时，市委、市政府督查室将对领导批示的网络舆情办理情况进行专项督查督办，请各涉舆单位严格按照相关文件要求做好应对处置工作。</span>' +
+        '</p>' +
         '<p>' +
-        '    %doc_comment%' +
+        '    <br/>' +
         '</p>' +
         '<p>' +
         '    <br/>' +
@@ -78,13 +82,13 @@ module.exports = {
         '<p style="text-indent:333px;line-height:27px;text-align:right;">' +
         '    <span style="font-size:20px;">广安市网络舆情中心</span>' +
         '</p>' +
-        '<p style="text-indent: 42px; line-height: 27px; text-align: right;">' +
-        '    %date%' +
+        '<p style="text-indent: 333px; line-height: 27px; text-align: right;">' +
+        '    <span style="font-size:20px;">%date%</span>' +
         '</p>' +
         '<p>' +
         '    <br/>' +
         '</p>' +
-        '<hr/>' +
+        '<hr style="height:3px;border:none;border-top:3px double red;"/>' +
         '<p>' +
         '    <span style="font-size: 20px;font-family:方正小标宋简体">附件：</span>' +
         '</p>' +

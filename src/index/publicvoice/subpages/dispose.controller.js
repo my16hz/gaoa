@@ -95,6 +95,7 @@ function savePVComment (req, res) {
         'message_id' : obj['message_id'],
         'from_user' : obj['from_user'],
         'from_department' : obj['from_department'],
+        'to_department' : obj['to_department'],
         "createuser": uid,
         "createtime": new Date()
     };
