@@ -147,17 +147,16 @@ function msgfile (req, res) {
     mfhandler(req, res, function (err) {
         var file = req.file;
 
-        res.send(JSON.stringify(
-            !file || err ? {
-                state: '文件类型错误或大于10MB。'
-            } : {
+        if (err || !file) {
+            errhandler.customError(res, '文件类型错误或大于10MB。');
+        } else {
+            res.send({
+                success: true,
                 name: file.filename,
                 url: file.dirName + '/' + file.filename,
-                size: file.size,
-                state: 'SUCCESS'
-            }
-        ));
-        err && console.error(err);
+                size: file.size
+            });
+        }
     });
 }
 
