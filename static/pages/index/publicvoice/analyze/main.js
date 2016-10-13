@@ -28,10 +28,10 @@ var LHSAnalyzePage = $.extend({}, LHSBasicPage, {
                         return moment(val).format('YYYY年MM月DD日');
                     }
                 },
-                {title: '漏报者', field: 'name', sortable: true, order: 'desc'},
+                {title: '漏报单位', field: 'name', sortable: true, order: 'desc'},
             ]),
             this._createTable('#pvGroupMissTableWrapper', '/analyze/groupmiss', [
-                {title: '漏报者', field: 'name', sortable: true, order: 'desc'},
+                {title: '漏报单位', field: 'name', sortable: true, order: 'desc'},
                 {title: '漏报条数', field: 'count', sortable: true, order: 'desc'}
             ]),
             this._createTable('#pvItemTableWrapper', '/analyze/pvitem', [

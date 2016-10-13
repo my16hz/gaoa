@@ -161,11 +161,11 @@ function getPVFellowAnalyze (start, end, callback) {
 }
 
 function getPVMissReportAnalyze (start, end, callback) {
-    var sql_stmt = 'SELECT tb_publicvoice.*,tb_pv_notify.uid,tb_user.name ' +
-        'FROM tb_publicvoice,tb_pv_notify,tb_user ' +
-        'WHERE tb_publicvoice.id = tb_pv_notify.pvid ' +
-        'AND tb_publicvoice.createuser != tb_pv_notify.uid ' +
-        'AND tb_user.id = tb_pv_notify.uid ' +
+    var sql_stmt = 'SELECT tb_publicvoice.*, tb_group.name  ' +
+        'FROM tb_publicvoice, tb_group ' +
+        'WHERE tb_publicvoice.duty_department = tb_group.id ' +
+        'AND tb_publicvoice.duty_department IN (SELECT groupid FROM tb_user WHERE priority = 2) ' +
+        'AND tb_publicvoice.createuser IN (SELECT id FROM tb_user WHERE priority = 1) ' +
         'AND tb_publicvoice.createtime > @start AND tb_publicvoice.createtime < @end ';
     var objParams = {
         "start": start,
@@ -191,13 +191,13 @@ function getPVMissReportAnalyze (start, end, callback) {
 }
 
 function getGroupMissAnalyze (start, end, callback) {
-    var sql_stmt = 'SELECT tb_user.name, COUNT(tb_publicvoice.id) AS count  ' +
-        'FROM tb_publicvoice,tb_pv_notify,tb_user ' +
-        'WHERE tb_publicvoice.id = tb_pv_notify.pvid ' +
-        'AND tb_publicvoice.createuser != tb_pv_notify.uid ' +
-        'AND tb_user.id = tb_pv_notify.uid ' +
+    var sql_stmt = 'SELECT COUNT(tb_publicvoice.id) AS count, tb_group.name  ' +
+        'FROM tb_publicvoice, tb_group ' +
+        'WHERE tb_publicvoice.duty_department = tb_group.id ' +
+        'AND tb_publicvoice.duty_department IN (SELECT groupid FROM tb_user WHERE priority = 2) ' +
+        'AND tb_publicvoice.createuser IN (SELECT id FROM tb_user WHERE priority = 1) ' +
         'AND tb_publicvoice.createtime > @start AND tb_publicvoice.createtime < @end ' +
-        'GROUP BY tb_user.name ';
+        'GROUP BY tb_group.name ';
     var objParams = {
         "start": start,
         "end": end
