@@ -38,7 +38,7 @@ function pageBadInfo (req, res) {
 function listBadInfo (req, res) {
     var uid = req.session[sesskeys.userkey].id;
     var priority = req.session[sesskeys.userkey].priority;
-    service.listBadInfo(uid, priority, "createtime", "asc", function (err, rs) {
+    service.listBadInfo(uid, priority, "createtime", "desc", function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
