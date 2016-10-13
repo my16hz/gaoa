@@ -125,7 +125,7 @@ function importBadInfo (user, path, callback) {
         obj['reportdate'] = pv['时间'];
         obj['department'] = pv['单位'];
         obj['username'] = user.name;
-        obj['duty_zone'] = pv['所属区域'];
+        obj['duty_zone'] = pv['所属地域'];
         obj['type'] = pv['危害类型'];
         obj['sn'] = pv['举报查询码'];
         obj['remark'] = pv['备注'];
