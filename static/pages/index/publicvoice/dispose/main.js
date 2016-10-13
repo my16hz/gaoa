@@ -35,13 +35,20 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                 title: '处置状态', field: 'dispose_stat', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
-                        case 0: return "未批示";
-                        case 1: return "已批示";
-                        case 2: return "待审批";
-                        case 3: return "转";
-                        case 4: return "转发";
-                        case 5: return "阅存";
-                        default: return "未批示";
+                        case 0:
+                            return "未批示";
+                        case 1:
+                            return "已批示";
+                        case 2:
+                            return "待审批";
+                        case 3:
+                            return "转";
+                        case 4:
+                            return "转发";
+                        case 5:
+                            return "阅存";
+                        default:
+                            return "未批示";
                     }
                 }
             },
@@ -49,14 +56,16 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                 title: '操作', field: 'action',
                 formatter: function () {
                     var args = arguments[1].dispose_stat;
-                    switch(args) {
-                        case 1 :  return [
-                                        '<a href="javascript:" title="批示详情"><i class="glyphicon glyphicon-eye-open"></i></a>',
-                                        '<a href="javascript:" title="提交审批"><i class="glyphicon glyphicon-ok"></i></a>'
-                                        ].join('&nbsp;&nbsp;');
-                        case 2 : return ['<a href="javascript:" title="批示详情"><i class="glyphicon glyphicon-eye-open"></i></a>',
-                                            '<a></a>'
-                                        ].join('&nbsp;&nbsp;');
+                    switch (args) {
+                        case 1 :
+                            return [
+                                '<a href="javascript:" title="批示详情"><i class="glyphicon glyphicon-eye-open"></i></a>',
+                                '<a href="javascript:" title="提交审批"><i class="glyphicon glyphicon-ok"></i></a>'
+                            ].join('&nbsp;&nbsp;');
+                        case 2 :
+                            return ['<a href="javascript:" title="批示详情"><i class="glyphicon glyphicon-eye-open"></i></a>',
+                                '<a></a>'
+                            ].join('&nbsp;&nbsp;');
                         case 3 :
                         case 4 :
                         case 5 :
@@ -65,33 +74,110 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                                 '<a href="javascript:" title="批示处置"><i class="glyphicon glyphicon-retweet"></i></a>'
                             ].join('&nbsp;&nbsp;');
                         case 0 :
-                        default: return ['<a href="javascript:" title="批示登记"><i class="glyphicon glyphicon-comment"></i></a>',
-                            '<a></a>'
-                        ].join('&nbsp;&nbsp;');
+                        default:
+                            return ['<a href="javascript:" title="批示登记"><i class="glyphicon glyphicon-comment"></i></a>',
+                                '<a></a>'
+                            ].join('&nbsp;&nbsp;');
                     }
                 },
                 events: {
                     'click a:first': function () {
-                        self.showDataModal(arguments[2]);
+                        var pubvoice = arguments[2];
+                        var modal = $('#commentModal');
+                        var editor = this.editor;
+
+                        self._sendRequest({
+                            type: 'get',
+                            url: '/dispose/comment',
+                            data: {id: pubvoice.id},
+                            done: function (rs) {
+                                rs = rs[0] || {comment: "", attachment: ""};
+                                rs.id = pubvoice.id;
+
+                                _fillFormValues(rs);
+
+                                self._showModal(modal, self.dataTable);
+                            }
+                        });
+
+                        function _fillFormValues (rs) {
+                            self._setFormControlValues(modal.find('form'), rs);
+
+                            editor.ready(function () {
+                                editor.setContent(rs.attachment || '');
+                            });
+                        }
                     },
                     'click a:last': function () {
-                        var state = arguments[2].dispose_stat;
-                        switch (state) {
-                            case 1: return self.showCommitModal(arguments[2]);
-                            case 3:
-                            case 4:
-                            case 5:
-                                return self.showDisposeModal(arguments[2]);
+                        var pubvoice = arguments[2];
+                        var modal = $('#disposeModal');
+                        var editor = self.disposeEditor;
+
+                        if (1 == pubvoice.dispose_stat) {
+                            bootbox.confirm('确定提交审批？', function (rs) {
+                                rs && self._sendRequest({
+                                    type: 'post',
+                                    url: '/dispose/comment/commit',
+                                    data: {ids: pubvoice.id},
+                                    done: function () {
+                                        self.dataTable.refresh();
+                                    }
+                                });
+                            });
+                        } else {
+                            self._sendRequest({
+                                type: 'get',
+                                url: '/dispose/detail',
+                                data: {id: pubvoice.id},
+                                done: function (rs) {
+                                    rs = rs[0];
+
+                                    if (rs && rs.state == -1) {
+                                        rs.dispose_doc_no = parseInt(rs.dispose_doc_no, 10) + 1;
+                                        rs.content = _genDisposeDoc(pubvoice, rs);
+                                    }
+
+                                    _fillFormValues(rs);
+                                    self._showModal(modal, self.dataTable);
+                                }
+                            });
                         }
 
+                        function _fillFormValues (rs) {
+                            self._setFormControlValues(modal.find('form'), rs);
+
+                            editor.ready(function () {
+                                editor.setContent(rs.content || '');
+                            });
+                        }
+
+                        function _genDisposeDoc (pubvoice, value) {
+                            var template = value.content;
+
+                            return template
+                                .replace("%doc_year%", value.dispose_doc_year)
+                                .replace("%doc_no%", value.dispose_doc_no)
+                                .replace("%doc_content%", pubvoice.content)
+                                .replace("%doc_comment%", pubvoice.comment)
+                                .replace("%doc_attachment%", pubvoice.attachment)
+                                .replace("%daily_id%", pubvoice.daily_id)
+                                .replace('%date%', moment(new Date()).format('YYYY年MM月DD日'))
+
+                                .replace("%to_department%", pubvoice.to_department)
+                                .replace("%pv_date%", moment(pubvoice.createtime).format('MM月DD日'))
+                                .replace("%from_website%", pubvoice.from_website)
+                                .replace("%pv_title%", pubvoice.title)
+                                .replace("%comment_date%", moment(pubvoice.comment_date).format('MM月DD日'))
+                                .replace("%comment_user%", pubvoice.comment_user);
+                        }
                     }
                 }
             }
         ]);
         this.editor = this._createEditor('#editorWrapper');
         this.disposeEditor = this._createEditor('#disposeWrapper');
-        this.recvDate = this._createTimepicker('#recv_date');
-        this.commentDate = this._createTimepicker('#comment_date');
+        this._createTimepicker('#recv_date');
+        this._createTimepicker('#comment_date');
     },
     events: {
         'keydown #inputSearch': 'autoSearch',
@@ -99,8 +185,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         'click #commentModal .btn-default': 'closeCommentModal',
         'click #commentModal .btn-primary': 'saveComment',
         'click #disposeModal .btn-default': 'closeDisposeModal',
-        'click #disposeModal .btn-primary': 'saveDispose',
-        'click #disposeModal .btn-info': 'exportDispose'
+        'click #disposeModal .btn-primary': 'saveAndExportDispose'
     },
     autoSearch: function (jqinput, evt) {
         13 == evt.keyCode && this.dataTable.refresh({
@@ -113,59 +198,6 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         this.dataTable.refresh({
             query: {id: daily_id}
         });
-    },
-    showCommitModal: function (pubvoice) {
-        var self = this;
-        var ids = pubvoice.id;
-
-        bootbox.confirm('确定提交审批？', function (rs) {
-            rs && self._ajaxCommit(ids, function () {
-                self.dataTable.refresh();
-            });
-        }) ;
-
-        return this;
-    },
-    _ajaxCommit: function (ids, done) {
-        this._sendRequest({
-            type: 'post',
-            url: '/dispose/comment/commit',
-            data: {ids: ids},
-            done: done
-        });
-
-        return this;
-    },
-    showDataModal: function (pubvoice) {
-        var modal = $('#commentModal');
-        var jqform = modal.find('form');
-        var editor = this.editor;
-        var self = this;
-
-        self._sendRequest({
-            type: 'get',
-            url: '/dispose/comment',
-            data: {id: pubvoice.id},
-            done: function (rs) {
-                if (rs.length != 0) {
-                    rs[0]['id'] = pubvoice.id;
-                    _fillFormValues(rs[0]);
-                }
-                else {
-                    rs = { id: pubvoice.id, comment:"", attachment:""};
-                    _fillFormValues(rs);
-                }
-                self._showModal(modal, self.dataTable);
-            }
-        });
-
-        function _fillFormValues (rs) {
-            self._setFormControlValues(jqform, rs);
-
-            editor.ready(function () {
-                editor.setContent(rs.attachment || '');
-            });
-        }
     },
     closeCommentModal: function () {
         this._closeModal('#commentModal', this.dataTable);
@@ -183,73 +215,23 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
             }
         });
     },
-    showDisposeModal: function (pubvoice) {
-        var modal = $('#disposeModal');
-        var jqform = modal.find('form');
-        var editor = this.disposeEditor;
-        var self = this;
-
-        self._sendRequest({
-            type: 'get',
-            url: '/dispose/detail',
-            data: {id: pubvoice.id},
-            done: function (rs) {
-                if (rs[0].state == -1) {
-                    rs['0']['dispose_doc_no'] = parseInt(rs['0']['dispose_doc_no']) + 1;
-                    rs[0]['content'] = self.genDisposeDoc(pubvoice, rs[0]);
-                }
-                 _fillFormValues(rs[0]);
-                self._showModal(modal, self.dataTable);
-            }
-        });
-
-        function _fillFormValues (rs) {
-            self._setFormControlValues(jqform, rs);
-
-            editor.ready(function () {
-                editor.setContent(rs.content || '');
-            });
-        }
-    },
-    genDisposeDoc: function (pubvoice, value) {
-        var template = value.content;
-        template = template.replace("%doc_year%", value.dispose_doc_year);
-        template = template.replace("%doc_no%", value.dispose_doc_no);
-        template = template.replace("%doc_content%", pubvoice.content);
-        template = template.replace("%doc_comment%", pubvoice.comment);
-        template = template.replace("%doc_attachment%", pubvoice.attachment);
-        template = template.replace("%daily_id%", pubvoice.daily_id);
-        template = template.replace('%date%', moment(new Date()).format('YYYY年MM月DD日'));
-
-        template = template.replace("%to_department%", pubvoice.to_department);
-        template = template.replace("%pv_date%", moment(pubvoice.createtime).format('MM月DD日'));
-        template = template.replace("%from_website%", pubvoice.from_website);
-        template = template.replace("%pv_title%", pubvoice.title);
-        template = template.replace("%comment_date%", moment(pubvoice.comment_date).format('MM月DD日'));
-        template = template.replace("%comment_user%", pubvoice.comment_user);
-
-        return template;
-    },
     closeDisposeModal: function () {
         this._closeModal('#disposeModal', this.dataTable);
     },
-    exportDispose: function () {
-        /*inject:jqtmplsample:html*/
-        /*endinject*/
-    },
-    saveDispose: function () {
-        var self = this;
+    saveAndExportDispose: function () {
+        var id = $('#disposeModal input[name="id"]').val();
 
         this._sendRequest({
             type: 'post',
             url: '/dispose/save',
             validator: $.proxy(this._disposeValidator, this),
             done: function () {
-                self.closeDisposeModal();
-                self.dataTable.refresh();
+                $('<iframe class="hide"></iframe>').appendTo('body')
+                    .attr('src', '/dispose/export/' + id);
             }
         });
     },
+
     _commentValidator: function () {
         var jqform = $('#commentModal form');
         var values = this._getFormControlValues(jqform);

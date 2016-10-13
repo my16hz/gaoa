@@ -245,8 +245,6 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
     _validator: function () {
         var jqform = $('#dataModal form');
         var values = this._getFormControlValues(jqform);
-        /*inject:jqtmplsample:html*/
-        /*endinject*/
 
         values['content'] = this.editor.getContent();
 

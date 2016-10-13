@@ -41,6 +41,8 @@ module.exports = function () {
         .get('/dispose/list', controller.getDisposeList)
         .get('/dispose/detail', controller.getDisposeDetail)
         .post('/dispose/save', controller.savePVDispose)
+        .get('/dispose/export/:id', controller.exportPVDispose)
+
         /* 舆情批示 */
         .get('/dispose/comment', controller.getPVComment)
         .post('/dispose/comment/save', controller.savePVComment)

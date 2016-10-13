@@ -4,13 +4,16 @@
  * Author: lhs
  */
 var userkey = require('config').session.userkey;
+var HtmlDocx = require('html-docx-js');
 
 var errhandler = require('../../../utils/errhandler');
 var service = require('./../service');
+
 module.exports = {
     savePVDispose: savePVDispose,
     getDisposeDetail: getDisposeDetail,
     getDisposeTemplate: getDisposeTemplate,
+    exportPVDispose: exportPVDispose,
 
     /** 处置审批 **/
     getDisposeList: getDisposeList,
@@ -62,7 +65,30 @@ function getDisposeDetail (req, res) {
 }
 
 function getDisposeTemplate(req, res) {
-    
+
+}
+
+function exportPVDispose (req, res) {
+    var id = req.params.id;
+    var filename = encodeURIComponent('广安市重要网络舆情处置通知书');
+    var content = '';
+
+    service.getPVDispose(id, function (err, dispose) {
+        content = dispose[0].content || '';
+
+        if (err) {
+            errhandler.internalException(res, err)
+        } else {
+            try {
+                res.set({
+                    'content-type': 'application/msword',
+                    'content-disposition': 'attachment;filename="' + filename + '.doc"'
+                }).send(HtmlDocx.asBlob(content));
+            } catch (e) {
+                errhandler.internalException(res, e);
+            }
+        }
+    });
 }
 
 function getDisposeList (req, res) {

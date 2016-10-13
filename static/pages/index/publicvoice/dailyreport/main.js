@@ -38,7 +38,7 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
 
                         editor.ready(function () {
                             editor.setContent(report.content || '');
-                            //editor.setDisabled();
+                            editor.setDisabled();
                         });
 
                         modal.find('a.btn-primary').attr('href', '/daily/export/' + report.id);
