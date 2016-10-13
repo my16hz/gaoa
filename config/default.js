@@ -48,7 +48,7 @@ module.exports = {
     template: {
         dispose: '' +
         '<p style="text-align: center;">' +
-        '    <span style="font-size:56px;font-family:方正小标宋简体;color:red">广安市网络舆情中心</span>' +
+        '    <span style="font-size:56px;font-family:方正小标宋简体;color:red"><strong>广安市网络舆情中心</strong></span>' +
         '</p>' +
         '<hr style="height:3px;border:none;border-top:3px double red;"/>' +
         '<p></p>' +
@@ -56,7 +56,7 @@ module.exports = {
         '    <span style="font-size:21px;font-family:仿宋_GB2312">广舆函（%doc_year%） %doc_no%号</span>' +
         '</p>' +
         '<p style="margin-top:16px;text-align:center;line-height:40px">' +
-        '    <span style="font-size:29px;font-family:方正小标宋简体">广安市重要网络舆情处置通知书</span>' +
+        '    <span style="font-size:29px;font-family:方正小标宋简体"><strong>广安市重要网络舆情处置通知书</strong></span>' +
         '</p>' +
         '<p style="margin: 5px 0">' +
         '    <span style="font-size: 21px;font-family: 仿宋_GB2312">%to_department%:</span>' +
