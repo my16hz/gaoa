@@ -122,14 +122,15 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
         this._closeModal($('#dataModal'), this.dataTable);
     },
     saveGuide: function () {
-        var dataTable = this.dataTable;
+        var self = this;
 
         this._sendRequest({
             type: 'post',
             url: '/guide/save',
             validator: $.proxy(this._validator, this),
             done: function () {
-                dataTable.expand().refresh();
+                self.closeDataModal();
+                self.dataTable.refresh();
             }
         });
     },
