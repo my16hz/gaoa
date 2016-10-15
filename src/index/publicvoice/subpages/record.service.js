@@ -66,7 +66,7 @@ function findPubVoiceList (uid, priority, field, order, callback) {
     var ps = null;
     var endTime = new Date();
     var startTime = new Date();
-    startTime.setDate(startTime.getDate() - 2);
+    startTime.setDate(startTime.getDate() - 1);
     var params = {
         'startTime' : startTime,
         'endTime' : endTime

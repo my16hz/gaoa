@@ -84,7 +84,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                     'click a:first': function () {
                         var pubvoice = arguments[2];
                         var modal = $('#commentModal');
-                        var editor = this.editor;
+                        var editor = self.editor;
 
                         self._sendRequest({
                             type: 'get',
