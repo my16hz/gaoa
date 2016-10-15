@@ -210,6 +210,7 @@ var LHSBasicPage = {
         var dataTable = $(panel).append(
             $('<table></table>').addClass('table table-striped table-hover table-condensed')
         ).children('table');
+        var filter = null;
 
         dataTable.bootstrapTable({
             method: 'get',
@@ -273,7 +274,12 @@ var LHSBasicPage = {
             refresh: function (opts) {
                 dataTable.bootstrapTable('refresh', $.extend({
                     silent: true
-                }, opts));
+                }, filter, opts));
+
+                return this;
+            },
+            setFilter: function (opts) {
+                filter = opts ? {query: opts} : null;
 
                 return this;
             },

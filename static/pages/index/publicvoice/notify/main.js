@@ -85,15 +85,18 @@ var LHSNotifyPage = $.extend({}, LHSBasicPage, {
         'click #notifyModal .btn-primary': 'saveNotify'
     },
     autoSearch: function (jqinput, evt) {
-        13 == evt.keyCode && this.dataTable.refresh({
-            query: {id: jqinput.val()}
-        });
+        var id = $.trim(jqinput.val());
+
+        if (13 == evt.keyCode) {
+            this.dataTable.setFilter(id ? {id: id} : null)
+                .refresh();
+        }
     },
     doSearch: function (jqbtn) {
-        var daily_id = $.trim(jqbtn.prev('input').val());
-        this.dataTable.refresh({
-            query: {id: daily_id}
-        });
+        var id = $.trim(jqbtn.prev('input').val());
+
+        this.dataTable.setFilter(id ? {id: id} : null)
+            .refresh();
     },
     showNotifyModal: function () {
         var dataTable = this.dataTable;

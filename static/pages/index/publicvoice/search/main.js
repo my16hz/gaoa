@@ -103,6 +103,7 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
     },
     closeDataModal: function () {
         var modal = $('#dataModal');
+        
         this._clearFormControlValues(modal.find('form'))
             ._closeModal(modal, this.dataTable);
     }
