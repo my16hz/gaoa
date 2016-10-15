@@ -21,7 +21,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             {title: '舆情类别', field: 'type', sortable: true, order: 'desc'},
             {title: '回帖人数', field: 'fellow_count', sortable: true, order: 'desc'},
             {title: '关注人数', field: 'review_count', sortable: true, order: 'desc'},
-            {title: '涉及部门', field: 'relate_department', sortable: true, order: 'desc'},
+            {title: '上报用户', field: 'name', sortable: true, order: 'desc'},
             {
                 title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
