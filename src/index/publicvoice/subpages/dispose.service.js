@@ -157,7 +157,7 @@ function addPVComment (uid, obj, callback) {
         'BEGIN ' +
         '   INSERT INTO tb_pv_comment ([id], [comment_user], [comment], [attachment], [state], [comment_date], [recv_date], [message_id], [from_user], [from_department], [createuser], [createtime], [to_department]) ' +
         '   VALUES (@id, @comment_user, @comment, @attachment, @state, @comment_date, @recv_date, @message_id, @from_user, @from_department, @createuser, @createtime, @to_department); ' +
-        '   UPDATE tb_publicvoice SET [dispose_stat] = 1, [feedback_state] = 1 WHERE [id] = @id; ' +
+        '   UPDATE tb_publicvoice SET [dispose_stat] = 2, [feedback_state] = 1 WHERE [id] = @id; ' +
         'END ' +
         'ELSE ' +
         '   UPDATE tb_pv_comment SET [comment_user] = @comment_user, [comment] = @comment, [attachment] = @attachment, [comment_date] = @comment_date, [recv_date] = @recv_date, [message_id] = @message_id, [from_user] = @from_user, [from_department] = @from_department, [to_department] = @to_department ' +
