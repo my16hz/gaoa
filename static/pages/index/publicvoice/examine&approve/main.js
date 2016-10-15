@@ -130,12 +130,10 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
     doSearch: function () {
         var self = this;
 
-        this.dataTable.refresh({
-            query: {
-                sTime: self.sTime.getTime(),
-                eTime: self.eTime.getTime()
-            }
-        });
+        this.dataTable.setFilter({
+            sTime: self.sTime.getTime(),
+            eTime: self.eTime.getTime()
+        }).refresh();
     },
 
     closeDataModal: function () {
