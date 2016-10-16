@@ -15,7 +15,12 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/pubvoice/list', [
             {field: 'checkbox', checkbox: true},
-            {title: '标题', field: 'title', alwaysDisplay: true},
+            {
+                title: '标题', field: 'title', alwaysDisplay: true,
+                formatter: function (val, rowdata) {
+                    return '<a href="' + (rowdata.url || 'javascript:') + '" target="_blank">' + val + '</a>';
+                }
+            },
             {title: '载体', field: 'from_website', sortable: true, order: 'desc'},
             {title: '所属栏目', field: 'item', sortable: true, order: 'desc'},
             {title: '舆情类别', field: 'type', sortable: true, order: 'desc'},
