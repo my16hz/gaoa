@@ -61,29 +61,35 @@ module.exports = {
     updatePVState: updatePVState
 };
 
-function findPubVoiceList (uid, priority, field, order, callback) {
-    var sql_stmt = "SELECT * FROM tb_publicvoice WHERE state in (0, 1, 3) AND createtime < @endTime AND createtime > @startTime ";
+function findPubVoiceList (user, start, end, level, callback) {
+    var sql_stmt = "SELECT tb_publicvoice.*, tb_user.name " +
+        " FROM tb_publicvoice,tb_user " +
+        " WHERE tb_publicvoice.state in (0, 1, 3) AND tb_publicvoice.createtime < @endTime AND tb_publicvoice.createtime > @startTime " +
+        "       AND tb_user.id = tb_publicvoice.createuser ";
     var ps = null;
     var endTime = new Date();
     var startTime = new Date();
     startTime.setDate(startTime.getDate() - 1);
     var params = {
-        'startTime' : startTime,
-        'endTime' : endTime
+        'startTime' : start,
+        'endTime' : end
     };
-    if (priority != 1) {
+    if (user.priority != 1) {
         sql_stmt += ' AND createuser = @uid ';
-        params['uid'] = uid;
+        params['uid'] = user.id;
+    } else {
+        if (level != 0) {
+            sql_stmt += ' AND createuser IN (SELECT id FROM tb_user WHERE priority = @level) ';
+            params['level'] = level;
+        }
     }
 
-    if (field) {
-        sql_stmt += " ORDER BY " + field + " " + order;
-    }
+    sql_stmt += " ORDER BY createtime DESC";
+
     console.log(sql_stmt);
     ps = dbpool.preparedStatement()
         .input("uid", sql.VarChar)
-        .input("field", sql.VarChar)
-        .input("order", sql.VarChar)
+        .input("level", sql.Int)
         .input("startTime", sql.DateTime)
         .input("endTime", sql.DateTime)
         .prepare(sql_stmt, function (err) {

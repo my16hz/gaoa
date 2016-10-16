@@ -7,7 +7,7 @@ var userkey = require('config').session.userkey;
 
 var errhandler = require('../../../utils/errhandler');
 var service = require('./../service');
-
+var defaut_interval = 3600000 * 24 * 1;
 module.exports = {
     getPubVoices: getPubVoices,
     savePubVoice: savePubVoice,
@@ -17,11 +17,13 @@ module.exports = {
 };
 
 function getPubVoices (req, res) {
-    var uid = req.session[userkey].id,
-        priority = req.session[userkey].priority,
-        order = req.query["order"];
+    var user = req.session[userkey];
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
+    var level = (req.query.level - 0) || 0;
 
-    service.findPubVoiceList(uid, priority, "createtime", "DESC", function (err, rs) {
+    service.findPubVoiceList(user, start, end, level, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

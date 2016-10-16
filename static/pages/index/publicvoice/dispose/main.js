@@ -235,12 +235,21 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
     },
 
     _commentValidator: function () {
-        var jqform = $('#commentModal form');
-        var values = this._getFormControlValues(jqform);
+        var values = this._validate($('#commentModal form'), {
+            comment_date: function (val) {
+                if (!val.length) return '批示时间 不能为空。';
+            },
+            to_department: function (val) {
+                if (!val.length) return '处置单位 不能为空。';
+            },
+            comment_user: function (val) {
+                if (!val.length) return '批示领导 不能为空。';
+            }
+        });
 
-        values['attachment'] = this.editor.getContent();
+        if (values) values['content'] = this.editor.getContent();
 
-        return values;
+        return values || false;
     },
     _disposeValidator: function () {
         var jqform = $('#disposeModal form');
