@@ -67,9 +67,6 @@ function findPubVoiceList (user, start, end, level, callback) {
         " WHERE tb_publicvoice.state in (0, 1, 3) AND tb_publicvoice.createtime < @endTime AND tb_publicvoice.createtime > @startTime " +
         "       AND tb_user.id = tb_publicvoice.createuser ";
     var ps = null;
-    var endTime = new Date();
-    var startTime = new Date();
-    startTime.setDate(startTime.getDate() - 1);
     var params = {
         'startTime' : start,
         'endTime' : end
