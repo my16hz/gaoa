@@ -87,9 +87,19 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 }
             }
         ]);
+        this.tableFilter = null;
+
         this.editor = this._createEditor('#editorWrapper');
+
+        this.sTime = this._createTimepicker('#sTime').onChange(function (e) {
+            this.eTime.minDate(e.date)
+        });
+        this.eTime = this._createTimepicker('#eTime').onChange(function (e) {
+            this.sTime.maxDate(e.date);
+        });
     },
     events: {
+        'click #btnSearch': 'doSearch',
         'click #btnAdd': 'showDataModal',
         'click #btnImport': 'showImportModal',
         'click #btnDel': 'delSelected',
@@ -99,7 +109,13 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         'click #dataModal .btn-infosrc': 'addInfoSrcRow',
         'click #importModal .btn-default': 'closeImportModal'
     },
+    doSearch: function (jqbtn) {
+        var id = $.trim(jqbtn.prev('input').val());
 
+        this.dataTable.setFilter({
+
+        }).refresh();
+    },
     showDataModal: function (pubvoice) {
         var modal = $('#dataModal');
         var jqform = modal.find('form');
@@ -138,8 +154,8 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 !$.isArray(pubvoice.url) && (pubvoice.url = pubvoice.url.split(','));
                 !$.isArray(pubvoice.from_website) && (pubvoice.from_website = pubvoice.from_website.split(','));
 
-/*                self._appendInfoSrcRow(jqInput.parents('div.form-group'))
-                    ._setFormControlValues(jqform, pubvoice);*/
+                /*self._appendInfoSrcRow(jqInput.parents('div.form-group'))
+                 ._setFormControlValues(jqform, pubvoice);*/
                 self._setFormControlValues(jqform, pubvoice);
             }
 

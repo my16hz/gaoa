@@ -84,7 +84,6 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
     },
     events: {
         'click #btnSearch': 'doSearch',
-        'click #dataModal .btn-default': 'closeDataModal',
     },
     doSearch: function () {
         var funcCtrls = $('.func-btns');
