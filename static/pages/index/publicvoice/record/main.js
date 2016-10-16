@@ -109,11 +109,11 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         'click #dataModal .btn-infosrc': 'addInfoSrcRow',
         'click #importModal .btn-default': 'closeImportModal'
     },
-    doSearch: function (jqbtn) {
-        var id = $.trim(jqbtn.prev('input').val());
-
+    doSearch: function () {
         this.dataTable.setFilter({
-
+            level: $('#level').val(),
+            sTime: this.sTime.getTime(),
+            eTime: this.eTime.getTime()
         }).refresh();
     },
     showDataModal: function (pubvoice) {
