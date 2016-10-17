@@ -92,16 +92,14 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 }
             }
         ]);
-        this.tableFilter = null;
-
         this.editor = this._createEditor('#editorWrapper');
-
         this.sTime = this._createTimepicker('#sTime', 'YYYY-MM-DD HH:mm').onChange(function (e) {
             this.eTime.minDate(e.date)
         });
         this.eTime = this._createTimepicker('#eTime', 'YYYY-MM-DD HH:mm').onChange(function (e) {
             this.sTime.maxDate(e.date);
         });
+        this.isUrlOK = false;
     },
     events: {
         'click #btnSearch': 'doSearch',
@@ -109,6 +107,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         'click #btnImport': 'showImportModal',
         'click #btnDel': 'delSelected',
         'click #btnCommit': 'applyApprobation',
+        'blur #dataModal input[name="from_website"]': 'checkWebSite',
         'click #dataModal .btn-default': 'closeDataModal',
         'click #dataModal .btn-primary': 'savePubVoice',
         'click #dataModal .btn-infosrc': 'addInfoSrcRow',
@@ -199,6 +198,30 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
 
         return this;
     },
+    checkWebSite: function (jqinput) {
+        var website = $.trim(jqinput.val());
+        var self = this;
+
+        this._sendRequest({
+            type: 'get', url: '/pubvoice/checkurl',
+            data: {url: website},
+            done: function (count) {
+                if (count) {
+                    self.isUrlOK = false;
+
+                    jqinput.tooltip({title: '该网址已经注册过！'}).tooltip('show')
+                        .unbind('focus')
+                        .bind('focus', function () {
+                            $(this).tooltip('destroy')
+                                .parent().removeClass('has-error');
+                        })
+                        .parent().addClass('has-error');
+                } else {
+                    self.isUrlOK = true;
+                }
+            }
+        });
+    },
     closeDataModal: function () {
         var modal = $('#dataModal');
 
@@ -272,7 +295,13 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         return this;
     },
     _pvValidator: function () {
+        var self = this;
         var values = this._validate($('#dataModal form'), {
+            website: function (val) {
+                if (!val) return;
+                if (null == self.isUrlOK) return '服务器正在验证中，请稍等。';
+                if (!self.isUrlOK) return '舆情网址已经存在。';
+            },
             review_count: function (val) {
                 if (!(/^\d+$/.test(val))) return '必须为数字。';
             },
