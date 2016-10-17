@@ -58,7 +58,12 @@ module.exports = {
     commitApproval: commitApproval,
 
     findPubVoicesByState: findPubVoicesByState,
-    updatePVState: updatePVState
+    updatePVState: updatePVState,
+
+    /**
+     * 校验URL是否已经存在
+     */
+    checkPVUrl: checkPVUrl
 };
 
 function findPubVoiceList (user, start, end, level, callback) {
@@ -349,6 +354,32 @@ function updatePVState (pvids, state, callback) {
 
             ps.execute(objParams, function (err, rs) {
                 callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function checkPVUrl(start, end, url, callback) {
+    var params = {
+        'url' : url,
+        'start' : start,
+        'end' : end
+    };
+    var sql_stmt = "SELECT * from tb_publicvoice WHERE url IN (@url) AND createtime > @start AND createtime < @end;";
+    var ps = dbpool.preparedStatement()
+        .input('url', sql.VarChar)
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, 0);
+            }
+
+            ps.execute(params, function (err, rs, affected) {
+                callback(err, affected);
 
                 ps.unprepare(function (err) {
                     err && console.error(err);
