@@ -99,7 +99,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         this.eTime = this._createTimepicker('#eTime', 'YYYY-MM-DD HH:mm').onChange(function (e) {
             this.sTime.maxDate(e.date);
         });
-        this.isUrlOK = false;
+        this.isUrlOK = null;
     },
     events: {
         'click #btnSearch': 'doSearch',
@@ -107,7 +107,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         'click #btnImport': 'showImportModal',
         'click #btnDel': 'delSelected',
         'click #btnCommit': 'applyApprobation',
-        'blur #dataModal input[name="from_website"]': 'checkWebSite',
+        'change #dataModal input[name="url"]': 'checkWebSite',
         'click #dataModal .btn-default': 'closeDataModal',
         'click #dataModal .btn-primary': 'savePubVoice',
         'click #dataModal .btn-infosrc': 'addInfoSrcRow',
@@ -199,17 +199,21 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         return this;
     },
     checkWebSite: function (jqinput) {
-        var website = $.trim(jqinput.val());
+        var url = $.trim(jqinput.val());
         var self = this;
 
-        this._sendRequest({
+        this.isUrlOK = null;
+
+        url && this._sendRequest({
             type: 'get', url: '/pubvoice/checkurl',
-            data: {url: website},
+            data: {url: url},
             done: function (count) {
                 if (count) {
                     self.isUrlOK = false;
 
-                    jqinput.tooltip({title: '该网址已经注册过！'}).tooltip('show')
+                    jqinput
+                        .tooltip('destroy')
+                        .tooltip({title: '舆情网址已经存在。'}).tooltip('show')
                         .unbind('focus')
                         .bind('focus', function () {
                             $(this).tooltip('destroy')
@@ -297,7 +301,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     _pvValidator: function () {
         var self = this;
         var values = this._validate($('#dataModal form'), {
-            website: function (val) {
+            url: function (val) {
                 if (!val) return;
                 if (null == self.isUrlOK) return '服务器正在验证中，请稍等。';
                 if (!self.isUrlOK) return '舆情网址已经存在。';
