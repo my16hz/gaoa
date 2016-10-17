@@ -13,7 +13,9 @@ module.exports = {
     savePubVoice: savePubVoice,
     removePubVoice: removePubVoice,
     importPubVoice: importPubVoice,
-    applyApprobation: applyApprobation
+    applyApprobation: applyApprobation,
+
+    checkPVUrl: checkPVUrl
 };
 
 function getPubVoices (req, res) {
@@ -77,6 +79,22 @@ function applyApprobation (req, res) {
             errhandler.internalException(res, err) :
             res.send({
                 success: true
+            });
+    });
+}
+
+function checkPVUrl (req, res) {
+    var url = req.query.url;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval * 30));
+    var end = new Date((req.query.eTime - 0 ) || now );
+
+    service.checkPVUrl(start, end, url, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
             });
     });
 }

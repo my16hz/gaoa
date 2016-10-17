@@ -17,6 +17,7 @@ module.exports = function () {
         .post('/pubvoice/import', controller.importPubVoice)
         .post('/pubvoice/apply', controller.applyApprobation)
         .get('/pubvoice/search', controller.searchPubVoices)
+        .get('/pubvoice/checkurl', controller.checkPVUrl)
 
         // examine & approve page
         .get('/application/list', controller.getApplications)
