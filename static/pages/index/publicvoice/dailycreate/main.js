@@ -188,7 +188,7 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
             } else if (pv.item == '舆情追踪') {
                 yqzz_title += title;
                 yqzz_content += this._buildYQZZContent(pv);
-            } else if (pv.item == '热点话题') {
+            } else if (pv.item == '热点话题' || pv.item == '网上热点') {
                 rdht_title += title;
                 rdht_content += this._buildRDHTContent(pv);
             }

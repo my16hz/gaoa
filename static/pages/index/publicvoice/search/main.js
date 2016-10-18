@@ -26,7 +26,7 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
             {
                 title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日');
+                    return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
                 }
             },
             {

@@ -72,15 +72,26 @@ function importPubVoice (req, res) {
 }
 
 function applyApprobation (req, res) {
-    var ids = req.body.ids;
+    var priority = req.session[userkey].priority;
+    if (priority == 2) {
+        /**
+         * 县级用户不能提交
+         */
+        res.send({
+            success: false,
+            message: "权限不足"
+        });
+    } else {
+        var ids = req.body.ids;
 
-    service.commitApproval(ids.split(','), function (err) {
-        err ?
-            errhandler.internalException(res, err) :
-            res.send({
-                success: true
-            });
-    });
+        service.commitApproval(ids.split(','), function (err) {
+            err ?
+                errhandler.internalException(res, err) :
+                res.send({
+                    success: true
+                });
+        });
+    }
 }
 
 function checkPVUrl (req, res) {

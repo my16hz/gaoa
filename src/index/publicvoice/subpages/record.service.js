@@ -67,26 +67,27 @@ module.exports = {
 };
 
 function findPubVoiceList (user, start, end, level, callback) {
-    var sql_stmt = "SELECT tb_publicvoice.*, tb_user.name " +
-        " FROM tb_publicvoice,tb_user " +
-        " WHERE tb_publicvoice.state in (0, 1, 3) AND tb_publicvoice.createtime < @endTime AND tb_publicvoice.createtime > @startTime " +
-        "       AND tb_user.id = tb_publicvoice.createuser ";
     var ps = null;
     var params = {
         'startTime' : start,
         'endTime' : end
     };
+    var sql_stmt = "SELECT tb_publicvoice.*, tb_user.name " +
+        " FROM tb_publicvoice,tb_user  " +
+        " WHERE tb_user.id = tb_publicvoice.createuser " +
+        "   AND tb_publicvoice.id IN ( SELECT MIN(id) FROM tb_publicvoice WHERE state in (0, 1, 3) AND createtime < @endTime AND createtime > @startTime GROUP BY url) ";
+
     if (user.priority != 1) {
-        sql_stmt += ' AND createuser = @uid ';
+        sql_stmt += ' AND tb_publicvoice.createuser = @uid ';
         params['uid'] = user.id;
     } else {
         if (level != 0) {
-            sql_stmt += ' AND createuser IN (SELECT id FROM tb_user WHERE priority = @level) ';
+            sql_stmt += ' AND tb_publicvoice.createuser IN (SELECT id FROM tb_user WHERE priority = @level) ';
             params['level'] = level;
         }
     }
 
-    sql_stmt += " ORDER BY createtime DESC";
+    sql_stmt += " ORDER BY tb_publicvoice.createtime DESC";
 
     console.log(sql_stmt);
     ps = dbpool.preparedStatement()
@@ -225,7 +226,7 @@ function importPubVoices (user, path, callback) {
         obj["content"] = xss(pv["帖文内容"]);
         obj["from_website"] = pv["载体1"] ? pv["载体1"] : " " + pv["载体2"] ? pv["载体2"] : " " + pv["载体3"] ? pv["载体3"] : " " + pv["载体4"] ? pv["载体4"] : " ";
         obj["url"] = pv["网址1"] ? pv["网址1"] : " " + pv["网址2"] ? pv["网址2"] : " " + pv["网址3"] ? pv["网址3"] : " " + pv["网址4"] ? pv["网址5"] : " ";
-        obj["state"] = 1;
+        obj["state"] = user.priority == 1 ? 1 : 0;
         obj["approved_state"] = 0;
         obj["dispose_stat"] = 0;
         obj["feedback_state"] = 3;
@@ -368,7 +369,7 @@ function checkPVUrl(start, end, url, callback) {
         'start' : start,
         'end' : end
     };
-    var sql_stmt = "SELECT * from tb_publicvoice WHERE url IN (@url) AND createtime > @start AND createtime < @end;";
+    var sql_stmt = "SELECT * from tb_publicvoice WHERE url = @url AND createtime > @start AND createtime < @end;";
     var ps = dbpool.preparedStatement()
         .input('url', sql.VarChar)
         .input("start", sql.DateTime)
@@ -378,8 +379,8 @@ function checkPVUrl(start, end, url, callback) {
                 return callback(err, 0);
             }
 
-            ps.execute(params, function (err, rs, affected) {
-                callback(err, affected);
+            ps.execute(params, function (err, rs) {
+                callback(err, rs.length);
 
                 ps.unprepare(function (err) {
                     err && console.error(err);
