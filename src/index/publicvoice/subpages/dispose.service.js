@@ -130,19 +130,24 @@ function getPVListByDisposeState (state, callback) {
 }
 
 function getPVComment (pvid, callback) {
-    var sql_stmt = "SELECT * FROM tb_pv_comment WHERE id = @id;";
+    var sql_stmt = 'IF NOT EXISTS (SELECT * FROM tb_pv_comment WHERE [id] = @id)  ' +
+                    '	SELECT value, 2 AS type FROM tb_sys_config WHERE id = @comment_doc_no; ' +
+                    'ELSE ' +
+                    '	SELECT *, 1 AS type FROM tb_pv_comment WHERE id = @id; ';
     var objParams = {
-        "id": pvid
+        "id": pvid,
+        "comment_doc_no" : 'comment_doc_no'
     };
 
     var ps = dbpool.preparedStatement()
         .input("id", sql.Int)
+        .input("comment_doc_no", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
-                callback(err, recordset)
+                callback(err, recordset);
                 ps.unprepare(function (err) {
                     if (err)
                         console.log(err);
@@ -158,6 +163,7 @@ function addPVComment (uid, obj, callback) {
         '   INSERT INTO tb_pv_comment ([id], [comment_user], [comment], [attachment], [state], [comment_date], [recv_date], [message_id], [from_user], [from_department], [createuser], [createtime], [to_department]) ' +
         '   VALUES (@id, @comment_user, @comment, @attachment, @state, @comment_date, @recv_date, @message_id, @from_user, @from_department, @createuser, @createtime, @to_department); ' +
         '   UPDATE tb_publicvoice SET [dispose_stat] = 2, [feedback_state] = 1 WHERE [id] = @id; ' +
+        "   UPDATE tb_sys_config SET [value] = @comment_doc_no WHERE [id] = 'comment_doc_no';" +
         'END ' +
         'ELSE ' +
         '   UPDATE tb_pv_comment SET [comment_user] = @comment_user, [comment] = @comment, [attachment] = @attachment, [comment_date] = @comment_date, [recv_date] = @recv_date, [message_id] = @message_id, [from_user] = @from_user, [from_department] = @from_department, [to_department] = @to_department ' +
@@ -176,7 +182,8 @@ function addPVComment (uid, obj, callback) {
         'from_department' : obj['from_department'],
         'to_department': obj['to_department'],
         "createuser": uid,
-        "createtime": new Date()
+        "createtime": new Date(),
+        "comment_doc_no": obj['comment_doc_no']
     };
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
@@ -191,6 +198,7 @@ function addPVComment (uid, obj, callback) {
         .input('from_user', sql.NVarChar)
         .input('from_department', sql.NVarChar)
         .input('to_department', sql.NVarChar)
+        .input('comment_doc_no', sql.VarChar)
         .input("createuser", sql.VarChar)
         .input("createtime", sql.DateTime2)
         .prepare(sql_stmt, function (err) {
