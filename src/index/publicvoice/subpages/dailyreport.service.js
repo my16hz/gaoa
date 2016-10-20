@@ -212,6 +212,7 @@ function getLatestDailyPVList (callback) {
         " ON tb_publicvoice.id = tb_pv_comment.id " +
         " WHERE tb_daily_pv.pvid = tb_publicvoice.id AND tb_daily_pv.did IN ( SELECT MAX(id) as id FROM tb_daily);";
     var objParams = {};
+    console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
             if (err) {

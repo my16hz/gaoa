@@ -247,7 +247,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
             }
         });
 
-        if (values) values['content'] = this.editor.getContent();
+        if (values) values['attachment'] = this.editor.getContent();
 
         return values || false;
     },
