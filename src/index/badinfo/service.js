@@ -31,7 +31,7 @@ module.exports = {
 
 function listBadInfo (uid, priority, field, order, callback) {
     var params = {};
-    var sql_stmt = "select * from tb_badinfo ";
+    var sql_stmt = "select top 1000 * from tb_badinfo ";
     if (priority != 1) {
         sql_stmt += ' where createuser = @uid ';
         params['uid'] = uid;
