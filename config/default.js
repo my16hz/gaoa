@@ -189,7 +189,7 @@ module.exports = {
         '    %yqzz_content%' +
         '</p>' +
         '<p>' +
-        '    <img src="/sample/template/rdht.jpg"/>' +
+        '    <img src="/sample/template/wsrd.jpg"/>' +
         '</p>' +
         '<p>' +
         '    %rdht_content%' +

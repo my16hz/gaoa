@@ -23,10 +23,7 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
             {title: '危害类型', field: 'type', sortable: true, order: 'desc'},
             {title: '举报查询码', field: 'sn', sortable: true, order: 'desc'},
             {
-                title: '举报时间', field: 'reportdate', sortable: true, order: 'desc',
-                formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日');
-                }
+                title: '举报时间', field: 'reportdate', sortable: true, order: 'desc'
             },
             {
                 title: '操作', field: 'action',
@@ -123,10 +120,37 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
     },
 
     _badinfoValidator: function () {
-        var jqform = $('#dataModal form');
-        var values = this._getFormControlValues(jqform);
-        values['remark'] = this.editor.getContent();
-        return values;
+        var self = this;
+        var values = this._validate($('#dataModal form'), {
+            website: function (val) {
+                if (!val.length) return '不能为空。';
+            },
+            url: function (val) {
+                if (!val.length) return '不能为空。';
+            },
+            username: function (val) {
+                if (!val.length) return '不能为空。';
+            },
+            duty_zone: function (val) {
+                if (!val.length) return '不能为空。';
+            },
+            department: function (val) {
+                if (!val.length) return '不能为空。';
+            },
+            type: function (val) {
+                if (!val.length) return '不能为空。';
+            },
+            reportdate: function (val) {
+                if (!val.length) return '不能为空。';
+            },
+            sn: function (val) {
+                if (!val.length) return '不能为空。';
+            }
+        });
+
+        if (values) values['remark'] = this.editor.getContent();
+
+        return values || false;
     },
     _ajaxDelete: function (ids, done) {
         this._sendRequest({

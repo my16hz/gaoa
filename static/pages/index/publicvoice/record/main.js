@@ -311,7 +311,16 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             },
             fellow_count: function (val) {
                 if (!(/^\d+$/.test(val))) return '必须为数字。';
-            }
+            },
+            relate_department: function (val) {
+                if (!val.length) return '不能为空。';
+            },
+            type: function (val) {
+                if (!val.length) return '不能为空。';
+            },
+            item: function (val) {
+                if (!val.length) return '不能为空。';
+            },
         });
 
         if (values) values['content'] = this.editor.getContent();
