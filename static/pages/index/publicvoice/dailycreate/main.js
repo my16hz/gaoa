@@ -160,17 +160,13 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
         var zmyq_title = '', zmyq_content = '',
             fmyq_title = '', fmyq_content = '',
             yqzz_title = '', yqzz_content = '',
-            rdht_title = '', rdht_content = '';
+            rdht_title = '', rdht_content = '',
+            sght_title = '', sght_content = '',
+            yzwy_title = '', yzwy_content = '';
         for (var idx in pubvoices) {
             var pv = pubvoices[idx];
             var title = '<p><span style="font-size:20px;font-family:仿宋_GB2312">※ ' + pv.title + '</span></p>';
             var content = pv.content;
-
-            /*处理回复信息*/
-            if (pv.feedback_type == 0 || pv.feedback_type == 1) {
-                pv.item = '舆情追踪';
-                content = pv.feedback_content;
-            }
 
             if (pv.content.indexOf('<p>') == 0) {
                 pv.content = pv.content.substring(3, content.length - 4);
@@ -191,16 +187,26 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
             } else if (pv.item == '热点话题' || pv.item == '网上热点') {
                 rdht_title += title;
                 rdht_content += this._buildRDHTContent(pv);
+            } else if (pv.item == '涉广话题') {
+                sght_title += title;
+                sght_content += this._buildSGHTContent(pv);
+            } else if (pv.item == '一周网语') {
+                yzwy_title += title;
+                yzwy_content += this._buildYZWYContent(pv);
             }
         }
         daily = daily.replace('%zmyq_title%', zmyq_title);
         daily = daily.replace('%fmyq_title%', fmyq_title);
         daily = daily.replace('%yqzz_title%', yqzz_title);
         daily = daily.replace('%rdht_title%', rdht_title);
+        daily = daily.replace('%sght_title%', sght_title);
+        daily = daily.replace('%yzwy_title%', yzwy_title);
         daily = daily.replace('%zmyq_content%', zmyq_content);
         daily = daily.replace('%fmyq_content%', fmyq_content);
         daily = daily.replace('%yqzz_content%', yqzz_content);
         daily = daily.replace('%rdht_content%', rdht_content);
+        daily = daily.replace('%sght_content%', sght_content);
+        daily = daily.replace('%yzwy_content%', yzwy_content);
         return daily;
     },
     _buildZMYQContent: function (pv) {
@@ -223,7 +229,7 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
             (pv.review_count || "无法统计") +
             '&nbsp; &nbsp; </span><span style="font-size:20px;font-family:仿宋_GB2312">跟帖数：' +
             (pv.fellow_count || "无法统计") +
-            '</span></p><p><br/></p><p><span style="font-size:20px;font-family:仿宋_GB2312"> &nbsp;' +
+            '</span></p><p><span style="font-size:20px;font-family:仿宋_GB2312"> &nbsp;' +
             pv.content +
             '</span></p><p><br/></p>';
     },
@@ -241,7 +247,20 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
             pv.content +
             '</span></p>';
     },
-
+    _buildSGHTContent: function (pv) {
+        return '<p><strong><span style="font-size: 20px;font-family: 黑体">■' +
+            pv.title +
+            '</span></strong></p><p style="text-indent: 40px; line-height: 33px;"><span style="font-size:20px;font-family:仿宋_GB2312">&nbsp;' +
+            pv.content +
+            '</span></p>';
+    },
+    _buildYZWYContent: function (pv) {
+        return '<p><strong><span style="font-size: 20px;font-family: 黑体">■' +
+            pv.title +
+            '</span></strong></p><p style="text-indent: 40px; line-height: 33px;"><span style="font-size:20px;font-family:仿宋_GB2312">&nbsp;' +
+            pv.content +
+            '</span></p>';
+    },
     _validator: function () {
         var jqform = $('#dataModal form');
         var values = this._getFormControlValues(jqform);

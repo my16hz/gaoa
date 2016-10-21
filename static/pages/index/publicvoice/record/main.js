@@ -132,7 +132,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             done: function (rs) {
                 _appendOptions(rs);
                 _fillFormValues(pubvoice);
-
+                self.isUrlOK = true;
                 self._showModal(modal, self.dataTable);
             }
         });
