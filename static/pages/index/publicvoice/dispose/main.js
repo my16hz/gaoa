@@ -91,10 +91,15 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                             url: '/dispose/comment',
                             data: {id: pubvoice.id},
                             done: function (rs) {
-                                rs = rs[0] || {comment: "", attachment: ""};
-                                rs.id = pubvoice.id;
+                                var type = rs[0] ? rs[0].type : 2;
+                                var result = rs[0];
+                                if (type == 2) {
+                                    var value = rs[0].value - 0 + 1;
+                                    result = {comment: "", attachment: "", comment_doc_no: value, message_id: '舆收[' + moment(new Date()).format('YYYY') + '] ' + value + '号'}
+                                }
+                                result.id = pubvoice.id;
 
-                                _fillFormValues(rs);
+                                _fillFormValues(result);
 
                                 self._showModal(modal, self.dataTable);
                             }

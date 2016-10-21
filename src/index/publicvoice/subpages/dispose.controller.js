@@ -123,7 +123,8 @@ function savePVComment (req, res) {
         'from_department' : obj['from_department'],
         'to_department' : obj['to_department'],
         "createuser": uid,
-        "createtime": new Date()
+        "createtime": new Date(),
+        "comment_doc_no" : obj['comment_doc_no']
     };
 
     service.addPVComment(uid, comment, function (err, rs) {
