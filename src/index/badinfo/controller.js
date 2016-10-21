@@ -86,7 +86,7 @@ function deleteBadInfo (req, res) {
 }
 
 function listRTX (req, res) {
-    service.listRTX("createtime", "asc", function (err, rs) {
+    service.listRTX(function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -111,6 +111,7 @@ function saveRTX (req, res) {
         'createuser': uid,
         'createtime': new Date()
     };
+
     service.saveRTX(objParams, function (err) {
         err ?
             errhandler.internalException(res, err) :

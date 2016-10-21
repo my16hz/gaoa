@@ -194,20 +194,12 @@ function deleteBadInfo (dbids, callback) {
         });
 }
 
-function listRTX (field, order, callback) {
+function listRTX (callback) {
     var params = {};
-    var sql_stmt = "select * from tb_rtx ";
+    var sql_stmt = "SELECT TOP 1000 tb_rtx.*,tb_user.name FROM tb_rtx, tb_user WHERE tb_user.id = tb_rtx.createuser ORDER BY tb_rtx.createtime DESC;";
     var ps = null;
-
-    if (field) {
-        sql_stmt += " order by " + field + " " + order;
-    }
-
     console.log(sql_stmt);
-
     ps = dbpool.preparedStatement()
-        .input("field", sql.VarChar)
-        .input("order", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, []);
@@ -224,9 +216,13 @@ function listRTX (field, order, callback) {
 }
 
 function saveRTX (obj, callback) {
-    var sql_stmt = 'DELETE FROM tb_rtx WHERE id in (@id); ' +
-        'INSERT INTO tb_rtx ([rtx_time], [department], [type], [content], [result], [duty_user], [remark], [createuser], [createtime])  ' +
-        'VALUES (@rtx_time, @department, @type, @content, @result, @duty_user, @remark, @createuser, @createtime);';
+    var sql_stmt =
+        "IF NOT EXISTS (SELECT * FROM tb_rtx WHERE id = @id) " +
+        "    INSERT INTO tb_rtx ([rtx_time], [department], [type], [content], [result], [duty_user], [remark], [createuser], [createtime])  " +
+        "       VALUES (@rtx_time, @department, @type, @content, @result, @duty_user, @remark, @createuser, @createtime);" +
+        "ELSE " +
+        "    UPDATE tb_rtx SET [rtx_time] = @rtx_time, [department] = @department, [type] = @type, [content] = @content, " +
+        "       [result] = @result, [duty_user] = @duty_user, [remark] = @remark WHERE [id] = @id; ";
     var objParams = {
         'id': obj['id'] == ''? 0 : obj['id'],
         "rtx_time": obj['rtx_time'],

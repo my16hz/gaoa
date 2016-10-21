@@ -17,6 +17,7 @@ var LHSRTXDirectivePage = $.extend({}, LHSBasicPage, {
             {field: 'checkbox', checkbox: true},
             {title: '指令部门', field: 'department', alwaysDisplay: true, sortable: true, order: 'desc'},
             {title: '指令方式', field: 'type', sortable: true, order: 'desc'},
+            {title: '指令接收人', field: 'name', sortable: true, order: 'desc'},
             {title: '责任人', field: 'duty_user', sortable: true, order: 'desc'},
             {
                 title: '指令时间', field: 'rtx_time', sortable: true, order: 'desc',
@@ -24,7 +25,6 @@ var LHSRTXDirectivePage = $.extend({}, LHSBasicPage, {
                     return moment(val).format('YYYY年MM月DD日');
                 }
             },
-            {title: '填报者', field: 'createuser', sortable: true, order: 'desc'},
             {title: '指令内容', field: 'content', sortable: true, order: 'desc'},
             {title: '完成情况', field: 'result', sortable: true, order: 'desc'},
             {
