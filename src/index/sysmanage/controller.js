@@ -10,6 +10,9 @@ var memberService = require('./member.service');
 var groupService = require('./group.service');
 var configService = require('./configure.service');
 
+var menukey = config.session.menukey;
+var userkey = config.session.userkey;
+
 module.exports = {
     pageSysManage: pageSysManage,
 
@@ -31,7 +34,8 @@ module.exports = {
 
 function pageSysManage (req, res) {
     res.render('index/sysmanage', {
-        menus: req.session[config.session.menukey]
+        menus: req.session[config.session.menukey],
+        user: req.session[userkey].name || '匿名用户'
     });
 }
 

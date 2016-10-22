@@ -3,13 +3,16 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
+var config = require('config');
 var HtmlDocx = require('html-docx-js');
-var menukey = require('config').session.menukey;
-var userkey = require('config').session.userkey;
 
 var errhandler = require('../../utils/errhandler');
 var service = require('./service');
+
+var menukey = config.session.menukey;
+var userkey = config.session.userkey;
 var defaut_interval = 3600000 * 24 * 30;
+
 module.exports = {
     pageSocialVoice: pageSocialVoice,
     getSocialVoices: getSocialVoices,
@@ -37,7 +40,8 @@ module.exports = {
 
 function pageSocialVoice (req, res) {
     res.render('index/socialvoice', {
-        menus: req.session[menukey]
+        menus: req.session[menukey],
+        user: req.session[userkey].name || '匿名用户'
     });
 }
 

@@ -3,10 +3,15 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
-var sesskeys = require('config').session;
+var config = require('config');
+
 var errhandler = require('../../utils/errhandler');
 var service = require('./service');
+
+var menukey = config.session.menukey;
+var userkey = config.session.userkey;
 var defaut_interval = 3600000 * 24 * 7;
+
 module.exports = {
     pageBadInfo: pageBadInfo,
     listBadInfo: listBadInfo,
@@ -31,13 +36,14 @@ module.exports = {
 
 function pageBadInfo (req, res) {
     res.render('index/badinfo', {
-        menus: req.session[sesskeys.menukey]
+        menus: req.session[menukey],
+        user: req.session[userkey].name || '匿名用户'
     });
 }
 
 function listBadInfo (req, res) {
-    var uid = req.session[sesskeys.userkey].id;
-    var priority = req.session[sesskeys.userkey].priority;
+    var uid = req.session[userkey].id;
+    var priority = req.session[userkey].priority;
     service.listBadInfo(uid, priority, "createtime", "desc", function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
@@ -49,7 +55,7 @@ function listBadInfo (req, res) {
 }
 
 function saveBadInfo (req, res) {
-    var uid = req.session[sesskeys.userkey].id;
+    var uid = req.session[userkey].id;
     var obj = req.body;
     var objParams = {
         'id': obj['id'],
@@ -97,7 +103,7 @@ function listRTX (req, res) {
 }
 
 function saveRTX (req, res) {
-    var uid = req.session[sesskeys.userkey].id;
+    var uid = req.session[userkey].id;
     var obj = req.body;
     var objParams = {
         'id': obj['id'],
@@ -146,7 +152,7 @@ function listRTXReport (req, res) {
 }
 
 function saveRTXReport (req, res) {
-    var uid = req.session[sesskeys.userkey].id;
+    var uid = req.session[userkey].id;
     var obj = req.body;
     var objParams = {
         'id': obj['id'],

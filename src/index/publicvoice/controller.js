@@ -3,17 +3,18 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
+var config = require('config');
 
-var extend = require('extend');
-
-var menukey = require('config').session.menukey;
 var service = require('./service');
+
+var menukey = config.session.menukey;
+var userkey = config.session.userkey;
 
 var controller = module.exports = {
     pagePubVoice: pagePubVoice
 };
 
-extend(
+require('extend')(
     controller,
     require('./subpages/alert.controller'),
     require('./subpages/analyze.controller'),
@@ -29,7 +30,8 @@ extend(
 
 function pagePubVoice (req, res) {
     res.render('index/publicvoice', {
-        menus: req.session[menukey]
+        menus: req.session[menukey],
+        user: req.session[userkey].name || '匿名用户'
     });
 }
 

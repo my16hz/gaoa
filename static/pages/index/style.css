@@ -29,8 +29,8 @@
     float: left;
 }
 
-.index-page .header .nav li a {
-; margin-top: 22px;
+.index-page .header .nav li a {;
+    margin-top: 22px;
     padding: 10px 20px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
@@ -44,6 +44,16 @@
 
 .index-page .header .lhs-loading {
     margin-top: 37px
+}
+
+.index-page .header .btn-logout {
+    text-decoration: none;
+}
+
+.index-page .header .btn-logout b {
+    display: inline-block;
+    padding: 0 2px;
+    color: #666666;
 }
 
 .index-page .content .aside-menu {
@@ -73,6 +83,18 @@
     padding-top: 20px;
 }
 
+.index-page .content .main-panel .lhs-alert-panel {
+    position: absolute;
+    top: 62px;
+    left: 180px;
+    max-width: 60%;
+    z-index: 999;
+}
+
 .index-page .content .main-panel .func-btns {
     margin-bottom: 12px;
+}
+
+.index-page .content .main-panel .fixed-table-container thead th .sortable {
+    padding-right: 18px;
 }

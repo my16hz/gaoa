@@ -16,15 +16,3 @@
 textarea {
     resize: none;
 }
-
-.lhs-alert-panel {
-    position: absolute;
-    top: 62px;
-    left: 180px;
-    max-width: 60%;
-    z-index: 999;
-}
-
-.fixed-table-container thead th .sortable {
-    padding-right: 18px;
-}

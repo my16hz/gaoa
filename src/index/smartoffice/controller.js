@@ -3,11 +3,12 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
-var menukey = require('config').session.menukey;
-var userkey = require('config').session.userkey;
+var config = require('config');
 var HtmlDocx = require('html-docx-js');
 var errhandler = require('../../utils/errhandler');
 var service = require('./service');
+var menukey = config.session.menukey;
+var userkey = config.session.userkey;
 
 module.exports = {
     pageSmartOffice: pageSmartOffice,
@@ -41,7 +42,8 @@ module.exports = {
 
 function pageSmartOffice (req, res) {
     res.render('index/smartoffice', {
-        menus: req.session[menukey]
+        menus: req.session[menukey],
+        user: req.session[userkey].name || '匿名用户'
     });
 }
 
@@ -99,7 +101,6 @@ function saveSendMsg (req, res) {
             });
     });
 }
-
 
 function saveRecvMsg (req, res) {
     var uid = req.session[userkey].id;
