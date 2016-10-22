@@ -212,6 +212,27 @@ var LHSBasicPage = {
         ).children('table');
         var filter = null;
 
+        $.each(columns, function () {
+            (this.minWidth || this.maxWidth || this.autoWidth) && (this.formatter = (function (setting) {
+                var rawFormatter = setting.formatter;
+
+                return function (val) {
+                    var content = !rawFormatter ? val : rawFormatter.apply(this, Array.prototype.slice.call(arguments));
+                    var isAction = 'action' === this.field;
+                    var isHtml = /^<[a-z]+ .*>.+<\/[a-z]+>$/.test(content);
+                    var html = isHtml && !isAction ? $(content) : $('<div></div>').append(content);
+
+                    html.addClass('text-ellipsis ').attr('title', isHtml ? (isAction ? '' : $(content).text()) : content);
+
+                    if (this.autoWidth) html.addClass('lhs-auto-width').attr('data-auto-width', this.autoWidth);
+                    if (this.minWidth) html.css('min-width', this.minWidth);
+                    if (this.maxWidth) html.css('max-width', this.maxWidth);
+
+                    return $('<div></div>').append(html).html();
+                }
+            })(this));
+        });
+
         dataTable.bootstrapTable({
             method: 'get',
             url: url,
@@ -238,10 +259,13 @@ var LHSBasicPage = {
             },
             columns: columns,
             pagination: true,
-            sortOrder: 'desc'
+            sortOrder: 'desc',
+            onPostBody: _reviseAutoWidth
         });
 
         this.__tableCaches__.push(dataTable);
+
+        $(window).resize(_reviseAutoWidth);
 
         return {
             origin: dataTable,
@@ -251,6 +275,8 @@ var LHSBasicPage = {
                         dataTable.bootstrapTable('hideColumn', cfg.field);
                     }
                 });
+
+                _reviseAutoWidth();
 
                 $(panel)
                     .attr('class', 'col-xs-2')
@@ -263,6 +289,8 @@ var LHSBasicPage = {
                 $.each(columns, function (i, cfg) {
                     dataTable.bootstrapTable('showColumn', cfg.field);
                 });
+
+                _reviseAutoWidth();
 
                 $(panel)
                     .attr('class', 'col-md-12')
@@ -323,6 +351,14 @@ var LHSBasicPage = {
                 dataTable.bootstrapTable('destroy');
             }
         };
+
+        function _reviseAutoWidth () {
+            var table = $('.bootstrap-table', panel);
+
+            table.find('.lhs-auto-width').each(function () {
+                $(this).width(table.width() * parseInt($(this).attr('data-auto-width'), 10) / 100);
+            });
+        }
     },
     _createUploader: function (input, action, complete) {
         var self = this;

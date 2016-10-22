@@ -6,6 +6,13 @@
     padding-right: 0px;
 }
 
+.text-ellipsis {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 textarea {
     resize: none;
 }
@@ -16,4 +23,8 @@ textarea {
     left: 180px;
     max-width: 60%;
     z-index: 999;
+}
+
+.fixed-table-container thead th .sortable {
+    padding-right: 18px;
 }

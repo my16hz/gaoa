@@ -18,9 +18,9 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
             {title: '当季期数', field: 'issue_id', sortable: true},
             {title: '创建用户', field: 'createuser'},
             {
-                title: '创建时间', field: 'createtime', sortable: true,
+                title: '创建时间', field: 'createtime', sortable: true, minWidth: 112,
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
+                    return moment(val).format('YYYY/MM/DD HH:mm');
                 }
             },
             {

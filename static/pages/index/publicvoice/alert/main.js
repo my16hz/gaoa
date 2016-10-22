@@ -35,7 +35,7 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
                 }
             },
             {
-                title: '预警结束时间', field: 'endtime', sortable: true, order: 'desc',
+                title: '预警结束时间', field: 'endtime', sortable: true, order: 'desc', minWidth: 112,
                 formatter: function (val) {
                     return moment(val).format('YYYY年MM月DD日');
                 }
@@ -44,10 +44,8 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
                 title: '状态', field: 'state', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
-                        case 0:
-                            return '有效预警';
-                        default:
-                            return '预警结束';
+                        case 0: return '有效预警';
+                        default: return '预警结束';
                     }
                 }
             },
@@ -57,7 +55,7 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
                     return [
                         '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
                         '<a href="javascript:" title="清除预警"><i class="glyphicon glyphicon-remove"></i></a>'
-                    ].join('&nbsp;&nbsp;');
+                    ].join('&nbsp;');
                 },
                 events: {
                     'click a:first': function () {

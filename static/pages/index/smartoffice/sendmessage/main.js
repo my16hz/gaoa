@@ -24,7 +24,7 @@ var LHSSendMessagePage = $.extend({}, LHSBasicPage, {
             {
                 title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日');
+                    return moment(val).format('YYYY/MM/DD');
                 }
             },
             {
@@ -48,14 +48,14 @@ var LHSSendMessagePage = $.extend({}, LHSBasicPage, {
                                 '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
                                 '<a href="javascript:" title="导出"><i class="glyphicon glyphicon-export"></i></a>',
                                 '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
-                            ].join('&nbsp;&nbsp;');
+                            ].join('&nbsp;');
                         case 1 :
                         case 2 :
                             return [
                                 '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
                                 '<a href="javascript:" title="导出"><i class="glyphicon glyphicon-export"></i></a>',
                                 '<a></a>'
-                            ].join('&nbsp;&nbsp;');
+                            ].join('&nbsp;');
                     }
                 },
                 events: {

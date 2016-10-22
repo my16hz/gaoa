@@ -20,9 +20,9 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             {title: '作者', field: 'reportuser', sortable: true, order: 'desc'},
             {title: '单位', field: 'department', sortable: true, order: 'desc'},
             {
-                title: '上报时间', field: 'createtime', sortable: true, order: 'desc',
+                title: '上报时间', field: 'createtime', sortable: true, order: 'desc', minWidth: 72,
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日');
+                    return moment(val).format('YYYY/MM/DD');
                 }
             },
             {
@@ -41,7 +41,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                     return [
                         '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
                         '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
-                    ].join('&nbsp;&nbsp;');
+                    ].join('&nbsp;');
                 },
                 events: {
                     'click a:first': function () {

@@ -27,9 +27,9 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
             },
             {title: '描述', field: 'description'},
             {
-                title: '创建时间', field: 'createtime',
+                title: '创建时间', field: 'createtime', minWidth: 72,
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
+                    return moment(val).format('YYYY/MM/DD');
                 }
             },
             {
@@ -39,7 +39,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                         '<a href="javascript:" title="编辑"><i class="glyphicon glyphicon-edit"></i></a>',
                         '<a href="javascript:" title="密码重置"><i class="glyphicon glyphicon-exclamation-sign"></i></a>',
                         '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
-                    ].join('&nbsp;&nbsp;');
+                    ].join('&nbsp;');
                 },
                 events: {
                     'click a:eq(0)': function () {
@@ -86,7 +86,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                         '<a href="javascript:" title="成员"><i class="glyphicon glyphicon-user"></i></a>',
                         '<a href="javascript:" title="编辑"><i class="glyphicon glyphicon-edit"></i></a>',
                         '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
-                    ].join('&nbsp;&nbsp;');
+                    ].join('&nbsp;');
                 },
                 events: {
                     'click a:eq(0)': function () {

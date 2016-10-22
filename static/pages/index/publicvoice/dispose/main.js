@@ -20,35 +20,28 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
             {title: '载体', field: 'from_website', sortable: true, order: 'desc'},
             {title: '所属栏目', field: 'item', sortable: true, order: 'desc'},
             {title: '舆情类别', field: 'type', sortable: true, order: 'desc'},
-            {title: '回帖人数', field: 'fellow_count', sortable: true, order: 'desc'},
-            {title: '关注人数', field: 'review_count', sortable: true, order: 'desc'},
+            {title: '回帖数', field: 'fellow_count', sortable: true, order: 'desc'},
+            {title: '关注数', field: 'review_count', sortable: true, order: 'desc'},
             {
                 title: '涉及部门', field: 'relate_department', sortable: true, order: 'desc'
             },
             {
-                title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
+                title: '处理时间', field: 'createtime', sortable: true, order: 'desc', minWidth: 112,
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
+                    return moment(val).format('YYYY/MM/DD HH:mm');
                 }
             },
             {
                 title: '处置状态', field: 'dispose_stat', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
-                        case 0:
-                            return "未批示";
-                        case 1:
-                            return "已批示";
-                        case 2:
-                            return "待审批";
-                        case 3:
-                            return "转";
-                        case 4:
-                            return "转发";
-                        case 5:
-                            return "阅存";
-                        default:
-                            return "未批示";
+                        case 0: return "未批示";
+                        case 1: return "已批示";
+                        case 2: return "待审批";
+                        case 3: return "转";
+                        case 4: return "转发";
+                        case 5: return "阅存";
+                        default: return "未批示";
                     }
                 }
             },
@@ -61,23 +54,23 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                             return [
                                 '<a href="javascript:" title="批示详情"><i class="glyphicon glyphicon-eye-open"></i></a>',
                                 '<a href="javascript:" title="提交审批"><i class="glyphicon glyphicon-ok"></i></a>'
-                            ].join('&nbsp;&nbsp;');
+                            ].join('&nbsp;');
                         case 2 :
                             return ['<a href="javascript:" title="批示详情"><i class="glyphicon glyphicon-eye-open"></i></a>',
                                 '<a></a>'
-                            ].join('&nbsp;&nbsp;');
+                            ].join('&nbsp;');
                         case 3 :
                         case 4 :
                         case 5 :
                             return [
                                 '<a href="javascript:" title="批示详情"><i class="glyphicon glyphicon-eye-open"></i></a>',
                                 '<a href="javascript:" title="批示处置"><i class="glyphicon glyphicon-retweet"></i></a>'
-                            ].join('&nbsp;&nbsp;');
+                            ].join('&nbsp;');
                         case 0 :
                         default:
                             return ['<a href="javascript:" title="批示登记"><i class="glyphicon glyphicon-comment"></i></a>',
                                 '<a></a>'
-                            ].join('&nbsp;&nbsp;');
+                            ].join('&nbsp;');
                     }
                 },
                 events: {

@@ -18,7 +18,7 @@ var LHSRecvMessagePage = $.extend({}, LHSBasicPage, {
             {
                 title: '收文时间', field: 'recv_date', sortable: true, order: 'desc',
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日');
+                    return moment(val).format('YYYY/MM/DD');
                 }
             },
             {title: '收文编号', field: 'message_id', sortable: true, order: 'desc'},
@@ -28,9 +28,9 @@ var LHSRecvMessagePage = $.extend({}, LHSBasicPage, {
             {title: '领取人', field: 'from_user', sortable: true, order: 'desc'},
             {title: '从何领取', field: 'from_department', sortable: true, order: 'desc'},
             {
-                title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
+                title: '处理时间', field: 'createtime', sortable: true, order: 'desc', minWidth: 72,
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日');
+                    return moment(val).format('YYYY/MM/DD');
                 }
             },
             {
@@ -54,14 +54,14 @@ var LHSRecvMessagePage = $.extend({}, LHSBasicPage, {
                                 '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
                                 '<a href="javascript:" title="导出"><i class="glyphicon glyphicon-export"></i></a>',
                                 '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
-                            ].join('&nbsp;&nbsp;');
+                            ].join('&nbsp;');
                         case 1 :
                         case 2 :
                             return [
                                 '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
                                 '<a href="javascript:" title="导出"><i class="glyphicon glyphicon-export"></i></a>',
                                 '<a></a>'
-                            ].join('&nbsp;&nbsp;');
+                            ].join('&nbsp;');
                     }
                 },
                 events: {

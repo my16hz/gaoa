@@ -21,23 +21,21 @@ var LHSGuidePage = $.extend({}, LHSBasicPage, {
             {title: '舆情载体', field: 'from_website', sortable: true, order: 'desc'},
             {title: '所属栏目', field: 'item', sortable: true, order: 'desc'},
             {title: '舆情类别', field: 'type', sortable: true, order: 'desc'},
-            {title: '回帖人数', field: 'fellow_count', sortable: true, order: 'desc'},
-            {title: '关注人数', field: 'review_count', sortable: true, order: 'desc'},
+            {title: '回帖数', field: 'fellow_count', sortable: true, order: 'desc'},
+            {title: '关注数', field: 'review_count', sortable: true, order: 'desc'},
             {title: '涉及部门', field: 'relate_department', sortable: true, order: 'desc'},
             {
-                title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
+                title: '处理时间', field: 'createtime', sortable: true, order: 'desc', minWidth: 112,
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
+                    return moment(val).format('YYYY/MM/DD HH:mm');
                 }
             },
             {
-                title: '状态', field: 'guide_state', sortable: true, order: 'desc',
+                title: '状态', field: 'guide_state', sortable: true, order: 'desc', width: 124,
                 formatter: function (val) {
                     switch (val) {
-                        case 0:
-                            return '未引导';
-                        case 1:
-                            return '已引导';
+                        case 0: return '未引导';
+                        case 1: return '已引导';
                     }
                 }
             },

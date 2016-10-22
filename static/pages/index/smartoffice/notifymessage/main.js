@@ -19,20 +19,17 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
                 title: '文件类型', field: 'type', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
-                        case 1:
-                            return '收文签';
-                        case 2:
-                            return '发文签';
-                        case 3:
-                            return '通知';
+                        case 1: return '收文签';
+                        case 2: return '发文签';
+                        case 3: return '通知';
                     }
                 }
             },
             {title: '发布人', field: 'createuser', sortable: true, order: 'desc'},
             {
-                title: '发布时间', field: 'createtime', sortable: true, order: 'desc',
+                title: '发布时间', field: 'createtime', sortable: true, order: 'desc', minWidth: 72,
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日');
+                    return moment(val).format('YYYY/MM/DD');
                 }
             },
             {
@@ -56,11 +53,11 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
                             return [
                                 '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
                                 '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
-                            ].join('&nbsp;&nbsp;');
+                            ].join('&nbsp;');
                         default:
                             return ['<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
                                 '<a></a>'
-                            ].join('&nbsp;&nbsp;');
+                            ].join('&nbsp;');
                     }
                 },
                 events: {

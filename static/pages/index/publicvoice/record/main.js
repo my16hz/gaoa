@@ -16,45 +16,36 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         this.dataTable = this._createTable('#tableWrapper', '/pubvoice/list', [
             {field: 'checkbox', checkbox: true},
             {
-                title: '标题', field: 'title', alwaysDisplay: true,
+                title: '标题', field: 'title', alwaysDisplay: true, autoWidth: '20%',
                 formatter: function (val, rowdata) {
                     return '<a href="' + (rowdata.url || 'javascript:') + '" target="_blank">' + val + '</a>';
                 }
             },
-            {title: '载体', field: 'from_website', sortable: true, order: 'desc'},
+            {title: '载体', field: 'from_website', sortable: true, order: 'desc', autoWidth: '10%'},
             {title: '所属栏目', field: 'item', sortable: true, order: 'desc'},
-            {title: '舆情类别', field: 'type', sortable: true, order: 'desc'},
-            {title: '回帖人数', field: 'fellow_count', sortable: true, order: 'desc'},
-            {title: '关注人数', field: 'review_count', sortable: true, order: 'desc'},
+            {title: '舆情类别', field: 'type', sortable: true, order: 'desc', maxWidth: 90},
+            {title: '回帖数', field: 'fellow_count', sortable: true, order: 'desc', maxWidth: 60},
+            {title: '关注数', field: 'review_count', sortable: true, order: 'desc', maxWidth: 60},
             {title: '上报用户', field: 'name', sortable: true, order: 'desc'},
             {
-                title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
+                title: '处理时间', field: 'createtime', sortable: true, order: 'desc', minWidth: 112,
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日 HH:mm:ss');
+                    return  moment(val).format('YYYY/MM/DD HH:mm');
                 }
             },
             {
                 title: '状态', field: 'state', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
-                        case 0:
-                            return '未提交';
-                        case 1:
-                            return '待审核';
-                        case 2:
-                            return '审核通过';
-                        case 3:
-                            return '审核不通过';
-                        case 4:
-                            return '已入报';
-                        case 5:
-                            return '待批示';
-                        case 6:
-                            return '已批示';
-                        case 7:
-                            return '待回复';
-                        case 8:
-                            return '已回复';
+                        case 0: return '未提交';
+                        case 1: return '待审核';
+                        case 2: return '审核通过';
+                        case 3: return '审核不通过';
+                        case 4: return '已入报';
+                        case 5: return '待批示';
+                        case 6: return '已批示';
+                        case 7: return '待回复';
+                        case 8: return '已回复';
                     }
                 }
             },
@@ -64,16 +55,14 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                     var args = arguments[1].state;
                     switch (args) {
                         case 0:
-                        case 3:
-                            return [
-                                '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
-                                '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
-                            ].join('&nbsp;&nbsp;');
-                        case 1:
-                            return [
-                                '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
-                                '<a></a>'
-                            ].join('&nbsp;&nbsp;');
+                        case 3: return [
+                            '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
+                            '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
+                        ].join('&nbsp;');
+                        case 1: return [
+                            '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
+                            '<a></a>'
+                        ].join('&nbsp;');
                     }
                 },
                 events: {
