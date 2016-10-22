@@ -48,15 +48,14 @@ module.exports = {
     template: {
         dispose: '' +
         '<p style="text-align: center;">' +
-        '    <span style="font-size:56px;font-family:方正小标宋简体;color:red"><strong>广安市网络舆情中心</strong></span>' +
+        '    <strong><span style="font-size:56px;font-family: 方正小标宋简体;color:red;font-weight:normal">广 安 市 网 络 舆 情 中 心</span></strong>' +
         '</p>' +
         '<hr style="height:3px;border:none;border-top:3px double red;"/>' +
-        '<p></p>' +
         '<p style="text-align:right;line-height:31px">' +
-        '    <span style="font-size:21px;font-family:仿宋_GB2312">广舆函（%doc_year%） %doc_no%号</span>' +
+        '    <span style="font-size:21px;font-family:仿宋_GB2312">广舆函〔%doc_year%〕%doc_no%号</span>' +
         '</p>' +
         '<p style="margin-top:16px;text-align:center;line-height:40px">' +
-        '    <span style="font-size:29px;font-family:方正小标宋简体"><strong>广安市重要网络舆情处置通知书</strong></span>' +
+        '    <span style="font-size:29px;font-family:方正小标宋简体">广安市重要网络舆情处置通知书</span>' +
         '</p>' +
         '<p style="margin: 5px 0">' +
         '    <span style="font-size: 21px;font-family: 仿宋_GB2312">%to_department%:</span>' +
@@ -65,7 +64,7 @@ module.exports = {
         '<span style="font-size: 21px;font-family: 仿宋_GB2312">&nbsp; %pv_date%，一网民在%from_website%发贴，反映%pv_title%问题。%comment_date%，市委常委%comment_user%批示：“<strong>%doc_comment%</strong>”</span>' +
         '</p>' +
         '<p style="margin: 5px 0;line-height: 36px">' +
-        '<span>&nbsp;&nbsp;</span><span style="font-size: 21px;font-family: 仿宋_GB2312">根据广委办〔2013〕76号文件精神，为切实做好该舆情应对处置工作，消除负面影响，避免网络炒作，请贵单位在接到此通知书之后，立即组织调查处置，在受理之日起5个工作日内将调查处置结果书面回复至签批领导、抄送市网络舆情中心，并视情况在网上公开调查处置的相关信息（不宜公开的除外）。同时，市委、市政府督查室将对领导批示的网络舆情办理情况进行专项督查督办，请各涉舆单位严格按照相关文件要求做好应对处置工作。</span>' +
+        '<span>&nbsp;&nbsp;</span><span style="font-size: 21px;font-family: 仿宋_GB2312">根据广委办〔2013〕76号文件精神，为切实做好该舆情应对处置工作，消除负面影响，避免网络炒作，请贵单位在接到此通知书之后，立即组织调查处置，在受理之日起5个工作日内将调查处置结果书面回复至签批领导、抄送市网络舆情中心，并视情况在网上公开调查处置的相关信息（不宜公开的除外）。同时，市委、政府督查室将对领导批示的网络舆情办理情况进行专项督查督办，请各涉舆单位严格按照相关文件要求做好应对处置工作。</span>' +
         '</p>' +
         '<p>' +
         '    <br/>' +
@@ -85,9 +84,6 @@ module.exports = {
         '<p style="text-indent: 333px; line-height: 27px; text-align: right;">' +
         '    <span style="font-size:20px;">%date%</span>' +
         '</p>' +
-        '<p>' +
-        '    <br/>' +
-        '</p>' +
         '<hr style="height:3px;border:none;border-top:3px double red;"/>' +
         '<p>' +
         '    <span style="font-size: 20px;font-family:方正小标宋简体">附件：</span>' +
@@ -96,7 +92,7 @@ module.exports = {
         '    %doc_attachment%' +
         '</p>' +
         '<p>' +
-        '    <span style="font-size: 20px;font-family:方正小标宋简体">舆情详情：</span>' +
+        '    <br/>' +
         '</p>' +
         '<p>' +
         '    %doc_content%' +
@@ -132,13 +128,6 @@ module.exports = {
         '<p style="line-height: 32px; text-align: center;">' +
         '    <span style="font-size:20px;font-family:楷体_GB2312">广安市网络舆情中心&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%date%</span>' +
         '</p>' +
-        '<p>' +
-        '    <br/>' +
-        '</p>' +
-        '<hr/>' +
-        '<p>' +
-        '    <br/>' +
-        '</p>' +
         '<p style="margin-top:40px;margin-right:0;margin-bottom:16px;margin-left:0;text-align:center">' +
         '    <span style="font-size:29px;font-family:方正小标宋简体">≡本期要目≡</span>' +
         '</p>' +
@@ -161,29 +150,61 @@ module.exports = {
         '    %yqzz_title%' +
         '</p>' +
         '<p style="line-height:32px">' +
-        '    <strong><span style="font-size:20px;font-family: 楷体_GB2312">【热点话题】</span></strong>' +
+        '    <strong><span style="font-size:20px;font-family: 楷体_GB2312">【网络热点】</span></strong>' +
         '</p>' +
         '<p>' +
         '    %rdht_title%' +
         '</p>' +
+        '<p style="line-height:32px">' +
+        '    <strong><span style="font-size: 20px; font-family: 楷体_GB2312;">【涉广话题】</span></strong>' +
+        '</p>' +
+        '<p>' +
+        '    %sght_title%' +
+        '</p>' +
+        '<p style="line-height:32px">' +
+        '    <strong><span style="font-size: 20px; font-family: 楷体_GB2312;">【一周网语】</span></strong>' +
+        '</p>' +
+        '<p>' +
+        '    %yzwy_title%' +
+        '</p>' +
         '<p>' +
         '    <br/>' +
         '</p>' +
-        '<p><img src="/sample/template/zmyq.jpg" /></p>' +
-        '<p style="white-space: normal;">' +
+        '<p>' +
+        '    <img src="/sample/template/zmyq.jpg"/>' +
+        '</p>' +
+        '<p>' +
         '    %zmyq_content%' +
         '</p>' +
-        '<p><img src="/sample/template/fmyq.jpg" /></p>' +
-        '<p style="white-space: normal;">' +
+        '<p>' +
+        '    <img src="/sample/template/fmyq.jpg"/>' +
+        '</p>' +
+        '<p>' +
         '    %fmyq_content%' +
         '</p>' +
-        '<p><img src="/sample/template/yqzz.jpg" /></p>' +
-        '<p style="white-space: normal;">' +
+        '<p>' +
+        '    <img src="/sample/template/yqzz.jpg"/>' +
+        '</p>' +
+        '<p>' +
         '    %yqzz_content%' +
         '</p>' +
-        '<p><img src="/sample/template/rdht.jpg" /></p>' +
+        '<p>' +
+        '    <img src="/sample/template/wsrd.jpg"/>' +
+        '</p>' +
         '<p>' +
         '    %rdht_content%' +
+        '</p>' +
+        '<p>' +
+        '    <img src="/sample/template/sght.jpg"/>' +
+        '</p>' +
+        '<p>' +
+        '    %sght_content%' +
+        '</p>' +
+        '<p>' +
+        '    <img src="/sample/template/yzwy.jpg"/>' +
+        '</p>' +
+        '<p>' +
+        '    %yzwy_content%' +
         '</p>' +
         '<hr/>' +
         '<p style="margin-left:37px;line-height:32px">' +
@@ -191,10 +212,10 @@ module.exports = {
         '</p>' +
         '<hr/>' +
         '<p style="text-align: right;">' +
-        '<span style="font-size: 19px;font-family: 仿宋_GB2312">（共印16份）</span>' +
+        '    <span style="font-size: 19px;font-family: 仿宋_GB2312">（共印16份）</span>' +
         '</p>' +
         '<p>' +
-        '<br/>' +
+        '    <br/>' +
         '</p>',
         sendmessage: '' +
         '<style type="text/css">.Tab { border-collapse:collapse; width:800px; height:300px;}' +

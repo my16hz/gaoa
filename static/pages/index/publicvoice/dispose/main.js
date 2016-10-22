@@ -84,10 +84,15 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                             url: '/dispose/comment',
                             data: {id: pubvoice.id},
                             done: function (rs) {
-                                rs = rs[0] || {comment: "", attachment: ""};
-                                rs.id = pubvoice.id;
+                                var type = rs[0] ? rs[0].type : 2;
+                                var result = rs[0];
+                                if (type == 2) {
+                                    var value = rs[0].value - 0 + 1;
+                                    result = {comment: "", attachment: "", comment_doc_no: value, message_id: '舆收[' + moment(new Date()).format('YYYY') + '] ' + value + '号'}
+                                }
+                                result.id = pubvoice.id;
 
-                                _fillFormValues(rs);
+                                _fillFormValues(result);
 
                                 self._showModal(modal, self.dataTable);
                             }
@@ -150,7 +155,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                             return template
                                 .replace("%doc_year%", value.dispose_doc_year)
                                 .replace("%doc_no%", value.dispose_doc_no)
-                                .replace("%doc_content%", pubvoice.content)
+                                .replace("%doc_content%", _buildFMYQContent(pubvoice))
                                 .replace("%doc_comment%", pubvoice.comment)
                                 .replace("%doc_attachment%", pubvoice.attachment)
                                 .replace("%daily_id%", pubvoice.daily_id)
@@ -162,6 +167,26 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                                 .replace("%pv_title%", pubvoice.title)
                                 .replace("%comment_date%", moment(pubvoice.comment_date).format('MM月DD日'))
                                 .replace("%comment_user%", pubvoice.comment_user);
+                        }
+
+                        function _buildFMYQContent (pv) {
+                            var content = pv.content;
+                            if (content.indexOf('<p>') == 0) {
+                                content = content.substring(3, content.length - 4);
+                            }
+                            return '<p style="text-align:center;line-height:33px"><strong><span style="font-size:24px;font-family:方正小标宋简体">' +
+                                pv.title +
+                                '</span></strong></p><p style="text-align:center;line-height:33px"><span style="font-size:20px;font-family:仿宋_GB2312">' +
+                                pv.from_website +
+                                '</span></p><p style="text-align:center;line-height:33px"><span style="font-size:20px;font-family:仿宋_GB2312">浏览人数：' +
+                                (pv.review_count || "无法统计") +
+                                '&nbsp; &nbsp; </span><span style="font-size:20px;font-family:仿宋_GB2312">跟帖数：' +
+                                (pv.fellow_count || "无法统计") +
+                                '</span></p><p style="text-align: center;font-size:20px;font-family:仿宋_GB2312">' +
+                                pv.url +
+                                '</p><p><br/></p><p><span style="font-size:20px;font-family:仿宋_GB2312"> &nbsp;' +
+                                pv.content +
+                                '</span></p><p><br/></p>';
                         }
                     }
                 }
