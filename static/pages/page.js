@@ -276,12 +276,8 @@ var LHSBasicPage = {
                     }
                 });
 
-                _reviseAutoWidth();
-
-                $(panel)
-                    .attr('class', 'col-xs-2')
-                    .next()
-                    .removeClass('hide');
+                $(panel).attr('class', 'col-xs-2').next().removeClass('hide');
+                _reviseAutoWidth(true);
 
                 return this;
             },
@@ -290,12 +286,8 @@ var LHSBasicPage = {
                     dataTable.bootstrapTable('showColumn', cfg.field);
                 });
 
+                $(panel).attr('class', 'col-md-12').next().addClass('hide');
                 _reviseAutoWidth();
-
-                $(panel)
-                    .attr('class', 'col-md-12')
-                    .next()
-                    .addClass('hide');
 
                 return this;
             },
@@ -334,11 +326,7 @@ var LHSBasicPage = {
                 return values;
             },
             showDataWrapper: function () {
-                $(panel)
-                    .parent()
-                    .removeClass('hide')
-                    .siblings('.data-wrapper')
-                    .addClass('hide');
+                $(panel).parent().removeClass('hide').siblings('.data-wrapper').addClass('hide');
 
                 return this;
             },
@@ -352,11 +340,14 @@ var LHSBasicPage = {
             }
         };
 
-        function _reviseAutoWidth () {
+        function _reviseAutoWidth (shrink) {
             var table = $('.bootstrap-table', panel);
+            var padding = 12;
 
             table.find('.lhs-auto-width').each(function () {
-                $(this).width(table.width() * parseInt($(this).attr('data-auto-width'), 10) / 100);
+                $(this).width((true == shrink ? table.width() :
+                    table.width() * parseInt($(this).attr('data-auto-width'), 10) / 100) - padding
+                );
             });
         }
     },
@@ -455,9 +446,7 @@ var LHSBasicPage = {
     },
 
     _showModal: function (jqmodal, table) {
-        $(jqmodal).removeClass('hide')
-            .siblings()
-            .addClass('hide');
+        $(jqmodal).removeClass('hide').siblings().addClass('hide');
         table.shrink();
 
         return this;

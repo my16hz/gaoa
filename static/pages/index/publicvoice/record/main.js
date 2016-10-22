@@ -240,9 +240,9 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         this._appendInfoSrcRow(jqbtn.parents('.form-group'));
     },
     delSelected: function () {
-        var self = this;
         var dataTable = this.dataTable;
         var ids = dataTable.getSelected();
+        var self = this;
 
         ids.length ?
             bootbox.confirm('确定删除？', function (rs) {
@@ -291,7 +291,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         var self = this;
         var values = this._validate($('#dataModal form'), {
             url: function (val) {
-                if (!val) return;
+                if (!val || val.id) return;
                 if (null == self.isUrlOK) return '服务器正在验证中，请稍等。';
                 if (!self.isUrlOK) return '舆情网址已经存在。';
             },
@@ -309,7 +309,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             },
             item: function (val) {
                 if (!val.length) return '不能为空。';
-            },
+            }
         });
 
         if (values) values['content'] = this.editor.getContent();
