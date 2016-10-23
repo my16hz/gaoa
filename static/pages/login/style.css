@@ -1,8 +1,4 @@
-html, body {
-    height: 100%;
-}
-
-body {
+.login-page {
     background: #1E5F83;
 }
 
@@ -47,6 +43,7 @@ body {
 
 .login-page .content .wrapper .login-modal {
     width: 336px;
+    margin-top: 25px;
 }
 
 .login-page .content .wrapper .login-modal .modal-header h3 {
