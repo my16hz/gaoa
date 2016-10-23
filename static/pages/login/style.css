@@ -1,3 +1,11 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    background: #1E5F83;
+}
+
 .login-page .header {
     height: 62px;
     border-bottom: 1px solid #e7e7e7;
@@ -13,7 +21,7 @@
 }
 
 .login-page .header .logo h3 {
-    font-size: 22px;
+    font-size: 26px;
     color: #666;
     font-family: "Microsoft JhengHei";
     font-weight: bolder;
@@ -28,6 +36,7 @@
     width: 876px;
     height: 400px;
     margin: 40px auto auto;
+    background: url("./imgs/login_bg_0.png")
 }
 
 .login-page .content .wrapper .poster {
@@ -42,6 +51,7 @@
 
 .login-page .content .wrapper .login-modal .modal-header h3 {
     font-size: 16px;
+    font-weight: bold;
     margin: 0px;
 }
 
@@ -60,7 +70,7 @@
     text-align: center;
     color: #b6b6b6;
     background-color: #eff4fa;
-    border-top: 1px solid #d6dfea;
+    border-top: 1px solid #d6dyfea;
 }
 
 @media (max-height: 560px) {
