@@ -14,7 +14,7 @@ var LHSAllMessagesPage = $.extend({}, LHSBasicPage, {
         this.initDependencies();
         this.dataTable = this._createTable('#tableWrapper', '/smartoffice/notify/list', [
             {field: 'checkbox', checkbox: true},
-            {title: '文件标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc'},
+            {title: '文件标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '35%'},
             {
                 title: '文件类型', field: 'type', sortable: true, order: 'desc',
                 formatter: function (val) {
@@ -29,7 +29,7 @@ var LHSAllMessagesPage = $.extend({}, LHSBasicPage, {
             {
                 title: '发布时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日');
+                    return moment(val).format('YYYY/MM/DD');
                 }
             },
             {

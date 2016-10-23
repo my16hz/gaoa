@@ -16,13 +16,13 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         this.dataTable = this._createTable('#tableWrapper', '/socialvoice/list', [
             {field: 'checkbox', checkbox: true},
             {title: "编号", field: 'id', sortable: true, order: 'desc'},
-            {title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc'},
+            {title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '40%'},
             {title: '作者', field: 'reportuser', sortable: true, order: 'desc'},
-            {title: '单位', field: 'department', sortable: true, order: 'desc'},
+            {title: '单位', field: 'department', sortable: true, order: 'desc', maxWidth: 120},
             {
                 title: '上报时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日');
+                    return moment(val).format('YYYY/MM/DD');
                 }
             },
             {

@@ -17,7 +17,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
         this.memberTable = this._createTable('#memberTableWrapper', '/sysmanage/members', [
             {field: 'checkbox', checkbox: true},
             {title: '用户ID', field: 'id'},
-            {title: '用户名', field: 'name', alwaysDisplay: true},
+            {title: '用户名', field: 'name', alwaysDisplay: true, maxWidth: 120},
             {title: '组名', field: 'groupname'},
             {
                 title: '级别', field: 'priority',
@@ -25,7 +25,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                     return val == 1 ? '市级' : '县级';
                 }
             },
-            {title: '描述', field: 'description'},
+            {title: '描述', field: 'description', autoWidth: '25%'},
             {
                 title: '创建时间', field: 'createtime', minWidth: 72,
                 formatter: function (val) {
@@ -77,7 +77,7 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
                     return val == 1 ? '市级' : '县级';
                 }
             },
-            {title: '描述', field: 'description'},
+            {title: '描述', field: 'description', autoWidth: '25%'},
             {
                 title: '操作',
                 field: 'action',

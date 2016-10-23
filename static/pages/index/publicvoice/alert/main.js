@@ -15,8 +15,9 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/alert/list', [
             {field: 'checkbox', checkbox: true},
-            {title: '预警标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc'},
-            {title: '预警方式', field: 'type', sortable: true, order: 'desc',
+            {title: '预警标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '20%'},
+            {
+                title: '预警方式', field: 'type', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
                         case 0: return '电话';
@@ -25,19 +26,19 @@ var LHSAlertPage = $.extend({}, LHSBasicPage, {
                     }
                 }
             },
-            {title: '涉舆部门', field: 'department', sortable: true, order: 'desc'},
-            {title: '预警人', field: 'sender', sortable: true, order: 'desc'},
-            {title: '接警人', field: 'receiver', sortable: true, order: 'desc'},
+            {title: '涉舆部门', field: 'department', sortable: true, order: 'desc', maxWidth: 90},
+            {title: '预警人', field: 'sender', sortable: true, order: 'desc', maxWidth: 60},
+            {title: '接警人', field: 'receiver', sortable: true, order: 'desc', maxWidth: 60},
             {
                 title: '预警开始时间', field: 'starttime', sortable: true, order: 'desc',
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日');
+                    return moment(val).format('YYYY/MM/DD');
                 }
             },
             {
-                title: '预警结束时间', field: 'endtime', sortable: true, order: 'desc', minWidth: 112,
+                title: '预警结束时间', field: 'endtime', sortable: true, order: 'desc',
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日');
+                    return moment(val).format('YYYY/MM/DD');
                 }
             },
             {

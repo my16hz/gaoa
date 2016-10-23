@@ -28,7 +28,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             {title: '关注数', field: 'review_count', sortable: true, order: 'desc', maxWidth: 60},
             {title: '上报用户', field: 'name', sortable: true, order: 'desc'},
             {
-                title: '处理时间', field: 'createtime', sortable: true, order: 'desc', minWidth: 112,
+                title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
                     return  moment(val).format('YYYY/MM/DD HH:mm');
                 }

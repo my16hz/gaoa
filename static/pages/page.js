@@ -213,7 +213,7 @@ var LHSBasicPage = {
         var filter = null;
 
         $.each(columns, function () {
-            (this.minWidth || this.maxWidth || this.autoWidth) && (this.formatter = (function (setting) {
+            this.formatter = (function (setting) {
                 var rawFormatter = setting.formatter;
 
                 return function (val) {
@@ -222,15 +222,15 @@ var LHSBasicPage = {
                     var isHtml = /^<[a-z]+ .*>.+<\/[a-z]+>$/.test(content);
                     var html = isHtml && !isAction ? $(content) : $('<div></div>').append(content);
 
-                    html.addClass('text-ellipsis ').attr('title', isHtml ? (isAction ? '' : $(content).text()) : content);
+                    html.addClass('text-ellipsis ');
 
+                    if (this.autoWidth || this.maxWidth) html.attr('title', isHtml ? (isAction ? '' : $(content).text()) : content);
                     if (this.autoWidth) html.addClass('lhs-auto-width').attr('data-auto-width', this.autoWidth);
-                    if (this.minWidth) html.css('min-width', this.minWidth);
                     if (this.maxWidth) html.css('max-width', this.maxWidth);
 
                     return $('<div></div>').append(html).html();
                 }
-            })(this));
+            })(this);
         });
 
         dataTable.bootstrapTable({

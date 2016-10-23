@@ -20,19 +20,19 @@ var LHSStatisticsPage = $.extend({}, LHSBasicPage, {
         });
         this.dataTables = [
             this._createTable('#userTableWrapper', '/socialvoice/statistics/user', [
-                {title: '用户名', field: 'name'},
+                {title: '用户名', field: 'name', autoWidth: '60%'},
                 {title: '提交社情个数', field: 'count', sortable: true, order: 'desc'}
             ]),
             this._createTable('#groupTableWrapper', '/socialvoice/statistics/group', [
-                {title: '部门', field: 'name'},
+                {title: '部门', field: 'name', autoWidth: '60%'},
                 {title: '提交社情个数', field: 'count', sortable: true, order: 'desc'}
             ]),
             this._createTable('#acceptUserTableWrapper', '/socialvoice/statistics/acceptuser', [
-                {title: '用户名', field: 'name'},
+                {title: '用户名', field: 'name', autoWidth: '60%'},
                 {title: '采用社情个数', field: 'count', sortable: true, order: 'desc'}
             ]),
             this._createTable('#acceptGroupTableWrapper', '/socialvoice/statistics/acceptgroup', [
-                {title: '部门', field: 'name'},
+                {title: '部门', field: 'name', autoWidth: '60%'},
                 {title: '采用社情个数', field: 'count', sortable: true, order: 'desc'}
             ])
         ];

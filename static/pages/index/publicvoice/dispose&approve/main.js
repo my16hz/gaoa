@@ -14,10 +14,10 @@ var LHSDisposeAndApprovePage = $.extend({}, LHSBasicPage, {
         this.initDependencies();
 
         this.dataTable = this._createTable('#tableWrapper', '/dispose/comment/list', [
-            {title: '日报期数', field: 'daily_id'},
-            {title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc'},
+            {title: '期数', field: 'daily_id'},
+            {title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '20%'},
+            {title: '批示内容', field: 'comment', sortable: true, order: 'desc', autoWidth: '30%'},
             {title: '批示领导', field: 'comment_user', sortable: true, order: 'desc'},
-            {title: '批示内容', field: 'comment', sortable: true, order: 'desc'},
             {
                 title: '批示时间', field: 'comment_date', sortable: true, order: 'desc',
                 formatter: function (val) {
@@ -38,8 +38,7 @@ var LHSDisposeAndApprovePage = $.extend({}, LHSBasicPage, {
                 }
             },
             {
-                title: '操作',
-                field: 'action',
+                title: '操作', field: 'action',
                 formatter: function () {
                     return '<a href="javascript:" title="审批"><i class="glyphicon glyphicon-edit"></i></a>';
                 },
@@ -69,7 +68,6 @@ var LHSDisposeAndApprovePage = $.extend({}, LHSBasicPage, {
         'click #btnDeny': 'applyDeny',
         'click #btnDelay': 'applyDelay'
     },
-
     closeDataModal: function () {
         var modal = $('#dataModal');
 
@@ -85,6 +83,7 @@ var LHSDisposeAndApprovePage = $.extend({}, LHSBasicPage, {
     applyDelay: function () {
         this._apply(5, "阅存");
     },
+
     _apply: function (type, content) {
         var dataTable = this.dataTable;
         var modal = $('#dataModal');
@@ -98,7 +97,6 @@ var LHSDisposeAndApprovePage = $.extend({}, LHSBasicPage, {
             }
         });
     },
-
     _validator: function () {
         var jqform = $('#dataModal form');
         var values = this._getFormControlValues(jqform);

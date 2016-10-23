@@ -16,13 +16,13 @@ var LHSReportPage = $.extend({}, LHSBasicPage, {
         this.dataTable = this._createTable('#tableWrapper', '/socialvoice/report/list', [
             {field: 'checkbox', checkbox: true},
             {title: "编号", field: 'id'},
-            {title: '标题', field: 'title', alwaysDisplay: true},
+            {title: '标题', field: 'title', alwaysDisplay: true, autoWidth: '30%'},
             {title: '作者', field: 'createuser'},
-            {title: '社情ID', field: 'svids'},
+            {title: '社情ID', field: 'svids', autoWidth: '18%'},
             {
                 title: '上报时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日');
+                    return moment(val).format('YYYY/MM/DD');
                 }
             },
             {

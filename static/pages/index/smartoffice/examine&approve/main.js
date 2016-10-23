@@ -16,7 +16,7 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
         this.isShown = 'recv';
         this.sendTable = this._createTable('#sendTableWrapper', '/smartoffice/sendmsg/unapproved', [
             {field: 'checkbox', checkbox: true},
-            {title: '文件标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc'},
+            {title: '文件标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '30%'},
             {title: '主送机关', field: 'major_department', sortable: true, order: 'desc'},
             {title: '发文字号', field: 'message_id', sortable: true, order: 'desc'},
             {title: '秘密等级', field: 'secret_level', sortable: true, order: 'desc'},
@@ -25,12 +25,9 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
                 title: '状态', field: 'state', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
-                        case 0:
-                            return '未提交';
-                        case 1:
-                            return '待签发';
-                        case 2:
-                            return '已签发';
+                        case 0: return '未提交';
+                        case 1: return '待签发';
+                        case 2: return '已签发';
                     }
                 }
             },
@@ -49,33 +46,28 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
         ]);
         this.recvTable = this._createTable('#recvTableWrapper', '/smartoffice/recvmsg/unapproved', [
             {field: 'checkbox', checkbox: true},
-            {title: '文件标题', field: 'title', alwaysDisplay: true},
-
+            {title: '文件标题', field: 'title', alwaysDisplay: true, autoWidth: '30%'},
             {title: '收文编号', field: 'message_id', sortable: true, order: 'desc'},
             {title: '来文单位', field: 'origin_department', sortable: true, order: 'desc'},
             {title: '秘密等级', field: 'secret_level', sortable: true, order: 'desc'},
             {
                 title: '收文时间', field: 'recv_date', sortable: true, order: 'desc',
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日');
+                    return moment(val).format('YYYY/MM/DD');
                 }
             },
             {
                 title: '状态', field: 'state', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
-                        case 0:
-                            return '未提交';
-                        case 1:
-                            return '待签发';
-                        case 2:
-                            return '已签发';
+                        case 0: return '未提交';
+                        case 1: return '待签发';
+                        case 2: return '已签发';
                     }
                 }
             },
             {
-                title: '操作',
-                field: 'action',
+                title: '操作', field: 'action',
                 formatter: function () {
                     return '<a href="javascript:" title="审批"><i class="glyphicon glyphicon-edit"></i></a>';
                 },

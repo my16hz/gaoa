@@ -15,17 +15,17 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/badinfo/list', [
             {field: 'checkbox', checkbox: true},
-            {title: '网站名称', field: 'website', alwaysDisplay: true, sortable: true, order: 'desc'},
-            {title: '网页路径', field: 'url', sortable: true, order: 'desc'},
-            {title: '举报者', field: 'username', sortable: true, order: 'desc'},
-            {title: '举报单位', field: 'department', sortable: true, order: 'desc'},
-            {title: '所属地域', field: 'duty_zone', sortable: true, order: 'desc'},
+            {title: '网站名称', field: 'website', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '10%'},
+            {title: '网页路径', field: 'url', sortable: true, order: 'desc', autoWidth: '18%'},
+            {title: '举报者', field: 'username', sortable: true, order: 'desc', maxWidth: 60},
+            {title: '举报单位', field: 'department', sortable: true, order: 'desc', maxWidth: 90},
+            {title: '所属地域', field: 'duty_zone', sortable: true, order: 'desc', maxWidth: 150},
             {title: '危害类型', field: 'type', sortable: true, order: 'desc'},
-            {title: '举报查询码', field: 'sn', sortable: true, order: 'desc'},
+            {title: '举报查询码', field: 'sn', sortable: true, order: 'desc', maxWidth: 90},
             {
                 title: '举报时间', field: 'reportdate', sortable: true, order: 'desc',
                 formatter: function (val) {
-                    return moment(val).format('YYYY年MM月DD日');
+                    return moment(val).format('YYYY/MM/DD');
                 }
             },
             {

@@ -16,15 +16,15 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
         this.dataTable = this._createTable('#tableWrapper', '/pubvoice/search', [
             {field: 'checkbox', checkbox: true},
             {title: '舆情ID', field: 'id', sortable: true, order: 'desc'},
-            {title: '标题', field: 'title', alwaysDisplay: true},
-            {title: '载体', field: 'from_website'},
+            {title: '标题', field: 'title', alwaysDisplay: true, autoWidth: '18%'},
+            {title: '载体', field: 'from_website', autoWidth: '10%'},
             {title: '所属栏目', field: 'item', sortable: true, order: 'desc'},
-            {title: '舆情类别', field: 'type', sortable: true, order: 'desc'},
-            {title: '回帖数', field: 'fellow_count', sortable: true, order: 'desc'},
-            {title: '关注数', field: 'review_count', sortable: true, order: 'desc'},
+            {title: '舆情类别', field: 'type', sortable: true, order: 'desc', maxWidth: 90},
+            {title: '回帖数', field: 'fellow_count', sortable: true, order: 'desc', maxWidth: 60},
+            {title: '关注数', field: 'review_count', sortable: true, order: 'desc', maxWidth: 60},
             {title: '涉及部门', field: 'relate_department', sortable: true, order: 'desc'},
             {
-                title: '处理时间', field: 'createtime', sortable: true, order: 'desc', minWidth: 112,
+                title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
                     return moment(val).format('YYYY/MM/DD HH:mm');
                 }

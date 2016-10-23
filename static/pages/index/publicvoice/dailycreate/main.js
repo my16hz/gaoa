@@ -15,21 +15,21 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/daily/unapplied', [
             {field: 'checkbox', checkbox: true},
-            {title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc'},
-            {title: '载体', field: 'from_website', sortable: true, order: 'desc'},
+            {title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '20%'},
+            {title: '载体', field: 'from_website', sortable: true, order: 'desc', autoWidth: '10%'},
             {title: '所属栏目', field: 'item', sortable: true, order: 'desc'},
-            {title: '舆情类别', field: 'type', sortable: true, order: 'desc'},
-            {title: '回帖数', field: 'fellow_count', sortable: true, order: 'desc'},
-            {title: '关注数', field: 'review_count', sortable: true, order: 'desc'},
+            {title: '舆情类别', field: 'type', sortable: true, order: 'desc', maxWidth: 90},
+            {title: '回帖数', field: 'fellow_count', sortable: true, order: 'desc', maxWidth: 60},
+            {title: '关注数', field: 'review_count', sortable: true, order: 'desc', maxWidth: 60},
             {title: '涉及部门', field: 'relate_department', sortable: true, order: 'desc'},
             {
-                title: '处理时间', field: 'createtime', sortable: true, order: 'desc', minWidth: 112,
+                title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
                     return moment(val).format('YYYY/MM/DD HH:mm');
                 }
             },
             {
-                title: '状态', field: 'state', sortable: true, order: 'desc', width: 85,
+                title: '状态', field: 'state', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
                         case 0: return '未提交';
