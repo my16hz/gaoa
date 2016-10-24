@@ -13,6 +13,13 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
 
+        this.sTime = this._createTimepicker('#sTime').onChange(function (e) {
+            this.eTime.minDate(e.date)
+        });
+        this.eTime = this._createTimepicker('#eTime').onChange(function (e) {
+            this.sTime.maxDate(e.date);
+        });
+
         this.dataTable = this._createTable('#tableWrapper', '/badinfo/list', [
             {field: 'checkbox', checkbox: true},
             {title: '网站名称', field: 'website', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '10%'},
@@ -49,7 +56,14 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
         'click #btnDel': 'delSelected',
         'click #dataModal .btn-default': 'closeDataModal',
         'click #dataModal .btn-primary': 'saveInfo',
-        'click #importModal .btn-default': 'closeImportModal'
+        'click #importModal .btn-default': 'closeImportModal',
+        'click #btnSearch': 'doSearch'
+    },
+    doSearch: function () {
+        this.dataTable.setFilter({
+            sTime: this.sTime.getTime(),
+            eTime: this.eTime.getTime()
+        }).refresh();
     },
     showNewDataModal: function () {
         var editor = this.editor;
@@ -86,7 +100,8 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
         ids.length ?
             bootbox.confirm('确定删除？', function (rs) {
                 rs && self._ajaxDelete(ids.join(), function () {
-                    dataTable.refresh();
+                    dataTable.refresh(
+                    );
                 });
             }) :
             bootbox.alert('请先选择要删除的记录！');

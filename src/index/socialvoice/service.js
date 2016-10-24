@@ -27,21 +27,26 @@ module.exports = {
     statisticAcceptGroup: statisticAcceptGroup
 };
 
-function getSocialVoices (uid, priority, callback) {
-    var params = {};
-    var sql_stmt = "select * from tb_socialvoice ";
+function getSocialVoices (user, start, end, callback) {
+    var params = {
+        "start": start,
+        "end": end
+    };
+    var sql_stmt = "SELECT * FROM tb_socialvoice WHERE createtime > @start AND createtime < @end ";
     var ps = null;
 
-    if (priority != 1) {
-        sql_stmt += ' where createuser = @uid ';
-        params['uid'] = uid;
+    if (user.priority != 1) {
+        sql_stmt += ' AND createuser = @uid ';
+        params['uid'] = user.uid;
     }
 
-    sql_stmt += " order by createtime desc;";
+    sql_stmt += " ORDER BY createtime DESC;";
     console.log(sql_stmt);
 
     ps = dbpool.preparedStatement()
         .input("uid", sql.VarChar)
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, []);
@@ -165,7 +170,7 @@ function saveSVReport (report, callback) {
 
 function getSVReport (callback) {
     var params = {};
-    var sql_stmt = "select * from tb_sv_report order by createtime desc;";
+    var sql_stmt = "select top 1000 * from tb_sv_report order by createtime desc;";
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
@@ -184,7 +189,7 @@ function getSVReport (callback) {
 }
 
 function getSVReportDetail (voice_id, callback) {
-    var sql_stmt = "SELECT * FROM tb_sv_report where [id] = " + voice_id;
+    var sql_stmt = "SELECT TOP 1000 * FROM tb_sv_report where [id] = " + voice_id;
     var objParams = {};
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
