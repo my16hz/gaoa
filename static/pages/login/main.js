@@ -4,7 +4,7 @@
  * Author: lhs
  */
 var LHSLoginPage = $.extend({}, LHSBasicPage, {
-    el: '.login-modal',
+    el: '.login-frame',
     run: function () {
         this.initDependencies();
     },
@@ -26,7 +26,7 @@ var LHSLoginPage = $.extend({}, LHSBasicPage, {
     },
     _validator: function () {
         var sha1 = new Hashes.SHA1();
-        var values = this._validate($('.login-modal form'), {
+        var values = this._validate(this.$('form'), {
             username: function (name) {
                 if (!name.length) return '用户名不能为空。';
             },
@@ -53,7 +53,7 @@ var LHSLoginPage = $.extend({}, LHSBasicPage, {
 
         $('.lhs-alert-panel').remove();
 
-        panel.append($('<span></span>').text(msg)).appendTo('.login-modal .modal-body');
+        panel.append($('<span></span>').text(msg)).appendTo('#msgPanel');
 
         timer = setTimeout(function () {
             panel.remove();

@@ -7,41 +7,48 @@
     <script type="text/javascript" src="/js/login.js"></script>
 </head>
 <body class="login-page">
-<div class="header">
-    <div class="logo">
-        <h3 class="text-primary">广安舆情管理平台</h3>
-    </div>
-</div>
-<div class="content">
-    <div class="wrapper">
-        <!--<div class="poster pull-left"></div>-->
-        <div class="login-modal modal-content pull-right">
-            <div class="modal-header">
-                <h3 class="text-primary text-left">
-                    <i class="glyphicon glyphicon-lock"></i>
-                    用户登录
-                </h3>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <input name="username" type="text" class="form-control" placeholder="请输入用户名">
-                    </div>
-                    <div class="form-group">
-                        <input name="password" type="password" class="form-control" placeholder="登录密码">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <div class="form-group">
-                    <button id="btnSubmit" data-loading-text="正在验证用户信息..." class="btn btn-primary btn-md btn-block">
-                        立刻登录
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="footer">©广安舆情处理中心 联系电话：028-8888-8888 Email：xxx@xx.com</div>
+<img src="/css/imgs/login_bg.jpg" class="bg-page">
+<table>
+    <tr>
+        <td height="200" align="center"><h1>广安舆情管理系统</h1></td>
+    </tr>
+</table>
+<table class="login-frame" align="center">
+    <tr>
+        <td class="bg-frame">
+            <form>
+                <table class="main-table" align="center" cellspacing="15">
+                    <tr>
+                        <td width="25%"><span class="form-label">用户名：</span></td>
+                        <td width="75%">
+                            <div class="icon-member">
+                                <input name="username" type="text" class="form-input form-control" placeholder="请输入用户名">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="25%"><span class="form-label">密　码：</span></td>
+                        <td width="75%">
+                            <div class="icon-lock">
+                                <input name="password" type="password" class="form-input form-control"
+                                       placeholder="登录密码">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td id="msgPanel" colspan="2" align="center"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <a id="btnSubmit" href="javascript:" class="btn btn-login" data-loading-text="正在验证用户信息...">
+                                <img src="/css/imgs/login_btn.jpg"/>
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </td>
+    </tr>
+</table>
 </body>
 </html>
