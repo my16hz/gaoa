@@ -132,40 +132,40 @@ module.exports = {
         '    <span style="font-size:29px;font-family:方正小标宋简体">≡本期要目≡</span>' +
         '</p>' +
         '<p style="line-height:32px">' +
-        '    <strong><span style="font-size:20px;font-family: 楷体_GB2312">【正面舆情】</span></strong>' +
+        '    <strong><span style="font-size:20px; font-family: 楷体_GB2312">【正面舆情】</span></strong>' +
         '</p>' +
         '<p>' +
         '    %zmyq_title%' +
         '</p>' +
         '<p style="line-height:32px">' +
-        '    <strong><span style="font-size:20px;font-family: 楷体_GB2312">【负面舆情】</span></strong>' +
+        '    <strong><span style="font-size:20px; font-family: 楷体_GB2312">【负面舆情】</span></strong>' +
         '</p>' +
         '<p>' +
         '    %fmyq_title%' +
         '</p>' +
         '<p style="line-height:32px">' +
-        '    <strong><span style="font-size:20px;font-family: 楷体_GB2312">【舆情追踪】</span></strong>' +
-        '</p>' +
-        '<p>' +
-        '    %yqzz_title%' +
-        '</p>' +
-        '<p style="line-height:32px">' +
-        '    <strong><span style="font-size:20px;font-family: 楷体_GB2312">【网络热点】</span></strong>' +
-        '</p>' +
-        '<p>' +
-        '    %rdht_title%' +
-        '</p>' +
-        '<p style="line-height:32px">' +
-        '    <strong><span style="font-size: 20px; font-family: 楷体_GB2312;">【涉广话题】</span></strong>' +
+        '    <strong><span style="font-size:20px; font-family: 楷体_GB2312;">【涉广话题】</span></strong>' +
         '</p>' +
         '<p>' +
         '    %sght_title%' +
         '</p>' +
         '<p style="line-height:32px">' +
-        '    <strong><span style="font-size: 20px; font-family: 楷体_GB2312;">【一周网语】</span></strong>' +
+        '    <strong><span style="font-size:20px; font-family: 楷体_GB2312;">【一周网语】</span></strong>' +
         '</p>' +
         '<p>' +
         '    %yzwy_title%' +
+        '</p>' +
+        '<p style="line-height:32px">' +
+        '    <strong><span style="font-size:20px; font-family: 楷体_GB2312">【舆情追踪】</span></strong>' +
+        '</p>' +
+        '<p>' +
+        '    %yqzz_title%' +
+        '</p>' +
+        '<p style="line-height:32px">' +
+        '    <strong><span style="font-size:20px; font-family: 楷体_GB2312">【网上热点】</span></strong>' +
+        '</p>' +
+        '<p>' +
+        '    %rdht_title%' +
         '</p>' +
         '<p>' +
         '    <br/>' +
@@ -183,18 +183,6 @@ module.exports = {
         '    %fmyq_content%' +
         '</p>' +
         '<p>' +
-        '    <img src="/sample/template/yqzz.jpg"/>' +
-        '</p>' +
-        '<p>' +
-        '    %yqzz_content%' +
-        '</p>' +
-        '<p>' +
-        '    <img src="/sample/template/wsrd.jpg"/>' +
-        '</p>' +
-        '<p>' +
-        '    %rdht_content%' +
-        '</p>' +
-        '<p>' +
         '    <img src="/sample/template/sght.jpg"/>' +
         '</p>' +
         '<p>' +
@@ -205,6 +193,18 @@ module.exports = {
         '</p>' +
         '<p>' +
         '    %yzwy_content%' +
+        '</p>' +
+        '<p>' +
+        '    <img src="/sample/template/yqzz.jpg"/>' +
+        '</p>' +
+        '<p>' +
+        '    %yqzz_content%' +
+        '</p>' +
+        '<p>' +
+        '    <img src="/sample/template/wsrd.jpg"/>' +
+        '</p>' +
+        '<p>' +
+        '    %rdht_content%' +
         '</p>' +
         '<hr/>' +
         '<p style="margin-left:37px;line-height:32px">' +

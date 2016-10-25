@@ -13,6 +13,13 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
 
+        this.sTime = this._createTimepicker('#sTime').onChange(function (e) {
+            this.eTime.minDate(e.date)
+        });
+        this.eTime = this._createTimepicker('#eTime').onChange(function (e) {
+            this.sTime.maxDate(e.date);
+        });
+
         this.dataTable = this._createTable('#tableWrapper', '/socialvoice/list', [
             {field: 'checkbox', checkbox: true},
             {title: "编号", field: 'id', sortable: true, order: 'desc'},
@@ -71,7 +78,14 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         'click #btnDel': 'delSelected',
         'click #dataModal .btn-default': 'closeDataModal',
         'click #dataModal .btn-primary': 'saveSocialVoice',
-        'click #importModal .btn-default': 'closeImportModal'
+        'click #importModal .btn-default': 'closeImportModal',
+        'click #btnSearch': 'doSearch'
+    },
+    doSearch: function () {
+        this.dataTable.setFilter({
+            sTime: this.sTime.getTime(),
+            eTime: this.eTime.getTime()
+        }).refresh();
     },
 
     showDataModal: function () {

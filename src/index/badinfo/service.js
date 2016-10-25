@@ -29,21 +29,25 @@ module.exports = {
     aggregateCreater: aggregateCreater
 };
 
-function listBadInfo (uid, priority, field, order, callback) {
-    var params = {};
-    var sql_stmt = "select top 1000 * from tb_badinfo ";
-    if (priority != 1) {
-        sql_stmt += ' where createuser = @uid ';
-        params['uid'] = uid;
+function listBadInfo (user, start, end, callback) {
+    var params = {
+        "start": start,
+        "end": end
+    };
+    var sql_stmt = "SELECT * FROM tb_badinfo WHERE createtime > @start AND createtime < @end ";
+    if (user.priority != 1) {
+        sql_stmt += ' AND createuser = @uid ';
+        params['uid'] = user.uid;
     }
-    if (field) {
-        sql_stmt += " order by " + field + " " + order;
-    }
+
+    sql_stmt += " ORDER BY createtime DESC;";
 
     console.log(sql_stmt);
 
     var ps = dbpool.preparedStatement()
         .input("uid", sql.VarChar)
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, []);
