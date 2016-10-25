@@ -16,8 +16,10 @@
 }
 
 .login-page .title {
-    font-family: "Microsoft JhengHei";
-    font-weight: bolder;
+    font-family: "Microsoft YaHei";
+    margin-top: 0px;
+    margin-bottom: 20px;
+    color: #3f88bf;
 }
 
 .login-page .login-frame .main-table {
