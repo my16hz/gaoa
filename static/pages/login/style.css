@@ -18,6 +18,10 @@
     padding: 0;
 }
 
+.login-page .title-table {
+    height: 900px;
+}
+
 .login-page .title {
     font-family: "Microsoft JhengHei";
     font-weight: bolder;
