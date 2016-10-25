@@ -5,35 +5,19 @@
 .login-page .bg-page {
     width: 100%;
     height: 100%;
-    min-height: 700px;
+    min-height: 434px;
     position: absolute;
     z-index: -100;
-    left: 0;
-    top: 0;
 }
 
-.login-page table {
+.login-page .login-frame {
     width: 100%;
-    border: none;
-    padding: 0;
-}
-
-.login-page .title-table {
-    height: 200px;
+    height: 100%;
 }
 
 .login-page .title {
     font-family: "Microsoft JhengHei";
     font-weight: bolder;
-}
-
-.login-page .login-frame {
-    width: 543px;
-    height: 255px;
-}
-
-.login-page .login-frame .bg-frame {
-    background: url("./imgs/login_frame.png") no-repeat;
 }
 
 .login-page .login-frame .main-table {
@@ -44,22 +28,34 @@
     padding-top: 12px;
 }
 
-.login-page .login-frame input {
+.login-page .login-frame form {
+    display: block;
+    background: url("./imgs/login_frame.png") no-repeat;
+    width: 543px;
+    height: 255px;
+    overflow: hidden;
+}
+
+.login-page .login-frame .main-table {
+    margin-top: 55px;
+}
+
+.login-page .login-frame .main-table input {
     border: 0;
 }
 
-.login-page .login-frame .form-label {
+.login-page .login-frame .main-table .form-label {
     font-size: 14px;
 }
 
-.login-page .login-frame .form-input {
+.login-page .login-frame .main-table .form-input {
     height: 22px;
     width: 137px;
     outline: none;
     vertical-align: middle;
 }
 
-.login-page .login-frame .icon-member {
+.login-page .login-frame .main-table .icon-member {
     padding-left: 30px;
     background: url("./imgs/icon_member.png") 4px no-repeat;
     background-color: #FFFFFF;
@@ -69,7 +65,7 @@
     border: 1px solid #ccc;
 }
 
-.login-page .login-frame .icon-lock {
+.login-page .login-frame .main-table .icon-lock {
     padding-left: 30px;
     background: url(./imgs/icon_lock.png) 4px no-repeat;
     background-color: #FFFFFF;
@@ -79,8 +75,13 @@
     border: 1px solid #ccc;
 }
 
-.login-page .login-frame .btn-login {
+.login-page .login-frame .main-table .btn-login {
     width: 81px;
     height: 26px;
     padding: 0px;
+}
+
+.login-page .login-frame .main-table .lhs-alert-panel {
+    margin-bottom: 0px;
+    padding: 5px;
 }
