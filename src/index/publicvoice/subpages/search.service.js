@@ -12,7 +12,7 @@ module.exports = {
 };
 
 function searchPubVoices (start, end, state, type, feedback, dispose, title, callback) {
-    var sql_stmt = "SELECT TOP 1000 * FROM tb_publicvoice " +
+    var sql_stmt = "SELECT * FROM tb_publicvoice " +
         "WHERE createtime > @start AND createtime < @end ";
     var objParams = {
         "start": start,
