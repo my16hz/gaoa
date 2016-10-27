@@ -20,7 +20,8 @@ module.exports = {
     generateDailyReport: generateDailyReport,
     getDailyTemplate: getDailyTemplate,
     saveDailyReport: saveDailyReport,
-    exportDailyReport: exportDailyReport
+    exportDailyReport: exportDailyReport,
+    deleteDailyReport: deleteDailyReport
 };
 
 function getDailyReports (req, res) {
@@ -143,4 +144,28 @@ function exportDailyReport (req, res) {
             }
         }
     });
+}
+
+function deleteDailyReport (req, res) {
+    var uid = req.session[userkey].id;
+    if (uid != 'admin') {
+        /**
+         * 普通用户不能删除日报
+         */
+        res.send({
+            success: false,
+            message: "权限不足, 请联系管理员。"
+        });
+    } else {
+        var did = req.body.did;
+        var pvids = req.body.pvids;
+
+        service.deleteDailyReport(did, pvids.split(','), function (err) {
+            err ?
+                errhandler.internalException(res, err) :
+                res.send({
+                    success: true
+                });
+        });
+    }
 }

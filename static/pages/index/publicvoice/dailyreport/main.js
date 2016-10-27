@@ -26,7 +26,10 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
             {
                 title: '操作', field: 'action',
                 formatter: function () {
-                    return '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-eye-open"></i></a>';
+                    return [
+                        '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-eye-open"></i></a>',
+                        '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
+                    ].join('&nbsp;&nbsp;');
                 },
                 events: {
                     'click a:first': function () {
@@ -44,6 +47,16 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
                         modal.find('a.btn-primary').attr('href', '/daily/export/' + report.id);
 
                         self._showModal(modal, self.dataTable);
+                    },
+                    'click a:last': function () {
+                        var did = arguments[2].id;
+                        var pvids = arguments[2].pvids;
+
+                        bootbox.confirm('确认删除？', function (rs) {
+                            rs && self._ajaxDelete(did, pvids, function () {
+                                self.dataTable.refresh();
+                            });
+                        });
                     }
                 }
             }
@@ -59,5 +72,14 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
 
         this._clearFormControlValues(modal.find('form'))
             ._closeModal(modal, this.dataTable);
+    },
+    _ajaxDelete: function (did, pvids, done) {
+        this._sendRequest({
+            type: 'delete', url: '/daily/delete',
+            data: {did: did, pvids: pvids},
+            done: done
+        });
+
+        return this;
     }
 });

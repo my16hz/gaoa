@@ -24,7 +24,12 @@ module.exports = {
     getLatestDailyPVList: getLatestDailyPVList,
 
     /* 获取未入报的舆情，包括审批通过和有回复 */
-    getUnappliedPubVoices: getUnappliedPubVoices
+    getUnappliedPubVoices: getUnappliedPubVoices,
+
+    /**
+     * 删除日报，并将对应的舆情状态设置为审批通过(2)
+     */
+    deleteDailyReport: deleteDailyReport
 };
 
 
@@ -251,3 +256,29 @@ function getUnappliedPubVoices (start, end, callback) {
         });
 }
 
+
+function deleteDailyReport (did, pvids, callback) {
+    var sql_stmt = "DELETE FROM tb_daily_pv WHERE [did] = @did; " +
+        "DELETE FROM tb_daily WHERE [id] = @did;" +
+        "UPDATE tb_publicvoice SET [state] = 2 WHERE [id] in ( %pvids% );";
+    sql_stmt = sql_stmt.replace("%pvids%", "\'" + pvids.join("\',\'") + "\'");
+    var objParams = {
+        "did": did
+    };
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input('did', sql.Int)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, false);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}

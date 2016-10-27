@@ -36,6 +36,7 @@ module.exports = function () {
         .post('daily/generate', controller.generateDailyReport)
         .get('/daily/template', controller.getDailyTemplate)
         .post('/daily/save', controller.saveDailyReport)
+        .delete('/daily/delete', controller.deleteDailyReport)
 
         // dispose page
         .get('/dispose/pvlist', controller.getDailyPVList)
