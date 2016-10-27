@@ -144,8 +144,8 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             jqInput.prop('readonly', !!pubvoice.id);
 
             if (pubvoice.id) {
-                !$.isArray(pubvoice.url) && (pubvoice.url = pubvoice.url.split(','));
-                !$.isArray(pubvoice.from_website) && (pubvoice.from_website = pubvoice.from_website.split(','));
+                //!$.isArray(pubvoice.url) && (pubvoice.url = pubvoice.url.split(','));
+                //!$.isArray(pubvoice.from_website) && (pubvoice.from_website = pubvoice.from_website.split(','));
 
                 /*self._appendInfoSrcRow(jqInput.parents('div.form-group'))
                  ._setFormControlValues(jqform, pubvoice);*/
