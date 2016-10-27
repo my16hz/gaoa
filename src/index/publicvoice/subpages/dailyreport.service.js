@@ -228,10 +228,15 @@ function getLatestDailyPVList (callback) {
         });
 }
 
-function getUnappliedPubVoices (callback) {
-    var sql_stmt = " SELECT TOP 1000 * FROM tb_publicvoice WHERE state = 2; ";
-    var objParams = {};
+function getUnappliedPubVoices (start, end, callback) {
+    var sql_stmt = " SELECT * FROM tb_publicvoice WHERE state = 2 AND createtime > @start AND createtime < @end ORDER BY createtime DESC; ";
+    var objParams = {
+        "start": start,
+        "end": end
+    };
     var ps = dbpool.preparedStatement()
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);

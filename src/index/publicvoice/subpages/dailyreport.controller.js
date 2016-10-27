@@ -10,6 +10,7 @@ var uuid = require('node-uuid');
 
 var errhandler = require('../../../utils/errhandler');
 var service = require('./../service');
+var defaut_interval = 3600000 * 24 * 30;
 
 module.exports = {
     getDailyReports: getDailyReports,
@@ -72,7 +73,10 @@ function getDailyPVList (req, res) {
 }
 
 function getUnappliedPubVoices (req, res) {
-    service.getUnappliedPubVoices(function (err, rs) {
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
+    service.getUnappliedPubVoices(start, end, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
