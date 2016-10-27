@@ -10,7 +10,7 @@ var uuid = require('node-uuid');
 
 var errhandler = require('../../../utils/errhandler');
 var service = require('./../service');
-var defaut_interval = 3600000 * 24 * 30;
+var defaut_interval = 3600000 * 24 * 7;
 
 module.exports = {
     getDailyReports: getDailyReports,
