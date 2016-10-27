@@ -141,28 +141,28 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
         var self = this;
         var values = this._validate($('#dataModal form'), {
             website: function (val) {
-                if (!val.length) return '不能为空。';
+                if (!val || !val.length) return '不能为空。';
             },
             url: function (val) {
-                if (!val.length) return '不能为空。';
+                if (!val || !val.length) return '不能为空。';
             },
             username: function (val) {
-                if (!val.length) return '不能为空。';
+                if (!val || !val.length) return '不能为空。';
             },
             duty_zone: function (val) {
-                if (!val.length) return '不能为空。';
+                if (!val || !val.length) return '不能为空。';
             },
             department: function (val) {
-                if (!val.length) return '不能为空。';
+                if (!val || !val.length) return '不能为空。';
             },
             type: function (val) {
-                if (!val.length) return '不能为空。';
+                if (!val || !val.length) return '不能为空。';
             },
             reportdate: function (val) {
-                if (!val.length) return '不能为空。';
+                if (!val || !val.length) return '不能为空。';
             },
             sn: function (val) {
-                if (!val.length) return '不能为空。';
+                if (!val || !val.length) return '不能为空。';
             }
         });
 

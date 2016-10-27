@@ -302,13 +302,13 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 if (!(/^\d+$/.test(val))) return '必须为数字。';
             },
             relate_department: function (val) {
-                if (!val.length) return '不能为空。';
+                if (!val || !val.length) return '不能为空。';
             },
             type: function (val) {
-                if (!val.length) return '不能为空。';
+                if (!val || !val.length) return '不能为空。';
             },
             item: function (val) {
-                if (!val.length) return '不能为空。';
+                if (!val || !val.length) return '不能为空。';
             }
         });
 
