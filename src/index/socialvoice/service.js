@@ -27,39 +27,28 @@ module.exports = {
     statisticAcceptGroup: statisticAcceptGroup
 };
 
-function getSocialVoices (user, start, end, callback) {
-    var params = {
-        "start": start,
-        "end": end
-    };
+function getSocialVoices (user, group, start, end, callback) {
     var sql_stmt = "SELECT * FROM tb_socialvoice WHERE createtime > @start AND createtime < @end ";
-    var ps = null;
+    var inputs = [sql.DateTime, sql.DateTime];
+    var values = [start, end];
+
+    if (group) {
+        sql_stmt += ' AND createuser in (SELECT id FROM tb_user WHERE groupid = @groupid) ';
+        inputs.push(sql.VarChar);
+        values.push(group);
+    }
 
     if (user.priority != 1) {
         sql_stmt += ' AND createuser = @uid ';
-        params['uid'] = user.uid;
+        inputs.push(sql.VarChar);
+        values.push(user.uid);
     }
 
     sql_stmt += " ORDER BY createtime DESC;";
+
     console.log(sql_stmt);
 
-    ps = dbpool.preparedStatement()
-        .input("uid", sql.VarChar)
-        .input("start", sql.DateTime)
-        .input("end", sql.DateTime)
-        .prepare(sql_stmt, function (err) {
-            if (err) {
-                return callback(err, []);
-            }
-
-            ps.execute(params, function (err, rs) {
-                callback(err, rs);
-
-                ps.unprepare(function (err) {
-                    err && console.error(err);
-                });
-            });
-        });
+    dbpool.execPreparedStatement(sql_stmt, inputs, values, callback);
 }
 
 function saveSocialVoice (objParams, callback) {

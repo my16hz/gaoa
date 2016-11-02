@@ -47,10 +47,12 @@ function pageSocialVoice (req, res) {
 
 function getSocialVoices (req, res) {
     var now = new Date().getTime();
+    var group = req.query.group;
     var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
     var end = new Date((req.query.eTime - 0 ) || now );
     var user = req.session[userkey];
-    service.getSocialVoices(user, start, end, function (err, rs) {
+    
+    service.getSocialVoices(user, group, start, end, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

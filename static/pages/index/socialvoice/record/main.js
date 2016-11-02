@@ -11,7 +11,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
 
         $(this.el).empty().append(jqtmpl($, {data: {}}).join(''));
 
-        this.initDependencies();
+        this.initDependencies()._appendGroups();
 
         this.sTime = this._createTimepicker('#sTime').onChange(function (e) {
             this.eTime.minDate(e.date)
@@ -36,9 +36,12 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 title: '状态', field: 'state', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
-                        case 0: return '待报送';
-                        case 1: return '已报送';
-                        case 2: return '已采用';
+                        case 0:
+                            return '待报送';
+                        case 1:
+                            return '已报送';
+                        case 2:
+                            return '已采用';
                     }
                 }
             },
@@ -83,11 +86,11 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     },
     doSearch: function () {
         this.dataTable.setFilter({
+            group: $('#group').val(),
             sTime: this.sTime.getTime(),
             eTime: this.eTime.getTime()
         }).refresh();
     },
-
     showDataModal: function () {
         var modal = $('#dataModal');
         this._showModal(modal, this.dataTable);
@@ -103,12 +106,6 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 dataTable.expand().refresh();
             }
         });
-    },
-    _validator: function () {
-        var jqform = $('#dataModal form');
-        var values = this._getFormControlValues(jqform);
-
-        return values;
     },
     showImportModal: function () {
         var modal = $('#importModal');
@@ -158,5 +155,28 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         });
 
         return this;
+    },
+    _appendGroups: function () {
+        return this._sendRequest({
+            type: 'get',
+            url: '/sysmanage/groups',
+            done: function (rs) {
+                var jqSelect = $('#group');
+
+                jqSelect.find('option:gt(0)').remove();
+
+                $.each(rs, function (n, gp) {
+                    jqSelect.append($('<option></option>')
+                        .attr('value', gp.id)
+                        .text(gp.name));
+                });
+            }
+        });
+    },
+    _validator: function () {
+        var jqform = $('#dataModal form');
+        var values = this._getFormControlValues(jqform);
+
+        return values;
     }
 });
