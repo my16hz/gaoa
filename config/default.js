@@ -102,7 +102,7 @@ module.exports = {
         '    <span style=";position: relative;z-index:251657728"> </span>' +
         '</p>' +
         '<p>' +
-        '    <span style="font-size:21px;font-family:黑体"><br/>秘 密</span>' +
+        '    <br/>' +
         '</p>' +
         '<p>' +
         '    <br/>' +

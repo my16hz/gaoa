@@ -91,7 +91,7 @@ function saveBadInfo (obj, callback) {
         .input("id", sql.Int)
         .input("website", sql.NVarChar)
         .input("url", sql.NVarChar)
-        .input("reportdate", sql.VarChar)
+        .input("reportdate", sql.NVarChar)
         .input("department", sql.NVarChar)
         .input("username", sql.NVarChar)
         .input("duty_zone", sql.NVarChar)
@@ -99,7 +99,7 @@ function saveBadInfo (obj, callback) {
         .input("sn", sql.NVarChar)
         .input("remark", sql.NVarChar(sql.MAX))
         .input("createuser", sql.VarChar)
-        .input("createtime", sql.DateTime2)
+        .input("createtime", sql.DateTime)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
@@ -147,7 +147,7 @@ function _addBulkBadInfo (objs, callback) {
 
     table.columns.add("website", sql.NVarChar, {nullable: true});
     table.columns.add("url", sql.NVarChar, {nullable: true});
-    table.columns.add("reportdate", sql.VarChar, {nullable: true});
+    table.columns.add("reportdate", sql.NVarChar, {nullable: true});
     table.columns.add("department", sql.NVarChar, {nullable: true});
     table.columns.add("username", sql.NVarChar, {nullable: true});
     table.columns.add("duty_zone", sql.NVarChar, {nullable: true});

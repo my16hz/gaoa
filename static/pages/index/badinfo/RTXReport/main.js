@@ -85,7 +85,7 @@ var LHSRTXReportPage = $.extend({}, LHSBasicPage, {
 
         this._sendRequest({
             type: 'post',
-            url: '/rtx/directive/save',
+            url: '/rtx/report/save',
             validator: $.proxy(this._validator, this),
             done: function () {
                 self.closeDataModal();
@@ -96,7 +96,7 @@ var LHSRTXReportPage = $.extend({}, LHSBasicPage, {
 
     _ajaxDelete: function (ids, done) {
         this._sendRequest({
-            type: 'delete', url: '/rtx/directive/delete',
+            type: 'delete', url: '/rtx/report/delete',
             data: {ids: ids},
             done: done
         });
