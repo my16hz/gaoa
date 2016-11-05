@@ -33,9 +33,7 @@ function getSocialVoices (user, group, start, end, callback) {
     var values = [start, end];
 
     if (group) {
-        sql_stmt += ' AND createuser in (SELECT id FROM tb_user WHERE groupid = @groupid) ';
-        inputs.push(sql.VarChar);
-        values.push(group);
+        sql_stmt += " AND department LIKE '%" + group + "%' ";
     }
 
     if (user.priority != 1) {
@@ -81,13 +79,14 @@ function saveSocialVoice (objParams, callback) {
 }
 
 function updateSocialVoice (obj, callback) {
-    var sql_stmt = "UPDATE tb_socialvoice SET [title] = @title, [origin_content] = @origin_content, [report_content] = @report_content  WHERE [id] = @id; ";
+    var sql_stmt = "UPDATE tb_socialvoice SET [title] = @title, [origin_content] = @origin_content, [report_content] = @report_content, [department] = @department WHERE [id] = @id; ";
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .input("id", sql.Int)
         .input("title", sql.NVarChar)
         .input("origin_content", sql.NVarChar(sql.MAX))
         .input("report_content", sql.NVarChar(sql.MAX))
+        .input("department", sql.NVarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);

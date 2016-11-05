@@ -167,7 +167,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
 
                 $.each(rs, function (n, gp) {
                     jqSelect.append($('<option></option>')
-                        .attr('value', gp.id)
+                        .attr('value', gp.name)
                         .text(gp.name));
                 });
             }
