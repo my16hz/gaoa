@@ -205,7 +205,7 @@ var LHSBasicPage = {
 
         return editor;
     },
-    _createTable: function (panel, url, columns) {
+    _createTable: function (panel, url, columns, done) {
         var self = this;
         var dataTable = $(panel).append(
             $('<table></table>').addClass('table table-striped table-hover table-condensed')
@@ -213,7 +213,7 @@ var LHSBasicPage = {
         var filter = null;
 
         $.each(columns, function () {
-            this.formatter = (function (setting) {
+            !this.checkbox && (this.formatter = (function (setting) {
                 var rawFormatter = setting.formatter;
 
                 return function (val) {
@@ -230,7 +230,7 @@ var LHSBasicPage = {
 
                     return $('<div></div>').append(html).html();
                 }
-            })(this);
+            })(this));
         });
 
         dataTable.bootstrapTable({
@@ -260,7 +260,12 @@ var LHSBasicPage = {
             columns: columns,
             pagination: true,
             sortOrder: 'desc',
-            onPostBody: _reviseAutoWidth
+            onPostBody: function () {
+                _reviseAutoWidth();
+                $('.lhs-disabled-chk', panel).each(function () {
+                    'true' == $(this).text() && $(this).prev('input').prop('disabled', true).hide();
+                });
+            }
         });
 
         this.__tableCaches__.push(dataTable);

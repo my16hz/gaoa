@@ -21,7 +21,12 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
         });
 
         this.dataTable = this._createTable('#tableWrapper', '/badinfo/list', [
-            {field: 'checkbox', checkbox: true},
+            {
+                field: 'checkbox', checkbox: true,
+                formatter: function () {
+                    return '<i class="lhsitems hide">' + (arguments[2].createuser !== lhsuid) + '</>';
+                }
+            },
             {title: '网站名称', field: 'website', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '10%'},
             {title: '网页路径', field: 'url', sortable: true, order: 'desc', autoWidth: '18%'},
             {title: '举报者', field: 'username', sortable: true, order: 'desc', maxWidth: 60},

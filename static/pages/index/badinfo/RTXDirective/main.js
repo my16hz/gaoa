@@ -14,7 +14,12 @@ var LHSRTXDirectivePage = $.extend({}, LHSBasicPage, {
         this.initDependencies();
 
         this.dataTable = this._createTable('#tableWrapper', '/rtx/directive/list', [
-            {field: 'checkbox', checkbox: true},
+            {
+                field: 'checkbox', checkbox: true,
+                formatter: function () {
+                    return '<i class="hide lhs-disabled-chk">' + (arguments[2].createuser !== lhsuid) + '</>';
+                }
+            },
             {title: '指令部门', field: 'department', alwaysDisplay: true, sortable: true, order: 'desc', maxWidth: 150},
             {title: '指令方式', field: 'type', sortable: true, order: 'desc', maxWidth: 90},
             {title: '接收人', field: 'name', sortable: true, order: 'desc', maxWidth: 60},
