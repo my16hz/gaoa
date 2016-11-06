@@ -17,7 +17,7 @@ var LHSRTXDirectivePage = $.extend({}, LHSBasicPage, {
             {
                 field: 'checkbox', checkbox: true,
                 formatter: function () {
-                    return '<i class="hide lhs-disabled-chk">' + (arguments[2].createuser !== lhsuid) + '</>';
+                    return '<i class="hide lhs-disabled-chk">' + (arguments[1].createuser !== lhsuid) + '</>';
                 }
             },
             {title: '指令部门', field: 'department', alwaysDisplay: true, sortable: true, order: 'desc', maxWidth: 150},

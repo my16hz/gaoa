@@ -263,7 +263,7 @@ var LHSBasicPage = {
             onPostBody: function () {
                 _reviseAutoWidth();
                 $('.lhs-disabled-chk', panel).each(function () {
-                    'true' == $(this).text() && $(this).prev('input').prop('disabled', true).hide();
+                    'true' == $(this).text() && $(this).prev('input').prop('disabled', true);
                 });
             }
         });

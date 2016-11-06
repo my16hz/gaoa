@@ -24,7 +24,7 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
             {
                 field: 'checkbox', checkbox: true,
                 formatter: function () {
-                    return '<i class="lhsitems hide">' + (arguments[2].createuser !== lhsuid) + '</>';
+                    return '<i class="hide lhs-disabled-chk">' + (arguments[1].createuser !== lhsuid) + '</>';
                 }
             },
             {title: '网站名称', field: 'website', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '10%'},
