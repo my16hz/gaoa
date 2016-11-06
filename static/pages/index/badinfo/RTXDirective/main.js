@@ -69,6 +69,7 @@ var LHSRTXDirectivePage = $.extend({}, LHSBasicPage, {
     delSelected: function () {
         var dataTable = this.dataTable;
         var ids = dataTable.getSelected();
+        var self = this;
 
         ids.length ?
             bootbox.confirm('确定删除？', function (rs) {
@@ -108,11 +109,30 @@ var LHSRTXDirectivePage = $.extend({}, LHSBasicPage, {
         return this;
     },
     _validator: function () {
-        var jqform = $('#dataModal form');
-        var values = this._getFormControlValues(jqform);
+        var self = this;
+        var values = this._validate($('#dataModal form'), {
+            type: function (val) {
+                if (!val || !val.length) return '不能为空。';
+            },
+            department: function (val) {
+                if (!val || !val.length) return '不能为空。';
+            },
+            rtx_time: function (val) {
+                if (!val || !val.length) return '不能为空。';
+            },
+            duty_user: function (val) {
+                if (!val || !val.length) return '不能为空。';
+            },
+            content: function (val) {
+                if (!val || !val.length) return '不能为空。';
+            },
+            result: function (val) {
+                if (!val || !val.length) return '不能为空。';
+            }
+        });
 
-        values['remark'] = this.editor.getContent();
+        if (values) values['remark'] = this.editor.getContent();
 
-        return values;
+        return values || false;
     }
 });

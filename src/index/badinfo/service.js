@@ -269,7 +269,7 @@ function saveRTX (obj, callback) {
 function deleteRTX (dbids, callback) {
     var objParams = {};
     var sql_stmt = "DELETE FROM tb_rtx WHERE id in (%dbids%);";
-    sql_stmt = sql_stmt.replace("%dbids%", "\'" + dbids.join("\',\'") + "\'");
+    sql_stmt = sql_stmt.replace("%dbids%", dbids);
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
