@@ -81,6 +81,9 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
             });
         } else {
             this.rTime.setVal();
+            editor.ready(function () {
+                editor.setContent('');
+            });
         }
 
         this._showModal(modal, this.dataTable);

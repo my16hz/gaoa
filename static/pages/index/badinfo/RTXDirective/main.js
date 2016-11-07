@@ -65,6 +65,9 @@ var LHSRTXDirectivePage = $.extend({}, LHSBasicPage, {
             });
         } else {
             this.lhsTime.setVal();
+            editor.ready(function () {
+                editor.setContent('');
+            });
         }
 
         this._showModal(modal, this.dataTable);
