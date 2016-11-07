@@ -384,9 +384,10 @@ var LHSBasicPage = {
         return this;
     },
     _createTimepicker: function (input, format, defval, defDate) {
+        var formatter = format || 'YYYY-MM-DD';
         var picker = $(input).datetimepicker({
             defaultDate: defDate || new Date(),
-            format: format || 'YYYY-MM-DD',
+            format: formatter,
             useCurrent: defval || true,
             locale: 'zh_CN'
         });
@@ -397,6 +398,9 @@ var LHSBasicPage = {
         return {
             value: function () {
                 return picker.val();
+            },
+            setVal: function (date) {
+                picker.val(moment(date).format(formatter));
             },
             getTime: function () {
                 var val = picker.val();
@@ -475,17 +479,17 @@ var LHSBasicPage = {
         var values = this._getFormControlValues(jqform);
         var error = null, elem;
         var errElems = [];
+        var handler = function () {
+            $(this).tooltip('destroy').parent().removeClass('has-error');
+        };
 
         $.each(rules, function (name, check) {
             if (error = check(values[name], values)) {
                 elem = $('[name="' + name + '"]', jqform);
 
                 elem.tooltip({title: error}).tooltip('show')
-                    .unbind('focus')
-                    .bind('focus', function () {
-                        $(this).tooltip('destroy')
-                            .parent().removeClass('has-error');
-                    })
+                    .unbind('focus', handler)
+                    .bind('focus', handler)
                     .parent().addClass('has-error');
 
                 errElems.push(elem);

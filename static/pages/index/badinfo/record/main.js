@@ -37,7 +37,7 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
             {
                 title: '举报时间', field: 'reportdate', sortable: true, order: 'desc',
                 formatter: function (val) {
-                    return moment(val).format('YYYY/MM/DD');
+                    return moment(val, 'YYYY-MM-DD').format('YYYY/MM/DD');
                 }
             },
             {
@@ -53,10 +53,10 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
             }
         ]);
         this.editor = this._createEditor('#editorWrapper');
-        this._createTimepicker('#reportdate');
+        this.rTime = this._createTimepicker('#reportdate');
     },
     events: {
-        'click #btnAdd': 'showNewDataModal',
+        'click #btnAdd': 'showDataModal',
         'click #btnImport': 'showImportModal',
         'click #btnDel': 'delSelected',
         'click #dataModal .btn-default': 'closeDataModal',
@@ -70,13 +70,20 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
             eTime: this.eTime.getTime()
         }).refresh();
     },
-    showNewDataModal: function () {
+    showDataModal: function (info) {
         var editor = this.editor;
         var modal = $('#dataModal');
+
+        if (info.id) {
+            this._setFormControlValues(modal.find('form'), info);
+            editor.ready(function () {
+                editor.setContent(info.remark || '');
+            });
+        } else {
+            this.rTime.setVal();
+        }
+
         this._showModal(modal, this.dataTable);
-        editor.ready(function () {
-            editor.setContent('');
-        });
     },
     showImportModal: function () {
         var modal = $('#importModal');
@@ -85,16 +92,6 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
             this.closeImportModal();
         });
 
-        this._showModal(modal, this.dataTable);
-    },
-    showDataModal: function (info) {
-        var editor = this.editor;
-        var modal = $('#dataModal');
-
-        info.id && this._setFormControlValues(modal.find('form'), info);
-        editor.ready(function () {
-            editor.setContent(info.remark || '');
-        });
         this._showModal(modal, this.dataTable);
     },
     delSelected: function () {
