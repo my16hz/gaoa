@@ -27,7 +27,7 @@ var LHSRTXDirectivePage = $.extend({}, LHSBasicPage, {
             {
                 title: '指令时间', field: 'rtx_time', sortable: true, order: 'desc',
                 formatter: function (val) {
-                    return moment(val).format('YYYY/MM/DD');
+                    return moment(val, 'YYYY-MM-DD').format('YYYY/MM/DD');
                 }
             },
             {title: '指令内容', field: 'content', sortable: true, order: 'desc', autoWidth: '20%'},
@@ -45,7 +45,7 @@ var LHSRTXDirectivePage = $.extend({}, LHSBasicPage, {
             }
         ]);
         this.editor = this._createEditor('#editorWrapper');
-        this._createTimepicker('.lhstimepicker');
+        this.lhsTime = this._createTimepicker('.lhstimepicker');
     },
     events: {
         'click #btnAdd': 'showDataModal',
@@ -58,11 +58,14 @@ var LHSRTXDirectivePage = $.extend({}, LHSBasicPage, {
         var modal = $('#dataModal');
         var editor = this.editor;
 
-        rtx.id && this._setFormControlValues(modal.find('form'), rtx);
-
-        editor.ready(function () {
-            editor.setContent(rtx.remark || '');
-        });
+        if (rtx.id) {
+            this._setFormControlValues(modal.find('form'), rtx);
+            editor.ready(function () {
+                editor.setContent(rtx.remark || '');
+            });
+        } else {
+            this.lhsTime.setVal();
+        }
 
         this._showModal(modal, this.dataTable);
     },

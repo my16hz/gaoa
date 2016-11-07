@@ -383,10 +383,10 @@ var LHSBasicPage = {
 
         return this;
     },
-    _createTimepicker: function (input, format, defval, defDate) {
+    _createTimepicker: function (input, format, defDate, defval) {
         var formatter = format || 'YYYY-MM-DD';
         var picker = $(input).datetimepicker({
-            defaultDate: defDate || new Date(),
+            defaultDate: defDate,
             format: formatter,
             useCurrent: defval || true,
             locale: 'zh_CN'

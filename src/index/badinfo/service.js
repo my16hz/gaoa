@@ -37,7 +37,7 @@ function listBadInfo (user, start, end, callback) {
     var sql_stmt = "SELECT * FROM tb_badinfo WHERE createtime > @start AND createtime < @end ";
     if (user.priority != 1) {
         sql_stmt += ' AND createuser = @uid ';
-        params['uid'] = user.uid;
+        params['uid'] = user.id;
     }
 
     sql_stmt += " ORDER BY createtime DESC;";

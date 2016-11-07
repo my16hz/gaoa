@@ -39,7 +39,7 @@ function getSocialVoices (user, group, start, end, callback) {
     if (user.priority != 1) {
         sql_stmt += ' AND createuser = @uid ';
         inputs.push(sql.VarChar);
-        values.push(user.uid);
+        values.push(user.id);
     }
 
     sql_stmt += " ORDER BY createtime DESC;";
