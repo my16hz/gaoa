@@ -16,8 +16,41 @@ module.exports = {
     getFeedbackDailyID: getFeedbackDailyID
 };
 
-function getFeedbackList (uid, callback) {
-    var sql_stmt = "SELECT * FROM tb_pv_"
+function getFeedbackList (uid, did, callback) {
+    var sql_stmt = "SELECT tb_publicvoice.*, tb_daily_pv.did AS daily_id FROM tb_publicvoice, tb_daily_pv " +
+        "  WHERE tb_daily_pv.pvid = tb_publicvoice.id " +
+        "  AND tb_publicvoice.id IN ( SELECT pvid FROM tb_pv_notify WHERE tb_pv_notify.uid = @uid) ";
+
+    var objParams = {
+        'uid' : uid
+    };
+
+    if (did) {
+        sql_stmt += " AND tb_daily_pv.did = @did;";
+        objParams['did'] = did;
+    } else {
+        sql_stmt += " AND tb_daily_pv.did IN ( SELECT MAX(id) as id FROM tb_daily );";
+    }
+
+    console.log(sql_stmt);
+    var ps = dbpool
+        .preparedStatement()
+        .input("uid", sql.VarChar)
+        .input("did", sql.Int)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+
 }
 
 /**

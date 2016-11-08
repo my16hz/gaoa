@@ -24,6 +24,16 @@ module.exports = {
 
 function getFeedbackList (req, res) {
     var uid = req.session[userkey].id;
+    var did = req.query.did;
+
+    service.getFeedbackList(uid, did, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
     
 }
 

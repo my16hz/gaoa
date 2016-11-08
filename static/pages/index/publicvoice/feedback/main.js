@@ -13,7 +13,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
 
-        this.dataTable = this._createTable('#tableWrapper', '/notify/list', [
+        this.dataTable = this._createTable('#tableWrapper', '/feedback/list', [
             {field: 'checkbox', checkbox: true},
             {title: '期数', field: 'daily_id', sortable: true, order: 'desc'},
             {title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '18%'},
@@ -73,10 +73,17 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
         this.webEditor = this._createEditor('#webEditorWrapper');
     },
     events: {
+        'click #btnSearch': 'doSearch',
         'click #dataModal .btn-default': 'closeModal',
         'click #dataModal .btn-primary': 'saveFeedback',
         'click #acceptModal .btn-default': 'closeAcceptModal',
         'click #acceptModal .btn-primary': 'saveAccept'
+    },
+    doSearch: function (jqbtn) {
+        var id = $.trim(jqbtn.prev('input').val());
+
+        this.dataTable.setFilter(id ? {did: id} : null)
+            .refresh();
     },
     showDataModal: function (pubvoice) {
         var modal = $('#dataModal');
