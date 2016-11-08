@@ -147,7 +147,8 @@ var LHSBasicPage = {
             $('[name="' + this.name + '"]', jqform).each(function (elem) {
                 elem = $(this);
 
-                if (elem.is('input[type="text"]') || elem.is('input[type="password"]') || elem.is('input[type="hidden"]') || elem.is('textarea')) {
+                if (elem.is('input[type="text"]') || elem.is('input[type="password"]')
+                    || elem.is('input[type="hidden"]') || elem.is('input[type="file"]') || elem.is('textarea')) {
                     elem.val('');
                 } else if (elem.is('input[type="checkbox"]')) {
                     elem.removeAttr('checked');
