@@ -161,6 +161,8 @@ var LHSBasicPage = {
                     elem
                         .children('option:eq(0)').attr('selected', 'selected')
                         .siblings().removeAttr('selected');
+                } else {
+                    console && console.warn&& console.warn('unhandled input control: %s', elem.attr('name'));
                 }
             });
         });
