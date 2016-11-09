@@ -12,33 +12,33 @@ module.exports = {
 };
 
 function searchPubVoices (start, end, state, type, feedback, dispose, title, callback) {
-    var sql_stmt = "SELECT * FROM tb_publicvoice " +
-        "WHERE createtime > @start AND createtime < @end ";
+    var sql_stmt = "SELECT tb_publicvoice.*, tb_daily_pv.did FROM tb_publicvoice LEFT JOIN tb_daily_pv ON tb_publicvoice.id = tb_daily_pv.pvid " +
+        "WHERE tb_publicvoice.createtime > @start AND tb_publicvoice.createtime < @end ";
     var objParams = {
         "start": start,
         "end": end
     };
     if (state) {
-        sql_stmt += " AND state = @state ";
+        sql_stmt += " AND tb_publicvoice.state = @state ";
         objParams["state"] = state;
     }
     if (type) {
-        sql_stmt += " AND type = @type ";
+        sql_stmt += " AND tb_publicvoice.type = @type ";
         objParams["type"] = type;
     }
     if (feedback) {
-        sql_stmt += " AND feedback_state = @feedback ";
+        sql_stmt += " AND tb_publicvoice.feedback_state = @feedback ";
         objParams["feedback"] = feedback;
     }
     if (dispose) {
-        sql_stmt += " AND dispose_stat = @dispose ";
+        sql_stmt += " AND tb_publicvoice.dispose_stat = @dispose ";
         objParams["dispose"] = dispose;
     }
     if (title) {
-        sql_stmt += " AND title LIKE @title "
+        sql_stmt += " AND tb_publicvoice.title LIKE @title ";
         objParams["title"] = '%' + title + '%';
     }
-
+    sql_stmt += " ORDER BY tb_publicvoice.createtime DESC ";
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .input("start", sql.DateTime)

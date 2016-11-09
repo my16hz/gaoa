@@ -16,6 +16,7 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
         this.dataTable = this._createTable('#tableWrapper', '/pubvoice/search', [
             {field: 'checkbox', checkbox: true},
             {title: '舆情ID', field: 'id', sortable: true, order: 'desc'},
+            {title: '日报期数', field: 'did', sortable: true, order: 'desc'},
             {title: '标题', field: 'title', alwaysDisplay: true, autoWidth: '18%'},
             {title: '载体', field: 'from_website', autoWidth: '10%'},
             {title: '所属栏目', field: 'item', sortable: true, order: 'desc'},
