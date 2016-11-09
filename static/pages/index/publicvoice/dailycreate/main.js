@@ -59,13 +59,27 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
             }
         ]);
         this.editor = this._createEditor('#editorWrapper');
+        this.sTime = this._createTimepicker('#sTime').onChange(function (e) {
+            this.eTime.minDate(e.date)
+        });
+        this.eTime = this._createTimepicker('#eTime').onChange(function (e) {
+            this.sTime.maxDate(e.date);
+        });
     },
     events: {
         'click #btnCreate': 'showDataModal',
         'click #dataModal .btn-default': 'closeDataModal',
-        'click #dataModal .btn-primary': 'saveDataModal'
+        'click #dataModal .btn-primary': 'saveDataModal',
+        'click #btnSearch': 'doSearch'
     },
+    doSearch: function () {
+        var self = this;
 
+        this.dataTable.setFilter({
+            sTime: self.sTime.getTime(),
+            eTime: self.eTime.getTime()
+        }).refresh();
+    },
     showDataModal: function () {
         var selected = this.dataTable.getOriginalSelected();
         var self = this;
