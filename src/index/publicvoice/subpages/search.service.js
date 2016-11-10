@@ -35,7 +35,7 @@ function searchPubVoices (start, end, state, type, feedback, dispose, title, cal
         objParams["dispose"] = dispose;
     }
     if (title) {
-        sql_stmt += " AND tb_publicvoice.title LIKE @title ";
+        sql_stmt += " AND (tb_publicvoice.title LIKE @title OR tb_publicvoice.content LIKE @title) ";
         objParams["title"] = '%' + title + '%';
     }
     sql_stmt += " ORDER BY tb_publicvoice.createtime DESC ";
