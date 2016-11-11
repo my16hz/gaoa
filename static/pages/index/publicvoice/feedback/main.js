@@ -16,7 +16,11 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
         this.dataTable = this._createTable('#tableWrapper', '/feedback/list', [
             {field: 'checkbox', checkbox: true},
             {title: '期数', field: 'daily_id', sortable: true, order: 'desc'},
-            {title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '18%'},
+            {title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '18%',
+                formatter: function (val, rowdata) {
+                    return '<a href="' + (rowdata.url || 'javascript:') + '" target="_blank">' + val + '</a>';
+                }
+            },
             {title: '载体', field: 'from_website', sortable: true, order: 'desc', autoWidth: '10%'},
             {title: '所属栏目', field: 'item', sortable: true, order: 'desc'},
             {title: '舆情类别', field: 'type', sortable: true, order: 'desc', maxWidth: 90},
