@@ -27,13 +27,17 @@ module.exports = {
     statisticAcceptGroup: statisticAcceptGroup
 };
 
-function getSocialVoices (user, group, start, end, callback) {
+function getSocialVoices (user, group, keyword, start, end, callback) {
     var sql_stmt = "SELECT * FROM tb_socialvoice WHERE createtime > @start AND createtime < @end ";
     var inputs = [sql.DateTime, sql.DateTime];
     var values = [start, end];
 
     if (group) {
         sql_stmt += " AND department LIKE '%" + group + "%' ";
+    }
+
+    if (keyword) {
+        sql_stmt += " AND (title LIKE '%" + keyword + "%' OR origin_content LIKE '%" + keyword + "%') ";
     }
 
     if (user.priority != 1) {

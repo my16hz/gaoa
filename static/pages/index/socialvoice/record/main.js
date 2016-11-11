@@ -87,6 +87,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     doSearch: function () {
         this.dataTable.setFilter({
             group: $('#group').val(),
+            keyword: $('#keyword').val(),
             sTime: this.sTime.getTime(),
             eTime: this.eTime.getTime()
         }).refresh();

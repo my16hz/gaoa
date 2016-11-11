@@ -51,8 +51,9 @@ function getSocialVoices (req, res) {
     var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
     var end = new Date((req.query.eTime - 0 ) || now );
     var user = req.session[userkey];
+    var keyword = req.query.keyword;
     
-    service.getSocialVoices(user, group, start, end, function (err, rs) {
+    service.getSocialVoices(user, group, keyword, start, end, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
