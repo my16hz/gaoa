@@ -80,6 +80,7 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
     },
     events: {
         'click #btnSearch': 'doSearch',
+        'click #btnExport': 'doExport',
         'click #dataModal .btn-default': 'closeDataModal'
     },
     doSearch: function () {
@@ -96,6 +97,21 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
                 eTime: this.eTime.getTime()
             }
         });
+    },
+    doExport: function () {
+        var funcCtrls = $('.func-btns');
+
+        $('<iframe class="hide"></iframe>')
+            .appendTo('body')
+            .attr('src', '/pubvoice/search/export' + $.param({
+                    state: funcCtrls.find('select:eq(0)').val(),
+                    dispose: funcCtrls.find('select:eq(1)').val(),
+                    feedback: funcCtrls.find('select:eq(2)').val(),
+                    type: funcCtrls.find('select:eq(3)').val(),
+                    title: funcCtrls.find('input:first').val(),
+                    sTime: this.sTime.getTime(),
+                    eTime: this.eTime.getTime()
+                }));
     },
     closeDataModal: function () {
         var modal = $('#dataModal');
