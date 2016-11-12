@@ -8,7 +8,9 @@ var dbpool = require('../../../utils/dbpool');
 
 module.exports = {
     /*---------- 舆情检索页面 ----------*/
-    searchPubVoices: searchPubVoices
+    searchPubVoices: searchPubVoices,
+
+    exportMatchedPubVoices: exportMatchedPubVoices
 };
 
 function searchPubVoices (start, end, state, type, feedback, dispose, title, callback) {
@@ -60,4 +62,8 @@ function searchPubVoices (start, end, state, type, feedback, dispose, title, cal
                 });
             });
         });
+}
+
+function exportMatchedPubVoices (start, end, state, type, feedback, dispose, title, done) {
+    done();
 }

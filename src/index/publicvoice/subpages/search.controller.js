@@ -24,7 +24,7 @@ function searchPubVoices (req, res) {
     var title = req.query.title;
     var feedback = req.query.feedback;
     var dispose = req.query.dispose;
-    
+
     service.searchPubVoices(start, end, state, type, feedback, dispose, title, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
@@ -47,27 +47,18 @@ function exportMatchedPubVoices (req, res) {
 
     var filename = encodeURIComponent('广安市网络舆情检索数据');
 
-    try {
-        res.set({
-            'content-type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'content-disposition': 'attachment;filename="' + filename + '.doc"'
-        }).send('');
-    } catch (e) {
-        errhandler.internalException(res, e);
-    }
-
-    // service.getPVDispose(id, function (err, dispose) {
-    //     if (err) {
-    //         errhandler.internalException(res, err)
-    //     } else {
-    //         try {
-    //             res.set({
-    //                 'content-type': 'application/msword',
-    //                 'content-disposition': 'attachment;filename="' + filename + '.doc"'
-    //             }).send(HtmlDocx.asBlob(content));
-    //         } catch (e) {
-    //             errhandler.internalException(res, e);
-    //         }
-    //     }
-    // });
+    service.exportMatchedPubVoices(start, end, state, type, feedback, dispose, title, function (err, rs) {
+        if(err) {
+            errhandler.internalException(res, err);
+        } else {
+            try {
+                res.set({
+                    'content-type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'content-disposition': 'attachment;filename="' + filename + '.doc"'
+                }).send('');
+            } catch (e) {
+                errhandler.internalException(res, e);
+            }
+        }
+    });
 }
