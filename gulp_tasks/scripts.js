@@ -20,7 +20,8 @@ var SUB_PAGES = {
     ],
     smartoffice: ['allmessages', 'examine&approve', 'sendmessage', 'recvmessage', 'notifymessage'],
     socialvoice: ['dispose', 'record', 'report', 'statistics'],
-    sysmanage: ['members', 'password', 'configure']
+    sysmanage: ['members', 'password', 'configure'],
+    gawebsit: ['record']
 };
 
 var TASKS_SUBPAGES = [];

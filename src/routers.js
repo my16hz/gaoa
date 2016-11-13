@@ -15,6 +15,7 @@ module.exports = function (app) {
     app.use(require('./index/publicvoice/router')());
     app.use(require('./index/socialvoice/router')());
     app.use(require('./index/badinfo/router')());
+    app.use(require('./index/gawebsite/router')());
     app.use(require('./index/smartoffice/router')());
     app.use(require('./index/sysmanage/router')());
 

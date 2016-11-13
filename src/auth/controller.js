@@ -71,6 +71,7 @@ function _getAccessibleMenus (user) {
         menusAuth['1'] = /(^1|,1)\d+/.test(menuCodes);
         menusAuth['2'] = /(^2|,2)\d+/.test(menuCodes);
         menusAuth['3'] = /(^3|,3)\d+/.test(menuCodes);
+        menusAuth['6'] = /(^6|,6)\d+/.test(menuCodes);
 
         menuCodes.split(',').forEach(function (code) {
             menusAuth[code] = true;

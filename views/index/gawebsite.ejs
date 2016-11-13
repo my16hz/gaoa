@@ -18,9 +18,9 @@
         <% } if(menus['2']) { %>
             <li><a href="/socialvoice">社会舆情信息</a></li>
         <% } if(menus['3']) { %>
-            <li class="active"><a href="/badinfo">不良信息举报</a></li>
+            <li><a href="/badinfo">不良信息举报</a></li>
         <% } if(menus['6']) { %>
-            <li><a href="/gawebsite">市属网站</a></li>
+            <li class="active"><a href="/gawebsite">市属网站</a></li>
         <% } %>
         <li><a href="/smartoffice">智能办公</a></li>
         <li><a href="/sysmanage">系统管理</a></li>
@@ -33,12 +33,8 @@
 <div class="content">
     <div class="aside-menu">
         <ul id="lhs_aside_menu" class=" nav nav-pills nav-stacked">
-            <% if(menus['31']) { %>
-                <li class="selected" data-page="record"><a href="javascript:">不良信息录入</a></li>
-            <% } if(menus['32']) { %>
-                <li data-page="aggregate"><a href="javascript:">不良信息统计</a></li>
-            <% } if(menus['33']) { %>
-                <li data-page="RTXDirective"><a href="javascript:">RTX指令情况</a></li>
+            <% if(menus['61']) { %>
+                <li class="selected" data-page="record"><a href="javascript:">市属网站录入</a></li>
             <% } %>
         </ul>
     </div>
