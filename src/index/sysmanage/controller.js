@@ -35,7 +35,8 @@ module.exports = {
 function pageSysManage (req, res) {
     res.render('index/sysmanage', {
         menus: req.session[config.session.menukey],
-        user: req.session[userkey].name || '匿名用户'
+        user: req.session[userkey].name || '匿名用户',
+        uid: req.session[userkey].id || ''
     });
 }
 
