@@ -113,7 +113,7 @@ function datafile (req, res) {
                 dfcfg.uploadDir + file.dirName + '/' + file.filename
             ), function (err) {
                 if (err) {
-                    errhandler.customError(res, '文件解析失败。');
+                    errhandler.customError(res, 'LHS_ERROR' == err.code ? err.message : '文件解析失败。');
                 } else {
                     res.send({success: true});
                 }
