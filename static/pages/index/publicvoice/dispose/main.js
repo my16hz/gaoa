@@ -218,7 +218,10 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
             .refresh();
     },
     closeCommentModal: function () {
-        this._closeModal('#commentModal', this.dataTable);
+        var modal = $('#commentModal');
+
+        this._clearFormControlValues(modal.find('form'))
+            ._closeModal(modal, this.dataTable);
     },
     saveComment: function () {
         var self = this;
