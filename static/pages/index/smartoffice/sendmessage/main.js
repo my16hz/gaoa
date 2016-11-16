@@ -119,6 +119,7 @@ var LHSSendMessagePage = $.extend({}, LHSBasicPage, {
         var self = this;
 
         if (msg.id) {
+            _appendOptions ([{'key': msg.message_id, 'value': msg.message_id}]);
             this._setFormControlValues(jqform, msg);
             this._showModal(modal, self.dataTable);
         } else {
@@ -127,18 +128,35 @@ var LHSSendMessagePage = $.extend({}, LHSBasicPage, {
                 url: '/smartoffice/template',
                 done: function (rs) {
                     var modal = $('#dataModal');
-                    var no = parseInt(rs.smartoffice_sendmessage_id) + 1;
-                    var prefix = '广市举[' + moment(new Date()).format('YYYY') + '] ' + no + '号';
 
-                    self._setFormControlValues(modal.find('form'), {
-                        message_id: prefix,
-                        smartoffice_sendmessage_id: no
-                    });
+                    var values = [
+                        {'key': 'smartoffice_sendmessage_id', 'value' : '广舆函[' + moment(new Date()).format('YYYY') + '] ' + (parseInt(rs.smartoffice_sendmessage_id || 0) + 1) + '号'},
+                        {'key': 'smartoffice_sendmessage_up_id', 'value' : '广舆[' + moment(new Date()).format('YYYY') + '] ' + (parseInt(rs.smartoffice_sendmessage_up_id || 0) + 1) + '号'},
+                        {'key': 'smartoffice_sendmessage_down_id', 'value' : '广舆发[' + moment(new Date()).format('YYYY') + '] ' + (parseInt(rs.smartoffice_sendmessage_down_id || 0) + 1) + '号'},
+                        {'key': 'smartoffice_sm_report_id', 'value' : '广举函[' + moment(new Date()).format('YYYY') + '] ' + (parseInt(rs.smartoffice_sm_report_id || 0) + 1) + '号'},
+                        {'key': 'smartoffice_sm_report_up_id', 'value' : '广举[' + moment(new Date()).format('YYYY') + '] ' + (parseInt(rs.smartoffice_sm_report_up_id || 0) + 1) + '号'},
+                        {'key': 'smartoffice_sm_report_down_id', 'value' : '广举发[' + moment(new Date()).format('YYYY') + '] ' + (parseInt(rs.smartoffice_sm_report_down_id || 0) + 1) + '号'}
+                    ];
+                    _appendOptions(values);
+                    self._setFormControlValues(jqform, {'copies':5, 'content':'请严主任审签。'});
                     self._showModal(modal, self.dataTable);
                 }
             });
         }
+
+        function _appendOptions (values) {
+            var jqSelect = $('select[name="message_id"]', jqform);
+
+            jqSelect.find('option').remove();
+
+            $.each(values, function (n, gp) {
+                jqSelect.append($('<option></option>')
+                    .attr('value', gp.key)
+                    .text(gp.value));
+            });
+        }
     },
+    
     commitMessage: function () {
         var self = this;
         var dataTable = this.dataTable;
@@ -196,6 +214,11 @@ var LHSSendMessagePage = $.extend({}, LHSBasicPage, {
             }
         });
 
+        var modal = $('#dataModal');
+        var jqform = modal.find('form');
+        var jqSelect = $('select[name="message_id"]', jqform);
+        values['message_id'] = jqSelect.find("option:selected").text();
+        values['sendmessage_key'] = jqSelect.find("option:selected").val();
         return values || false;
     }
 });

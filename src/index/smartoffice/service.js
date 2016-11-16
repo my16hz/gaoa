@@ -86,7 +86,7 @@ function saveSendMsg(obj, callback) {
                     ' [createtime]) VALUES (@title, @major_department, @cc_department, @message_id, ' +
                     ' @secret_level, @urgent_level, @dispose_user, @draft_user, @copies, @content,' +
                     ' @keyword, @sign, @countersign, @state, @createuser, @createtime);' +
-                    "UPDATE tb_sys_config SET [value] = @smartoffice_sendmessage_id WHERE [id] = 'smartoffice_sendmessage_id';";
+                    "UPDATE tb_sys_config SET [value] = [value] + 1 WHERE [id] = @sendmessage_key;";
     var objParams = obj;
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
@@ -106,7 +106,7 @@ function saveSendMsg(obj, callback) {
         .input("state", sql.Int)
         .input("createuser", sql.VarChar)
         .input("createtime", sql.DateTime2)
-        .input("smartoffice_sendmessage_id", sql.VarChar)
+        .input("sendmessage_key", sql.VarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
@@ -297,7 +297,7 @@ function commitRecvMsg(ids, callback) {
 
 function getTemplate (callback) {
     dbpool.execPreparedStatement(
-        "SELECT * FROM tb_sys_config WHERE id IN ('smartoffice_sendmessage_id', 'smartoffice_recvmessage_id', 'smartoffice_notify_id');",
+        "SELECT * FROM tb_sys_config;",
         function (err, recordset) {
             var rs = {};
 
