@@ -13,7 +13,7 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
 
-        this.isShown = 'recv';
+        this.isShown = 'send';
         this.sendTable = this._createTable('#sendTableWrapper', '/smartoffice/sendmsg/unapproved', [
             {field: 'checkbox', checkbox: true},
             {title: '文件标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '30%'},
@@ -78,6 +78,7 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
                 }
             }
         ]);
+        this.sendTable.showDataWrapper();
     },
     events: {
         'click #content-switch > .btn': 'changePageContent',
