@@ -1,5 +1,5 @@
 <script type="text/html">
-<div class="badinfo-record-page">
+<div class="website-record-page">
     <div class="row func-btns">
         <div class="col-xs-7">
             <div class="row">
@@ -29,7 +29,7 @@
         <div class="col-xs-10 no-padding-left hide">
             <div id="dataModal" class="modal-content">
                 <div class="modal-header">
-                    <label><h4 class="modal-title">不良信息举报</h4></label>
+                    <label><h4 class="modal-title">市属网站登记</h4></label>
                     <div class="pull-right">
                         <button type="button" class="btn btn-default">关闭</button>
                         <button type="button" class="btn btn-primary">保存</button>
@@ -39,68 +39,79 @@
                     <form class="form-horizontal">
                         <input type="hidden" name="id" class="form-control">
                         <div class="form-group form-group-sm">
-                            <label class="col-xs-2 control-label">网站名称：</label>
-                            <div class="col-xs-4">
+                            <label class="col-xs-1 control-label">网站名称：</label>
+                            <div class="col-xs-5">
                                 <input type="text" name="website" class="form-control">
                             </div>
-                            <label class="col-xs-2 control-label">网页路径：</label>
-                            <div class="col-xs-4">
+                            <label class="col-xs-1 control-label">网址链接：</label>
+                            <div class="col-xs-5">
                                 <input type="text" name="url" class="form-control">
                             </div>
                         </div>
                         <div class="form-group form-group-sm">
-                            <label class="col-xs-2 control-label">举报者：</label>
-                            <div class="col-xs-4">
-                                <input type="text" name="username" class="form-control">
+                            <label class="col-xs-1 control-label">网站类别：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="type" class="form-control">
                             </div>
-                            <label class="col-xs-2 control-label">举报单位：</label>
-                            <div class="col-xs-4">
-                                <input type="text" name="department" class="form-control">
+                            <label class="col-xs-1 control-label">所属区域：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="zone" class="form-control">
                             </div>
-                        </div>
-                        <div class="form-group form-group-sm">
-                            <label class="col-xs-2 control-label">所属地域：</label>
-                            <div class="col-xs-4">
-                                <input type="text" name="duty_zone" class="form-control">
+                            <label class="col-xs-1 control-label">备案号：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="record" class="form-control">
                             </div>
-                            <label class="col-xs-2 control-label">危害类型：</label>
-                            <div class="col-xs-4">
-                                <select name="type" class="form-control">
-                                    <option value="淫秽色情">淫秽色情</option>
-                                    <option value="赌博">赌博</option>
-                                    <option value="诈骗">诈骗</option>
-                                    <option value="侵权">侵权</option>
-                                    <option value="病毒">病毒</option>
-                                    <option value="违背宪法原则">违背宪法原则</option>
-                                    <option value="攻击党和政府">攻击党和政府</option>
-                                    <option value="宣扬邪教">宣扬邪教</option>
-                                    <option value="迷信暴力">迷信暴力</option>
-                                    <option value="网络敲诈和有偿删帖">网络敲诈和有偿删帖</option>
-                                    <option value="谣言信息">谣言信息</option>
-                                    <option value="其他违法和不良信息">其他违法和不良信息</option>
+                            <label class="col-xs-1 control-label">互动版块：</label>
+                            <div class="col-xs-2">
+                                <select name="is_interaction" class="form-control">
+                                    <option value="有">有</option>
+                                    <option value="无">无</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group form-group-sm">
-                            <label class="col-xs-2 control-label">举报时间：</label>
-                            <div class="col-xs-4">
-                                <input type="text" name="reportdate" class="form-control" id="reportdate">
+                            <label class="col-xs-1 control-label">主管单位：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="duty_department" class="form-control">
                             </div>
-                            <label class="col-xs-2 control-label">举报查询码：</label>
-                            <div class="col-xs-4">
-                                <input type="text" name="sn" class="form-control">
+                            <label class="col-xs-1 control-label">单位电话：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="duty_department_call" class="form-control">
                             </div>
+                            <label class="col-xs-1 control-label">负责人：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="duty_user" class="form-control">
+                            </div>
+                            <label class="col-xs-1 control-label">联系电话：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="duty_user_call" class="form-control">
+                            </div>
+
                         </div>
                         <div class="form-group form-group-sm">
-                            <label class="col-xs-2 control-label">备注：</label>
-                            <div id="editorWrapper" class="col-xs-10"></div>
+                            <label class="col-xs-1 control-label">服务器属地：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="server_zone" class="form-control">
+                            </div>
+                            <label class="col-xs-1 control-label">服务器网络：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="server_network" class="form-control">
+                            </div>
+                            <label class="col-xs-1 control-label">QQ：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="duty_user_qq" class="form-control">
+                            </div>
+                            <label class="col-xs-1 control-label">备注：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="remark" class="form-control">
+                            </div>
                         </div>
                     </form>
                 </div>
             </div>
             <div id="importModal" class="modal-content hide">
                 <div class="modal-header">
-                    <h4 class="modal-title">舆情导入</h4>
+                    <h4 class="modal-title">市属网站导入</h4>
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal">

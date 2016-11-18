@@ -7,7 +7,7 @@
 
             switch ($(this).attr('data-page')) {
                 case 'record':
-                    return BadInfoRecordPage.run();
+                    return WebsiteRecordPage.run();
             }
         });
 

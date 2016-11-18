@@ -9,4 +9,8 @@ var controller = require('./controller');
 module.exports = function () {
     return express.Router()
         .get('/gawebsite', controller.pageGAWebsite)
+
+        // record page
+        .get('/gawebsite/list', controller.getWebsite)
+        .post('/gawebsite/save', controller.saveWebsite)
 };

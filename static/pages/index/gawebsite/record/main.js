@@ -3,7 +3,7 @@
  * Copyright (c): LHS Develop Group
  * Author: lhs
  */
-var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
+var WebsiteRecordPage = $.extend({}, LHSBasicPage, {
     run: function () {
         var self = this;
         /*inject:jqtmpl:html*/
@@ -20,7 +20,7 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
             this.sTime.maxDate(e.date);
         });
 
-        this.dataTable = this._createTable('#tableWrapper', '/badinfo/list', [
+        this.dataTable = this._createTable('#tableWrapper', '/gawebsite/list', [
             {
                 field: 'checkbox', checkbox: true,
                 formatter: function () {
@@ -29,15 +29,15 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
             },
             {title: '网站名称', field: 'website', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '10%'},
             {title: '网页路径', field: 'url', sortable: true, order: 'desc', autoWidth: '18%'},
-            {title: '举报者', field: 'username', sortable: true, order: 'desc', maxWidth: 60},
-            {title: '举报单位', field: 'department', sortable: true, order: 'desc', maxWidth: 90},
-            {title: '所属地域', field: 'duty_zone', sortable: true, order: 'desc', maxWidth: 150},
-            {title: '危害类型', field: 'type', sortable: true, order: 'desc'},
-            {title: '举报查询码', field: 'sn', sortable: true, order: 'desc', maxWidth: 90},
+            {title: '网站类别', field: 'type', sortable: true, order: 'desc', maxWidth: 60},
+            {title: '所属区域', field: 'zone', sortable: true, order: 'desc', maxWidth: 60},
+            {title: '备案号', field: 'record', sortable: true, order: 'desc', maxWidth: 60},
+            {title: '主管单位', field: 'duty_department', sortable: true, order: 'desc', maxWidth: 60},
+            {title: '负责人', field: 'duty_user', sortable: true, order: 'desc', maxWidth: 60},
             {
-                title: '举报时间', field: 'reportdate', sortable: true, order: 'desc',
+                title: '录入时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {
-                    return moment(val, 'YYYY-MM-DD').format('YYYY/MM/DD');
+                    return moment(val).format('YYYY/MM/DD');
                 }
             },
             {
@@ -123,8 +123,8 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
         var self = this;
         this._sendRequest({
             type: 'post',
-            url: '/badinfo/save',
-            validator: $.proxy(this._badinfoValidator, this),
+            url: '/gawebsite/save',
+            validator: $.proxy(this._websiteValidator, this),
             done: function () {
                 self.closeDataModal();
                 self.dataTable.refresh();
@@ -142,7 +142,7 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
         dataTable.refresh();
     },
 
-    _badinfoValidator: function () {
+    _websiteValidator: function () {
         var self = this;
         var values = this._validate($('#dataModal form'), {
             website: function (val) {
@@ -150,34 +150,14 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
             },
             url: function (val) {
                 if (!val || !val.length) return '不能为空。';
-            },
-            username: function (val) {
-                if (!val || !val.length) return '不能为空。';
-            },
-            duty_zone: function (val) {
-                if (!val || !val.length) return '不能为空。';
-            },
-            department: function (val) {
-                if (!val || !val.length) return '不能为空。';
-            },
-            type: function (val) {
-                if (!val || !val.length) return '不能为空。';
-            },
-            reportdate: function (val) {
-                if (!val || !val.length) return '不能为空。';
-            },
-            sn: function (val) {
-                if (!val || !val.length) return '不能为空。';
             }
         });
-
-        if (values) values['remark'] = this.editor.getContent();
 
         return values || false;
     },
     _ajaxDelete: function (ids, done) {
         this._sendRequest({
-            type: 'delete', url: '/badinfo/delete',
+            type: 'delete', url: '/gawebsite/delete',
             data: {ids: ids},
             done: done
         });
