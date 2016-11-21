@@ -13,4 +13,5 @@ module.exports = function () {
         // record page
         .get('/gawebsite/list', controller.getWebsite)
         .post('/gawebsite/save', controller.saveWebsite)
+        .delete('/gawebsite/delete', controller.deleteWebsite)
 };

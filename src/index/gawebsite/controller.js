@@ -16,7 +16,8 @@ module.exports = {
     pageGAWebsite: pageGAWebsite,
 
     getWebsite: getWebsite,
-    saveWebsite: saveWebsite
+    saveWebsite: saveWebsite,
+    deleteWebsite: deleteWebsite
 };
 
 function pageGAWebsite (req, res) {
@@ -67,6 +68,17 @@ function saveWebsite (req, res) {
     };
 
     service[obj.id ? 'updateWebsite' : 'saveWebsite'](socialvoice, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true
+            });
+    });
+}
+
+function deleteWebsite (req, res) {
+    var bdids = req.body.ids;
+    service.deleteWebsite(bdids, function (err) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

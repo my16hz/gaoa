@@ -10,7 +10,8 @@ module.exports = {
     getWebsite: getWebsite,
 
     saveWebsite: saveWebsite,
-    updateWebsite: updateWebsite
+    updateWebsite: updateWebsite,
+    deleteWebsite: deleteWebsite
 };
 
 function getWebsite (start, end, callback) {
@@ -86,6 +87,27 @@ function updateWebsite (obj, callback) {
             }
 
             ps.execute(obj, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function deleteWebsite (dbids, callback) {
+    var objParams = {};
+    var sql_stmt = "DELETE FROM tb_gawebsite WHERE id in (%dbids%);";
+    sql_stmt = sql_stmt.replace("%dbids%", dbids);
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, false);
+            }
+
+            ps.execute(objParams, function (err, rs) {
                 callback(err, rs);
 
                 ps.unprepare(function (err) {
