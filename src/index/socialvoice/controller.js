@@ -77,6 +77,8 @@ function saveSocialVoice (req, res) {
         "reportuser": user,
         "title": obj['title'],
         "department": obj["department"],
+        "china_use": obj["china_use"],
+        "province_use": obj["province_use"],
         "state": 0
     };
 

@@ -102,10 +102,17 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         });
     },
     _validator: function () {
-        var jqform = $('#dataModal form');
-        var values = this._getFormControlValues(jqform);
+        var self = this;
+        var values = this._validate($('#dataModal form'), {
+            province_use: function (val) {
+                if (isNaN(parseFloat(val))) return '必须为数字。';
+            },
+            china_use: function (val) {
+                if (isNaN(parseFloat(val))) return '必须为数字。';
+            }
+        });
 
-        return values;
+        return values || false;
     },
     showAcceptModal: function () {
         var self = this;

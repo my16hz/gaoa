@@ -54,8 +54,8 @@ function getSocialVoices (user, group, keyword, start, end, callback) {
 }
 
 function saveSocialVoice (objParams, callback) {
-    var sql_stmt = 'INSERT INTO tb_socialvoice ([title], [origin_content], [report_content], [reportuser], [department], [state], [createuser], [createtime]) ' +
-        'VALUES (@title, @origin_content, @report_content, @reportuser, @department, @state, @createuser, @createtime);';
+    var sql_stmt = 'INSERT INTO tb_socialvoice ([title], [origin_content], [report_content], [reportuser], [department], [state], [province_use], [china_use], [createuser], [createtime]) ' +
+        'VALUES (@title, @origin_content, @report_content, @reportuser, @department, @state, @province_use, @china_use, @createuser, @createtime);';
 
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
@@ -65,6 +65,8 @@ function saveSocialVoice (objParams, callback) {
         .input("report_content", sql.NVarChar(sql.MAX))
         .input("reportuser", sql.NVarChar)
         .input("department", sql.NVarChar)
+        .input("province_use", sql.Float)
+        .input("china_use", sql.Float)
         .input("createuser", sql.VarChar)
         .input("createtime", sql.DateTime2)
         .prepare(sql_stmt, function (err) {
@@ -83,7 +85,10 @@ function saveSocialVoice (objParams, callback) {
 }
 
 function updateSocialVoice (obj, callback) {
-    var sql_stmt = "UPDATE tb_socialvoice SET [title] = @title, [origin_content] = @origin_content, [report_content] = @report_content, [department] = @department WHERE [id] = @id; ";
+    var sql_stmt = "UPDATE tb_socialvoice SET [title] = @title, [origin_content] = @origin_content, " +
+        " [report_content] = @report_content, [department] = @department, " +
+        " [province_use] = @province_use, [china_use] = @china_use " +
+        " WHERE [id] = @id; ";
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .input("id", sql.Int)
@@ -91,6 +96,8 @@ function updateSocialVoice (obj, callback) {
         .input("origin_content", sql.NVarChar(sql.MAX))
         .input("report_content", sql.NVarChar(sql.MAX))
         .input("department", sql.NVarChar)
+        .input("province_use", sql.Float)
+        .input("china_use", sql.Float)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
@@ -258,7 +265,7 @@ function statisticGroup (start, end, callback) {
 
 
 function statisticAcceptUser (start, end, callback) {
-    var sql_stmt = "SELECT TOP 100 reportuser AS name, COUNT(*) AS count " +
+    var sql_stmt = "SELECT TOP 100 reportuser AS name, COUNT(*) AS count, SUM(tb_socialvoice.province_use) AS province_value, SUM(tb_socialvoice.china_use) AS china_value " +
         "FROM tb_socialvoice " +
         "WHERE tb_socialvoice.createtime > @start AND tb_socialvoice.createtime < @end " +
         "       AND state = 2 " +
@@ -287,7 +294,7 @@ function statisticAcceptUser (start, end, callback) {
 }
 
 function statisticAcceptGroup (start, end, callback) {
-    var sql_stmt = "SELECT TOP 100 tb_group.name, COUNT(*) AS count " +
+    var sql_stmt = "SELECT TOP 100 tb_group.name, COUNT(*) AS count, SUM(tb_socialvoice.province_use) AS province_value, SUM(tb_socialvoice.china_use) AS china_value " +
         " FROM tb_socialvoice,tb_user,tb_group " +
         " WHERE tb_socialvoice.createuser = tb_user.id AND tb_user.groupid = tb_group.id " +
         "       AND tb_socialvoice.createtime > @start AND tb_socialvoice.createtime < @end " +
