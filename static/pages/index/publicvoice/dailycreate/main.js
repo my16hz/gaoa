@@ -168,7 +168,7 @@ var LHSDailyCreatePage = $.extend({}, LHSBasicPage, {
             yzwy_title = '', yzwy_content = '';
         for (var idx in pubvoices) {
             var pv = pubvoices[idx];
-            var title = '<p><span style="font-size:20px;font-family:仿宋_GB2312">※ ' + pv.title + '</span></p>';
+            var title = '<p><span style="font-size:20px;font-family:仿宋_GB2312">&nbsp; &nbsp;※ ' + pv.title + '</span></p>';
             var content = pv.content;
 
             if (pv.content.indexOf('<p>') == 0) {
