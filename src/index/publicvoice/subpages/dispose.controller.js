@@ -131,7 +131,8 @@ function savePVComment (req, res) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
-                success: true
+                success: true,
+                data: rs
             });
     });
 }

@@ -1,4 +1,4 @@
-<script type="text/html">
+<!--<script type="text/html">-->
 <div class="pubvoice-dispose-page">
     <div class="row func-btns">
         <div class="col-md-4">
@@ -13,85 +13,99 @@
     <div class="row data-wrapper">
         <div id="tableWrapper" class="col-md-12"></div>
         <div class="col-xs-10 no-padding-left hide">
-            <div id="commentModal" class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">处置详情</h4>
+            <div id="dataModal" class="modal-content">
+                <div class="comment-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">处置详情</h4>
+                    </div>
+                    <div class="modal-body">
+                        <ul class="nav nav-tabs">
+                            <li class="active cmt-tab" data-index="0">
+                                <a href="javascript:">批示（新）</a>
+                            </li>
+                            <li class="addcmt-tab">
+                                <a href="javascript:">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <form class="form-horizontal" data-index="0">
+                            <input type="hidden" name="id">
+                            <input type="hidden" name="comment_id">
+                            <input type="hidden" name="comment_doc_no">
+                            <div class="form-group form-group-sm">
+                                <label class="col-xs-2 control-label">收文日期：</label>
+                                <div class="col-xs-4">
+                                    <input id="recv_date" type="text" name="recv_date" class="form-control">
+                                </div>
+                                <label class="col-xs-2 control-label">收文编号：</label>
+                                <div class="col-xs-4">
+                                    <input type="text" name="message_id" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label class="col-xs-2 control-label">领取人：</label>
+                                <div class="col-xs-4">
+                                    <input type="text" name="from_user" class="form-control">
+                                </div>
+                                <label class="col-xs-2 control-label">从何领取：</label>
+                                <div class="col-xs-4">
+                                    <input type="text" name="from_department" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label class="col-xs-2 control-label">批示领导：</label>
+                                <div class="col-xs-4">
+                                    <input type="text" name="comment_user" class="form-control">
+                                </div>
+                                <label class="col-xs-2 control-label">批示时间：</label>
+                                <div class="col-xs-4">
+                                    <input id="comment_date" type="text" name="comment_date" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label class="col-xs-2 control-label">批示内容：</label>
+                                <div class="col-xs-4">
+                                    <input type="text" name="comment" class="form-control">
+                                </div>
+                                <label class="col-xs-2 control-label">处置单位：</label>
+                                <div class="col-xs-4">
+                                    <input type="text" name="to_department" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label class="col-xs-2 control-label">批示附件：</label>
+                                <div class="col-xs-10 editor-wrapper"></div>
+                            </div>
+                            <div class="modal-footer" style="padding-bottom: 0;">
+                                <button type="button" class="btn btn-default">关闭</button>
+                                <button type="button" class="btn btn-default hide">通知书</button>
+                                <button type="button" class="btn btn-primary">保存</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <form class="form-horizontal">
-                        <input type="hidden" name="id" class="form-control">
-                        <input type="hidden" name="comment_doc_no" class="form-control">
-                        <div class="form-group form-group-sm">
-                            <label class="col-xs-2 control-label">收文日期：</label>
-                            <div class="col-xs-4">
-                                <input id="recv_date" type="text" name="recv_date" class="form-control">
+                <div class="dispose-content hide">
+                    <div class="modal-header">
+                        <h4 class="modal-title">处置通知书</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal">
+                            <input type="hidden" name="id">
+                            <input type="hidden" name="dispose_doc_no">
+                            <input type="hidden" name="dispose_doc_year">
+                            <div class="form-group form-group-sm">
+                                <div id="disposeWrapper" class="col-xs-12"></div>
                             </div>
-                            <label class="col-xs-2 control-label">收文编号：</label>
-                            <div class="col-xs-4">
-                                <input type="text" name="message_id" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group form-group-sm">
-                            <label class="col-xs-2 control-label">领取人：</label>
-                            <div class="col-xs-4">
-                                <input type="text" name="from_user" class="form-control">
-                            </div>
-                            <label class="col-xs-2 control-label">从何领取：</label>
-                            <div class="col-xs-4">
-                                <input type="text" name="from_department" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group form-group-sm">
-                            <label class="col-xs-2 control-label">批示领导：</label>
-                            <div class="col-xs-4">
-                                <input type="text" name="comment_user" class="form-control">
-                            </div>
-                            <label class="col-xs-2 control-label">批示时间：</label>
-                            <div class="col-xs-4">
-                                <input id="comment_date" type="text" name="comment_date" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group form-group-sm">
-                            <label class="col-xs-2 control-label">批示内容：</label>
-                            <div class="col-xs-4">
-                                <input type="text" name="comment" class="form-control">
-                            </div>
-                            <label class="col-xs-2 control-label">处置单位：</label>
-                            <div class="col-xs-4">
-                                <input type="text" name="to_department" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group form-group-sm">
-                            <label class="col-xs-2 control-label">批示附件：</label>
-                            <div id="editorWrapper" class="col-xs-10"></div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default">关闭</button>
-                    <button type="button" class="btn btn-primary">保存</button>
-                </div>
-            </div>
-            <div id="disposeModal" class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">处置通知书</h4>
-                </div>
-                <div class="modal-body">
-                    <form class="form-horizontal">
-                        <input type="hidden" name="id" class="form-control">
-                        <input type="hidden" name="dispose_doc_no" class="form-control">
-                        <input type="hidden" name="dispose_doc_year" class="form-control">
-                        <div class="form-group form-group-sm">
-                            <div id="disposeWrapper" class="col-xs-12"></div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">导出</button>
-                    <button type="button" class="btn btn-default">关闭</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary">导出</button>
+                        <button type="button" class="btn btn-default">返回</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-</script>
+<!--</script>-->
