@@ -16,7 +16,12 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
         this.dataTable = this._createTable('#tableWrapper', '/pubvoice/search', [
             {field: 'checkbox', checkbox: true},
             {title: '舆情ID', field: 'id', sortable: true, order: 'desc'},
-            {title: '标题', field: 'title', alwaysDisplay: true, autoWidth: '18%'},
+            {title: '日报期数', field: 'did', sortable: true, order: 'desc'},
+            {title: '标题', field: 'title', alwaysDisplay: true, autoWidth: '18%',
+                formatter: function (val, rowdata) {
+                    return '<a href="' + (rowdata.url || 'javascript:') + '" target="_blank">' + val + '</a>';
+                }
+            },
             {title: '载体', field: 'from_website', autoWidth: '10%'},
             {title: '所属栏目', field: 'item', sortable: true, order: 'desc'},
             {title: '舆情类别', field: 'type', sortable: true, order: 'desc', maxWidth: 90},
@@ -75,6 +80,7 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
     },
     events: {
         'click #btnSearch': 'doSearch',
+        'click #btnExport': 'doExport',
         'click #dataModal .btn-default': 'closeDataModal'
     },
     doSearch: function () {
@@ -91,6 +97,21 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
                 eTime: this.eTime.getTime()
             }
         });
+    },
+    doExport: function () {
+        var funcCtrls = $('.func-btns');
+
+        $('<iframe class="hide"></iframe>')
+            .appendTo('body')
+            .attr('src', '/pubvoice/search/export' + $.param({
+                    state: funcCtrls.find('select:eq(0)').val(),
+                    dispose: funcCtrls.find('select:eq(1)').val(),
+                    feedback: funcCtrls.find('select:eq(2)').val(),
+                    type: funcCtrls.find('select:eq(3)').val(),
+                    title: funcCtrls.find('input:first').val(),
+                    sTime: this.sTime.getTime(),
+                    eTime: this.eTime.getTime()
+                }));
     },
     closeDataModal: function () {
         var modal = $('#dataModal');

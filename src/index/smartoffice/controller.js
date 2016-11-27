@@ -43,7 +43,8 @@ module.exports = {
 function pageSmartOffice (req, res) {
     res.render('index/smartoffice', {
         menus: req.session[menukey],
-        user: req.session[userkey].name || '匿名用户'
+        user: req.session[userkey].name || '匿名用户',
+        uid: req.session[userkey].id || ''
     });
 }
 
@@ -90,7 +91,7 @@ function saveSendMsg (req, res) {
         'state': 0,
         'createuser': uid,
         'createtime': new Date(),
-        'smartoffice_sendmessage_id': obj['smartoffice_sendmessage_id']
+        'sendmessage_key': obj['sendmessage_key']
     }
 
     service[obj['id'] ? 'updateSendMsg' : 'saveSendMsg'](msg, function (err) {

@@ -19,6 +19,8 @@
             <li><a href="/socialvoice">社会舆情信息</a></li>
         <% } if(menus['3']) { %>
             <li><a href="/badinfo">不良信息举报</a></li>
+        <% } if(menus['6']) { %>
+            <li><a href="/gawebsite">市属网站</a></li>
         <% } %>
         <li class="active"><a href="/smartoffice">智能办公</a></li>
         <li><a href="/sysmanage">系统管理</a></li>
@@ -45,5 +47,6 @@
     </div>
     <div id="main_panel" class="main-panel container-fluid"></div>
 </div>
+<script type="text/javascript">var lhsuid = '<%= uid %>';</script>
 </body>
 </html>

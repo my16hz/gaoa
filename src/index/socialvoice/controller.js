@@ -41,7 +41,8 @@ module.exports = {
 function pageSocialVoice (req, res) {
     res.render('index/socialvoice', {
         menus: req.session[menukey],
-        user: req.session[userkey].name || '匿名用户'
+        user: req.session[userkey].name || '匿名用户',
+        uid: req.session[userkey].id || ''
     });
 }
 
@@ -51,8 +52,9 @@ function getSocialVoices (req, res) {
     var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
     var end = new Date((req.query.eTime - 0 ) || now );
     var user = req.session[userkey];
+    var keyword = req.query.keyword;
     
-    service.getSocialVoices(user, group, start, end, function (err, rs) {
+    service.getSocialVoices(user, group, keyword, start, end, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -75,6 +77,8 @@ function saveSocialVoice (req, res) {
         "reportuser": user,
         "title": obj['title'],
         "department": obj["department"],
+        "china_use": obj["china_use"],
+        "province_use": obj["province_use"],
         "state": 0
     };
 

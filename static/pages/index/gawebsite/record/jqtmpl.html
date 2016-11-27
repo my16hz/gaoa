@@ -1,0 +1,134 @@
+<script type="text/html">
+<div class="website-record-page">
+    <div class="row func-btns">
+        <div class="col-xs-7">
+            <div class="row">
+                <div class="col-xs-3 no-padding-right">
+                    <input id="sTime" type="text" name="sTime" placeholder="开始时间" class="form-control">
+                </div>
+                <div class="col-xs-3 no-padding-right">
+                    <input id="eTime" type="text" name="eTime" placeholder="结束时间" class="form-control">
+                </div>
+                <div class="col-xs-1">
+                    <button id="btnSearch" class="btn btn-default">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-5">
+            <div class="pull-right">
+                <button id="btnAdd" class="btn btn-default">新增</button>
+                <button id="btnImport" class="btn btn-default">导入</button>
+                <button id="btnDel" class="btn btn-default">删除</button>
+            </div>
+        </div>
+    </div>
+    <div class="row data-wrapper">
+        <div id="tableWrapper" class="col-md-12"></div>
+        <div class="col-xs-10 no-padding-left hide">
+            <div id="dataModal" class="modal-content">
+                <div class="modal-header">
+                    <label><h4 class="modal-title">市属网站登记</h4></label>
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-default">关闭</button>
+                        <button type="button" class="btn btn-primary">保存</button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <input type="hidden" name="id" class="form-control">
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-1 control-label">网站名称：</label>
+                            <div class="col-xs-5">
+                                <input type="text" name="website" class="form-control">
+                            </div>
+                            <label class="col-xs-1 control-label">网址链接：</label>
+                            <div class="col-xs-5">
+                                <input type="text" name="url" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-1 control-label">网站类别：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="type" class="form-control">
+                            </div>
+                            <label class="col-xs-1 control-label">所属区域：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="zone" class="form-control">
+                            </div>
+                            <label class="col-xs-1 control-label">备案号：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="record" class="form-control">
+                            </div>
+                            <label class="col-xs-1 control-label">互动版块：</label>
+                            <div class="col-xs-2">
+                                <select name="is_interaction" class="form-control">
+                                    <option value="有">有</option>
+                                    <option value="无">无</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-1 control-label">主管单位：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="duty_department" class="form-control">
+                            </div>
+                            <label class="col-xs-1 control-label">单位电话：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="duty_department_call" class="form-control">
+                            </div>
+                            <label class="col-xs-1 control-label">负责人：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="duty_user" class="form-control">
+                            </div>
+                            <label class="col-xs-1 control-label">联系电话：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="duty_user_call" class="form-control">
+                            </div>
+
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-1 control-label">服务器属地：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="server_zone" class="form-control">
+                            </div>
+                            <label class="col-xs-1 control-label">服务器网络：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="server_network" class="form-control">
+                            </div>
+                            <label class="col-xs-1 control-label">QQ：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="duty_user_qq" class="form-control">
+                            </div>
+                            <label class="col-xs-1 control-label">备注：</label>
+                            <div class="col-xs-2">
+                                <input type="text" name="remark" class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="importModal" class="modal-content hide">
+                <div class="modal-header">
+                    <h4 class="modal-title">市属网站导入</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">文件路径：</label>
+                            <div class="col-xs-9">
+                                <input type="file" name="datafile" class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <a href="sample/不良信息模板.xls" class="pull-left">模板下载</a>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</script>

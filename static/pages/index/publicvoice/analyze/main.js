@@ -35,7 +35,7 @@ var LHSAnalyzePage = $.extend({}, LHSBasicPage, {
                 {title: '漏报条数', field: 'count', sortable: true, order: 'desc'}
             ]),
             this._createTable('#pvItemTableWrapper', '/analyze/pvitem', [
-                {title: '舆情类别', field: 'item', autoWidth: '50%'},
+                {title: '舆情属性', field: 'item', autoWidth: '50%'},
                 {title: '舆情个数', field: 'count', sortable: true, order: 'desc'}
             ]),
             this._createTable('#pvTypeTableWrapper', '/analyze/pvtype', [

@@ -16,6 +16,12 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         this.dataTable = this._createTable('#tableWrapper', '/pubvoice/list', [
             {field: 'checkbox', checkbox: true},
             {
+                title: '时间', field: 'createtime', sortable: true, order: 'desc',
+                formatter: function (val) {
+                    return  moment(val).format('YYYY/MM/DD HH:mm');
+                }
+            },
+            {
                 title: '标题', field: 'title', alwaysDisplay: true, autoWidth: '20%',
                 formatter: function (val, rowdata) {
                     return '<a href="' + (rowdata.url || 'javascript:') + '" target="_blank">' + val + '</a>';
@@ -27,12 +33,6 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             {title: '回帖数', field: 'fellow_count', sortable: true, order: 'desc', maxWidth: 60},
             {title: '关注数', field: 'review_count', sortable: true, order: 'desc', maxWidth: 60},
             {title: '上报用户', field: 'name', sortable: true, order: 'desc'},
-            {
-                title: '处理时间', field: 'createtime', sortable: true, order: 'desc',
-                formatter: function (val) {
-                    return  moment(val).format('YYYY/MM/DD HH:mm');
-                }
-            },
             {
                 title: '状态', field: 'state', sortable: true, order: 'desc',
                 formatter: function (val) {
