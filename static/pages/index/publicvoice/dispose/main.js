@@ -55,7 +55,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                 formatter: function () {
                     var state = arguments[1].dispose_stat;
                     var btns = [
-                        '<a href="javascript:" title="批示详情">' +
+                        '<a href="javascript:" title="' + (0 == state ? '批示处置' : '批示详情') + '">' +
                         '<i class="glyphicon glyphicon-' + (0 == state ? 'comment' : 'eye-open') + '"></i>' +
                         '</a>'];
 
@@ -66,13 +66,13 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                     return btns.join('&nbsp;');
                 },
                 events: {
-                    'click a:first': function () {
-                        var pvid = arguments[2].id;
+                    'click a:eq(0)': function () {
+                        var pvobj = arguments[2];
                         var modalBody = $('#dataModal .comment-content');
 
                         self._sendRequest({
                             type: 'get', url: '/dispose/comment',
-                            data: {id: pvid},
+                            data: {id: pvobj.id},
                             done: function (rs) {
                                 var type = rs[0] ? rs[0].type : 2;
                                 var docNo = 1;
@@ -86,45 +86,31 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                                 }
 
 
-                                $.each(rs, function (i, cmt) {
-                                    cmt.id = pvid;
+                                $.each(rs, function (i, cmt, fmt) {
+                                    cmt.id = pvobj.id;
+                                    fmt = modalBody.find('form');
 
                                     if (0 !== i) {
                                         modalBody.find('.modal-body')
-                                            .append(self.commentFormClone.clone(true).attr('data-index', i))
-                                            .find('.nav > li:last').before(slef.commentTabClone.clone(true)
+                                            .append(fmt = self.commentFormClone.clone(true).attr('data-index', i))
+                                            .find('.nav > li:last').before(self.commentTabClone.clone(true)
                                             .attr('data-index', i));
                                     }
 
-                                    _fillFormValues(cmt, i);
+                                    self._fillFormValues(cmt, i);
 
-                                    // record the maximum comment_doc_no.
-                                    if (i == rs.length - 1) {
-                                        modalBody.data('comment_doc_no', cmt.comment_doc_no);
-                                    }
+                                    fmt.data('public_voice_obj', pvobj);
+                                    type != 2 && fmt.find('.btn:eq(1)').removeClass('hide');
+                                    rs.length - 1 == i && modalBody.data('comment_doc_no', cmt.comment_doc_no);
                                 });
 
                                 self._showModal('#dataModal', self.dataTable);
                             }
                         });
 
-                        function _fillFormValues (comment, index) {
-                            var form = modalBody.find('form').eq(index);
-                            var editor = form.data('editor');
 
-                            if (!editor) {
-                                editor = self._createEditor($('.editor-wrapper', form));
-                                form.data('editor', editor);
-                            }
-
-                            self._setFormControlValues(form, comment);
-                            modalBody.find('.nav a').eq(index).text('批示（' + comment.comment_user + '）');
-                            editor.ready(function () {
-                                editor.setContent(comment.attachment || '');
-                            });
-                        }
                     },
-                    'click a:last': function () {
+                    'click a:eq(1)': function () {
                         var pvid = arguments[2].id;
 
                         bootbox.confirm('确定提交审批？', function (rs) {
@@ -152,10 +138,10 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         'click #dataModal .comment-content .cmt-tab': 'switchCommentPanel',
         'click #dataModal .comment-content .addcmt-tab': 'appendCommentPanel',
         'click #dataModal .comment-content .btn:eq(0)': 'closeDataModal',
-        'click #dataModal .comment-content .btn-eq(1)': 'showDisposeDoc',
+        'click #dataModal .comment-content .btn:eq(1)': 'showDisposeDoc',
         'click #dataModal .comment-content .btn:eq(2)': 'saveComment',
-        'click #dataModal .dispose-content .btn:first': 'backToComment',
-        'click #dataModal .dispose-content .btn:last': 'saveAndExportDispose'
+        'click #dataModal .dispose-content .btn:first': 'saveAndExportDispose',
+        'click #dataModal .dispose-content .btn:last': 'backToComment'
     },
     autoSearch: function (jqinput, evt) {
         var id = $.trim(jqinput.val());
@@ -172,35 +158,54 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
             .refresh();
     },
     switchCommentPanel: function (jqli) {
+        jqli.addClass('active').siblings().removeClass('active');
         $('#dataModal .comment-content')
             .find('form').eq(jqli.attr('data-index')).removeClass('hide')
             .siblings('form').addClass('hide');
     },
     appendCommentPanel: function () {
         var self = this;
-        var newform = self.commentFormClone.clone(true).attr('data-index', i);
+        var modalBody = $('#dataModal .comment-content');
+        var index = modalBody.find('form').addClass('hide').length;
+        var newform = self.commentFormClone.clone(true).attr('data-index', index);
+        var docNo = modalBody.data('comment_doc_no') - 0 + 1;
 
-        modalBody.find('.modal-body')
-            .append(newform.data('editor', self._createEditor($('.editor-wrapper', newform))))
-            .find('.nav > li:last').before(slef.commentTabClone.clone(true)
-            .attr('data-index', i));
+        modalBody.find('.modal-body').append(newform)
+            .find('.nav > .addcmt-tab').siblings('li').removeClass('active').end()
+            .before(self.commentTabClone.clone(true)
+                .attr('data-index', index)
+                .addClass('active'));
+
+        newform.data('editor', self._createEditor($('.editor-wrapper', newform)));
+        this._fillFormValues({
+            message_id: '舆收[' + moment(new Date()).format('YYYY') + '] ' + docNo + '号',
+            comment_doc_no: docNo
+        }, index);
+        modalBody.data('comment_doc_no', docNo);
     },
     closeDataModal: function () {
         var modalBody = $('#dataModal .comment-content');
         var form = modalBody.removeData('comment_doc_no') // remove cache
             .removeClass('hide').next().addClass('hide').end() // reset visible
-            .find('.cmt-tab:first > a').text('批示（新）').end() // reset title
             .find('.cmt-tab:gt(0)').remove().end() // remove other tabs
-            .find('form:gt(0)').remove().end() // remove other forms
-            .find('form:first').find('.btn:eq(1)').addClass('hide').end(); // hide doc button
+            .find('.cmt-tab').addClass('active').children('a').text('批示（新）').end().end() // reset title
+            .find('form:gt(0)').each(function () {
+                $(this).data('editor').destroy(); // remove editor of forms
+                $(this).remove(); // remove other forms
+            }).end()
+            .find('form:first').removeClass('hide').find('.btn:eq(1)').addClass('hide').end(); // hide doc button
+        var editor = form.data('editor');
 
-        form.data('editor').ready(function () { editor.content(''); }); // clear editor contents.
+        editor.ready(function () {
+            editor.setContent('');
+        }); // clear editor contents.
 
         this._clearFormControlValues(form); // clear inputs' value in the first form
         this._closeModal('#dataModal', this.dataTable); // close modal
     },
-    showDisposeDoc: function () {
+    showDisposeDoc: function (jqbtn) {
         var editor = this.disposeEditor;
+        var pubvoice = jqbtn.parents('form').data('public_voice_obj');
         var self = this;
 
         this._sendRequest({
@@ -221,7 +226,9 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
 
         function _fillFormValuesAndDisplay (rs) {
             self._setFormControlValues($('.dispose-content form', '#dataModal '), rs);
-            editor.ready(function () { editor.setContent(rs.content || ''); });
+            editor.ready(function () {
+                editor.setContent(rs.content || '');
+            });
             $('#dataModal')
                 .find('.comment-content').addClass('hide')
                 .next().removeClass('hide');
@@ -274,7 +281,9 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         this._sendRequest({
             type: 'post',
             url: '/dispose/comment/save',
-            validator: function () { return self._commentValidator(jqform); },
+            validator: function () {
+                return self._commentValidator(jqform);
+            },
             done: function (cmt) {
                 !jqInputId.val() && jqInputId.val(cmt.comment_id);
                 jqform.find('.btn:eq(1)').removeClass('hide').end()
@@ -326,5 +335,21 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         values['content'] = this.disposeEditor.getContent();
 
         return values;
+    },
+    _fillFormValues: function (comment, index) {
+        var modalBody = $('#dataModal .comment-content');
+        var form = modalBody.find('form').eq(index);
+        var editor = form.data('editor');
+
+        if (!editor) {
+            editor = this._createEditor($('.editor-wrapper', form));
+            form.data('editor', editor);
+        }
+
+        this._setFormControlValues(form, comment);
+        modalBody.find('.nav a').eq(index).text('批示（' + (comment.comment_user || '新') + '）');
+        editor.ready(function () {
+            editor.setContent(comment.attachment || '');
+        });
     }
 });
