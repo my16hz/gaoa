@@ -101,19 +101,22 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
             url: '/feedback/detail',
             data: {id: pubvoice.id},
             done: function (rs) {
+                var docFeedbackTime, webFeedbackTime;
                 for (var r in rs) {
                     if (rs[r].type == 0) {
                         docEditor.ready(function () {
                             docEditor.setContent(rs[r].content || '');
                         });
+                        docFeedbackTime = moment(rs[r].createtime).format('YYYY/MM/DD HH:mm');
                     }
                     if (rs[r].type == 1) {
                         webEditor.ready(function () {
                             webEditor.setContent(rs[r].content || '');
                         });
+                        webFeedbackTime = moment(rs[r].createtime).format('YYYY/MM/DD HH:mm');
                     }
                 }
-                self._setFormControlValues(jqform, {id: pubvoice.id});
+                self._setFormControlValues(jqform, {id: pubvoice.id, docFeedbackTime: docFeedbackTime, webFeedbackTime: webFeedbackTime});
                 self._showModal(modal, self.dataTable);
             }
         });
@@ -149,11 +152,13 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
     },
     closeModal: function () {
         var modal = $('#dataModal');
-
+        this.docEditor.setContent("");
+        this.webEditor.setContent("");
         this._clearFormControlValues(modal.find('form'))
             ._closeModal(modal, this.dataTable);
     },
     saveFeedback: function () {
+        var self = this;
         var dataTable = this.dataTable;
 
         this._sendRequest({
@@ -161,6 +166,8 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
             url: '/feedback/save',
             validator: $.proxy(this._fbValidator, this),
             done: function () {
+                self.docEditor.setContent("");
+                self.webEditor.setContent("");
                 dataTable.expand().refresh();
             }
         });
