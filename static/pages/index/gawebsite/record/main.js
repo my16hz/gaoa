@@ -21,12 +21,7 @@ var WebsiteRecordPage = $.extend({}, LHSBasicPage, {
         });
 
         this.dataTable = this._createTable('#tableWrapper', '/gawebsite/list', [
-            {
-                field: 'checkbox', checkbox: true,
-                formatter: function () {
-                    return '<i class="hide lhs-disabled-chk">' + (arguments[1].createuser !== lhsuid) + '</>';
-                }
-            },
+            {field: 'checkbox', checkbox: true},
             {title: '网站名称', field: 'website', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '10%'},
             {title: '网页路径', field: 'url', sortable: true, order: 'desc', autoWidth: '18%'},
             {title: '网站类别', field: 'type', sortable: true, order: 'desc', maxWidth: 60},

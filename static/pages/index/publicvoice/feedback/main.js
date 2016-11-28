@@ -36,8 +36,19 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
             {
                 title: '状态', field: 'feedback_state', sortable: true, order: 'desc', width: 124,
                 formatter: function (val) {
+                    var args = arguments[1];
                     switch (val) {
-                        case 0: return "已回复";
+                        case 0: {
+                            if (args.docFeedback && args.webFeedback) {
+                                return "均回复";
+                            } else if (!args.docFeedback && args.webFeedback) {
+                                return "已网回";
+                            } else if (args.docFeedback && !args.webFeedback) {
+                                return "已书回";
+                            } else {
+                                return "已回复";
+                            }
+                        }
                         case 1: return "必须回复";
                         case 2: return "建议回复";
                         case 3: return "可以回复";
@@ -101,19 +112,27 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
             url: '/feedback/detail',
             data: {id: pubvoice.id},
             done: function (rs) {
+                var docFeedbackTime, webFeedbackTime;
                 for (var r in rs) {
                     if (rs[r].type == 0) {
                         docEditor.ready(function () {
                             docEditor.setContent(rs[r].content || '');
                         });
+                        if (rs[r].content) {
+                            docFeedbackTime = moment(rs[r].createtime).format('YYYY/MM/DD HH:mm');
+                        }
                     }
                     if (rs[r].type == 1) {
                         webEditor.ready(function () {
                             webEditor.setContent(rs[r].content || '');
                         });
+
+                        if (rs[r].content) {
+                            webFeedbackTime = moment(rs[r].createtime).format('YYYY/MM/DD HH:mm');
+                        }
                     }
                 }
-                self._setFormControlValues(jqform, {id: pubvoice.id});
+                self._setFormControlValues(jqform, {id: pubvoice.id, docFeedbackTime: docFeedbackTime, webFeedbackTime: webFeedbackTime});
                 self._showModal(modal, self.dataTable);
             }
         });
@@ -149,11 +168,13 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
     },
     closeModal: function () {
         var modal = $('#dataModal');
-
+        this.docEditor.setContent("");
+        this.webEditor.setContent("");
         this._clearFormControlValues(modal.find('form'))
             ._closeModal(modal, this.dataTable);
     },
     saveFeedback: function () {
+        var self = this;
         var dataTable = this.dataTable;
 
         this._sendRequest({
@@ -161,6 +182,8 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
             url: '/feedback/save',
             validator: $.proxy(this._fbValidator, this),
             done: function () {
+                self.docEditor.setContent("");
+                self.webEditor.setContent("");
                 dataTable.expand().refresh();
             }
         });
