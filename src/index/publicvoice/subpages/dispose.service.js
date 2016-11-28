@@ -157,63 +157,38 @@ function getPVComment (pvid, callback) {
 }
 
 function addPVComment (uid, obj, callback) {
-    var sql_stmt =
-        'IF NOT EXISTS (SELECT * FROM tb_pv_comment WHERE [id] = @id) ' +
-        'BEGIN ' +
-        '   INSERT INTO tb_pv_comment ([id], [comment_user], [comment], [attachment], [state], [comment_date], [recv_date], [message_id], [from_user], [from_department], [createuser], [createtime], [to_department]) ' +
-        '   VALUES (@id, @comment_user, @comment, @attachment, @state, @comment_date, @recv_date, @message_id, @from_user, @from_department, @createuser, @createtime, @to_department); ' +
-        '   UPDATE tb_publicvoice SET [dispose_stat] = 2, [feedback_state] = 1 WHERE [id] = @id; ' +
-        "   UPDATE tb_sys_config SET [value] = @comment_doc_no WHERE [id] = 'comment_doc_no';" +
-        'END ' +
-        'ELSE ' +
-        '   UPDATE tb_pv_comment SET [comment_user] = @comment_user, [comment] = @comment, [attachment] = @attachment, [comment_date] = @comment_date, [recv_date] = @recv_date, [message_id] = @message_id, [from_user] = @from_user, [from_department] = @from_department, [to_department] = @to_department ' +
-        '   WHERE [id] = @id;';
+    var isNew = !obj.comment_id;
+    var sql_stmt = isNew ?
+        'INSERT INTO tb_pv_comment (' +
+        '  [id], [comment_user], [comment], [attachment], [state], [comment_date], [recv_date], [message_id],' +
+        '  [from_user], [from_department], [createuser], [createtime], [to_department]) ' +
+        'VALUES (' +
+        '  @id, @comment_user, @comment, @attachment, @state, @comment_date, @recv_date, @message_id, ' +
+        '  @from_user, @from_department, @createuser, @createtime, @to_department' +
+        '); ' +
+        'UPDATE tb_publicvoice SET [dispose_stat] = 2, [feedback_state] = 1 WHERE [id] = @id; ' +
+        'UPDATE tb_sys_config SET [value] = @comment_doc_no WHERE [id] = \'comment_doc_no\';' +
+        'SELECT MAX([id]) from tb_pv_comment;' :
+        'UPDATE tb_pv_comment SET ' +
+        '  [comment_user] = @comment_user, [comment] = @comment, [attachment] = @attachment, [comment_date] = @comment_date, [recv_date] = @recv_date,' +
+        '  [message_id] = @message_id, [from_user] = @from_user, [from_department] = @from_department, [to_department] = @to_department ' +
+        'WHERE [comment_id] = @comment_id;';
+    var inputs = isNew ?
+        [sql.Int, sql.NVarChar, sql.NVarChar, sql.NVarChar(sql.MAX), sql.Int, sql.Date, sql.Date, sql.NVarChar,
+            sql.NVarChar, sql.NVarChar, sql.VarChar, sql.DateTime2, sql.NVarChar, sql.Int, sql.VarChar] :
+        [sql.NVarChar, sql.NVarChar, sql.NVarChar(sql.MAX), sql.Int, sql.Date, sql.Date, sql.NVarChar,
+            sql.NVarChar, sql.NVarChar, sql.NVarChar, sql.Int];
+    var values = isNew ?
+        ['id', 'comment_user', 'comment', 'attachment', 'state', 'comment_date', 'recv_date', 'message_id', 'from_user',
+            'from_department', 'createuser', 'createtime', 'to_department', 'id', 'comment_doc_no'] :
+        ['comment_user', 'comment', 'attachment', 'state', 'comment_date', 'recv_date', 'message_id', 'from_user',
+            'from_department', 'to_department', 'comment_id'];
 
-    var objParams = {
-        'id' : obj['id'],
-        'comment_user' : obj['comment_user'],
-        'comment' : obj['comment'],
-        'attachment' : obj['attachment'],
-        'state' : obj['state'],
-        'comment_date' : obj['comment_date'],
-        'recv_date' : obj['recv_date'],
-        'message_id' : obj['message_id'],
-        'from_user' : obj['from_user'],
-        'from_department' : obj['from_department'],
-        'to_department': obj['to_department'],
-        "createuser": uid,
-        "createtime": new Date(),
-        "comment_doc_no": obj['comment_doc_no']
-    };
-    console.log(sql_stmt);
-    var ps = dbpool.preparedStatement()
-        .input('id', sql.Int)
-        .input('comment_user', sql.NVarChar)
-        .input('comment', sql.NVarChar)
-        .input('attachment', sql.NVarChar(sql.MAX))
-        .input('state', sql.Int)
-        .input('comment_date', sql.Date)
-        .input('recv_date', sql.Date)
-        .input('message_id', sql.NVarChar)
-        .input('from_user', sql.NVarChar)
-        .input('from_department', sql.NVarChar)
-        .input('to_department', sql.NVarChar)
-        .input('comment_doc_no', sql.VarChar)
-        .input("createuser", sql.VarChar)
-        .input("createtime", sql.DateTime2)
-        .prepare(sql_stmt, function (err) {
-            if (err) {
-                return callback(err, null);
-            }
+    values.forEach(function (field, index) {
+        values[index] = obj[field];
+    });
 
-            ps.execute(objParams, function (err, rs) {
-                callback(err, rs);
-
-                ps.unprepare(function (err) {
-                    err && console.error(err);
-                });
-            });
-        });
+    dbpool.execPreparedStatement(sql_stmt, inputs, values, callback);
 }
 
 /* 舆情批示提交审批 */

@@ -5,6 +5,7 @@
  */
 var userkey = require('config').session.userkey;
 var HtmlDocx = require('html-docx-js');
+var extend = require('extend');
 
 var errhandler = require('../../../utils/errhandler');
 var service = require('./../service');
@@ -33,17 +34,12 @@ module.exports = {
 function savePVDispose (req, res) {
     var uid = req.session[userkey].id;
     var obj = req.body;
-    var dispose = {
-        "id": obj["id"],
-        "createtime": new Date(),
-        "state": "0",
-        "content": obj["content"],
-        "createuser": uid,
-        "dispose_doc_no" : obj["dispose_doc_no"],
-        "dispose_doc_year" : obj["dispose_doc_year"]
-    };
 
-    service.addPVDispose(uid, dispose, function (err, rs) {
+    service.addPVDispose(uid, extend({
+        state: '0',
+        createuser: uid,
+        createtime: new Date()
+    }, req.body), function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -97,6 +93,7 @@ function getDisposeList (req, res) {
 
 function getPVComment (req, res) {
     var pvid = req.query.id;
+
     service.getPVComment(pvid, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
@@ -126,6 +123,8 @@ function savePVComment (req, res) {
         "createtime": new Date(),
         "comment_doc_no" : obj['comment_doc_no']
     };
+
+
 
     service.addPVComment(uid, comment, function (err, rs) {
         err ?

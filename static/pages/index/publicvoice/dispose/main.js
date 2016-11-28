@@ -92,16 +92,17 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
 
                                     if (0 !== i) {
                                         modalBody.find('.modal-body')
-                                            .append(fmt = self.commentFormClone.clone(true).attr('data-index', i))
-                                            .find('.nav > li:last').before(self.commentTabClone.clone(true)
-                                            .attr('data-index', i));
+                                            .append(fmt = self.commentFormClone.clone(true).attr('data-index', i).addClass('hide'))
+                                            .find('.nav > li:last').before(self.commentTabClone.clone(true).attr('data-index', i).removeClass('active'));
                                     }
 
                                     self._fillFormValues(cmt, i);
 
+                                    modalBody.data('public_voice_id', pvobj.id);
                                     fmt.data('public_voice_obj', pvobj);
-                                    type != 2 && fmt.find('.btn:eq(1)').removeClass('hide');
                                     rs.length - 1 == i && modalBody.data('comment_doc_no', cmt.comment_doc_no);
+
+                                    type != 2 && fmt.find('.btn:eq(1)').removeClass('hide');
                                 });
 
                                 self._showModal('#dataModal', self.dataTable);
@@ -178,6 +179,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
 
         newform.data('editor', self._createEditor($('.editor-wrapper', newform)));
         this._fillFormValues({
+            id: modalBody.data('public_voice_id'),
             message_id: '舆收[' + moment(new Date()).format('YYYY') + '] ' + docNo + '号',
             comment_doc_no: docNo
         }, index);
@@ -276,6 +278,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
     saveComment: function (jqbtn) {
         var jqform = jqbtn.parents('form');
         var jqInputId = jqform.find('input[name="comment_id"]');
+        var jqInputUser = jqform.find('input[name="comment_user"]');
         var self = this;
 
         this._sendRequest({
@@ -288,7 +291,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                 !jqInputId.val() && jqInputId.val(cmt.comment_id);
                 jqform.find('.btn:eq(1)').removeClass('hide').end()
                     .siblings('.nav').children('li').eq(jqform.attr('data-index'))
-                    .text('批示（' + cmt.comment_user + '）');
+                    .text('批示（' + jqInputUser.val() + '）');
             }
         });
     },
