@@ -17,9 +17,12 @@ module.exports = {
 };
 
 function getFeedbackList (uid, did, callback) {
-    var sql_stmt = "SELECT tb_publicvoice.*, tb_daily_pv.did AS daily_id FROM tb_publicvoice, tb_daily_pv " +
-        "  WHERE tb_daily_pv.pvid = tb_publicvoice.id " +
-        "  AND tb_publicvoice.id IN ( SELECT pvid FROM tb_pv_notify WHERE tb_pv_notify.uid = @uid) ";
+    var sql_stmt = "SELECT tb_publicvoice.*, tb_daily_pv.did AS daily_id," +
+        " (SELECT content FROM tb_pv_feedback WHERE tb_pv_feedback.id = tb_publicvoice.id AND tb_pv_feedback.type = 0) AS docFeedback," +
+        " (SELECT content FROM tb_pv_feedback WHERE tb_pv_feedback.id = tb_publicvoice.id AND tb_pv_feedback.type = 1) AS webFeedback" +
+        " FROM tb_publicvoice, tb_daily_pv " +
+        " WHERE tb_daily_pv.pvid = tb_publicvoice.id " +
+        " AND tb_publicvoice.id IN ( SELECT pvid FROM tb_pv_notify WHERE tb_pv_notify.uid = @uid) ";
 
     var objParams = {
         'uid' : uid
