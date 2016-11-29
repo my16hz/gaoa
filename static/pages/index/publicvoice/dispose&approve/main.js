@@ -15,7 +15,11 @@ var LHSDisposeAndApprovePage = $.extend({}, LHSBasicPage, {
 
         this.dataTable = this._createTable('#tableWrapper', '/dispose/comment/list', [
             {title: '期数', field: 'daily_id'},
-            {title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '20%'},
+            {title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '20%',
+                formatter: function (val, rowdata) {
+                    return '<a href="' + (rowdata.url || 'javascript:') + '" target="_blank">' + val + '</a>';
+                }
+            },
             {title: '批示内容', field: 'comment', sortable: true, order: 'desc', autoWidth: '30%'},
             {title: '批示领导', field: 'comment_user', sortable: true, order: 'desc'},
             {
