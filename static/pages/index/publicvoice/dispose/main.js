@@ -38,20 +38,13 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                 title: '处置状态', field: 'dispose_stat', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
-                        case 0:
-                            return "未批示";
-                        case 1:
-                            return "已批示";
-                        case 2:
-                            return "待审批";
-                        case 3:
-                            return "转";
-                        case 4:
-                            return "转发";
-                        case 5:
-                            return "阅存";
-                        default:
-                            return "未批示";
+                        case 0: return "未批示";
+                        case 1: return "已批示";
+                        case 2: return "待审批";
+                        case 3: return "转";
+                        case 4: return "转发";
+                        case 5: return "阅存";
+                        default: return "未批示";
                     }
                 }
             },
