@@ -7,6 +7,7 @@ var extend = require('extend');
 var sql = require('mssql');
 var xlsx = require('xlsx');
 var xss = require('xss');
+var stringSimilarity = require('string-similarity');
 
 var dbpool = require('../../../utils/dbpool');
 
@@ -63,7 +64,9 @@ module.exports = {
     /**
      * 校验URL是否已经存在
      */
-    checkPVUrl: checkPVUrl
+    checkPVUrl: checkPVUrl,
+
+    checkPVTitle: checkPVTitle
 };
 
 function findPubVoiceList (user, start, end, level, callback) {
@@ -383,6 +386,41 @@ function checkPVUrl(start, end, url, callback) {
 
             ps.execute(params, function (err, rs) {
                 callback(err, rs.length);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function checkPVTitle(start, end, title, callback) {
+    var params = {
+        'start' : start,
+        'end' : end
+    };
+    var sql_stmt = "SELECT title from tb_publicvoice WHERE createtime > @start AND createtime < @end;";
+    var ps = dbpool.preparedStatement()
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, 0);
+            }
+
+            ps.execute(params, function (err, rs) {
+                if (err) {
+                    callback(err, 0);
+                } else {
+                    var key = null;
+                    rs.forEach(function (value) {
+                        var similarity = stringSimilarity.compareTwoStrings(title, value.title);
+                        if (similarity >= 0.6) {
+                            key = {result: similarity, title: value.title};
+                        }
+                    });
+                    callback(err, key);
+                }
 
                 ps.unprepare(function (err) {
                     err && console.error(err);
