@@ -33,7 +33,6 @@ module.exports = {
 
 function savePVDispose (req, res) {
     var uid = req.session[userkey].id;
-    var obj = req.body;
 
     service.addPVDispose(uid, extend({
         state: '0',
@@ -106,27 +105,12 @@ function getPVComment (req, res) {
 
 function savePVComment (req, res) {
     var uid = req.session[userkey].id;
-    var obj = req.body;
-    var comment = {
-        'id' : obj['id'],
-        'comment_user' : obj['comment_user'],
-        'comment' : obj['comment'],
-        'attachment' : obj['attachment'],
-        'state' : "1",
-        'comment_date' : obj['comment_date'],
-        'recv_date' : obj['recv_date'],
-        'message_id' : obj['message_id'],
-        'from_user' : obj['from_user'],
-        'from_department' : obj['from_department'],
-        'to_department' : obj['to_department'],
-        "createuser": uid,
-        "createtime": new Date(),
-        "comment_doc_no" : obj['comment_doc_no']
-    };
 
-
-
-    service.addPVComment(uid, comment, function (err, rs) {
+    service.addPVComment(uid, extend({
+        state: '1',
+        createuser: uid,
+        createtime: new Date()
+    }, req.body), function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

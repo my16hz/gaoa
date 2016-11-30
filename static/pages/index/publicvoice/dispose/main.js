@@ -16,7 +16,8 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         this.dataTable = this._createTable('#tableWrapper', '/daily/pvlist', [
             {field: 'checkbox', checkbox: true},
             {title: '期数', field: 'daily_id'},
-            {title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '18%',
+            {
+                title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '18%',
                 formatter: function (val, rowdata) {
                     return '<a href="' + (rowdata.url || 'javascript:') + '" target="_blank">' + val + '</a>';
                 }
@@ -102,13 +103,13 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
 
                                     self._fillFormValues(cmt, i);
 
-                                    modalBody.data('public_voice_id', pvobj.id);
-                                    fmt.data('public_voice_obj', pvobj);
-                                    rs.length - 1 == i && modalBody.data('comment_doc_no', cmt.comment_doc_no);
+                                    modalBody.data('public_voice', pvobj);
+                                    rs.length - 1 == i && modalBody.data('comment_doc_no', /舆收\[\d{4}\]\s(\d+)?号/.exec(cmt.message_id)[1]);
 
                                     type != 2 && fmt.find('.btn:eq(1)').removeClass('hide');
                                 });
 
+                                self._createTimepicker('.date-selector');
                                 self._showModal('#dataModal', self.dataTable);
                             }
                         });
@@ -134,8 +135,6 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         this.commentTabClone = $('.comment-content .nav-tabs > li:first', '#dataModal').clone(true);
         this.commentFormClone = $('.comment-content form', '#dataModal').clone(true);
         this.disposeEditor = this._createEditor('#disposeWrapper');
-        this._createTimepicker('#recv_date');
-        this._createTimepicker('#comment_date');
     },
     events: {
         'keydown #inputSearch': 'autoSearch',
@@ -169,21 +168,21 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
             .siblings('form').addClass('hide');
     },
     appendCommentPanel: function () {
-        var self = this;
         var modalBody = $('#dataModal .comment-content');
         var index = modalBody.find('form').addClass('hide').length;
-        var newform = self.commentFormClone.clone(true).attr('data-index', index);
+        var newform = this.commentFormClone.clone(true).attr('data-index', index);
         var docNo = modalBody.data('comment_doc_no') - 0 + 1;
 
         modalBody.find('.modal-body').append(newform)
             .find('.nav > .addcmt-tab').siblings('li').removeClass('active').end()
-            .before(self.commentTabClone.clone(true)
+            .before(this.commentTabClone.clone(true)
                 .attr('data-index', index)
                 .addClass('active'));
+        this._createTimepicker(newform.find('.date-selector'));
 
-        newform.data('editor', self._createEditor($('.editor-wrapper', newform)));
+        newform.data('editor', this._createEditor($('.editor-wrapper', newform)));
         this._fillFormValues({
-            id: modalBody.data('public_voice_id'),
+            id: modalBody.data('public_voice').id,
             message_id: '舆收[' + moment(new Date()).format('YYYY') + '] ' + docNo + '号',
             comment_doc_no: docNo
         }, index);
@@ -211,7 +210,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
     },
     showDisposeDoc: function (jqbtn) {
         var editor = this.disposeEditor;
-        var pubvoice = jqbtn.parents('form').data('public_voice_obj');
+        var pubvoice = jqbtn.parents('.comment-content').data('public_voice');
         var self = this;
 
         this._sendRequest({
@@ -294,7 +293,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
             done: function (cmt) {
                 !jqInputId.val() && jqInputId.val(cmt.comment_id);
                 jqform.find('.btn:eq(1)').removeClass('hide').end()
-                    .siblings('.nav').children('li').eq(jqform.attr('data-index'))
+                    .siblings('.nav').children('li').eq(jqform.attr('data-index')).children('a')
                     .text('批示（' + jqInputUser.val() + '）');
             }
         });
@@ -303,7 +302,6 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         $('#dataModal')
             .find('.comment-content').removeClass('hide')
             .next().addClass('hide');
-        this.disposeEditor.content('');
     },
     saveAndExportDispose: function () {
         this._sendRequest({
@@ -336,7 +334,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         return values || false;
     },
     _disposeValidator: function () {
-        var jqform = $('#disposeModal form');
+        var jqform = $('.dispose-content form', '#dataModal');
         var values = this._getFormControlValues(jqform);
 
         values['content'] = this.disposeEditor.getContent();
