@@ -97,6 +97,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         'click #btnDel': 'delSelected',
         'click #btnCommit': 'applyApprobation',
         'change #dataModal input[name="url"]': 'checkWebSite',
+        'change #dataModal input[name="title"]': 'checkTitle',
         'click #dataModal .btn-default': 'closeDataModal',
         'click #dataModal .btn-primary': 'savePubVoice',
         'click #dataModal .btn-infosrc': 'addInfoSrcRow',
@@ -211,6 +212,29 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                         .parent().addClass('has-error');
                 } else {
                     self.isUrlOK = true;
+                }
+            }
+        });
+    },
+    checkTitle: function (jqinput) {
+        var title = $.trim(jqinput.val());
+        var self = this;
+
+        title && this._sendRequest({
+            type: 'get', url: '/pubvoice/checktitle',
+            data: {title: title},
+            done: function (rs) {
+                if (rs) {
+
+                    jqinput
+                        .tooltip('destroy')
+                        .tooltip({title: '存在相似舆情 : ' + rs.title}).tooltip('show')
+                        .unbind('focus')
+                        .bind('focus', function () {
+                            $(this).tooltip('destroy')
+                                .parent().removeClass('has-error');
+                        })
+                        .parent().addClass('has-error');
                 }
             }
         });

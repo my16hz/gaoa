@@ -15,7 +15,8 @@ module.exports = {
     importPubVoice: importPubVoice,
     applyApprobation: applyApprobation,
 
-    checkPVUrl: checkPVUrl
+    checkPVUrl: checkPVUrl,
+    checkPVTitle: checkPVTitle
 };
 
 function getPubVoices (req, res) {
@@ -101,6 +102,22 @@ function checkPVUrl (req, res) {
     var end = new Date((req.query.eTime - 0 ) || now );
 
     service.checkPVUrl(start, end, url, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function checkPVTitle (req, res) {
+    var title = req.query.title;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval * 30));
+    var end = new Date((req.query.eTime - 0 ) || now );
+
+    service.checkPVTitle(start, end, title, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
