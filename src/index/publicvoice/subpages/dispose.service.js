@@ -13,6 +13,7 @@ module.exports = {
     getPVDispose: getPVDispose,
 
     getPVListByDisposeState: getPVListByDisposeState,
+    getPVCommentDocNO: getPVCommentDocNO,
     getPVComment: getPVComment,
     addPVComment: addPVComment,
     commitComment: commitComment,
@@ -127,6 +128,14 @@ function getPVListByDisposeState (state, callback) {
                 });
             });
         });
+}
+
+function getPVCommentDocNO (callback) {
+    var sql_stmt = 'SELECT value FROM tb_sys_config WHERE id = \'comment_doc_no\';';
+
+    dbpool.execPreparedStatement(sql_stmt, function (err, rs) {
+        callback(err, rs.length ? rs[0].value : 1);
+    });
 }
 
 function getPVComment (pvid, callback) {

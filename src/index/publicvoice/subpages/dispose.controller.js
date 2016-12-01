@@ -21,6 +21,7 @@ module.exports = {
 
     /** 获取舆情批示 **/
     getPVComment: getPVComment,
+    getPVCommentDocNO: getPVCommentDocNO,
     savePVComment: savePVComment,
     commitComment: commitComment,
 
@@ -94,6 +95,17 @@ function getPVComment (req, res) {
     var pvid = req.query.id;
 
     service.getPVComment(pvid, function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function getPVCommentDocNO (req, res) {
+    service.getPVCommentDocNO(function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

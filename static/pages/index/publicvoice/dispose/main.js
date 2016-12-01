@@ -87,17 +87,12 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                                     cmt.id = pvobj.id;
                                     fmt = modalBody.find('form');
 
-                                    if (0 !== i) {
-                                        modalBody.find('.modal-body')
-                                            .append(fmt = self.commentFormClone.clone(true).attr('data-index', i).addClass('hide'))
-                                            .find('.nav > li:last').before(self.commentTabClone.clone(true).attr('data-index', i).removeClass('active'));
-                                    }
+                                    0 !== i && modalBody.find('.modal-body')
+                                        .append(fmt = self.commentFormClone.clone(true).attr('data-index', i).addClass('hide'))
+                                        .find('.nav > li:last').before(self.commentTabClone.clone(true).attr('data-index', i).removeClass('active'));
 
                                     self._fillFormValues(cmt, i);
-
                                     modalBody.data('public_voice', pvobj);
-                                    rs.length - 1 == i && modalBody.data('comment_doc_no', /舆收\[\d{4}\]\s(\d+)?号/.exec(cmt.message_id)[1]);
-
                                     type != 2 && fmt.find('.btn:eq(1)').removeClass('hide');
                                 });
 
@@ -163,27 +158,30 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         var modalBody = $('#dataModal .comment-content');
         var index = modalBody.find('form').addClass('hide').length;
         var newform = this.commentFormClone.clone(true).attr('data-index', index);
-        var docNo = modalBody.data('comment_doc_no') - 0 + 1;
+        var self = this;
 
-        modalBody.find('.modal-body').append(newform)
-            .find('.nav > .addcmt-tab').siblings('li').removeClass('active').end()
-            .before(this.commentTabClone.clone(true)
-                .attr('data-index', index)
-                .addClass('active'));
-        this._createTimepicker(newform.find('.date-selector'));
-
-        newform.data('editor', this._createEditor($('.editor-wrapper', newform)));
-        this._fillFormValues({
-            id: modalBody.data('public_voice').id,
-            message_id: '舆收[' + moment(new Date()).format('YYYY') + '] ' + docNo + '号',
-            comment_doc_no: docNo
-        }, index);
-        modalBody.data('comment_doc_no', docNo);
+        this._sendRequest({
+            url: '/dispose/comment/docno', type: 'get',
+            done: function (docNo) {
+                modalBody.find('.modal-body').append(newform)
+                    .find('.nav > .addcmt-tab').siblings('li').removeClass('active').end()
+                    .before(self.commentTabClone.clone(true)
+                        .attr('data-index', index)
+                        .addClass('active'));
+                self._createTimepicker(newform.find('.date-selector'));
+                newform.data('editor', self._createEditor($('.editor-wrapper', newform)));
+                self._fillFormValues({
+                    id: modalBody.data('public_voice').id,
+                    message_id: '舆收[' + moment(new Date()).format('YYYY') + '] ' + docNo + '号',
+                    comment_doc_no: docNo
+                }, index);
+                modalBody.data('comment_doc_no', docNo);
+            }
+        });
     },
     closeDataModal: function () {
         var modalBody = $('#dataModal .comment-content');
-        var form = modalBody.removeData('comment_doc_no') // remove cache
-            .removeClass('hide').next().addClass('hide').end() // reset visible
+        var form = modalBody.removeClass('hide').next().addClass('hide').end() // reset visible
             .find('.cmt-tab:gt(0)').remove().end() // remove other tabs
             .find('.cmt-tab').addClass('active').children('a').text('批示（新）').end().end() // reset title
             .find('form:gt(0)').each(function () {

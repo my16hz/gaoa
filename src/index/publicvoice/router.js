@@ -49,6 +49,7 @@ module.exports = function () {
 
         /* 舆情批示 */
         .get('/dispose/comment', controller.getPVComment)
+        .get('/dispose/comment/docno', controller.getPVCommentDocNO)
         .post('/dispose/comment/save', controller.savePVComment)
         /*处置提交审批*/
         .post('/dispose/comment/commit', controller.commitComment)
