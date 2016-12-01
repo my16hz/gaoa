@@ -241,7 +241,7 @@ function approveComment (obj, callback) {
 function getUnapprovedComment (callback) {
     var sql_stmt = "SELECT TOP 1000 tb_publicvoice.id, tb_publicvoice.title, tb_publicvoice.from_website, " +
         " tb_publicvoice.url, tb_publicvoice.createtime, tb_publicvoice.content AS pv_content, " +
-        " tb_pv_comment.comment, tb_pv_comment.comment_user, tb_pv_comment.comment_date, tb_pv_comment.attachment, tb_pv_comment.to_department, tb_publicvoice.dispose_stat, tb_daily_pv.did AS daily_id " +
+        " tb_pv_comment.comment, tb_pv_comment.comment_id, tb_pv_comment.comment_user, tb_pv_comment.comment_date, tb_pv_comment.attachment, tb_pv_comment.to_department, tb_publicvoice.dispose_stat, tb_daily_pv.did AS daily_id " +
         " FROM tb_publicvoice, tb_pv_comment, tb_daily_pv " +
         " WHERE tb_publicvoice.id = tb_pv_comment.id AND tb_daily_pv.pvid = tb_publicvoice.id AND tb_publicvoice.dispose_stat = 2 " +
         " ORDER BY tb_pv_comment.comment_date DESC;";
