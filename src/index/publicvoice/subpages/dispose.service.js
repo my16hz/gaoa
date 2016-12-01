@@ -175,13 +175,13 @@ function addPVComment (uid, obj, callback) {
         'WHERE [comment_id] = @comment_id;';
     var inputs = isNew ?
         [sql.Int, sql.NVarChar, sql.NVarChar, sql.NVarChar(sql.MAX), sql.Int, sql.Date, sql.Date, sql.NVarChar,
-            sql.NVarChar, sql.NVarChar, sql.VarChar, sql.DateTime2, sql.NVarChar, sql.Int, sql.VarChar] :
-        [sql.NVarChar, sql.NVarChar, sql.NVarChar(sql.MAX), sql.Int, sql.Date, sql.Date, sql.NVarChar,
+            sql.NVarChar, sql.NVarChar, sql.VarChar, sql.DateTime2, sql.NVarChar, sql.VarChar] :
+        [sql.NVarChar, sql.NVarChar, sql.NVarChar(sql.MAX), sql.Date, sql.Date, sql.NVarChar,
             sql.NVarChar, sql.NVarChar, sql.NVarChar, sql.Int];
     var values = isNew ?
         ['id', 'comment_user', 'comment', 'attachment', 'state', 'comment_date', 'recv_date', 'message_id', 'from_user',
-            'from_department', 'createuser', 'createtime', 'to_department', 'id', 'comment_doc_no'] :
-        ['comment_user', 'comment', 'attachment', 'state', 'comment_date', 'recv_date', 'message_id', 'from_user',
+            'from_department', 'createuser', 'createtime', 'to_department', 'comment_doc_no'] :
+        ['comment_user', 'comment', 'attachment', 'comment_date', 'recv_date', 'message_id', 'from_user',
             'from_department', 'to_department', 'comment_id'];
 
     values.forEach(function (field, index) {
@@ -198,16 +198,17 @@ function commitComment (pvids, callback) {
 
 function approveComment (obj, callback) {
     var sql_stmt =
-        'IF NOT EXISTS (SELECT * FROM tb_pv_dispose_approved WHERE id = @id) ' +
+        'IF NOT EXISTS (SELECT * FROM tb_pv_dispose_approved WHERE comment_id = @comment_id) ' +
         'BEGIN ' +
-        '   INSERT INTO tb_pv_dispose_approved ([id],[content],[createuser],[createtime],[type]) VALUES (@id, @content, @createuser, @createtime, @type); ' +
+        '   INSERT INTO tb_pv_dispose_approved ([id],[comment_id],[content],[createuser],[createtime],[type]) VALUES (@id, @comment_id, @content, @createuser, @createtime, @type); ' +
         '   UPDATE tb_publicvoice SET [dispose_stat] = @type WHERE [id] = @id; ' +
         'END ' +
         'ELSE ' +
-        '   UPDATE tb_pv_dispose_approved SET [content] = @content, [type] = @type WHERE [id] = @id;';
+        '   UPDATE tb_pv_dispose_approved SET [content] = @content, [type] = @type WHERE [comment_id] = @comment_id;';
 
     var objParams = {
         "id": obj["id"],
+        "comment_id": obj["comment_id"],
         "type": obj["type"],
         "content": obj["content"],
         "createuser": obj["createuser"],
@@ -217,6 +218,7 @@ function approveComment (obj, callback) {
     var ps = dbpool
         .preparedStatement()
         .input("id", sql.Int)
+        .input("comment_id", sql.Int)
         .input("type", sql.Int)
         .input("content", sql.NVarChar)
         .input("createuser", sql.VarChar)
@@ -242,8 +244,9 @@ function getUnapprovedComment (callback) {
         " tb_pv_comment.comment, tb_pv_comment.comment_user, tb_pv_comment.comment_date, tb_pv_comment.attachment, tb_pv_comment.to_department, tb_publicvoice.dispose_stat, tb_daily_pv.did AS daily_id " +
         " FROM tb_publicvoice, tb_pv_comment, tb_daily_pv " +
         " WHERE tb_publicvoice.id = tb_pv_comment.id AND tb_daily_pv.pvid = tb_publicvoice.id AND tb_publicvoice.dispose_stat = 2 " +
-        " ORDER BY tb_publicvoice.createtime DESC;";
+        " ORDER BY tb_pv_comment.comment_date DESC;";
     var objParams = {};
+    console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
             if (err) {

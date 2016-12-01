@@ -83,7 +83,6 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                                     }];
                                 }
 
-
                                 $.each(rs, function (i, cmt, fmt) {
                                     cmt.id = pvobj.id;
                                     fmt = modalBody.find('form');

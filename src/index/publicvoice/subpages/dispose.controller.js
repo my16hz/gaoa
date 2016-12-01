@@ -141,6 +141,7 @@ function approveComment (req, res) {
     var obj = req.body;
     var comment = {
         "id" : obj["id"],
+        "comment_id" : obj["comment_id"],
         "type" : obj["type"],
         "createuser" : uid,
         "createtime" : new Date(),
