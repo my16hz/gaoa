@@ -162,7 +162,8 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
 
         this._sendRequest({
             url: '/dispose/comment/docno', type: 'get',
-            done: function (docNo) {
+            done: function (no) {
+                var docNo = parseInt(no) + 1;
                 modalBody.find('.modal-body').append(newform)
                     .find('.nav > .addcmt-tab').siblings('li').removeClass('active').end()
                     .before(self.commentTabClone.clone(true)

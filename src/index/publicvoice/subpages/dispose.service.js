@@ -207,13 +207,18 @@ function commitComment (pvids, callback) {
 
 function approveComment (obj, callback) {
     var sql_stmt =
-        'IF NOT EXISTS (SELECT * FROM tb_pv_dispose_approved WHERE comment_id = @comment_id) ' +
+        'IF NOT EXISTS (SELECT * FROM tb_pv_dispose_approved WHERE id = @id AND comment_id = @comment_id) ' +
         'BEGIN ' +
         '   INSERT INTO tb_pv_dispose_approved ([id],[comment_id],[content],[createuser],[createtime],[type]) VALUES (@id, @comment_id, @content, @createuser, @createtime, @type); ' +
         '   UPDATE tb_publicvoice SET [dispose_stat] = @type WHERE [id] = @id; ' +
+        '   UPDATE tb_pv_comment SET [state] = @type WHERE [id] = @id AND [comment_id] = @comment_id; ' +
         'END ' +
         'ELSE ' +
-        '   UPDATE tb_pv_dispose_approved SET [content] = @content, [type] = @type WHERE [comment_id] = @comment_id;';
+        'BEGIN ' +
+        '   UPDATE tb_pv_dispose_approved SET [content] = @content, [type] = @type WHERE [comment_id] = @comment_id;' +
+        '   UPDATE tb_publicvoice SET [dispose_stat] = @type WHERE [id] = @id; ' +
+        '   UPDATE tb_pv_comment SET [state] = @type WHERE [id] = @id AND [comment_id] = @comment_id; ' +
+        'END';
 
     var objParams = {
         "id": obj["id"],
@@ -248,11 +253,11 @@ function approveComment (obj, callback) {
 }
 
 function getUnapprovedComment (callback) {
-    var sql_stmt = "SELECT TOP 1000 tb_publicvoice.id, tb_publicvoice.title, tb_publicvoice.from_website, " +
-        " tb_publicvoice.url, tb_publicvoice.createtime, tb_publicvoice.content AS pv_content, " +
-        " tb_pv_comment.comment, tb_pv_comment.comment_id, tb_pv_comment.comment_user, tb_pv_comment.comment_date, tb_pv_comment.attachment, tb_pv_comment.to_department, tb_publicvoice.dispose_stat, tb_daily_pv.did AS daily_id " +
+    var sql_stmt = "SELECT TOP 1000 tb_publicvoice.id, tb_publicvoice.title, tb_publicvoice.url," +
+        " tb_pv_comment.comment, tb_pv_comment.comment_id, tb_pv_comment.comment_user, tb_pv_comment.comment_date, " +
+        " tb_pv_comment.attachment, tb_pv_comment.to_department, tb_pv_comment.state, tb_daily_pv.did AS daily_id " +
         " FROM tb_publicvoice, tb_pv_comment, tb_daily_pv " +
-        " WHERE tb_publicvoice.id = tb_pv_comment.id AND tb_daily_pv.pvid = tb_publicvoice.id AND tb_publicvoice.dispose_stat = 2 " +
+        " WHERE tb_publicvoice.id = tb_pv_comment.id AND tb_daily_pv.pvid = tb_publicvoice.id AND tb_pv_comment.state = 1 " +
         " ORDER BY tb_pv_comment.comment_date DESC;";
     var objParams = {};
     console.log(sql_stmt);
