@@ -78,13 +78,13 @@ function getPVDispose (pvid, comment_id, callback) {
  */
 function addPVDispose (uid, obj, callback) {
     var sql_stmt =
-        'IF NOT EXISTS (SELECT * FROM tb_pv_dispose WHERE id = @id) ' +
+        'IF NOT EXISTS (SELECT * FROM tb_pv_dispose WHERE id = @id AND comment_id = @comment_id) ' +
         'BEGIN ' +
         '   INSERT INTO tb_pv_dispose ([id],[comment_id],[content],[createuser],[createtime],[state], [dispose_doc_no], [dispose_doc_year]) VALUES (@id, @comment_id, @content, @createuser, @createtime, @state, @dispose_doc_no, @dispose_doc_year);' +
         "   UPDATE tb_sys_config SET [value] = @dispose_doc_no WHERE [id] = 'dispose_doc_no';" +
         "END " +
         'ELSE ' +
-        '   UPDATE tb_pv_dispose SET [content] = @content, [state] = @state, [dispose_doc_no] = @dispose_doc_no, [dispose_doc_year] = @dispose_doc_year WHERE [id] = @id;';
+        '   UPDATE tb_pv_dispose SET [content] = @content, [state] = @state, [dispose_doc_no] = @dispose_doc_no, [dispose_doc_year] = @dispose_doc_year WHERE [id] = @id AND [comment_id] = @comment_id;';
     var objParams = {
         "id": obj["id"],
         "comment_id": obj["comment_id"],
@@ -99,6 +99,7 @@ function addPVDispose (uid, obj, callback) {
     var ps = dbpool
         .preparedStatement()
         .input("id", sql.Int)
+        .input("comment_id", sql.Int)
         .input("state", sql.Int)
         .input("content", sql.NVarChar(sql.MAX))
         .input("createuser", sql.VarChar)

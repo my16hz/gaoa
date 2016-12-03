@@ -302,7 +302,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
             validator: $.proxy(this._disposeValidator, this),
             done: function () {
                 $('<iframe class="hide"></iframe>').appendTo('body').attr('src',
-                    '/dispose/export/' + $('.dispose-content input[name="id"]', '#dataModal').val()
+                    '/dispose/export/' + $('.dispose-content input[name="id"]', '#dataModal').val() + '-' + $('.dispose-content input[name="comment_id"]', '#dataModal').val()
                 );
             }
         });

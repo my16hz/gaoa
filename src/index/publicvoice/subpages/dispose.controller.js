@@ -66,8 +66,9 @@ function getDisposeTemplate(req, res) {
 }
 
 function exportPVDispose (req, res) {
-    var id = req.params.id;
-    var comment_id = req.params.comment_id || 0;
+    var key = (req.params.id).split("-");
+    var id = key[0];
+    var comment_id = key[1] || 0;
     var filename = encodeURIComponent('广安市重要网络舆情处置通知书');
     var content = '';
 
