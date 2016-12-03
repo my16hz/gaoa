@@ -31,7 +31,8 @@ module.exports = {
  */
 function getPVDispose (pvid, comment_id, callback) {
     var sql_stmt = "IF NOT EXISTS (SELECT * FROM tb_pv_dispose WHERE id = @id AND comment_id = @comment_id) " +
-                    "   SELECT id,value FROM tb_sys_config WHERE id IN ('dispose_doc_no', 'dispose_doc_year');" +
+                    "   SELECT tb_pv_comment.*,tb_sys_config.id AS config_id, tb_sys_config.value AS config_value FROM tb_pv_comment,tb_sys_config " +
+                    "   WHERE tb_pv_comment.id = @id AND tb_pv_comment.comment_id = @comment_id AND  tb_sys_config.id IN ( 'dispose_doc_no', 'dispose_doc_year'); " +
                     "ELSE " +
                     "   SELECT * FROM tb_pv_dispose WHERE id = @id AND comment_id = @comment_id;";
     var objParams = {
@@ -48,9 +49,14 @@ function getPVDispose (pvid, comment_id, callback) {
             }
             ps.execute(objParams, function (err, recordset) {
                 if (recordset.length == 2) {
-                    var docID = {'id': pvid, 'state': -1, 'content': config.template.dispose};
+                    var docID = {'id': pvid, 'comment_id' : comment_id, 'state': -1, 'content': config.template.dispose};
                     recordset.forEach(function (record) {
-                        docID[record['id']] = record["value"];
+                        docID[record['config_id']] = record["config_value"];
+                        docID['comment_user'] = record["comment_user"];
+                        docID['comment_date'] = record["comment_date"];
+                        docID['to_department'] = record["to_department"];
+                        docID['comment'] = record["comment"];
+                        docID['attachment'] = record["attachment"];
                     });
 
                     recordset = [docID];

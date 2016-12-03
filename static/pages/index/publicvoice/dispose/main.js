@@ -202,12 +202,13 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
     showDisposeDoc: function (jqbtn) {
         var editor = this.disposeEditor;
         var pubvoice = jqbtn.parents('.comment-content').data('public_voice');
+        var comment_id = jqbtn.parents('form').find('input[name="comment_id"]').val();
         var self = this;
 
         this._sendRequest({
             type: 'get',
             url: '/dispose/detail',
-            data: {id: pubvoice.id},
+            data: {id: pubvoice.id, comment_id: comment_id},
             done: function (rs) {
                 rs = rs[0];
 
@@ -237,16 +238,16 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
                 .replace("%doc_year%", value.dispose_doc_year)
                 .replace("%doc_no%", value.dispose_doc_no)
                 .replace("%doc_content%", _buildFMYQContent(pubvoice))
-                .replace("%doc_comment%", pubvoice.comment)
-                .replace("%doc_attachment%", pubvoice.attachment)
+                .replace("%doc_comment%", value.comment)
+                .replace("%doc_attachment%", value.attachment)
                 .replace("%daily_id%", pubvoice.daily_id)
                 .replace('%date%', moment(new Date()).format('YYYY年MM月DD日'))
-                .replace("%to_department%", pubvoice.to_department)
+                .replace("%to_department%", value.to_department)
                 .replace("%pv_date%", moment(pubvoice.createtime).format('MM月DD日'))
                 .replace("%from_website%", pubvoice.from_website)
                 .replace("%pv_title%", pubvoice.title)
-                .replace("%comment_date%", moment(pubvoice.comment_date).format('MM月DD日'))
-                .replace("%comment_user%", pubvoice.comment_user);
+                .replace("%comment_date%", moment(value.comment_date).format('MM月DD日'))
+                .replace("%comment_user%", value.comment_user);
         }
 
         function _buildFMYQContent (pv) {
