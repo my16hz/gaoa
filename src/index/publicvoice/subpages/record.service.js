@@ -214,8 +214,23 @@ function importPubVoices (user, path, callback) {
     var workbook = xlsx.readFile(path); //当前excel名字
     var worksheet = workbook.Sheets["Sheet1"];
     var pubvoices = xlsx.utils.sheet_to_json(worksheet, {});
-    var pvList = [];
 
+    var validpv = true;
+    pubvoices.forEach(function (pv) {
+        if (!pv["所属栏目"]) {
+            validpv = false;
+        } else if (pv["所属栏目"] == "负面舆情") {
+            if (!pv["涉及部门"]) validpv = false;
+            if (!pv["回帖数量"]) validpv = false;
+            if (!pv["关注人数"]) validpv = false;
+        }
+    });
+
+    if (validpv == false) {
+        return callback({code:"LHS_ERROR", message:"导入信息不完整!"}, null);
+    }
+
+    var pvList = [];
     pubvoices.forEach(function (pv) {
         if (pv["标题"] != null) {
             var obj = {};

@@ -29,17 +29,19 @@ module.exports = {
  * @param obj {Object} 反馈内容 {id: 舆情ID，type: 0 - 书面回复， 1 - 网上回复, content: 回复内容}
  * @param callback
  */
-function getPVDispose (pvid, callback) {
-    var sql_stmt = "IF NOT EXISTS (SELECT * FROM tb_pv_dispose WHERE id = @id) " +
+function getPVDispose (pvid, comment_id, callback) {
+    var sql_stmt = "IF NOT EXISTS (SELECT * FROM tb_pv_dispose WHERE id = @id AND comment_id = @comment_id) " +
                     "   SELECT id,value FROM tb_sys_config WHERE id IN ('dispose_doc_no', 'dispose_doc_year');" +
                     "ELSE " +
-                    "   SELECT * FROM tb_pv_dispose WHERE id = @id;";
+                    "   SELECT * FROM tb_pv_dispose WHERE id = @id AND comment_id = @comment_id;";
     var objParams = {
-        "id": pvid
+        "id": pvid,
+        'comment_id': comment_id
     };
 
     var ps = dbpool.preparedStatement()
         .input("id", sql.Int)
+        .input("comment_id", sql.Int)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
@@ -72,13 +74,14 @@ function addPVDispose (uid, obj, callback) {
     var sql_stmt =
         'IF NOT EXISTS (SELECT * FROM tb_pv_dispose WHERE id = @id) ' +
         'BEGIN ' +
-        '   INSERT INTO tb_pv_dispose ([id],[content],[createuser],[createtime],[state], [dispose_doc_no], [dispose_doc_year]) VALUES (@id, @content, @createuser, @createtime, @state, @dispose_doc_no, @dispose_doc_year);' +
+        '   INSERT INTO tb_pv_dispose ([id],[comment_id],[content],[createuser],[createtime],[state], [dispose_doc_no], [dispose_doc_year]) VALUES (@id, @comment_id, @content, @createuser, @createtime, @state, @dispose_doc_no, @dispose_doc_year);' +
         "   UPDATE tb_sys_config SET [value] = @dispose_doc_no WHERE [id] = 'dispose_doc_no';" +
         "END " +
         'ELSE ' +
         '   UPDATE tb_pv_dispose SET [content] = @content, [state] = @state, [dispose_doc_no] = @dispose_doc_no, [dispose_doc_year] = @dispose_doc_year WHERE [id] = @id;';
     var objParams = {
         "id": obj["id"],
+        "comment_id": obj["comment_id"],
         "state": obj["state"],
         "content": obj["content"],
         "createuser": uid,
@@ -184,12 +187,12 @@ function addPVComment (uid, obj, callback) {
         'WHERE [comment_id] = @comment_id;';
     var inputs = isNew ?
         [sql.Int, sql.NVarChar, sql.NVarChar, sql.NVarChar(sql.MAX), sql.Int, sql.Date, sql.Date, sql.NVarChar,
-            sql.NVarChar, sql.NVarChar, sql.VarChar, sql.DateTime2, sql.NVarChar, sql.VarChar] :
+            sql.NVarChar, sql.NVarChar, sql.VarChar, sql.DateTime2, sql.NVarChar, sql.Int, sql.VarChar] :
         [sql.NVarChar, sql.NVarChar, sql.NVarChar(sql.MAX), sql.Date, sql.Date, sql.NVarChar,
             sql.NVarChar, sql.NVarChar, sql.NVarChar, sql.Int];
     var values = isNew ?
         ['id', 'comment_user', 'comment', 'attachment', 'state', 'comment_date', 'recv_date', 'message_id', 'from_user',
-            'from_department', 'createuser', 'createtime', 'to_department', 'comment_doc_no'] :
+            'from_department', 'createuser', 'createtime', 'to_department', 'id', 'comment_doc_no'] :
         ['comment_user', 'comment', 'attachment', 'comment_date', 'recv_date', 'message_id', 'from_user',
             'from_department', 'to_department', 'comment_id'];
 

@@ -50,7 +50,8 @@ function savePVDispose (req, res) {
 
 function getDisposeDetail (req, res) {
     var pvid = req.query.id;
-    service.getPVDispose(pvid, function (err, rs) {
+    var comment_id = req.query.comment_id || 0;
+    service.getPVDispose(pvid, comment_id, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
