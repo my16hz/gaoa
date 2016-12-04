@@ -133,7 +133,7 @@ module.exports = function (gulp, plugins, isdebug) {
         });
     });
 
-    gulp.task('buildModulsJs', TASKS_MODULES, function () {
+    gulp.task('buildModulesJs', TASKS_MODULES, function () {
         return gulp;
     });
 };

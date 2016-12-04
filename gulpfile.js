@@ -10,7 +10,7 @@ var plugins = require('gulp-load-plugins')();
 var IS_DEBUG = false;
 var tasks = [
     'buildCss',
-    'buildLoginJs', 'buildModulsJs',
+    'buildLoginJs', 'buildModulesJs',
     'copyPics', 'copyFonts', 'copyEditor',
     'windUp'
 ];

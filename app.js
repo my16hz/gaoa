@@ -20,7 +20,7 @@ dbpool.initPool(function (err) {
         console.error('Fail to create db pool, caused by : %s', err.stack);
     } else {
         app.listen(config.port, function () {
-            console.info('server is listeniing on port : %d', config.port);
+            console.info('server is listening on port : %d', config.port);
         });
     }
 });

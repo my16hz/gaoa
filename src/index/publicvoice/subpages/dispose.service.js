@@ -186,8 +186,7 @@ function addPVComment (uid, obj, callback) {
         '  @from_user, @from_department, @createuser, @createtime, @to_department' +
         '); ' +
         'UPDATE tb_publicvoice SET [dispose_stat] = 2, [feedback_state] = 1 WHERE [id] = @id; ' +
-        'UPDATE tb_sys_config SET [value] = @comment_doc_no WHERE [id] = \'comment_doc_no\';' +
-        'SELECT MAX([id]) from tb_pv_comment;' :
+        'UPDATE tb_sys_config SET [value] = @comment_doc_no WHERE [id] = \'comment_doc_no\';' :
         'UPDATE tb_pv_comment SET ' +
         '  [comment_user] = @comment_user, [comment] = @comment, [attachment] = @attachment, [comment_date] = @comment_date, [recv_date] = @recv_date,' +
         '  [message_id] = @message_id, [from_user] = @from_user, [from_department] = @from_department, [to_department] = @to_department ' +

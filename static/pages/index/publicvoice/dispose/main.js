@@ -271,22 +271,16 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         }
     },
     saveComment: function (jqbtn) {
-        var jqform = jqbtn.parents('form');
-        var jqInputId = jqform.find('input[name="comment_id"]');
-        var jqInputUser = jqform.find('input[name="comment_user"]');
         var self = this;
 
         this._sendRequest({
             type: 'post',
             url: '/dispose/comment/save',
             validator: function () {
-                return self._commentValidator(jqform);
+                return self._commentValidator(jqbtn.parents('form'));
             },
             done: function (cmt) {
-                !jqInputId.val() && jqInputId.val(cmt.comment_id);
-                jqform.find('.btn:eq(1)').removeClass('hide').end()
-                    .siblings('.nav').children('li').eq(jqform.attr('data-index')).children('a')
-                    .text('批示（' + jqInputUser.val() + '）');
+                self.closeDataModal();
             }
         });
     },
