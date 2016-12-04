@@ -21,7 +21,11 @@ var LHSAnalyzePage = $.extend({}, LHSBasicPage, {
         this.dataTables = [
             this._createTable('#pvMissReportTableWrapper', '/analyze/pvmiss', [
                 {title: '舆情ID', field: 'id', sortable: true, order: 'desc'},
-                {title: '标题', field: 'title', sortable: true, order: 'desc', autoWidth: '40%'},
+                {title: '标题', field: 'title', sortable: true, order: 'desc', autoWidth: '40%',
+                    formatter: function (val, rowdata) {
+                        return '<a href="' + (rowdata.url || 'javascript:') + '" target="_blank">' + val + '</a>';
+                    }
+                },
                 {
                     title: '录入时间', field: 'createtime', sortable: true, order: 'desc',
                     formatter: function (val) {
