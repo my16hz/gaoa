@@ -345,7 +345,8 @@ var LHSBasicPage = {
             },
             destroy: function () {
                 dataTable.bootstrapTable('destroy');
-            }
+            },
+            reviseAutoWidth: _reviseAutoWidth
         };
 
         function _reviseAutoWidth (shrink) {

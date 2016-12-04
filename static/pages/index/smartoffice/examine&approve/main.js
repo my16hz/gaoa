@@ -90,9 +90,9 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
     changePageContent: function (jqBtn) {
         if (jqBtn.hasClass('btn-primary')) return;
 
-        'recv' == (this.isShown = jqBtn.attr('data-type')) ?
+        ('recv' == (this.isShown = jqBtn.attr('data-type')) ?
             this.recvTable.showDataWrapper() :
-            this.sendTable.showDataWrapper();
+            this.sendTable.showDataWrapper()).reviseAutoWidth();
 
         jqBtn.addClass('btn-primary')
             .removeClass('btn-default')
@@ -101,10 +101,10 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
             .addClass('btn-default');
     },
     closeDataModal: function () {
-        var displyed = this._getDisplayed();
+        var displayed = this._getDisplayed();
 
-        this._clearFormControlValues(displyed.modal.find('form'))
-            ._closeModal(displyed.modal, displyed.dataTable);
+        this._clearFormControlValues(displayed.modal.find('form'))
+            ._closeModal(displayed.modal, displayed.dataTable);
     },
     saveData: function () {
         var self = this;

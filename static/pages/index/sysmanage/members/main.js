@@ -162,9 +162,9 @@ var LHSMembersPage = $.extend({}, LHSBasicPage, {
     changePageContent: function (jqBtn) {
         if (jqBtn.hasClass('btn-primary')) return;
 
-        'member' == (this.isShown = jqBtn.attr('data-type')) ?
+        ('member' == (this.isShown = jqBtn.attr('data-type')) ?
             this.memberTable.showDataWrapper() :
-            this.groupTable.showDataWrapper();
+            this.groupTable.showDataWrapper()).reviseAutoWidth();
 
         jqBtn.addClass('btn-primary')
             .removeClass('btn-default')
