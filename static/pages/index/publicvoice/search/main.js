@@ -103,7 +103,7 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
 
         $('<iframe class="hide"></iframe>')
             .appendTo('body')
-            .attr('src', '/pubvoice/search/export' + $.param({
+            .attr('src', '/pubvoice/search/export?' + $.param({
                     state: funcCtrls.find('select:eq(0)').val(),
                     dispose: funcCtrls.find('select:eq(1)').val(),
                     feedback: funcCtrls.find('select:eq(2)').val(),
@@ -111,7 +111,7 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
                     title: funcCtrls.find('input:first').val(),
                     sTime: this.sTime.getTime(),
                     eTime: this.eTime.getTime()
-                }));
+    }));
     },
     closeDataModal: function () {
         var modal = $('#dataModal');

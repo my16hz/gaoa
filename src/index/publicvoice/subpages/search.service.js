@@ -64,7 +64,7 @@ function searchPubVoices (start, end, state, type, feedback, dispose, title, cal
         });
 }
 
-function exportMatchedPubVoices (start, end, state, type, feedback, dispose, title, done) {
+function exportMatchedPubVoices (start, end, state, type, feedback, dispose, title, callback) {
     var sql_stmt = "SELECT tb_publicvoice.*, tb_daily_pv.did, " +
         "tb_pv_comment.from_user AS commnet_user,tb_pv_comment.comment AS pv_comment,tb_pv_comment.comment_date AS comment_date, " +
         "tb_pv_feedback.content AS feedback_content,tb_pv_feedback.type AS feedback_type, tb_pv_feedback.createtime AS feedback_date " +
