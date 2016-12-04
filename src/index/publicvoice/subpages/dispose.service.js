@@ -205,7 +205,7 @@ function addPVComment (uid, obj, callback) {
     values.forEach(function (field, index) {
         values[index] = obj[field];
     });
-
+    console.log(sql_stmt);
     dbpool.execPreparedStatement(sql_stmt, inputs, values, callback);
 }
 
