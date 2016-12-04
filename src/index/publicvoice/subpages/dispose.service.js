@@ -262,6 +262,7 @@ function approveComment (obj, callback) {
         });
 }
 
+/* tb_pv_comment.state : 1: 待提交 2: 待批示 3: 转 4: 转发 5: 阅存 */
 function getUnapprovedComment (callback) {
     var sql_stmt = "SELECT TOP 1000 tb_publicvoice.id, tb_publicvoice.title, tb_publicvoice.url," +
         " tb_pv_comment.comment, tb_pv_comment.comment_id, tb_pv_comment.comment_user, tb_pv_comment.comment_date, " +

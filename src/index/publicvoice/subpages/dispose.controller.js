@@ -122,7 +122,7 @@ function savePVComment (req, res) {
     var uid = req.session[userkey].id;
 
     service.addPVComment(uid, extend({
-        state: '1',
+        state: '2',
         createuser: uid,
         createtime: new Date()
     }, req.body), function (err, rs) {
