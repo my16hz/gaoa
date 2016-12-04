@@ -377,10 +377,11 @@ var LHSBasicPage = {
 
                 if (res && res.success) {
                     bootbox.alert('文件处理成功！', function () {
-                        $.isFunction(complete) && complete.call(self, res);
+                        complete && complete.call(self, res);
                     });
                 } else {
                     self._showXHRMessage(res, 'error');
+                    complete && complete.call(self, res);
                 }
             }
         });
