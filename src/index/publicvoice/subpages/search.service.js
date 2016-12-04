@@ -66,8 +66,8 @@ function searchPubVoices (start, end, state, type, feedback, dispose, title, cal
 
 function exportMatchedPubVoices (start, end, state, type, feedback, dispose, title, callback) {
     var sql_stmt = "SELECT tb_publicvoice.*, tb_daily_pv.did, " +
-        "tb_pv_comment.commnet_user AS commnet_user,tb_pv_comment.comment AS pv_comment,tb_pv_comment.comment_date AS comment_date, " +
-        "tb_pv_comment.recv_date AS commnet_recv_date,tb_pv_comment.from_user AS commnet_from_user," +
+        "tb_pv_comment.comment_user AS comment_user,tb_pv_comment.comment AS pv_comment,tb_pv_comment.comment_date AS comment_date, " +
+        "tb_pv_comment.recv_date AS comment_recv_date,tb_pv_comment.from_user AS comment_from_user," +
         "tb_pv_comment.from_department AS comment_from_department," +
         "tb_pv_feedback.content AS feedback_content,tb_pv_feedback.type AS feedback_type, tb_pv_feedback.createtime AS feedback_date " +
         "FROM tb_publicvoice  " +
