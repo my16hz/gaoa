@@ -268,7 +268,7 @@ function getUnapprovedComment (callback) {
         " tb_pv_comment.attachment, tb_pv_comment.to_department, tb_pv_comment.state, tb_daily_pv.did AS daily_id " +
         " FROM tb_publicvoice, tb_pv_comment, tb_daily_pv " +
         " WHERE tb_publicvoice.id = tb_pv_comment.id AND tb_daily_pv.pvid = tb_publicvoice.id AND tb_pv_comment.state = 2 " +
-        " ORDER BY tb_pv_comment.comment_date DESC;";
+        " ORDER BY tb_pv_comment.comment_date DESC, tb_publicvoice.id DESC;";
     var objParams = {};
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
