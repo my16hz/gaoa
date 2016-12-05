@@ -67,6 +67,28 @@
                     <button type="button" class="btn btn-primary">保存</button>
                 </div>
             </div>
+            <div id="commentModal" class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">查看批示内容</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">批示领导：</label>
+                            <div class="col-xs-2">
+                                <textarea class="form-control" name="comment_user" readonly="readonly" rows="3"></textarea>
+                            </div>
+                            <label class="col-xs-2 control-label">批示内容：</label>
+                            <div class="col-xs-6">
+                                <textarea class="form-control" name="comment" readonly="readonly" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default">关闭</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

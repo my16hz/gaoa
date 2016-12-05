@@ -64,21 +64,26 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
                         case 0:
                         case 4:
                             return [
+                                '<a href="javascript:" title="查看批示"><i class="glyphicon glyphicon-comment"></i></a>',
                                 '<a href="javascript:" title="反馈"><i class="glyphicon glyphicon-edit"></i></a>',
                                 '<a href="javascript:" title="采用"><i class="glyphicon glyphicon-ok"></i></a>'
                             ].join('&nbsp;');
                         default:
                             return [
+                                '<a href="javascript:" title="查看批示"><i class="glyphicon glyphicon-comment"></i></a>',
                                 '<a href="javascript:" title="反馈"><i class="glyphicon glyphicon-edit"></i></a>',
                                 '<a></a>'
                             ].join('&nbsp;');
                     }
                 },
                 events: {
-                    'click a:first': function () {
+                    'click a:eq(0)': function () {
+                        self.showCommentModal(arguments[2])
+                    },
+                    'click a:eq(1)': function () {
                         self.showDataModal(arguments[2])
                     },
-                    'click a:last': function () {
+                    'click a:eq(2)': function () {
                         self.showAcceptModal(arguments[2])
                     }
                 }
@@ -92,13 +97,45 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
         'click #dataModal .btn-default': 'closeModal',
         'click #dataModal .btn-primary': 'saveFeedback',
         'click #acceptModal .btn-default': 'closeAcceptModal',
-        'click #acceptModal .btn-primary': 'saveAccept'
+        'click #acceptModal .btn-primary': 'saveAccept',
+        'click #commentModal .btn-default': 'closeCommentModal'
     },
     doSearch: function (jqbtn) {
         var id = $.trim(jqbtn.prev('input').val());
 
         this.dataTable.setFilter(id ? {did: id} : null)
             .refresh();
+    },
+    showCommentModal: function (pubvoice) {
+        var modal = $('#commentModal');
+        var jqform = modal.find('form');
+        var self = this;
+
+        this._sendRequest({
+            type: 'get',
+            url: '/dispose/comment',
+            data: {id: pubvoice.id},
+            done: function (rs) {
+                var comment_user = "",
+                    comment = "";
+                for (var r in rs) {
+                    if (rs[r].type == 1) {
+                        comment += rs[r].comment + "\n";
+                        comment_user += rs[r].comment_user + "\n";
+                    }
+                }
+                self._setFormControlValues(jqform, {comment_user: comment_user || "无批示", comment: comment || "无批示"});
+                self._showModal(modal, self.dataTable);
+            }
+        });
+
+        return this;
+    },
+    closeCommentModal: function () {
+        var modal = $('#commentModal');
+
+        this._clearFormControlValues(modal.find('form'))
+            ._closeModal(modal, this.dataTable);
     },
     showDataModal: function (pubvoice) {
         var modal = $('#dataModal');
