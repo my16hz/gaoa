@@ -14,8 +14,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
         this.initDependencies();
 
         this.dataTable = this._createTable('#tableWrapper', '/feedback/list', [
-            {field: 'checkbox', checkbox: true},
-            {title: '期数', field: 'daily_id', sortable: true, order: 'desc'},
+            {title: 'ID', field: 'id', sortable: true, order: 'desc'},
             {title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '18%',
                 formatter: function (val, rowdata) {
                     return '<a href="' + (rowdata.url || 'javascript:') + '" target="_blank">' + val + '</a>';
@@ -28,7 +27,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
             {title: '关注数', field: 'review_count', sortable: true, order: 'desc', maxWidth: 60},
             {title: '涉及部门', field: 'relate_department', sortable: true, order: 'desc'},
             {
-                title: '处理时间', field: 'createtime', sortable: true, order: 'desc', minWidth: 112,
+                title: '时间', field: 'createtime', sortable: true, order: 'desc', minWidth: 112,
                 formatter: function (val) {
                     return moment(val).format('YYYY/MM/DD HH:mm');
                 }
@@ -91,6 +90,13 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
         ]);
         this.docEditor = this._createEditor('#docEditorWrapper');
         this.webEditor = this._createEditor('#webEditorWrapper');
+        this.sTime = this._createTimepicker('#sTime', 'YYYY-MM-DD HH:mm').onChange(function (e) {
+            this.eTime.minDate(e.date)
+        });
+        this.eTime = this._createTimepicker('#eTime', 'YYYY-MM-DD HH:mm').onChange(function (e) {
+            this.sTime.maxDate(e.date);
+        });
+        this.webFeedbackTime = this._createTimepicker('#webFeedbackTime', 'YYYY-MM-DD HH:mm');
     },
     events: {
         'click #btnSearch': 'doSearch',
@@ -101,10 +107,11 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
         'click #commentModal .btn-default': 'closeCommentModal'
     },
     doSearch: function (jqbtn) {
-        var id = $.trim(jqbtn.prev('input').val());
-
-        this.dataTable.setFilter(id ? {did: id} : null)
-            .refresh();
+        this.dataTable.setFilter({
+            state: $('#state').val(),
+            sTime: this.sTime.getTime(),
+            eTime: this.eTime.getTime()
+        }).refresh();
     },
     showCommentModal: function (pubvoice) {
         var modal = $('#commentModal');

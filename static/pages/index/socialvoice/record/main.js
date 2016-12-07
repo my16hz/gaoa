@@ -13,10 +13,10 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies()._appendGroups();
 
-        this.sTime = this._createTimepicker('#sTime').onChange(function (e) {
+        this.sTime = this._createTimepicker('#sTime', 'YYYY-MM-DD HH:mm').onChange(function (e) {
             this.eTime.minDate(e.date)
         });
-        this.eTime = this._createTimepicker('#eTime').onChange(function (e) {
+        this.eTime = this._createTimepicker('#eTime', 'YYYY-MM-DD HH:mm').onChange(function (e) {
             this.sTime.maxDate(e.date);
         });
 

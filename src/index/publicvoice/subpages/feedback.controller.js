@@ -7,6 +7,7 @@ var userkey = require('config').session.userkey;
 
 var errhandler = require('../../../utils/errhandler');
 var service = require('./../service');
+var defaut_interval = 3600000 * 24 * 30;
 module.exports = {
     getFeedbackDetail: getFeedbackDetail,
     saveFeedback: saveFeedback,
@@ -24,9 +25,12 @@ module.exports = {
 
 function getFeedbackList (req, res) {
     var uid = req.session[userkey].id;
-    var did = req.query.did;
+    var state = req.query.state || -1;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0) || now );
 
-    service.getFeedbackList(uid, did, function (err, rs) {
+    service.getFeedbackList(uid, start, end, state, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -55,7 +59,8 @@ function saveFeedback (req, res) {
     var obj = req.body;
     var feedback = {
         "id": obj["id"],
-        "createtime": new Date(),
+        "webFeedbackTime": obj["webFeedbackTime"] || new Date(),
+        "docFeedbackTime": obj["docFeedbackTime"] || new Date(),
         "doc": obj["doc"],
         "web": obj["web"],
         "createuser": uid

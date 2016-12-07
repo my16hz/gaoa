@@ -1,12 +1,28 @@
 <script type="text/html">
 <div class="pubvoice-feedback-page">
     <div class="row func-btns">
-        <div class="col-md-4">
-            <div class="input-group">
-                <input id="inputSearch" type="text" placeholder="请输入日报期号" class="form-control">
-                <a id="btnSearch" class="btn btn-default input-group-addon">
-                    <i class="glyphicon glyphicon-search"></i>
-                </a>
+        <div class="col-xs-7">
+            <div class="row">
+                <div class="col-xs-3 no-padding-right">
+                    <select id="state" class="form-control">
+                        <option value="-1" >全部</option>
+                        <option value="0">已回复</option>
+                        <option value="1">必须回复</option>
+                        <option value="2">建议回复</option>
+                        <option value="3">可以回复</option>
+                    </select>
+                </div>
+                <div class="col-xs-4 no-padding-right">
+                    <input id="sTime" type="text" name="sTime" placeholder="开始时间" class="form-control">
+                </div>
+                <div class="col-xs-4 no-padding-right">
+                    <input id="eTime" type="text" name="eTime" placeholder="结束时间" class="form-control">
+                </div>
+                <div class="col-xs-1">
+                    <button id="btnSearch" class="btn btn-default">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -33,7 +49,7 @@
                         <div class="form-group form-group-sm">
                             <label class="col-xs-2 control-label">网回时间：</label>
                             <div class="col-xs-10">
-                                <input type="text" name="webFeedbackTime" readonly="readonly" class="form-control">
+                                <input type="text" id="webFeedbackTime" name="webFeedbackTime" class="form-control">
                             </div>
                         </div>
                         <div class="form-group form-group-sm">

@@ -16,30 +16,32 @@ module.exports = {
     getFeedbackDailyID: getFeedbackDailyID
 };
 
-function getFeedbackList (uid, did, callback) {
-    var sql_stmt = "SELECT tb_publicvoice.*, tb_daily_pv.did AS daily_id," +
+function getFeedbackList (uid, start, end, state, callback) {
+    var sql_stmt = "SELECT tb_publicvoice.*, " +
         " (SELECT content FROM tb_pv_feedback WHERE tb_pv_feedback.id = tb_publicvoice.id AND tb_pv_feedback.type = 0) AS docFeedback," +
-        " (SELECT content FROM tb_pv_feedback WHERE tb_pv_feedback.id = tb_publicvoice.id AND tb_pv_feedback.type = 1) AS webFeedback" +
-        " FROM tb_publicvoice, tb_daily_pv " +
-        " WHERE tb_daily_pv.pvid = tb_publicvoice.id " +
-        " AND tb_publicvoice.id IN ( SELECT pvid FROM tb_pv_notify WHERE tb_pv_notify.uid = @uid) ";
+        " (SELECT content FROM tb_pv_feedback WHERE tb_pv_feedback.id = tb_publicvoice.id AND tb_pv_feedback.type = 1) AS webFeedback " +
+        " FROM tb_publicvoice " +
+        " WHERE tb_publicvoice.id IN ( SELECT pvid FROM tb_pv_notify WHERE tb_pv_notify.uid = @uid) " +
+        "   AND tb_publicvoice.createtime < @endTime AND tb_publicvoice.createtime > @startTime ";
 
     var objParams = {
-        'uid' : uid
+        'uid' : uid,
+        'startTime' : start,
+        'endTime' : end
     };
-
-    if (did) {
-        sql_stmt += " AND tb_daily_pv.did = @did;";
-        objParams['did'] = did;
-    } else {
-        sql_stmt += " AND tb_daily_pv.did IN ( SELECT MAX(id) as id FROM tb_daily );";
+    if (state != -1) {
+        objParams["state"] = state;
+        sql_stmt += " AND tb_publicvoice.feedback_state = @state ";
     }
+    sql_stmt += " ORDER BY tb_publicvoice.createtime DESC ";
 
     console.log(sql_stmt);
     var ps = dbpool
         .preparedStatement()
         .input("uid", sql.VarChar)
-        .input("did", sql.Int)
+        .input("state", sql.Int)
+        .input("startTime", sql.DateTime)
+        .input("endTime", sql.DateTime)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);
@@ -65,16 +67,17 @@ function getFeedbackList (uid, did, callback) {
 function addPVFeedback (uid, obj, callback) {
     var sql_stmt = "DELETE FROM tb_pv_feedback WHERE id = @id; " +
         "INSERT INTO tb_pv_feedback ([id],[type],[content],[createuser],[createtime]) " +
-        "VALUES (@id, 0, @doc, @createuser, @createtime);" +
+        "VALUES (@id, 0, @doc, @createuser, @docFeedbackTime);" +
         "INSERT INTO tb_pv_feedback ([id],[type],[content],[createuser],[createtime]) " +
-        "VALUES (@id, 1, @web, @createuser, @createtime);" +
+        "VALUES (@id, 1, @web, @createuser, @webFeedbackTime);" +
         "UPDATE tb_publicvoice SET state = 8,feedback_state = 0 WHERE id = @id";
     var objParams = {
         "id": obj["id"],
         "doc": obj["doc"],
         "web": obj["web"],
         "createuser": uid,
-        "createtime": new Date()
+        "webFeedbackTime": obj["webFeedbackTime"],
+        "docFeedbackTime": obj["docFeedbackTime"]
     };
     console.log(sql_stmt);
     var ps = dbpool
@@ -83,7 +86,8 @@ function addPVFeedback (uid, obj, callback) {
         .input("doc", sql.NVarChar(sql.MAX))
         .input("web", sql.NVarChar(sql.MAX))
         .input("createuser", sql.VarChar)
-        .input("createtime", sql.DateTime2)
+        .input("docFeedbackTime", sql.DateTime2)
+        .input("webFeedbackTime", sql.DateTime2)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);

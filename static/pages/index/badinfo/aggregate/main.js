@@ -12,10 +12,10 @@ var LHSAggregatePage = $.extend({}, LHSBasicPage, {
 
         this.initDependencies();
 
-        this.sTime = this._createTimepicker('#starttime').onChange(function (e) {
+        this.sTime = this._createTimepicker('#starttime', 'YYYY-MM-DD HH:mm').onChange(function (e) {
             this.eTime.minDate(e.date)
         });
-        this.eTime = this._createTimepicker('#endtime').onChange(function (e) {
+        this.eTime = this._createTimepicker('#endtime', 'YYYY-MM-DD HH:mm').onChange(function (e) {
             this.sTime.maxDate(e.date);
         });
         this.dataTables = [
