@@ -88,7 +88,6 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         this.eTime = this._createTimepicker('#eTime', 'YYYY-MM-DD HH:mm').onChange(function (e) {
             this.sTime.maxDate(e.date);
         });
-        this.isUrlOK = null;
     },
     events: {
         'click #btnSearch': 'doSearch',
@@ -96,7 +95,6 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
         'click #btnImport': 'showImportModal',
         'click #btnDel': 'delSelected',
         'click #btnCommit': 'applyApprobation',
-        'change #dataModal input[name="url"]': 'checkWebSite',
         'change #dataModal input[name="title"]': 'checkTitle',
         'click #dataModal .btn-default': 'closeDataModal',
         'click #dataModal .btn-primary': 'savePubVoice',
@@ -122,7 +120,6 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             done: function (rs) {
                 _appendOptions(rs);
                 _fillFormValues(pubvoice);
-                self.isUrlOK = true;
                 self._showModal(modal, self.dataTable);
             }
         });
@@ -187,34 +184,6 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
             bootbox.alert('请先选择要提交的舆情');
 
         return this;
-    },
-    checkWebSite: function (jqinput) {
-        var url = $.trim(jqinput.val());
-        var self = this;
-
-        this.isUrlOK = null;
-
-        url && this._sendRequest({
-            type: 'get', url: '/pubvoice/checkurl',
-            data: {url: url},
-            done: function (count) {
-                if (count) {
-                    self.isUrlOK = false;
-
-                    jqinput
-                        .tooltip('destroy')
-                        .tooltip({title: '舆情网址已经存在。'}).tooltip('show')
-                        .unbind('focus')
-                        .bind('focus', function () {
-                            $(this).tooltip('destroy')
-                                .parent().removeClass('has-error');
-                        })
-                        .parent().addClass('has-error');
-                } else {
-                    self.isUrlOK = true;
-                }
-            }
-        });
     },
     checkTitle: function (jqinput) {
         var title = $.trim(jqinput.val());
@@ -314,11 +283,6 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
     _pvValidator: function () {
         var self = this;
         var values = this._validate($('#dataModal form'), {
-            url: function (val) {
-                if (!val || val.id) return;
-                if (null == self.isUrlOK) return '服务器正在验证中，请稍等。';
-                if (!self.isUrlOK) return '舆情网址已经存在。';
-            },
             review_count: function (val) {
                 if (!(/^\d+$/.test(val))) return '必须为数字。';
             },
