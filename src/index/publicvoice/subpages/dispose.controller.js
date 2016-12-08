@@ -9,7 +9,7 @@ var extend = require('extend');
 
 var errhandler = require('../../../utils/errhandler');
 var service = require('./../service');
-
+var default_interval = 3600000 * 24 * 30;
 module.exports = {
     savePVDispose: savePVDispose,
     getDisposeDetail: getDisposeDetail,
@@ -28,7 +28,9 @@ module.exports = {
     approveComment: approveComment,
 
     /* 查询待审批的批示 */
-    getUnapprovedComment: getUnapprovedComment
+    getUnapprovedComment: getUnapprovedComment,
+
+    getCommentList: getCommentList
 };
 
 
@@ -173,6 +175,23 @@ function approveComment (req, res) {
 
 function getUnapprovedComment (req, res) {
     service.getUnapprovedComment(function (err, rs) {
+        err ?
+            errhandler.internalException(res, err) :
+            res.send({
+                success: true,
+                data: rs
+            });
+    });
+}
+
+function getCommentList(req, res) {
+    var user = req.session[userkey].id;
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - default_interval));
+    var end = new Date((req.query.eTime - 0 ) || now );
+    var key = req.query.title;
+
+    service.getCommentList(user, start, end, key, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

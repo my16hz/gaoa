@@ -15,7 +15,7 @@ var DIR_DEST = 'public/js/';
 var SUB_PAGES = {
     badinfo: ['aggregate', 'record', 'RTXDirective', 'RTXReport'],
     publicvoice: [
-        'alert', 'analyze', 'dailyreport', 'dailycreate', 'dispose',
+        'alert', 'analyze', 'dailyreport', 'dailycreate', 'dispose', 'comment',
         'examine&approve', 'dispose&approve', 'feedback', 'guide', 'notify', 'record', 'search'
     ],
     smartoffice: ['allmessages', 'examine&approve', 'sendmessage', 'recvmessage', 'notifymessage'],

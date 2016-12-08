@@ -18,6 +18,8 @@
                     return LHSDailyCreatePage.run();
                 case 'dispose':
                     return LHSDisposePage.run();
+                case 'comment':
+                    return LHSCommentPage.run();
                 case 'notify':
                     return LHSNotifyPage.run();
                 case 'feedback':

@@ -19,7 +19,8 @@ module.exports = {
     commitComment: commitComment,
     /* 获取待审批的批示 */
     getUnapprovedComment: getUnapprovedComment,
-    approveComment: approveComment
+    approveComment: approveComment,
+    getCommentList: getCommentList
 };
 
 
@@ -272,6 +273,46 @@ function getUnapprovedComment (callback) {
     var objParams = {};
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
+        .prepare(sql_stmt, function (err) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            ps.execute(objParams, function (err, rs) {
+                callback(err, rs);
+
+                ps.unprepare(function (err) {
+                    err && console.error(err);
+                });
+            });
+        });
+}
+
+function getCommentList(user, start, end, title, callback) {
+    var sql_stmt = "SELECT tb_publicvoice.url, tb_publicvoice.title, tb_pv_comment.* " +
+        "FROM tb_pv_comment, tb_publicvoice " +
+        "WHERE tb_pv_comment.id = tb_publicvoice.id  " +
+        "AND tb_publicvoice.id IN ( SELECT pvid FROM tb_pv_notify WHERE tb_pv_notify.uid = @uid) " +
+        "AND tb_pv_comment.createtime < @endTime AND tb_pv_comment.createtime > @startTime ";
+
+    var objParams = {
+        'startTime' : start,
+        'endTime' : end,
+        'uid' : user
+    };
+
+    if (title) {
+        sql_stmt += " AND (tb_publicvoice.title LIKE @title OR tb_publicvoice.content LIKE @title " +
+            " OR tb_pv_comment.comment_user LIKE @title OR tb_pv_comment.comment LIKE @title) ";
+        objParams["title"] = '%' + title + '%';
+    }
+    sql_stmt += " ORDER BY tb_pv_comment.createtime DESC";
+    console.log(sql_stmt);
+    var ps = dbpool.preparedStatement()
+        .input("uid", sql.VarChar)
+        .input("title", sql.NVarChar)
+        .input("startTime", sql.DateTime)
+        .input("endTime", sql.DateTime)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, null);

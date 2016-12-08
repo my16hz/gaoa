@@ -58,6 +58,9 @@ module.exports = function () {
         /* 待审批批示列表 */
         .get('/dispose/comment/list', controller.getUnapprovedComment)
 
+        /* 获取当前所有批示 */
+        .get('/comment/pvlist', controller.getCommentList)
+
         // noitfy page
         /* 查询指定ID对应的通报舆情列表 */
         .get('/notify/list', controller.getNotifyPVByUid)

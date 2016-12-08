@@ -1,0 +1,87 @@
+<script type="text/html">
+<div class="pubvoice-comment-page">
+    <div class="row func-btns">
+        <div class="col-xs-7">
+            <div class="row">
+                <div class="col-xs-3 no-padding-right">
+                    <input id="sTime" type="text" name="sTime" placeholder="开始时间" class="form-control">
+                </div>
+                <div class="col-xs-3 no-padding-right">
+                    <input id="eTime" type="text" name="eTime" placeholder="结束时间" class="form-control">
+                </div>
+                <div class="col-xs-3 no-padding-right">
+                    <input type="text" id="title" name="title" placeholder="请输入批示关键字" class="form-control">
+                </div>
+                <div class="col-xs-1">
+                    <button id="btnSearch" class="btn btn-default">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row data-wrapper">
+        <div id="tableWrapper" class="col-md-12"></div>
+        <div class="col-xs-10 no-padding-left hide">
+            <div id="dataModal" class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">批示详情</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" data-index="0">
+                        <input type="hidden" name="id">
+                        <input type="hidden" name="comment_id">
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">收文日期：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="recv_date" class="form-control date-selector">
+                            </div>
+                            <label class="col-xs-2 control-label">收文编号：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="message_id" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">领取人：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="from_user" class="form-control">
+                            </div>
+                            <label class="col-xs-2 control-label">从何领取：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="from_department" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">批示领导：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="comment_user" class="form-control">
+                            </div>
+                            <label class="col-xs-2 control-label">批示时间：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="comment_date" class="form-control date-selector">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">批示内容：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="comment" class="form-control">
+                            </div>
+                            <label class="col-xs-2 control-label">处置单位：</label>
+                            <div class="col-xs-4">
+                                <input type="text" name="to_department" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label class="col-xs-2 control-label">批示附件：</label>
+                            <div id="commentWrapper" class="col-xs-10"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</script>
