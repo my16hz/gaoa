@@ -185,7 +185,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         var form = modalBody.removeClass('hide').next().addClass('hide').end() // reset visible
             .find('.cmt-tab:gt(0)').remove().end() // remove other tabs
             .find('.cmt-tab').addClass('active').children('a').text('批示（新）').end().end() // reset title
-            .find('form:gt(0)').each(function () {
+            .find('.dispose-form:gt(0)').each(function () {
                 $(this).data('editor').destroy(); // remove editor of forms
                 $(this).remove(); // remove other forms
             }).end()
