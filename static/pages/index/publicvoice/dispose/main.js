@@ -197,7 +197,7 @@ var LHSDisposePage = $.extend({}, LHSBasicPage, {
         }); // clear editor contents.
 
         this._clearFormControlValues(form); // clear inputs' value in the first form
-        this._closeModal('#dataModal', this.dataTable); // close modal
+        this._closeModal('#dataModal', this.dataTable.refresh()); // close modal
     },
     showDisposeDoc: function (jqbtn) {
         var editor = this.disposeEditor;
