@@ -114,7 +114,7 @@ function exportMatchedPubVoices (start, end, state, type, feedback, dispose, tit
                 return callback(err, null);
             }
             ps.execute(objParams, function (err, recordset) {
-                callback(err, recordset)
+                callback(err, recordset);
                 ps.unprepare(function (err) {
                     if (err)
                         console.log(err);

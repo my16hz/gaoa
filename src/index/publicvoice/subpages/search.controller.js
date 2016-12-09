@@ -75,7 +75,7 @@ function _buildExcel (data) {
         {title: '所属栏目', field: 'item'},
         {title: '标题', field: 'title'},
         {title: '舆情类别', field: 'type'},
-        {title: '涉及部门', field: 'duty_department'},
+        {title: '涉及部门', field: 'relate_department'},
         {title: '回帖', field: 'fellow_count'},
         {title: '浏览', field: 'review_count'},
         {title: '期数', field: 'did'},
