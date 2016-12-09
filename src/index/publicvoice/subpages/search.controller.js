@@ -85,7 +85,7 @@ function _buildExcel (data) {
         {title: '批示收时', field: 'comment_recv_date'},
         {title: '领导', field: 'comment_user'},
         {title: '批示时间', field: 'comment_date'},
-        {title: '内容', field: 'comment'},
+        {title: '批示内容', field: 'pv_comment'},
         {title: '谁取', field: 'comment_from_user'},
         {title: '从何', field: 'comment_from_department'},
         {title: '回复时间', field: 'feedback_date'},
