@@ -165,7 +165,8 @@ function getPVMissReportAnalyze (start, end, callback) {
         'FROM tb_publicvoice ' +
         'WHERE tb_publicvoice.relate_department IN (SELECT name FROM tb_group WHERE priority = 2) ' +
         'AND tb_publicvoice.createuser IN (SELECT id FROM tb_user WHERE priority = 1) ' +
-        'AND tb_publicvoice.createtime > @start AND tb_publicvoice.createtime < @end ';
+        'AND tb_publicvoice.createtime > @start AND tb_publicvoice.createtime < @end ' +
+        'ORDER BY tb_publicvoice.createtime DESC';
     var objParams = {
         "start": start,
         "end": end
