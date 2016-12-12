@@ -303,7 +303,7 @@ function getCommentList(user, start, end, title, callback) {
 
     if (title) {
         sql_stmt += " AND (tb_publicvoice.title LIKE @title OR tb_publicvoice.content LIKE @title " +
-            " OR tb_pv_comment.comment_user LIKE @title OR tb_pv_comment.comment LIKE @title) ";
+            " OR tb_pv_comment.comment_user LIKE @title OR tb_pv_comment.comment LIKE @title OR tb_pv_comment.to_department LIKE @title) ";
         objParams["title"] = '%' + title + '%';
     }
     sql_stmt += " ORDER BY tb_pv_comment.createtime DESC";
