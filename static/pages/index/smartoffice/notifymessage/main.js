@@ -45,35 +45,11 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
                 title: '操作',
                 field: 'action',
                 formatter: function () {
-                    var args = arguments[1].state;
-                    switch (args) {
-                        case 0 :
-                            return [
-                                '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
-                                '<a href="javascript:" title="删除"><i class="glyphicon glyphicon-trash"></i></a>'
-                            ].join('&nbsp;');
-                        default:
-                            return ['<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
-                                '<a></a>'
-                            ].join('&nbsp;');
-                    }
+                    return '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>';
                 },
                 events: {
                     'click a:first': function () {
                         self._showDataModal(arguments[2]);
-                    },
-                    'click a:last': function () {
-                        var msgid = arguments[2].id;
-
-                        bootbox.confirm('确定删除？', function (rs) {
-                            rs && self._sendRequest({
-                                type: 'delete', url: '/smartoffice/message/delete',
-                                data: {id: msgid},
-                                done: function () {
-                                    self.dataTable.refresh();
-                                }
-                            });
-                        })
                     }
                 }
             }
@@ -83,6 +59,7 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
     events: {
         'click #btnNotify': 'showDataModal',
         'click #btnSend': 'showNotifyModal',
+        'click #btnDelete': 'delSelected',
         'click #dataModal .btn-default': 'closeDataModal',
         'click #dataModal .btn-primary': 'saveMessage',
         'click #dataModal #addAttach': 'addAttachInput',
@@ -131,6 +108,30 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
                 }).join());
             });
         }
+    },
+    delSelected: function () {
+        var dataTable = this.dataTable;
+        var ids = dataTable.getSelected();
+        var self = this;
+
+        ids.length ?
+            bootbox.confirm('确定删除？', function (rs) {
+                rs && self._ajaxDelete(ids.join(), function () {
+                    dataTable.refresh();
+                });
+            }) :
+            bootbox.alert('请先选择要删除的记录！');
+
+        return this;
+    },
+    _ajaxDelete: function (ids, done) {
+        this._sendRequest({
+            type: 'delete', url: '/smartoffice/message/delete',
+            data: {ids: ids},
+            done: done
+        });
+
+        return this;
     },
     closeDataModal: function () {
         var modal = $('#dataModal');

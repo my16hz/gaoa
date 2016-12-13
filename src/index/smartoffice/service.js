@@ -419,8 +419,10 @@ function getMessageList (uid, callback) {
 
 function deleteMessage(ids, callback) {
     var objParams = {};
-    var sql_stmt = "DELETE FROM tb_so_message WHERE id in (%ids%);";
+    var sql_stmt = "DELETE FROM tb_so_message_notify WHERE mid in (%mids%);" +
+                "DELETE FROM tb_so_message WHERE id in (%ids%);";
 
+    sql_stmt = sql_stmt.replace("%mids%",  ids);
     sql_stmt = sql_stmt.replace("%ids%",  ids);
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()

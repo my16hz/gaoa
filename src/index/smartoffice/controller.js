@@ -286,9 +286,9 @@ function getMessageList (req, res) {
 }
 
 function deleteMessage (req, res) {
-    var id = req.body.id;
+    var ids = req.body.ids;
 
-    service.deleteMessage(id, function (err) {
+    service.deleteMessage(ids, function (err) {
         err ?
             errhandler.internalException(res, err) :
             res.send({

@@ -35,7 +35,15 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
             {title: '危害类型', field: 'type', sortable: true, order: 'desc'},
             {title: '举报查询码', field: 'sn', sortable: true, order: 'desc', maxWidth: 90},
             {
-                title: '举报时间', field: 'reportdate', sortable: true, order: 'desc'
+                title: '举报时间', field: 'reportdate', sortable: true, order: 'desc',
+                formatter: function (val) {
+                    if (val.indexOf('/') > 0)
+                    {
+                        return moment(val, "MM/DD/YY").format('YYYY/MM/DD');
+                    } else {
+                        return moment(val).format('YYYY/MM/DD');
+                    }
+                }
             },
             {
                 title: '操作', field: 'action',
