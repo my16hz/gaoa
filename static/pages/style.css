@@ -20,3 +20,7 @@ html, body {
 textarea {
     resize: none;
 }
+
+.bootstrap-datetimepicker-widget {
+    z-index: 100000;
+}
