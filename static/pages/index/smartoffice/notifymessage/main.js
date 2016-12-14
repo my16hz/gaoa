@@ -25,7 +25,7 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
                     }
                 }
             },
-            {title: '发布人', field: 'createuser', sortable: true, order: 'desc'},
+            {title: '发布人', field: 'name', sortable: true, order: 'desc'},
             {
                 title: '发布时间', field: 'createtime', sortable: true, order: 'desc',
                 formatter: function (val) {

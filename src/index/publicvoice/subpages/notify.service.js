@@ -65,7 +65,7 @@ function addPVNotify (uid, userids, pvids, callback) {
                 return callback(err, null);
             }
             ps.execute({}, function (err, recordset) {
-                callback(err, recordset)
+                callback(err, recordset);
                 ps.unprepare(function (err) {
                     if (err)
                         console.log(err);
