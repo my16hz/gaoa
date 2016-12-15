@@ -319,8 +319,8 @@ function getTemplate (callback) {
 }
 
 function getNotifyList (uid, callback) {
-    var sql_stmt = "SELECT TOP 1000 tb_so_message.* FROM tb_so_message, tb_so_message_notify " +
-        " WHERE tb_so_message.id = tb_so_message_notify.mid AND tb_so_message_notify.uid = @uid " +
+    var sql_stmt = "SELECT TOP 100 tb_so_message.*,tb_user.name FROM tb_so_message, tb_so_message_notify, tb_user " +
+        " WHERE tb_so_message.id = tb_so_message_notify.mid AND tb_so_message.createuser = tb_user.id AND tb_so_message_notify.uid = @uid " +
         " ORDER BY createtime desc;";
     var params = {uid : uid};
     console.log(sql_stmt);
@@ -395,7 +395,10 @@ function updateMessage (obj, callback) {
 }
 
 function getMessageList (uid, callback) {
-    var sql_stmt = "select top 1000 * from tb_so_message where createuser = @uid order by createtime desc;";
+    var sql_stmt = "select top 1000 tb_so_message.*,tb_user.name " +
+        "from tb_so_message, tb_user " +
+        "where tb_so_message.createuser = tb_user.id and tb_so_message.createuser = @uid " +
+        "order by tb_so_message.createtime desc;";
     var params = {'uid': uid};
     console.log(sql_stmt);
 
@@ -459,7 +462,7 @@ function sendNotify (uid, userids, mids, callback) {
                 return callback(err, null);
             }
             ps.execute({}, function (err, recordset) {
-                callback(err, recordset)
+                callback(err, recordset);
                 ps.unprepare(function (err) {
                     if (err)
                         console.log(err);
