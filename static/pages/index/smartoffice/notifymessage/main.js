@@ -157,8 +157,8 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
     closeNotifyModal: function () {
         var modal = $('#notifyModal');
 
-        this._clearFormControlValues(modal.find('form'))
-            ._closeModal(modal, this.dataTable);
+        this.memberTree.destroy();
+        this._closeModal(modal, this.dataTable);
     },
     sendNotify: function () {
         var self = this;
