@@ -32,7 +32,8 @@ function pagePubVoice (req, res) {
     res.render('index/publicvoice', {
         menus: req.session[menukey],
         user: req.session[userkey].name || '匿名用户',
-        uid: req.session[userkey].id || ''
+        uid: req.session[userkey].id || '',
+        upriority: req.session[userkey].priority || 2
     });
 }
 

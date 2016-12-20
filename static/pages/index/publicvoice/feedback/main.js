@@ -65,7 +65,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
                             return [
                                 '<a href="javascript:" title="查看批示"><i class="glyphicon glyphicon-comment"></i></a>',
                                 '<a href="javascript:" title="反馈"><i class="glyphicon glyphicon-edit"></i></a>',
-                                '<a href="javascript:" title="采用"><i class="glyphicon glyphicon-ok"></i></a>'
+                                lhsupriority == 1 ? '<a href="javascript:" title="采用"><i class="glyphicon glyphicon-ok"></i></a>' : '<a></a>'
                             ].join('&nbsp;');
                         default:
                             return [
