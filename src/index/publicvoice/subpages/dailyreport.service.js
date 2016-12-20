@@ -120,7 +120,7 @@ function createDaily (uid, daily, callback) {
         daily_pv.push("("+ daily['id'] + "," + pvids[idx] + ")");
     }
     sql_stmt += "INSERT INTO tb_daily_pv ([did], [pvid]) VALUES " + daily_pv.join() + ";";
-    sql_stmt += "UPDATE tb_publicvoice SET [state] = 4 WHERE [id] in (" + daily["pvids"] + ");"
+    sql_stmt += "UPDATE tb_publicvoice SET [state] = 4,[feedback_state] = 2 WHERE [id] in (" + daily["pvids"] + ");";
     console.log(sql_stmt);
     var objParams = {
         "id": daily["id"],

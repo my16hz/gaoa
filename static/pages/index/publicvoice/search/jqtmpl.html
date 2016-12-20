@@ -63,19 +63,34 @@
                 </div>
             </div>
             <div class="row func-btns">
-                <div class="col-xs-4 no-padding-right">
+                <div class="col-xs-3 no-padding-right">
+                    <div class="input-group">
+                        <span class="input-group-addon">所属栏目：</span>
+                        <select id="item" name="item" class="form-control">
+                            <option value="">所有栏目</option>
+                            <option value="负面舆情">负面舆情</option>
+                            <option value="正面舆情">正面舆情</option>
+                            <option value="舆情追踪">舆情追踪</option>
+                            <option value="网上热点">热点话题</option>
+                            <option value="涉广话题">涉广话题</option>
+                            <option value="一周网语">一周网语</option>
+                            <option value="舆情专报">舆情专报</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-xs-3 no-padding-right">
                     <div class="input-group">
                         <span class="input-group-addon">关键字：</span>
                         <input type="text" name="keyword" placeholder="请输入标题/详情关键字" class="form-control">
                     </div>
                 </div>
-                <div class="col-xs-4 no-padding-right">
+                <div class="col-xs-3 no-padding-right">
                     <div class="input-group">
                         <span class="input-group-addon">开始时间：</span>
                         <input id="starttime" type="text" name="starttime" placeholder="开始时间" class="form-control">
                     </div>
                 </div>
-                <div class="col-xs-4 no-padding-right">
+                <div class="col-xs-3 no-padding-right">
                     <div class="input-group">
                         <span class="input-group-addon">结束时间：</span>
                         <input id="endtime" type="text" name="endtime" placeholder="结束时间" class="form-control">

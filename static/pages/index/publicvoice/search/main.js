@@ -92,6 +92,7 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
                 dispose: funcCtrls.find('select:eq(1)').val(),
                 feedback: funcCtrls.find('select:eq(2)').val(),
                 type: funcCtrls.find('select:eq(3)').val(),
+                item: $('#item').val(),
                 title: funcCtrls.find('input:first').val(),
                 sTime: this.sTime.getTime(),
                 eTime: this.eTime.getTime()

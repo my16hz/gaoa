@@ -13,7 +13,7 @@ module.exports = {
     exportMatchedPubVoices: exportMatchedPubVoices
 };
 
-function searchPubVoices (start, end, state, type, feedback, dispose, title, callback) {
+function searchPubVoices (start, end, state, type, feedback, dispose, item, title, callback) {
     var sql_stmt = "SELECT tb_publicvoice.*, tb_daily_pv.did FROM tb_publicvoice LEFT JOIN tb_daily_pv ON tb_publicvoice.id = tb_daily_pv.pvid " +
         "WHERE tb_publicvoice.createtime > @start AND tb_publicvoice.createtime < @end ";
     var objParams = {
@@ -32,6 +32,10 @@ function searchPubVoices (start, end, state, type, feedback, dispose, title, cal
         sql_stmt += " AND tb_publicvoice.feedback_state = @feedback ";
         objParams["feedback"] = feedback;
     }
+    if (item) {
+        sql_stmt += " AND tb_publicvoice.item = @item ";
+        objParams["item"] = item;
+    }
     if (dispose) {
         sql_stmt += " AND tb_publicvoice.dispose_stat = @dispose ";
         objParams["dispose"] = dispose;
@@ -49,6 +53,7 @@ function searchPubVoices (start, end, state, type, feedback, dispose, title, cal
         .input("feedback", sql.Int)
         .input("dispose", sql.Int)
         .input("type", sql.NVarChar)
+        .input("item", sql.NVarChar)
         .input("title", sql.NVarChar)
         .prepare(sql_stmt, function (err) {
             if (err) {

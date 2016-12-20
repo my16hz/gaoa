@@ -24,10 +24,11 @@ function searchPubVoices (req, res) {
     var state = req.query.state;
     var type = req.query.type;
     var title = req.query.title;
+    var item = req.query.item;
     var feedback = req.query.feedback;
     var dispose = req.query.dispose;
 
-    service.searchPubVoices(start, end, state, type, feedback, dispose, title, function (err, rs) {
+    service.searchPubVoices(start, end, state, type, feedback, dispose, item, title, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
