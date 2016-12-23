@@ -33,7 +33,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
                 }
             },
             {
-                title: '状态', field: 'feedback_state', sortable: true, order: 'desc', width: 124,
+                title: '状态', field: 'feedback_state', sortable: true, order: 'desc', width: 100,
                 formatter: function (val) {
                     var args = arguments[1];
                     switch (val) {
@@ -55,21 +55,23 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
                     }
                 }
             },
+            {title: '入报', field: 'daily_id', sortable: true, order: 'desc'},
             {
                 title: '操作', field: 'action',
                 formatter: function () {
                     var args = arguments[1].feedback_state;
+
                     switch (args) {
                         case 0:
                         case 4:
                             return [
-                                '<a href="javascript:" title="查看批示"><i class="glyphicon glyphicon-comment"></i></a>',
+                                arguments[1].comment_count ? '<a href="javascript:" title="查看批示"><i class="glyphicon glyphicon-comment"></i></a>' : '<a></a>',
                                 '<a href="javascript:" title="反馈"><i class="glyphicon glyphicon-edit"></i></a>',
                                 lhsupriority == 1 ? '<a href="javascript:" title="采用"><i class="glyphicon glyphicon-ok"></i></a>' : '<a></a>'
                             ].join('&nbsp;');
                         default:
                             return [
-                                '<a href="javascript:" title="查看批示"><i class="glyphicon glyphicon-comment"></i></a>',
+                                arguments[1].comment_count ? '<a href="javascript:" title="查看批示"><i class="glyphicon glyphicon-comment"></i></a>' : '<a></a>',
                                 '<a href="javascript:" title="反馈"><i class="glyphicon glyphicon-edit"></i></a>',
                                 '<a></a>'
                             ].join('&nbsp;');
