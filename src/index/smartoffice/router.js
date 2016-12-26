@@ -15,12 +15,14 @@ module.exports = function () {
         .delete('/smartoffice/sendmsg/delete', controller.deleteSendMsg)
         .post('/smartoffice/sendmsg/commit', controller.commitSendMsg)
         .post('/smartoffice/sendmsg/export', controller.exportSendMsg)
+        .get('/smartoffice/sendmsg/exportlist', controller.exportSendMsgList)
 
         .get('/smartoffice/recvmsg/list', controller.getRecvMsg)
         .post('/smartoffice/recvmsg/save', controller.saveRecvMsg)
         .delete('/smartoffice/recvmsg/delete', controller.deleteRecvMsg)
         .post('/smartoffice/recvmsg/commit', controller.commitRecvMsg)
         .post('/smartoffice/recvmsg/export', controller.exportRecvMsg)
+        .get('/smartoffice/recvmsg/exportlist', controller.exportRecvMsglist)
 
         .post('/smartoffice/notify/send', controller.sendNotify)
 
@@ -29,6 +31,7 @@ module.exports = function () {
         .get('/smartoffice/message/list', controller.getMessageList)
         .post('/smartoffice/message/save', controller.saveMessage)
         .delete('/smartoffice/message/delete', controller.deleteMessage)
+        .get('/smartoffice/message/exportlist', controller.exportMessagelist)
 
         .get('/smartoffice/sendmsg/unapproved', controller.getUnapprovedSendMsg)
         .get('/smartoffice/recvmsg/unapproved', controller.getUnapprovedRecvMsg)

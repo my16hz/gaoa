@@ -55,16 +55,40 @@ var LHSNotifyMessagePage = $.extend({}, LHSBasicPage, {
             }
         ]);
         this.editor = this._createEditor('#editorWrapper');
+        this.sTime = this._createTimepicker('#sTime', 'YYYY-MM-DD HH:mm').onChange(function (e) {
+            this.eTime.minDate(e.date)
+        });
+        this.eTime = this._createTimepicker('#eTime', 'YYYY-MM-DD HH:mm').onChange(function (e) {
+            this.sTime.maxDate(e.date);
+        });
     },
     events: {
         'click #btnNotify': 'showDataModal',
         'click #btnSend': 'showNotifyModal',
         'click #btnDelete': 'delSelected',
+        'click #btnExport': 'exportMessagelist',
+        'click #btnSearch': 'doSearch',
         'click #dataModal .btn-default': 'closeDataModal',
         'click #dataModal .btn-primary': 'saveMessage',
         'click #dataModal #addAttach': 'addAttachInput',
         'click #notifyModal .btn-default': 'closeNotifyModal',
         'click #notifyModal .btn-primary': 'sendNotify'
+    },
+    exportMessagelist: function () {
+        var funcCtrls = $('.func-btns');
+
+        $('<iframe class="hide"></iframe>')
+            .appendTo('body')
+            .attr('src', '/smartoffice/message/exportlist?' + $.param({
+                    sTime: this.sTime.getTime(),
+                    eTime: this.eTime.getTime()
+                }));
+    },
+    doSearch: function () {
+        this.dataTable.setFilter({
+            sTime: this.sTime.getTime(),
+            eTime: this.eTime.getTime()
+        }).refresh();
     },
     showDataModal: function () {
         this._showDataModal({type: 3, id: null, content: ''});

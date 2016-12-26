@@ -1,11 +1,27 @@
 <script type="text/html">
 <div class="smartoffice-notifymessage-page">
     <div class="row func-btns">
-        <div class="col-md-6 col-xs-offset-6">
+        <div class="col-xs-7">
+            <div class="row">
+                <div class="col-xs-3 no-padding-right">
+                    <input id="sTime" type="text" name="sTime" placeholder="开始时间" class="form-control">
+                </div>
+                <div class="col-xs-3 no-padding-right">
+                    <input id="eTime" type="text" name="eTime" placeholder="结束时间" class="form-control">
+                </div>
+                <div class="col-xs-1">
+                    <button id="btnSearch" class="btn btn-default">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-5">
             <div class="pull-right">
-                <button id="btnNotify" class="btn btn-default">创建通知</button>
-                <button id="btnDelete" class="btn btn-default">删除通知</button>
-                <button id="btnSend" class="btn btn-default">发送通知</button>
+                <button id="btnNotify" class="btn btn-default">创建</button>
+                <button id="btnDelete" class="btn btn-default">删除</button>
+                <button id="btnExport" class="btn btn-default">导出</button>
+                <button id="btnSend" class="btn btn-default">发送</button>
             </div>
         </div>
     </div>

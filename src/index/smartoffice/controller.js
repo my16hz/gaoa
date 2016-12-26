@@ -5,11 +5,14 @@
  */
 var config = require('config');
 var HtmlDocx = require('html-docx-js');
+var html2text = require('html-to-text');
+var xlsx = require('xlsx');
+var moment = require('moment');
 var errhandler = require('../../utils/errhandler');
 var service = require('./service');
 var menukey = config.session.menukey;
 var userkey = config.session.userkey;
-
+var defaut_interval = 3600000 * 24 * 60;
 module.exports = {
     pageSmartOffice: pageSmartOffice,
 
@@ -18,12 +21,14 @@ module.exports = {
     deleteSendMsg: deleteSendMsg,
     commitSendMsg: commitSendMsg,
     exportSendMsg: exportSendMsg,
+    exportSendMsgList: exportSendMsgList,
 
     getRecvMsg: getRecvMsg,
     saveRecvMsg: saveRecvMsg,
     deleteRecvMsg: deleteRecvMsg,
     commitRecvMsg: commitRecvMsg,
     exportRecvMsg: exportRecvMsg,
+    exportRecvMsglist: exportRecvMsglist,
 
     sendNotify: sendNotify,
 
@@ -32,6 +37,7 @@ module.exports = {
     saveMessage: saveMessage,
     getMessageList: getMessageList,
     deleteMessage: deleteMessage,
+    exportMessagelist: exportMessagelist,
 
     getUnapprovedSendMsg: getUnapprovedSendMsg,
     getUnapprovedRecvMsg: getUnapprovedRecvMsg,
@@ -49,7 +55,10 @@ function pageSmartOffice (req, res) {
 }
 
 function getSendMsg (req, res) {
-    service.getSendMsg(function (err, rs) {
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now);
+    service.getSendMsg(start, end, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -60,7 +69,10 @@ function getSendMsg (req, res) {
 }
 
 function getRecvMsg (req, res) {
-    service.getRecvMsg(function (err, rs) {
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now);
+    service.getRecvMsg(start, end, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -274,8 +286,11 @@ function saveMessage (req, res) {
 }
 
 function getMessageList (req, res) {
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now);
     var uid = req.session[userkey].id;
-    service.getMessageList(uid, function (err, rs) {
+    service.getMessageList(uid, start, end, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -367,4 +382,238 @@ function commentRecvMsg (req, res) {
                 success: true
             });
     });
+}
+
+function exportMessagelist(req, res) {
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now);
+    var uid = req.session[userkey].id;
+
+    var filename = encodeURIComponent('通知列表');
+
+    service.getMessageList(uid, start, end, function (err, rs) {
+        if(err) {
+            errhandler.internalException(res, err);
+        } else {
+            try {
+                res.set({
+                    'content-type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'content-disposition': 'attachment;filename="' + filename + '.xlsx"'
+                }).send(_buildMessageExcel(rs));
+            } catch (e) {
+                errhandler.internalException(res, e);
+            }
+        }
+    });
+}
+
+function _buildMessageExcel (data) {
+    var sheetName = '检索数据导出';
+    var wordBook = {SheetNames: [sheetName], Sheets: {}};
+    var sheet = wordBook.Sheets[sheetName] = {};
+    var header = [
+        {title: '序', field: 'id'},
+        {title: '通知标题', field: 'title'},
+        {title: '通知详情', field: 'content'},
+        {title: '发布人', field: 'name'},
+        {title: '发布时间', field: 'createtime'}
+    ];
+    var rowCount = 1;
+
+    // add header into sheet.
+    header.forEach(function (obj, i) {
+        sheet[String.fromCharCode(65 + i) + rowCount] = {v: obj.title};
+    });
+
+    // add data in to sheet.
+    data && data.forEach(function (row) {
+        rowCount++;
+
+        header.forEach(function (column, j) {
+            sheet[String.fromCharCode(65 + j) + rowCount] = {
+                v: _checkContents(column.field, row)
+            }
+        });
+    });
+
+    sheet['!ref'] = 'A1:' + String.fromCharCode(65 + header.length - 1) + rowCount;
+
+    return xlsx.write(wordBook, {
+        bookType: 'xlsx',
+        bookSST: true,
+        type: 'buffer'
+    });
+
+    function _checkContents (field, rowData) {
+        var value = rowData[field];
+
+        if (~'createtime'.indexOf(field)) {
+            return value ? moment(value).format('YYYY/MM/DD') : '';
+        } else if (~'content remark'.indexOf(field)) {
+            return html2text.fromString(value || '');
+        } else {
+            return new String(value || '');
+        }
+    }
+}
+
+function exportRecvMsglist(req, res) {
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now);
+    var filename = encodeURIComponent('收文列表');
+    service.getRecvMsg(start, end, function (err, rs) {
+        if(err) {
+            errhandler.internalException(res, err);
+        } else {
+            try {
+                res.set({
+                    'content-type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'content-disposition': 'attachment;filename="' + filename + '.xlsx"'
+                }).send(_buildRecvMessageExcel(rs));
+            } catch (e) {
+                errhandler.internalException(res, e);
+            }
+        }
+    });
+}
+
+function _buildRecvMessageExcel (data) {
+    var sheetName = '检索数据导出';
+    var wordBook = {SheetNames: [sheetName], Sheets: {}};
+    var sheet = wordBook.Sheets[sheetName] = {};
+    var header = [
+        {title: '序', field: 'id'},
+        {title: '标题', field: 'title'},
+        {title: '收文时间', field: 'recv_date'},
+        {title: '收文编号', field: 'message_id'},
+        {title: '领导批示', field: 'comment'},
+        {title: '批示领导', field: 'approved_user'},
+        {title: '来文单位', field: 'origin_department'},
+        {title: '原文字号', field: 'origin_id'},
+        {title: '原文日期', field: 'origin_date'},
+        {title: '秘密等级', field: 'secret_level'},
+        {title: '领取人', field: 'from_user'},
+        {title: '从何领取', field: 'from_department'},
+        {title: '份数', field: 'copies'},
+        {title: '拟办意见', field: 'content'},
+        {title: '办理结果', field: 'result'}
+    ];
+    var rowCount = 1;
+
+    // add header into sheet.
+    header.forEach(function (obj, i) {
+        sheet[String.fromCharCode(65 + i) + rowCount] = {v: obj.title};
+    });
+
+    // add data in to sheet.
+    data && data.forEach(function (row) {
+        rowCount++;
+
+        header.forEach(function (column, j) {
+            sheet[String.fromCharCode(65 + j) + rowCount] = {
+                v: _checkContents(column.field, row)
+            }
+        });
+    });
+
+    sheet['!ref'] = 'A1:' + String.fromCharCode(65 + header.length - 1) + rowCount;
+
+    return xlsx.write(wordBook, {
+        bookType: 'xlsx',
+        bookSST: true,
+        type: 'buffer'
+    });
+
+    function _checkContents (field, rowData) {
+        var value = rowData[field];
+
+        if (~'createtime recv_date origin_date'.indexOf(field)) {
+            return value ? moment(value).format('YYYY/MM/DD') : '';
+        } else if (~'content remark'.indexOf(field)) {
+            return html2text.fromString(value || '');
+        } else {
+            return new String(value || '');
+        }
+    }
+}
+
+
+function exportSendMsgList(req, res) {
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now);
+    var filename = encodeURIComponent('发文列表');
+    service.getSendMsg(start, end, function (err, rs) {
+        if(err) {
+            errhandler.internalException(res, err);
+        } else {
+            try {
+                res.set({
+                    'content-type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'content-disposition': 'attachment;filename="' + filename + '.xlsx"'
+                }).send(_buildSendMessageExcel(rs));
+            } catch (e) {
+                errhandler.internalException(res, e);
+            }
+        }
+    });
+}
+
+function _buildSendMessageExcel (data) {
+    var sheetName = '检索数据导出';
+    var wordBook = {SheetNames: [sheetName], Sheets: {}};
+    var sheet = wordBook.Sheets[sheetName] = {};
+    var header = [
+        {title: '序', field: 'id'},
+        {title: '标题', field: 'title'},
+        {title: '主送机关', field: 'major_department'},
+        {title: '抄送机关', field: 'cc_department'},
+        {title: '发文字号', field: 'message_id'},
+        {title: '份数', field: 'copies'},
+        {title: '秘密等级', field: 'secret_level'},
+        {title: '紧急程度', field: 'urgent_level'},
+        {title: '拟稿人', field: 'draft_user'},
+        {title: '拟稿时间', field: 'createtime'},
+        {title: '关键词', field: 'keyword'},
+        {title: '拟办意见', field: 'content'}
+    ];
+    var rowCount = 1;
+
+    // add header into sheet.
+    header.forEach(function (obj, i) {
+        sheet[String.fromCharCode(65 + i) + rowCount] = {v: obj.title};
+    });
+
+    // add data in to sheet.
+    data && data.forEach(function (row) {
+        rowCount++;
+
+        header.forEach(function (column, j) {
+            sheet[String.fromCharCode(65 + j) + rowCount] = {
+                v: _checkContents(column.field, row)
+            }
+        });
+    });
+
+    sheet['!ref'] = 'A1:' + String.fromCharCode(65 + header.length - 1) + rowCount;
+
+    return xlsx.write(wordBook, {
+        bookType: 'xlsx',
+        bookSST: true,
+        type: 'buffer'
+    });
+
+    function _checkContents (field, rowData) {
+        var value = rowData[field];
+
+        if (~'createtime recv_date origin_date'.indexOf(field)) {
+            return value ? moment(value).format('YYYY/MM/DD') : '';
+        } else if (~'content remark'.indexOf(field)) {
+            return html2text.fromString(value || '');
+        } else {
+            return new String(value || '');
+        }
+    }
 }

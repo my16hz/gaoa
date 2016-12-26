@@ -35,13 +35,15 @@ module.exports = {
     commentRecvMsg: commentRecvMsg
 };
 
-function getSendMsg (callback) {
-    var params = {};
-    var sql_stmt = "SELECT TOP 1000 * FROM tb_so_sendmessage ORDER BY createtime desc;";
+function getSendMsg (start, end, callback) {
+    var params = {'start' : start, 'end': end};
+    var sql_stmt = "SELECT TOP 1000 * FROM tb_so_sendmessage WHERE createtime > @start AND createtime < @end ORDER BY createtime desc;";
 
     console.log(sql_stmt);
 
     var ps = dbpool.preparedStatement()
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, []);
@@ -57,13 +59,15 @@ function getSendMsg (callback) {
         });
 }
 
-function getRecvMsg (callback) {
-    var params = {};
-    var sql_stmt = "SELECT TOP 1000 * FROM tb_so_recvmessage ORDER BY createtime desc;";
+function getRecvMsg (start, end, callback) {
+    var params = {'start' : start, 'end': end};
+    var sql_stmt = "SELECT * FROM tb_so_recvmessage WHERE createtime > @start AND createtime < @end ORDER BY createtime desc;";
 
     console.log(sql_stmt);
 
     var ps = dbpool.preparedStatement()
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, []);
@@ -394,16 +398,20 @@ function updateMessage (obj, callback) {
         });
 }
 
-function getMessageList (uid, callback) {
-    var sql_stmt = "select top 1000 tb_so_message.*,tb_user.name " +
+function getMessageList (uid, start, end, callback) {
+    var sql_stmt = "select tb_so_message.*,tb_user.name " +
         "from tb_so_message, tb_user " +
-        "where tb_so_message.createuser = tb_user.id and tb_so_message.createuser = @uid " +
+        "where tb_so_message.createuser = tb_user.id " +
+        "   and tb_so_message.createuser = @uid " +
+        "   and tb_so_message.createtime > @start and tb_so_message.createtime < @end " +
         "order by tb_so_message.createtime desc;";
-    var params = {'uid': uid};
+    var params = {'uid': uid, 'start': start, 'end': end};
     console.log(sql_stmt);
 
     var ps = dbpool.preparedStatement()
         .input('uid', sql.VarChar)
+        .input("start", sql.DateTime)
+        .input("end", sql.DateTime)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, []);
