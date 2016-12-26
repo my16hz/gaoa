@@ -67,7 +67,18 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
         'click #dataModal .btn-default': 'closeDataModal',
         'click #dataModal .btn-primary': 'saveInfo',
         'click #importModal .btn-default': 'closeImportModal',
-        'click #btnSearch': 'doSearch'
+        'click #btnSearch': 'doSearch',
+        'click #btnExport': 'doExport'
+    },
+    doExport: function () {
+        var funcCtrls = $('.func-btns');
+
+        $('<iframe class="hide"></iframe>')
+            .appendTo('body')
+            .attr('src', '/badinfo/export?' + $.param({
+                    sTime: this.sTime.getTime(),
+                    eTime: this.eTime.getTime()
+                }));
     },
     doSearch: function () {
         this.dataTable.setFilter({

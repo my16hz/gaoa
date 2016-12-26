@@ -12,6 +12,7 @@ module.exports = function () {
         .get('/badinfo/list', controller.listBadInfo)
         .post('/badinfo/save', controller.saveBadInfo)
         .delete('/badinfo/delete', controller.deleteBadInfo)
+        .get('/badinfo/export', controller.exportBadInfo)
 
         .get('/rtx/directive/list', controller.listRTX)
         .post('/rtx/directive/save', controller.saveRTX)

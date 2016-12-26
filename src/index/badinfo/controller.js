@@ -4,6 +4,9 @@
  * Author: lhs
  */
 var config = require('config');
+var html2text = require('html-to-text');
+var xlsx = require('xlsx');
+var moment = require('moment');
 
 var errhandler = require('../../utils/errhandler');
 var service = require('./service');
@@ -17,7 +20,8 @@ module.exports = {
     listBadInfo: listBadInfo,
     saveBadInfo: saveBadInfo,
     deleteBadInfo: deleteBadInfo,
-
+    exportBadInfo: exportBadInfo,
+    
     listRTX: listRTX,
     saveRTX: saveRTX,
     deleteRTX: deleteRTX,
@@ -93,6 +97,86 @@ function deleteBadInfo (req, res) {
             });
     });
 }
+
+function exportBadInfo(req, res) {
+    var now = new Date().getTime();
+    var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
+    var end = new Date((req.query.eTime - 0 ) || now);
+    var user = req.session[userkey];
+
+    var filename = encodeURIComponent('不良信息检索数据');
+
+    service.listBadInfo(user, start, end, function (err, rs) {
+        if(err) {
+            errhandler.internalException(res, err);
+        } else {
+            try {
+                res.set({
+                    'content-type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'content-disposition': 'attachment;filename="' + filename + '.xlsx"'
+                }).send(_buildExcel(rs));
+            } catch (e) {
+                errhandler.internalException(res, e);
+            }
+        }
+    });
+}
+
+function _buildExcel (data) {
+    var sheetName = '检索数据导出';
+    var wordBook = {SheetNames: [sheetName], Sheets: {}};
+    var sheet = wordBook.Sheets[sheetName] = {};
+    var header = [
+        {title: '序', field: 'id'},
+        {title: '举报时间', field: 'reportdate'},
+        {title: '网站名称', field: 'website'},
+        {title: '网页路径', field: 'url'},
+        {title: '举报者', field: 'username'},
+        {title: '举报单位', field: 'department'},
+        {title: '所属地域', field: 'duty_zone'},
+        {title: '危害类型', field: 'type'},
+        {title: '举报查询码', field: 'sn'},
+        {title: '备注', field: 'remark'}
+    ];
+    var rowCount = 1;
+
+    // add header into sheet.
+    header.forEach(function (obj, i) {
+        sheet[String.fromCharCode(65 + i) + rowCount] = {v: obj.title};
+    });
+
+    // add data in to sheet.
+    data && data.forEach(function (row) {
+        rowCount++;
+
+        header.forEach(function (column, j) {
+            sheet[String.fromCharCode(65 + j) + rowCount] = {
+                v: _checkContents(column.field, row)
+            }
+        });
+    });
+
+    sheet['!ref'] = 'A1:' + String.fromCharCode(65 + header.length - 1) + rowCount;
+
+    return xlsx.write(wordBook, {
+        bookType: 'xlsx',
+        bookSST: true,
+        type: 'buffer'
+    });
+
+    function _checkContents (field, rowData) {
+        var value = rowData[field];
+
+        if (~'createtime'.indexOf(field)) {
+            return value ? moment(value).format('YYYY/MM/DD') : '';
+        } else if (~'content remark'.indexOf(field)) {
+            return html2text.fromString(value || '');
+        } else {
+            return new String(value || '');
+        }
+    }
+}
+
 
 function listRTX (req, res) {
     service.listRTX(function (err, rs) {

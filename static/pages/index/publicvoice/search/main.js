@@ -112,7 +112,7 @@ var LHSSearchPage = $.extend({}, LHSBasicPage, {
                     title: funcCtrls.find('input:first').val(),
                     sTime: this.sTime.getTime(),
                     eTime: this.eTime.getTime()
-    }));
+                }));
     },
     closeDataModal: function () {
         var modal = $('#dataModal');
