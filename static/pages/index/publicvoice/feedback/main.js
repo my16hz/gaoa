@@ -14,7 +14,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
         this.initDependencies();
 
         this.dataTable = this._createTable('#tableWrapper', '/feedback/list', [
-            {title: 'ID', field: 'id', sortable: true, order: 'desc'},
+            {title: '日报', field: 'daily_id', sortable: true, order: 'desc'},
             {title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '18%',
                 formatter: function (val, rowdata) {
                     return '<a href="' + (rowdata.url || 'javascript:') + '" target="_blank">' + val + '</a>';
@@ -55,7 +55,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
                     }
                 }
             },
-            {title: '入报', field: 'daily_id', sortable: true, order: 'desc'},
+            {title: '回复入报', field: 'feedback_daily_id', sortable: true, order: 'desc'},
             {
                 title: '操作', field: 'action',
                 formatter: function () {
