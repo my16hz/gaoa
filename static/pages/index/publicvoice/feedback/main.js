@@ -33,6 +33,12 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
                 }
             },
             {
+                title: '有无批示', field: 'comment_count', sortable: true, order: 'desc', minWidth: 60,
+                formatter: function (val) {
+                    return val ? "有批示" : "";
+                }
+            },
+            {
                 title: '状态', field: 'feedback_state', sortable: true, order: 'desc', width: 100,
                 formatter: function (val) {
                     var args = arguments[1];
@@ -55,7 +61,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
                     }
                 }
             },
-            {title: '回复入报', field: 'feedback_daily_id', sortable: true, order: 'desc'},
+            {title: '采用期数', field: 'feedback_daily_id', sortable: true, order: 'desc'},
             {
                 title: '操作', field: 'action',
                 formatter: function () {
