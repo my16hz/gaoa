@@ -289,10 +289,11 @@ function getUnapprovedComment (callback) {
 }
 
 function getCommentList(user, start, end, title, callback) {
-    var sql_stmt = "SELECT tb_publicvoice.url, tb_publicvoice.title, tb_pv_comment.* " +
+    var sql_stmt = "SELECT tb_publicvoice.url, tb_publicvoice.title, tb_pv_comment.*, " +
+        "(SELECT tb_pv_dispose.dispose_doc_no FROM tb_pv_dispose WHERE tb_pv_dispose.id = tb_pv_comment.id AND tb_pv_dispose.comment_id = tb_pv_comment.comment_id ) AS dispose_doc_no " +
         "FROM tb_pv_comment, tb_publicvoice " +
         "WHERE tb_pv_comment.id = tb_publicvoice.id  " +
-        "AND tb_publicvoice.id IN ( SELECT pvid FROM tb_pv_notify WHERE tb_pv_notify.uid = @uid) " +
+        "AND tb_publicvoice.id IN ( SELECT pvid FROM tb_pv_notify WHERE tb_pv_notify.uid = @uid ) " +
         "AND tb_pv_comment.createtime < @endTime AND tb_pv_comment.createtime > @startTime ";
 
     var objParams = {

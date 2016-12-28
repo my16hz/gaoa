@@ -14,6 +14,7 @@ var LHSCommentPage = $.extend({}, LHSBasicPage, {
         this.initDependencies();
 
         this.dataTable = this._createTable('#tableWrapper', '/comment/pvlist', [
+            {title: '处置书ID', field: 'dispose_doc_no', sortable: true, order: 'desc', maxWidth: 60},
             {
                 title: '标题', field: 'title', alwaysDisplay: true, sortable: true, order: 'desc', autoWidth: '18%',
                 formatter: function (val, rowdata) {
