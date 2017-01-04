@@ -19,6 +19,7 @@ module.exports = {
 function getFeedbackList (uid, start, end, state, callback) {
     var sql_stmt = "SELECT tb_publicvoice.*, " +
         " (SELECT did FROM tb_daily_pv WHERE tb_daily_pv.pvid = tb_publicvoice.id) AS daily_id, " +
+        " (SELECT dispose_doc_no FROM tb_pv_dispose WHERE tb_pv_dispose.id = tb_publicvoice.id) AS dispose_doc_no, " +
         " (SELECT daily_id FROM tb_pv_feedback_daily WHERE tb_pv_feedback_daily.id = tb_publicvoice.id) AS feedback_daily_id, " +
         " (SELECT count(*) FROM tb_pv_comment WHERE tb_pv_comment.id = tb_publicvoice.id) AS comment_count, " +
         " (SELECT content FROM tb_pv_feedback WHERE tb_pv_feedback.id = tb_publicvoice.id AND tb_pv_feedback.type = 0) AS docFeedback," +
