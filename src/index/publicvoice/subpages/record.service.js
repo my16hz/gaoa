@@ -78,7 +78,7 @@ function findPubVoiceList (user, start, end, level, callback) {
 
     var sql_stmt = "SELECT tb_publicvoice.*, tb_user.name " +
         " FROM tb_publicvoice,tb_user " +
-        " WHERE tb_publicvoice.state in (0, 1, 3) AND tb_publicvoice.createtime < @endTime AND tb_publicvoice.createtime > @startTime " +
+        " WHERE tb_publicvoice.state in (-1, 0, 1, 3) AND tb_publicvoice.createtime < @endTime AND tb_publicvoice.createtime > @startTime " +
         "       AND tb_user.id = tb_publicvoice.createuser ";
     if (user.priority != 1) {
         sql_stmt += ' AND tb_publicvoice.createuser = @uid ';

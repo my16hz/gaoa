@@ -93,10 +93,10 @@ function approvalPubVoice (uid, obj, callback) {
                     state['state'] = 3;
                     /* 不通过 */
                 } else if (objParams['result'] == 2) {
-                    state['state'] = 1;
-                    /* 暂缓通过 将状态设为 待审批 */
+                    state['state'] = -1;
+                    /* 暂缓通过 */
                 } else {
-                    state['state'] = 2
+                    state['state'] = 2;
                     /* 通过 */
                 }
                 pubvoice.updatePVState([objParams["pvid"]], state, callback);

@@ -36,6 +36,7 @@ var LHSExamineAndApprovePage = $.extend({}, LHSBasicPage, {
                 title: '状态', field: 'state', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
+                        case -1: return '暂缓通过';
                         case 0: return '未提交';
                         case 1: return '待审核';
                         case 2: return '审核通过';

@@ -37,6 +37,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 title: '状态', field: 'state', sortable: true, order: 'desc',
                 formatter: function (val) {
                     switch (val) {
+                        case -1: return '暂缓通过';
                         case 0: return '未提交';
                         case 1: return '待审核';
                         case 2: return '审核通过';
@@ -54,6 +55,7 @@ var LHSRecordPage = $.extend({}, LHSBasicPage, {
                 formatter: function () {
                     var args = arguments[1].state;
                     switch (args) {
+                        case -1:
                         case 0:
                         case 3: return [
                             '<a href="javascript:" title="查看"><i class="glyphicon glyphicon-edit"></i></a>',
