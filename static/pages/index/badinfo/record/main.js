@@ -37,6 +37,9 @@ var BadInfoRecordPage = $.extend({}, LHSBasicPage, {
             {
                 title: '举报时间', field: 'reportdate', sortable: true, order: 'desc',
                 formatter: function (val) {
+                    if (!val) {
+                        return "";
+                    }
                     if (val.indexOf('/') > 0)
                     {
                         return moment(val, "MM/DD/YY").format('YYYY/MM/DD');
