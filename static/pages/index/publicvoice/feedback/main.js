@@ -36,7 +36,7 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
                     return val ? "有批示" : "";
                 }
             },
-            {title: '通报编号', field: 'dispose_doc_no', sortable: true, order: 'desc'},
+            {title: '通报文号', field: 'dispose_doc_no', sortable: true, order: 'desc'},
             {
                 title: '状态', field: 'feedback_state', sortable: true, order: 'desc', width: 100,
                 formatter: function (val) {
