@@ -103,23 +103,26 @@ function _ArrayUnique(a) {
  * @param callback
  */
 function createDaily (uid, daily, callback) {
-/*    var sql_stmt = "INSERT INTO tb_daily ([id],[issue_id],[content],[createuser],[createtime],[pvids]) " +
-        "VALUES (@id, @issue_id, @content, @createuser, @createtime, @pvids);" +
-        "UPDATE tb_sys_config SET daily_id = @id, daily_issue_id = @issue_id;";*/
     var sql_stmt =
-        "IF NOT EXISTS (SELECT * FROM tb_daily WHERE id = @id) " +
-        "    INSERT INTO tb_daily ([id],[issue_id],[content],[createuser],[createtime],[pvids]) VALUES (@id, @issue_id, @content, @createuser, @createtime, @pvids); " +
+        "IF NOT EXISTS (SELECT * FROM tb_daily WHERE id = @id AND type = @type) " +
+        "    INSERT INTO tb_daily ([id],[issue_id],[content],[createuser],[createtime],[pvids],[type]) VALUES (@id, @issue_id, @content, @createuser, @createtime, @pvids, @type); " +
         "ELSE " +
-        "    UPDATE tb_daily SET [issue_id] = @issue_id, [content] = @content, [createuser] = @createuser, [pvids] = @pvids WHERE [id] = @id; " +
-        "UPDATE tb_sys_config SET [value] = @id WHERE [id] = 'daily_id';" +
-        "UPDATE tb_sys_config SET [value] = @issue_id WHERE [id] = 'daily_issue_id';" +
-        "DELETE FROM tb_daily_pv WHERE [did] = @id;";
+        "    UPDATE tb_daily SET [issue_id] = @issue_id, [content] = @content, [createuser] = @createuser, [pvids] = @pvids WHERE [id] = @id AND [type] = @type; ";
+    if (daily['type'] == 0) {
+        sql_stmt += "UPDATE tb_sys_config SET [value] = @id WHERE [id] = 'daily_id';" +
+            "UPDATE tb_sys_config SET [value] = @issue_id WHERE [id] = 'daily_issue_id';";
+    } else if (daily['type'] == 1) {
+        sql_stmt += "UPDATE tb_sys_config SET [value] = @id WHERE [id] = 'report_id';" +
+            "UPDATE tb_sys_config SET [value] = @issue_id WHERE [id] = 'report_issue_id';";
+    }
+
+    sql_stmt += "DELETE FROM tb_daily_pv WHERE [did] = @id AND [type] = @type;";
     var pvids = _ArrayUnique(daily["pvids"].split(","));
     var daily_pv = [];
     for(var idx in pvids) {
-        daily_pv.push("("+ daily['id'] + "," + pvids[idx] + ")");
+        daily_pv.push("("+ daily['id'] + "," + pvids[idx] + "," + daily['type'] +")");
     }
-    sql_stmt += "INSERT INTO tb_daily_pv ([did], [pvid]) VALUES " + daily_pv.join() + ";";
+    sql_stmt += "INSERT INTO tb_daily_pv ([did], [pvid], [type]) VALUES " + daily_pv.join() + ";";
     sql_stmt += "UPDATE tb_publicvoice SET [state] = 4,[feedback_state] = 2 WHERE [id] in (" + daily["pvids"] + ");";
     console.log(sql_stmt);
     var objParams = {
@@ -128,12 +131,14 @@ function createDaily (uid, daily, callback) {
         "content": daily["content"],
         "createuser": uid,
         "createtime": new Date(),
-        "pvids": daily["pvids"]
+        "pvids": daily["pvids"],
+        "type": daily["type"]
     };
     var ps = dbpool
         .preparedStatement()
         .input("id", sql.Int)
         .input("issue_id", sql.Int)
+        .input("type", sql.Int)
         .input("content", sql.NVarChar(sql.MAX))
         .input("createuser", sql.VarChar)
         .input("createtime", sql.DateTime2)
@@ -162,7 +167,7 @@ function updateDaily (daily, callback) {
  * @param callback {Function}  回调函数(err, {issue_id:{Number}舆情期数, id:总期数})
  */
 function getCurrentDailyID (callback) {
-    var sql_stmt = "SELECT * FROM tb_sys_config WHERE id in ('daily_id', 'daily_issue_id');";
+    var sql_stmt = "SELECT * FROM tb_sys_config WHERE id in ('daily_id', 'daily_issue_id', 'report_id', 'report_issue_id');";
     var objParams = {};
     var ps = dbpool.preparedStatement()
         .prepare(sql_stmt, function (err) {
@@ -209,7 +214,7 @@ function getDailyPVList (did, callback) {
 function getLatestDailyPVList (callback) {
     var sql_stmt = "SELECT TOP 1000 tb_publicvoice.*, tb_daily_pv.did AS daily_id " +
         " FROM tb_daily_pv, tb_publicvoice " +
-        " WHERE tb_daily_pv.pvid = tb_publicvoice.id AND tb_daily_pv.did IN ( SELECT MAX(id) as id FROM tb_daily);";
+        " WHERE tb_daily_pv.pvid = tb_publicvoice.id AND tb_daily_pv.did IN ( SELECT TOP 1 id FROM tb_daily ORDER BY createtime DESC);";
     var objParams = {};
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
@@ -251,17 +256,19 @@ function getUnappliedPubVoices (start, end, callback) {
 }
 
 
-function deleteDailyReport (did, pvids, callback) {
-    var sql_stmt = "DELETE FROM tb_daily_pv WHERE [did] = @did; " +
-        "DELETE FROM tb_daily WHERE [id] = @did;" +
+function deleteDailyReport (did, type, pvids, callback) {
+    var sql_stmt = "DELETE FROM tb_daily_pv WHERE [did] = @did AND [type] = @type; " +
+        "DELETE FROM tb_daily WHERE [id] = @did AND [type] = @type;" +
         "UPDATE tb_publicvoice SET [state] = 2 WHERE [id] in ( %pvids% );";
     sql_stmt = sql_stmt.replace("%pvids%", "\'" + pvids.join("\',\'") + "\'");
     var objParams = {
-        "did": did
+        "did": did,
+        "type": type
     };
     console.log(sql_stmt);
     var ps = dbpool.preparedStatement()
         .input('did', sql.Int)
+        .input('type', sql.Int)
         .prepare(sql_stmt, function (err) {
             if (err) {
                 return callback(err, false);

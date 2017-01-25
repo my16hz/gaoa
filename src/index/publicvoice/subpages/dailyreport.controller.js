@@ -110,6 +110,7 @@ function saveDailyReport (req, res) {
         'issue_id': obj['issue_id'],
         'content': obj['content'],
         'pvids': obj['pvids'],
+        'type': obj['type'] || 0,
         'createuser': uid,
         'createtime': new Date()
     };
@@ -159,8 +160,9 @@ function deleteDailyReport (req, res) {
     } else {
         var did = req.body.did;
         var pvids = req.body.pvids;
+        var type = req.body.type;
 
-        service.deleteDailyReport(did, pvids.split(','), function (err) {
+        service.deleteDailyReport(did, type, pvids.split(','), function (err) {
             err ?
                 errhandler.internalException(res, err) :
                 res.send({

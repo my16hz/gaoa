@@ -16,6 +16,16 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
             {field: 'checkbox', checkbox: true},
             {title: '总期数', field: 'id', sortable: true, alwaysDisplay: true},
             {title: '当季期数', field: 'issue_id', sortable: true},
+            {
+                title: '类型', field: 'type', sortable: true,
+                formatter: function (val) {
+                    switch (val) {
+                        case 0 : return "日报";
+                        case 1 : return "专报";
+                        case 2 : return "手机报";
+                    }
+                }
+            },
             {title: '创建用户', field: 'createuser'},
             {
                 title: '创建时间', field: 'createtime', sortable: true,
@@ -51,9 +61,10 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
                     'click a:last': function () {
                         var did = arguments[2].id;
                         var pvids = arguments[2].pvids;
+                        var type = arguments[2].type;
 
                         bootbox.confirm('确认删除？', function (rs) {
-                            rs && self._ajaxDelete(did, pvids, function () {
+                            rs && self._ajaxDelete(did, type, pvids, function () {
                                 self.dataTable.refresh();
                             });
                         });
@@ -73,10 +84,10 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
         this._clearFormControlValues(modal.find('form'))
             ._closeModal(modal, this.dataTable);
     },
-    _ajaxDelete: function (did, pvids, done) {
+    _ajaxDelete: function (did, type, pvids, done) {
         this._sendRequest({
             type: 'delete', url: '/daily/delete',
-            data: {did: did, pvids: pvids},
+            data: {did: did, pvids: pvids, type: type},
             done: done
         });
 
