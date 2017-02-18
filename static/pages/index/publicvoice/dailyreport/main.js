@@ -13,9 +13,6 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
         this.initDependencies();
 
         this.dataTable = this._createTable('#tableWrapper', '/daily/list', [
-            {field: 'checkbox', checkbox: true},
-            {title: '总期数', field: 'id', sortable: true, alwaysDisplay: true},
-            {title: '当季期数', field: 'issue_id', sortable: true},
             {
                 title: '类型', field: 'type', sortable: true,
                 formatter: function (val) {
@@ -26,6 +23,9 @@ var LHSDailyReportPage = $.extend({}, LHSBasicPage, {
                     }
                 }
             },
+            {title: '总期数', field: 'id', sortable: true, alwaysDisplay: true},
+            {title: '当季期数', field: 'issue_id', sortable: true},
+
             {title: '创建用户', field: 'createuser'},
             {
                 title: '创建时间', field: 'createtime', sortable: true,

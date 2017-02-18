@@ -22,7 +22,6 @@ var LHSFeedbackPage = $.extend({}, LHSBasicPage, {
             },
             {title: '载体', field: 'from_website', sortable: true, order: 'desc', autoWidth: '10%'},
             {title: '所属栏目', field: 'item', sortable: true, order: 'desc'},
-            {title: '舆情类别', field: 'type', sortable: true, order: 'desc', maxWidth: 90},
             {title: '涉及部门', field: 'relate_department', sortable: true, order: 'desc'},
             {
                 title: '时间', field: 'createtime', sortable: true, order: 'desc', minWidth: 112,
