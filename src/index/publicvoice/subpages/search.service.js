@@ -29,7 +29,11 @@ function searchPubVoices (start, end, state, type, feedback, dispose, item, titl
         objParams["type"] = type;
     }
     if (feedback) {
-        sql_stmt += " AND tb_publicvoice.feedback_state = @feedback ";
+        if (feedback == 0) {
+            sql_stmt += " AND (tb_publicvoice.feedback_state = @feedback OR tb_publicvoice.feedback_state = 4 ) ";
+        } else {
+            sql_stmt += " AND tb_publicvoice.feedback_state = @feedback ";
+        }
         objParams["feedback"] = feedback;
     }
     if (item) {
@@ -74,11 +78,13 @@ function exportMatchedPubVoices (start, end, state, type, feedback, dispose, tit
         "tb_pv_comment.comment_user AS comment_user,tb_pv_comment.comment AS pv_comment,tb_pv_comment.comment_date AS comment_date, " +
         "tb_pv_comment.recv_date AS comment_recv_date,tb_pv_comment.from_user AS comment_from_user," +
         "tb_pv_comment.from_department AS comment_from_department," +
-        "tb_pv_feedback.content AS feedback_content,tb_pv_feedback.type AS feedback_type, tb_pv_feedback.createtime AS feedback_date " +
+        "(SELECT tb_pv_feedback.content FROM tb_pv_feedback WHERE tb_publicvoice.id = tb_pv_feedback.id AND tb_pv_feedback.type = 1) AS web_feedback," +
+        "(SELECT tb_pv_feedback.createtime FROM tb_pv_feedback WHERE tb_publicvoice.id = tb_pv_feedback.id AND tb_pv_feedback.type = 1) AS web_date_feedback," +
+        "(SELECT tb_pv_feedback.content FROM tb_pv_feedback WHERE tb_publicvoice.id = tb_pv_feedback.id AND tb_pv_feedback.type = 0) AS doc_feedback, " +
+        "(SELECT tb_pv_feedback.createtime FROM tb_pv_feedback WHERE tb_publicvoice.id = tb_pv_feedback.id AND tb_pv_feedback.type = 0) AS doc_date_feedback " +
         "FROM tb_publicvoice  " +
         "LEFT JOIN tb_daily_pv ON tb_publicvoice.id = tb_daily_pv.pvid " +
         "LEFT JOIN tb_pv_comment ON tb_publicvoice.id = tb_pv_comment.id " +
-        "LEFT JOIN tb_pv_feedback ON tb_publicvoice.id = tb_pv_feedback.id " +
         "WHERE tb_publicvoice.createtime > @start AND tb_publicvoice.createtime < @end ";
     var objParams = {
         "start": start,
@@ -93,7 +99,11 @@ function exportMatchedPubVoices (start, end, state, type, feedback, dispose, tit
         objParams["type"] = type;
     }
     if (feedback) {
-        sql_stmt += " AND tb_publicvoice.feedback_state = @feedback ";
+        if (feedback == 0) {
+            sql_stmt += " AND (tb_publicvoice.feedback_state = @feedback OR tb_publicvoice.feedback_state = 4 ) ";
+        } else {
+            sql_stmt += " AND tb_publicvoice.feedback_state = @feedback ";
+        }
         objParams["feedback"] = feedback;
     }
     if (dispose) {

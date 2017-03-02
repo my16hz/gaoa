@@ -35,7 +35,12 @@ function getFeedbackList (uid, start, end, state, callback) {
     };
     if (state != -1) {
         objParams["state"] = state;
-        sql_stmt += " AND tb_publicvoice.feedback_state = @state ";
+
+        if (state == 0) {
+            sql_stmt += " AND (tb_publicvoice.feedback_state = @state OR tb_publicvoice.feedback_state = 4 ) ";
+        } else {
+            sql_stmt += " AND tb_publicvoice.feedback_state = @state ";
+        }
     }
     sql_stmt += " ORDER BY tb_publicvoice.createtime DESC ";
 

@@ -89,10 +89,10 @@ function _buildExcel (data) {
         {title: '批示内容', field: 'pv_comment'},
         {title: '谁取', field: 'comment_from_user'},
         {title: '从何', field: 'comment_from_department'},
-        {title: '回复类型', field: 'feedback_type'},
-        {title: '回复时间', field: 'feedback_date'},
-        {title: '回复内容', field: 'feedback_content'}
-
+        {title: '书回时间', field: 'doc_date_feedback'},
+        {title: '书回内容', field: 'doc_feedback'},
+        {title: '网回时间', field: 'web_date_feedback'},
+        {title: '网回内容', field: 'web_feedback'}
     ];
     var rowCount = 1;
 
@@ -123,16 +123,10 @@ function _buildExcel (data) {
     function _checkContents (field, rowData) {
         var value = rowData[field];
 
-        if (~'createtime comment_recv_date comment_date feedback_date'.indexOf(field)) {
+        if (~'createtime comment_recv_date comment_date web_date_feedback doc_date_feedback'.indexOf(field)) {
             return value ? moment(value).format('YYYY/MM/DD') : '';
-        } else if (~'content feedback_content'.indexOf(field)) {
+        } else if (~'content doc_feedback web_feedback'.indexOf(field)) {
             return html2text.fromString(value || '');
-        } else if('feedback_type' === field) {
-            if (rowData.feedback_content) {
-                return value == 1 ? "网上回复" : "书面回复";
-            } else {
-                rowData.feedback_date = '';
-            }
         } else {
             return new String(value || '');
         }
