@@ -9,7 +9,7 @@ var moment = require('moment');
 
 var errhandler = require('../../../utils/errhandler');
 var service = require('./../service');
-
+var userkey = require('config').session.userkey;
 var defaut_interval = 3600000 * 24 * 7;
 
 module.exports = {
@@ -18,6 +18,7 @@ module.exports = {
 };
 
 function searchPubVoices (req, res) {
+    var user = req.session[userkey];
     var now = new Date().getTime();
     var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
     var end = new Date((req.query.eTime - 0 ) || now);
@@ -28,7 +29,7 @@ function searchPubVoices (req, res) {
     var feedback = req.query.feedback;
     var dispose = req.query.dispose;
 
-    service.searchPubVoices(start, end, state, type, feedback, dispose, item, title, function (err, rs) {
+    service.searchPubVoices(user, start, end, state, type, feedback, dispose, item, title, function (err, rs) {
         err ?
             errhandler.internalException(res, err) :
             res.send({
@@ -39,6 +40,7 @@ function searchPubVoices (req, res) {
 }
 
 function exportMatchedPubVoices (req, res) {
+    var user = req.session[userkey];
     var now = new Date().getTime();
     var start = new Date((req.query.sTime - 0) || (now - defaut_interval));
     var end = new Date((req.query.eTime - 0 ) || now);
@@ -50,7 +52,7 @@ function exportMatchedPubVoices (req, res) {
 
     var filename = encodeURIComponent('广安市网络舆情检索数据');
 
-    service.exportMatchedPubVoices(start, end, state, type, feedback, dispose, title, function (err, rs) {
+    service.exportMatchedPubVoices(user, start, end, state, type, feedback, dispose, title, function (err, rs) {
         if(err) {
             errhandler.internalException(res, err);
         } else {

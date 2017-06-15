@@ -13,13 +13,17 @@ module.exports = {
     exportMatchedPubVoices: exportMatchedPubVoices
 };
 
-function searchPubVoices (start, end, state, type, feedback, dispose, item, title, callback) {
+function searchPubVoices (user, start, end, state, type, feedback, dispose, item, title, callback) {
     var sql_stmt = "SELECT tb_publicvoice.*, tb_daily_pv.did FROM tb_publicvoice LEFT JOIN tb_daily_pv ON tb_publicvoice.id = tb_daily_pv.pvid " +
         "WHERE tb_publicvoice.createtime > @start AND tb_publicvoice.createtime < @end ";
     var objParams = {
         "start": start,
         "end": end
     };
+    if (user.priority != 1) {
+        sql_stmt += ' AND tb_publicvoice.createuser = @uid ';
+        objParams['uid'] = user.id;
+    }
     if (state) {
         sql_stmt += " AND tb_publicvoice.state = @state ";
         objParams["state"] = state;
@@ -53,6 +57,7 @@ function searchPubVoices (start, end, state, type, feedback, dispose, item, titl
     var ps = dbpool.preparedStatement()
         .input("start", sql.DateTime)
         .input("end", sql.DateTime)
+        .input("uid", sql.VarChar)
         .input("state", sql.Int)
         .input("feedback", sql.Int)
         .input("dispose", sql.Int)
@@ -73,7 +78,7 @@ function searchPubVoices (start, end, state, type, feedback, dispose, item, titl
         });
 }
 
-function exportMatchedPubVoices (start, end, state, type, feedback, dispose, title, callback) {
+function exportMatchedPubVoices (user, start, end, state, type, feedback, dispose, title, callback) {
     var sql_stmt = "SELECT tb_publicvoice.*, tb_daily_pv.did, " +
         "tb_pv_comment.comment_user AS comment_user,tb_pv_comment.comment AS pv_comment,tb_pv_comment.comment_date AS comment_date, " +
         "tb_pv_comment.recv_date AS comment_recv_date,tb_pv_comment.from_user AS comment_from_user," +
@@ -90,6 +95,10 @@ function exportMatchedPubVoices (start, end, state, type, feedback, dispose, tit
         "start": start,
         "end": end
     };
+    if (user.priority != 1) {
+        sql_stmt += ' AND tb_publicvoice.createuser = @uid ';
+        objParams['uid'] = user.id;
+    }
     if (state) {
         sql_stmt += " AND tb_publicvoice.state = @state ";
         objParams["state"] = state;
@@ -119,6 +128,7 @@ function exportMatchedPubVoices (start, end, state, type, feedback, dispose, tit
     var ps = dbpool.preparedStatement()
         .input("start", sql.DateTime)
         .input("end", sql.DateTime)
+        .input("uid", sql.VarChar)
         .input("state", sql.Int)
         .input("feedback", sql.Int)
         .input("dispose", sql.Int)
